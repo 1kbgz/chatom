@@ -4,7 +4,7 @@ build-backend="hatchling.build"
 
 [project]
 name = "chatom"
-authors = [{name = "the chatom authors", email = "t.paine154@gmail.com"}]
+authors = [{name = "the chatom authors", email = "dev@1kbgz.com"}]
 description = "Minimum viable chat components"
 readme = "README.md"
 license = { text = "Apache-2.0" }
