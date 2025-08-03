@@ -139,10 +139,13 @@ js/dist
 js/lib
 js/node_modules
 js/*.tgz
+chatom/extension
 
 # Jupyter
 .ipynb_checkpoints
 .autoversion
+!chatom/extension/chatom.json
+!chatom/extension/install.json
 chatom/nbextension
 chatom/labextension
 
