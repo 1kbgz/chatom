@@ -4,7 +4,7 @@ __all__ = ("User",)
 
 
 class User(BaseModel):
-    user: str = Field(
+    handle: str = Field(
         description="The username of the author of the message.",
     )
     email: str = Field(
@@ -14,4 +14,8 @@ class User(BaseModel):
     id: str = Field(
         default="",
         description="uid of the author, for mentions",
+    )
+    name: str = Field(
+        default="",
+        description="The display name of the author of the message.",
     )
