@@ -21,22 +21,22 @@ def mention_user(user: User, backend: BACKEND) -> str:
             return f"{user.handle}" if user.handle else user.name
         case "matrix":
             return f"@{user.handle}:matrix.org" if user.handle else user.name
-        case "mattermost":
-            return f"@{user.handle}" if user.handle else user.name
-        case "messenger":
-            return f"@{user.name}"
+        # case "mattermost":
+        #     return f"@{user.handle}" if user.handle else user.name
+        # case "messenger":
+        #     return f"@{user.name}"
         case "slack":
             return f"<@{user.id}>"
-        case "teams":
-            return f"<at>{user.name}</at>"
-        case "telegram":
-            return f"@{user.handle}" if user.handle else user.name
         case "symphony":
             return f"@{user.name}"
-        case "whatsapp":
-            return f"@{user.name}"
-        case "zulip":
-            return f"@**{user.name}**"
+        # case "teams":
+        #     return f"<at>{user.name}</at>"
+        # case "telegram":
+        #     return f"@{user.handle}" if user.handle else user.name
+        # case "whatsapp":
+        #     return f"@{user.name}"
+        # case "zulip":
+        #     return f"@**{user.name}**"
         case _:
             # Fallback to full name if no specific format is defined
             return user.name
