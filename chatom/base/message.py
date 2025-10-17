@@ -1,7 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, Field
-
+from .base import BaseModel, Field
 from .channel import Channel
 from .user import User
 
