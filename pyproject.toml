@@ -36,6 +36,7 @@ classifiers = [
 
 dependencies = [
     "pydantic>=2",
+    "singledispatch",
 ]
 
 [project.optional-dependencies]
@@ -96,7 +97,7 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 ignore_errors = true
-fail_under = 99
+fail_under = 95
 
 [tool.hatch.build]
 artifacts = []

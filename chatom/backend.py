@@ -1,60 +1,13 @@
-from typing import Literal, Union
+from pydantic import BaseModel, Field
 
-DISCORD = "discord"
-EMAIL = "email"
-IRC = "irc"
-MATRIX = "matrix"
-# MATTERMOST = "mattermost"
-# MESSENGER = "messenger"
-SLACK = "slack"
-SYMPHONY = "symphony"
-# TEAMS = "teams"
-# TELEGRAM = "telegram"
-# WHATSAPP = "whatsapp"
-# ZULIP = "zulip"
+from .enums import BACKEND
 
-BACKEND = Union[
-    Literal[DISCORD],
-    Literal[EMAIL],
-    Literal[IRC],
-    Literal[MATRIX],
-    # Literal[MATTERMOST],
-    # Literal[MESSENGER],
-    Literal[SLACK],
-    Literal[SYMPHONY],
-    # Literal[TEAMS],
-    # Literal[TELEGRAM],
-    # Literal[WHATSAPP],
-    # Literal[ZULIP],
-    str,
-]
-ALL_BACKENDS = [
-    DISCORD,
-    EMAIL,
-    IRC,
-    # MATRIX,
-    # MATTERMOST,
-    # MESSENGER,
-    SLACK,
-    SYMPHONY,
-    # TEAMS,
-    # TELEGRAM,
-    # WHATSAPP,
-    # ZULIP,
-]
 
-__all__ = (
-    "BACKEND",
-    "DISCORD",
-    "EMAIL",
-    "IRC",
-    "MATRIX",
-    # "MATTERMOST",
-    # "MESSENGER",
-    "SLACK",
-    "SYMPHONY",
-    # "TEAMS",
-    # "TELEGRAM",
-    # "WHATSAPP",
-    # "ZULIP",
-)
+class BackendConfig(BaseModel): ...
+
+
+class Backend(BaseModel):
+    backend: BACKEND
+    config: BackendConfig = Field(default_factory=BackendConfig)
+
+    def connect(self): ...

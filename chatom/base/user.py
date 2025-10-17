@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from .base import BaseModel, Field
 
 __all__ = ("User",)
 
