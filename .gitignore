@@ -157,3 +157,7 @@ chatom/labextension
 
 # Rust
 target
+
+# Auth
+.env.sh
+*.pem

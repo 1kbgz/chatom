@@ -1,4 +1,114 @@
-from .message import *
-from .table import *
-from .text import *
-from .variant import *
+"""Formatting utilities for chatom.
+
+This module provides utilities for formatting messages and content
+that can be rendered to different output formats like Markdown,
+HTML, Slack mrkdwn, Discord Markdown, and Symphony MessageML.
+"""
+
+from .attachment import FormattedAttachment, FormattedImage
+from .message import (
+    BACKEND_FORMAT_MAP,
+    FormattedMessage,
+    MessageBuilder,
+    format_message,
+    get_format_for_backend,
+    render_message,
+)
+from .table import Table, TableAlignment, TableCell, TableRow
+from .text import (
+    Bold,
+    ChannelMention,
+    Code,
+    CodeBlock,
+    Document,
+    Emoji,
+    Heading,
+    HorizontalRule,
+    Italic,
+    LineBreak,
+    Link,
+    ListItem,
+    OrderedList,
+    Paragraph,
+    Quote,
+    Span,
+    Strikethrough,
+    Text,
+    TextNode,
+    Underline,
+    UnorderedList,
+    UserMention,
+    bold,
+    code,
+    code_block,
+    italic,
+    link,
+    text,
+)
+from .variant import (
+    DISCORD_MARKDOWN,
+    FORMAT,
+    HTML,
+    MARKDOWN,
+    PLAINTEXT,
+    SLACK_MARKDOWN,
+    SYMPHONY_MESSAGEML,
+    Format,
+)
+
+__all__ = (
+    # Variant/Format
+    "Format",
+    "FORMAT",
+    "PLAINTEXT",
+    "MARKDOWN",
+    "SLACK_MARKDOWN",
+    "DISCORD_MARKDOWN",
+    "HTML",
+    "SYMPHONY_MESSAGEML",
+    # Text nodes
+    "TextNode",
+    "Text",
+    "Bold",
+    "Italic",
+    "Strikethrough",
+    "Underline",
+    "Code",
+    "CodeBlock",
+    "Link",
+    "Quote",
+    "Paragraph",
+    "LineBreak",
+    "HorizontalRule",
+    "ListItem",
+    "UnorderedList",
+    "OrderedList",
+    "Heading",
+    "UserMention",
+    "ChannelMention",
+    "Emoji",
+    "Span",
+    "Document",
+    # Helper functions
+    "text",
+    "bold",
+    "italic",
+    "code",
+    "code_block",
+    "link",
+    # Table
+    "Table",
+    "TableRow",
+    "TableCell",
+    "TableAlignment",
+    # Attachment
+    "FormattedAttachment",
+    "FormattedImage",
+    # Message
+    "FormattedMessage",
+    "MessageBuilder",
+    "render_message",
+    "format_message",
+    "BACKEND_FORMAT_MAP",
+    "get_format_for_backend",
+)
