@@ -3,8 +3,9 @@
 This module provides the Discord backend using the discord.py library.
 """
 
+import asyncio
 from datetime import datetime, timezone
-from typing import Any, ClassVar, List, Optional, Union
+from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
 
 from pydantic import Field
 
@@ -249,7 +250,7 @@ class DiscordBackend(BackendBase):
 
         # Name/handle search - check cache only (Discord API doesn't support user search)
         if name or handle:
-            for cached_user in self.users._by_id.values():
+            for cached_user in self.users.all():
                 if isinstance(cached_user, DiscordUser):
                     if name and cached_user.name.lower() == name.lower():
                         return cached_user
@@ -325,7 +326,7 @@ class DiscordBackend(BackendBase):
 
         # Name search - check cache only
         if name:
-            for cached_channel in self.channels._by_id.values():
+            for cached_channel in self.channels.all():
                 if isinstance(cached_channel, DiscordChannel):
                     if cached_channel.name.lower() == name.lower():
                         return cached_channel
@@ -665,3 +666,377 @@ class DiscordBackend(BackendBase):
         if isinstance(channel, DiscordChannel):
             return _mention_channel(channel)
         return f"<#{channel.id}>"
+
+    async def get_bot_info(self) -> Optional[User]:
+        """Get information about the connected bot user.
+
+        Returns:
+            The bot's User object, or None if not available.
+        """
+        if self._client is None:
+            return None
+
+        try:
+            bot_user = self._client.user
+            if bot_user:
+                return DiscordUser(
+                    id=str(bot_user.id),
+                    name=bot_user.display_name,
+                    handle=bot_user.name,
+                    avatar_url=str(bot_user.display_avatar.url) if bot_user.display_avatar else "",
+                    discriminator=bot_user.discriminator or "0",
+                    global_name=bot_user.global_name,
+                    is_bot=bot_user.bot,
+                    is_system=bot_user.system,
+                )
+        except Exception:
+            pass
+
+        return None
+
+    async def create_dm(self, user_id: str) -> Optional[str]:
+        """Create a DM channel with a user.
+
+        Args:
+            user_id: The user ID to create a DM with.
+
+        Returns:
+            The DM channel ID, or None if creation failed.
+        """
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        try:
+            discord_user = await self._client.fetch_user(int(user_id))
+            if discord_user:
+                dm_channel = await discord_user.create_dm()
+                return str(dm_channel.id)
+        except (discord.NotFound, discord.HTTPException, ValueError) as e:
+            raise RuntimeError(f"Failed to create DM: {e}") from e
+
+        return None
+
+    async def create_channel(
+        self,
+        name: str,
+        description: str = "",
+        public: bool = True,
+        guild_id: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Optional[str]:
+        """Create a new guild text channel.
+
+        Note: This requires the bot to have MANAGE_CHANNELS permission
+        in the target guild.
+
+        Args:
+            name: The channel name.
+            description: Optional channel topic/description.
+            public: If False, creates a private channel (not implemented yet).
+            guild_id: The guild ID to create the channel in.
+                     If not provided, uses config.guild_id.
+            **kwargs: Additional options:
+                - category_id: Category ID to put the channel under.
+
+        Returns:
+            The channel ID of the created channel, or None if failed.
+        """
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        # Resolve guild ID
+        target_guild_id = guild_id or self.config.guild_id
+        if not target_guild_id:
+            raise RuntimeError("Guild ID required for channel creation. Set guild_id in config or pass as argument.")
+
+        try:
+            guild = await self._client.fetch_guild(int(target_guild_id))
+            if guild is None:
+                raise RuntimeError(f"Guild {target_guild_id} not found")
+
+            # Create the channel
+            category_id = kwargs.get("category_id")
+            category = None
+            if category_id:
+                category = await self._client.fetch_channel(int(category_id))
+
+            channel = await guild.create_text_channel(
+                name=name,
+                topic=description if description else None,
+                category=category,
+            )
+
+            return str(channel.id)
+        except (discord.NotFound, discord.HTTPException, discord.Forbidden, ValueError) as e:
+            raise RuntimeError(f"Failed to create channel: {e}") from e
+
+    async def fetch_channel_by_name(
+        self,
+        name: str,
+        guild_id: Optional[str] = None,
+    ) -> Optional[Channel]:
+        """Fetch a channel by name from a guild.
+
+        This method searches through the guild's channels to find one
+        matching the given name.
+
+        Args:
+            name: The channel name to search for (case-insensitive).
+            guild_id: The guild ID to search in.
+                     If not provided, uses config.guild_id.
+
+        Returns:
+            The channel if found, None otherwise.
+        """
+        if self._client is None:
+            return None
+
+        # Check cache first
+        for cached_channel in self.channels.all():
+            if isinstance(cached_channel, DiscordChannel):
+                if cached_channel.name.lower() == name.lower():
+                    return cached_channel
+
+        # Resolve guild ID
+        target_guild_id = guild_id or self.config.guild_id
+        if not target_guild_id:
+            return None
+
+        try:
+            guild = await self._client.fetch_guild(int(target_guild_id))
+            if guild is None:
+                return None
+
+            # Fetch all channels from the guild
+            channels = await guild.fetch_channels()
+            for discord_channel in channels:
+                if hasattr(discord_channel, "name") and discord_channel.name.lower() == name.lower():
+                    channel = DiscordChannel(
+                        id=str(discord_channel.id),
+                        name=getattr(discord_channel, "name", ""),
+                        topic=getattr(discord_channel, "topic", "") or "",
+                        guild_id=str(guild.id),
+                        position=getattr(discord_channel, "position", 0),
+                        nsfw=getattr(discord_channel, "nsfw", False),
+                        slowmode_delay=getattr(discord_channel, "slowmode_delay", 0),
+                        discord_type=_discord_channel_type_to_enum(discord_channel.type.value),
+                    )
+                    self.channels.add(channel)
+                    return channel
+        except (discord.NotFound, discord.HTTPException, ValueError):
+            pass
+
+        return None
+
+    async def fetch_user_by_name(
+        self,
+        name: str,
+        guild_id: Optional[str] = None,
+    ) -> Optional[User]:
+        """Fetch a user by username from a guild.
+
+        This method searches through the guild's members to find one
+        matching the given username or display name.
+
+        Args:
+            name: The username or display name to search for (case-insensitive).
+            guild_id: The guild ID to search in.
+                     If not provided, uses config.guild_id.
+
+        Returns:
+            The user if found, None otherwise.
+        """
+        if self._client is None:
+            return None
+
+        # Check cache first
+        for cached_user in self.users.all():
+            if isinstance(cached_user, DiscordUser):
+                if cached_user.name.lower() == name.lower():
+                    return cached_user
+                if cached_user.handle.lower() == name.lower():
+                    return cached_user
+                # Handle username#discriminator format
+                if "#" in name and cached_user.full_username.lower() == name.lower():
+                    return cached_user
+
+        # Resolve guild ID
+        target_guild_id = guild_id or self.config.guild_id
+        if not target_guild_id:
+            return None
+
+        try:
+            guild = await self._client.fetch_guild(int(target_guild_id))
+            if guild is None:
+                return None
+
+            # Search for member - need to search through members
+            # For now, check the name without discriminator
+            search_name = name.split("#")[0] if "#" in name else name
+
+            # Try to use query_members first (works via gateway, may not need GUILD_MEMBERS intent)
+            try:
+                members = await guild.query_members(query=search_name, limit=10)
+                for member in members:
+                    member_name = member.name.lower()
+                    member_display = member.display_name.lower()
+                    search_lower = search_name.lower()
+
+                    if member_name == search_lower or member_display == search_lower:
+                        user = DiscordUser(
+                            id=str(member.id),
+                            name=member.display_name,
+                            handle=member.name,
+                            avatar_url=str(member.display_avatar.url) if member.display_avatar else "",
+                            discriminator=member.discriminator or "0",
+                            global_name=member.global_name,
+                            is_bot=member.bot,
+                            is_system=member.system,
+                        )
+                        self.users.add(user)
+                        return user
+            except (discord.HTTPException, discord.Forbidden):
+                pass
+
+            # Fall back to fetch_members if query didn't work
+            # This requires GUILD_MEMBERS intent
+            try:
+                async for member in guild.fetch_members(limit=1000):
+                    member_name = member.name.lower()
+                    member_display = member.display_name.lower()
+                    search_lower = search_name.lower()
+
+                    if member_name == search_lower or member_display == search_lower:
+                        user = DiscordUser(
+                            id=str(member.id),
+                            name=member.display_name,
+                            handle=member.name,
+                            avatar_url=str(member.display_avatar.url) if member.display_avatar else "",
+                            discriminator=member.discriminator or "0",
+                            global_name=member.global_name,
+                            is_bot=member.bot,
+                            is_system=member.system,
+                        )
+                        self.users.add(user)
+                        return user
+            except (discord.HTTPException, discord.Forbidden):
+                # fetch_members requires GUILD_MEMBERS privileged intent
+                pass
+
+        except (discord.NotFound, discord.HTTPException, ValueError):
+            pass
+
+        return None
+
+    async def stream_messages(
+        self,
+        channel_id: Optional[str] = None,
+        skip_own: bool = True,
+        skip_history: bool = True,
+    ) -> AsyncIterator[DiscordMessage]:
+        """Stream incoming messages in real-time using Discord gateway.
+
+        This creates a connection to the Discord gateway and yields
+        messages as they arrive. Requires the bot to be in a guild
+        and have MESSAGE_CONTENT intent enabled.
+
+        Args:
+            channel_id: Optional channel ID to filter messages.
+            skip_own: If True (default), skip messages sent by the bot itself.
+            skip_history: If True (default), skip messages that existed before
+                         the stream started. Only yields new messages.
+
+        Yields:
+            DiscordMessage: Each message as it arrives.
+        """
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        if not HAS_DISCORD:
+            raise RuntimeError("discord.py is not installed")
+
+        # Get bot info for filtering
+        bot_user_id = str(self._client.user.id) if self._client.user else None
+
+        # Track when the stream started for skip_history
+        stream_start_time = datetime.now(timezone.utc)
+
+        # Create a queue for messages
+        message_queue: asyncio.Queue[DiscordMessage] = asyncio.Queue()
+        stop_event = asyncio.Event()
+
+        # Store the original on_message handler if any
+        original_handler = getattr(self._client, "_original_on_message", None)
+
+        async def on_message(msg: Any) -> None:
+            """Handle incoming messages."""
+            try:
+                # Skip bot's own messages
+                if skip_own and bot_user_id and str(msg.author.id) == bot_user_id:
+                    return
+
+                # Filter by channel if specified
+                if channel_id and str(msg.channel.id) != channel_id:
+                    return
+
+                # Skip messages from before the stream started
+                if skip_history:
+                    msg_time = msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc)
+                    if msg_time < stream_start_time:
+                        return
+
+                # Create DiscordMessage
+                discord_msg = DiscordMessage(
+                    id=str(msg.id),
+                    content=msg.content,
+                    timestamp=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    author_id=str(msg.author.id),
+                    user_id=str(msg.author.id),
+                    channel_id=str(msg.channel.id),
+                    guild_id=str(msg.guild.id) if msg.guild else "",
+                    mentions=[str(u.id) for u in msg.mentions],
+                    mention_everyone=msg.mention_everyone,
+                    mention_roles=[str(r.id) for r in msg.role_mentions] if msg.role_mentions else [],
+                )
+
+                await message_queue.put(discord_msg)
+
+            except Exception:
+                # Silently handle errors to keep stream running
+                pass
+
+        # Register the message handler
+        self._client.event(on_message)
+        self._client._original_on_message = original_handler
+
+        # Start the client's event loop if not already running
+        # The client needs to be connected to the gateway to receive events
+        client_task = None
+        if not self._client.is_ready():
+            # Start the client in the background to connect to gateway
+            client_task = asyncio.create_task(self._client.connect())
+            # Wait for the client to be ready
+            for _ in range(30):  # Wait up to 30 seconds
+                await asyncio.sleep(1)
+                if self._client.is_ready():
+                    break
+            else:
+                raise RuntimeError("Discord client failed to connect to gateway")
+
+        try:
+            while not stop_event.is_set():
+                try:
+                    # Wait for messages with a timeout to allow checking stop_event
+                    message = await asyncio.wait_for(message_queue.get(), timeout=1.0)
+                    yield message
+                except asyncio.TimeoutError:
+                    continue
+        finally:
+            # Clean up
+            stop_event.set()
+            if client_task:
+                client_task.cancel()
+                try:
+                    await client_task
+                except asyncio.CancelledError:
+                    pass
