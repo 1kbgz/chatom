@@ -48,3 +48,25 @@ chatom has minimal dependencies:
 |---------|---------|
 | `pydantic>=2` | Data validation and serialization |
 | `singledispatch` | Polymorphic function dispatch |
+
+## Optional Dependencies
+
+### CSP Integration
+
+For streaming event processing with CSP, install csp:
+
+```bash
+pip install csp
+```
+
+This enables the `chatom.csp` module for real-time message streaming:
+
+```python
+from chatom.csp import BackendAdapter, HAS_CSP
+
+if HAS_CSP:
+    # CSP integration available
+    from chatom.csp import message_reader, message_writer
+```
+
+See the [CSP Integration](csp-integration) guide for more details.

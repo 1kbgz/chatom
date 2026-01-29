@@ -55,6 +55,15 @@ develop = [
     "twine",
     "uv",
     "wheel",
+    # integrations
+    "csp",
+    "discord.py",
+    "irc3",
+    "matrix-nio",
+    "python-telegram-bot",
+    "slack-sdk",
+    "symphony-bdk-python",
+    "whatsapp-python",
 ]
 
 [project.scripts]
