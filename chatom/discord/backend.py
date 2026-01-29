@@ -15,6 +15,7 @@ from ..base import (
     BackendCapabilities,
     Channel,
     Message,
+    Organization,
     Presence,
     PresenceStatus,
     User,
@@ -22,6 +23,7 @@ from ..base import (
 from ..format.variant import Format
 from .channel import DiscordChannel, DiscordChannelType
 from .config import DiscordConfig
+from .guild import DiscordGuild
 from .mention import mention_channel as _mention_channel, mention_user as _mention_user
 from .message import DiscordMessage
 from .presence import DiscordPresence
@@ -124,6 +126,7 @@ class DiscordBackend(BackendBase):
     user_class: ClassVar[type] = DiscordUser
     channel_class: ClassVar[type] = DiscordChannel
     presence_class: ClassVar[type] = DiscordPresence
+    guild_class: ClassVar[type] = DiscordGuild
 
     capabilities: Optional[BackendCapabilities] = DISCORD_CAPABILITIES
     config: DiscordConfig = Field(default_factory=DiscordConfig)
@@ -927,6 +930,158 @@ class DiscordBackend(BackendBase):
             pass
 
         return None
+
+    # =========================================================================
+    # Organization/Guild methods
+    # =========================================================================
+
+    async def fetch_organization(
+        self,
+        identifier: Optional[Union[str, Organization]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> Optional[Organization]:
+        """Fetch a guild (organization) from Discord.
+
+        Args:
+            identifier: A DiscordGuild object or guild ID string.
+            id: Guild ID (alternative to positional identifier).
+            name: Guild name to search for (case-insensitive).
+
+        Returns:
+            The guild if found, None otherwise.
+        """
+        # Handle Organization object input
+        if isinstance(identifier, DiscordGuild):
+            return identifier
+        if hasattr(identifier, "id") and identifier is not None:
+            id = identifier.id
+
+        # Resolve identifier to id
+        if identifier and not id:
+            id = str(identifier)
+
+        if self._client is None:
+            return None
+
+        # ID-based lookup
+        if id:
+            try:
+                guild_id = int(id)
+                discord_guild = await self._client.fetch_guild(guild_id)
+                if discord_guild:
+                    return DiscordGuild.from_discord_guild(discord_guild)
+            except (discord.NotFound, discord.HTTPException, ValueError):
+                pass
+
+        # Name-based lookup
+        if name:
+            return await self.fetch_organization_by_name(name)
+
+        return None
+
+    async def fetch_organization_by_name(
+        self,
+        name: str,
+    ) -> Optional[Organization]:
+        """Fetch a guild by name.
+
+        This searches through guilds the bot is a member of.
+
+        Args:
+            name: The guild name to search for (case-insensitive).
+
+        Returns:
+            The guild if found, None otherwise.
+        """
+        if self._client is None:
+            return None
+
+        # Need to be connected to the gateway to access guilds
+        if not self._client.is_ready():
+            # Start the client connection in the background
+            connect_task = asyncio.create_task(self._client.connect())
+            # Wait for the client to be ready
+            for _ in range(30):  # Wait up to 30 seconds
+                await asyncio.sleep(1)
+                if self._client.is_ready():
+                    break
+            else:
+                # Clean up if we didn't connect
+                connect_task.cancel()
+                try:
+                    await connect_task
+                except asyncio.CancelledError:
+                    pass
+                return None
+
+        # Search through guilds
+        for guild in self._client.guilds:
+            if guild.name.lower() == name.lower():
+                return DiscordGuild.from_discord_guild(guild)
+
+        return None
+
+    async def list_organizations(self) -> List[Organization]:
+        """List all guilds the bot has access to.
+
+        Returns:
+            List of guilds.
+        """
+        if self._client is None:
+            return []
+
+        # Need to be connected to the gateway to access guilds
+        if not self._client.is_ready():
+            # Start the client connection in the background
+            connect_task = asyncio.create_task(self._client.connect())
+            # Wait for the client to be ready
+            for _ in range(30):  # Wait up to 30 seconds
+                await asyncio.sleep(1)
+                if self._client.is_ready():
+                    break
+            else:
+                # Clean up if we didn't connect
+                connect_task.cancel()
+                try:
+                    await connect_task
+                except asyncio.CancelledError:
+                    pass
+                return []
+
+        return [DiscordGuild.from_discord_guild(guild) for guild in self._client.guilds]
+
+    # Aliases for Discord terminology
+    async def fetch_guild(
+        self,
+        identifier: Optional[Union[str, Organization]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> Optional[Organization]:
+        """Fetch a guild from Discord.
+
+        This is an alias for fetch_organization using Discord terminology.
+        """
+        return await self.fetch_organization(identifier, id=id, name=name)
+
+    async def fetch_guild_by_name(
+        self,
+        name: str,
+    ) -> Optional[Organization]:
+        """Fetch a guild by name.
+
+        This is an alias for fetch_organization_by_name using Discord terminology.
+        """
+        return await self.fetch_organization_by_name(name)
+
+    async def list_guilds(self) -> List[Organization]:
+        """List all guilds the bot has access to.
+
+        This is an alias for list_organizations using Discord terminology.
+        """
+        return await self.list_organizations()
 
     async def stream_messages(
         self,

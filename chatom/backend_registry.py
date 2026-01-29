@@ -32,6 +32,7 @@ from .base import (
     Channel,
     ChannelRegistry,
     Message,
+    Organization,
     Presence,
     User,
     UserRegistry,
@@ -462,6 +463,64 @@ class BackendBase(BaseModel):
             The room/channel if found, None otherwise.
         """
         return await self.fetch_channel(identifier, id=id, name=name)
+
+    # =========================================================================
+    # Organization lookup methods
+    # =========================================================================
+
+    async def fetch_organization(
+        self,
+        identifier: Optional[Union[str, Organization]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> Optional[Organization]:
+        """Fetch an organization from the backend.
+
+        An organization is the top-level container (guild, workspace, pod, etc.).
+
+        Args:
+            identifier: An Organization object or organization ID string.
+            id: Organization ID (alternative to positional identifier).
+            name: Organization name to search for.
+
+        Returns:
+            The organization if found, None otherwise.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support organizations.
+        """
+        raise NotImplementedError("This backend does not support organizations")
+
+    async def fetch_organization_by_name(
+        self,
+        name: str,
+    ) -> Optional[Organization]:
+        """Fetch an organization by name.
+
+        This is a convenience method for looking up organizations by name.
+
+        Args:
+            name: The organization name to search for (case-insensitive).
+
+        Returns:
+            The organization if found, None otherwise.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support organizations.
+        """
+        raise NotImplementedError("This backend does not support organizations")
+
+    async def list_organizations(self) -> List[Organization]:
+        """List all organizations the bot has access to.
+
+        Returns:
+            List of organizations.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support organizations.
+        """
+        raise NotImplementedError("This backend does not support organizations")
 
     async def fetch_channel_members(
         self,

@@ -54,6 +54,7 @@ from .mention import (
     parse_mentions,
 )
 from .message import Message, MessageReference, MessageType
+from .organization import Organization
 from .presence import Activity, ActivityType, Presence, PresenceStatus
 from .reaction import Emoji, Reaction, ReactionEvent, ReactionEventType
 
@@ -74,6 +75,8 @@ __all__ = (
     "ChannelType",
     # Thread
     "Thread",
+    # Organization
+    "Organization",
     # Message
     "Message",
     "MessageReference",
