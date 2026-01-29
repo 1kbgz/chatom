@@ -7,6 +7,8 @@ from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
+from pydantic import model_validator
+
 from chatom.base import Field, Message
 
 if TYPE_CHECKING:
@@ -123,6 +125,21 @@ class SymphonyMessage(Message):
         default_factory=list,
         description="List of user IDs mentioned in the message.",
     )
+
+    @model_validator(mode="after")
+    def _sync_stream_channel_ids(self) -> "SymphonyMessage":
+        """Sync stream_id and channel_id.
+
+        Symphony uses stream_id while the base Message class uses channel_id.
+        This validator ensures they stay in sync.
+        """
+        # If stream_id is set but channel_id is not, copy stream_id to channel_id
+        if self.stream_id and not self.channel_id:
+            object.__setattr__(self, "channel_id", self.stream_id)
+        # If channel_id is set but stream_id is not, copy channel_id to stream_id
+        elif self.channel_id and not self.stream_id:
+            object.__setattr__(self, "stream_id", self.channel_id)
+        return self
 
     @property
     def is_shared_message(self) -> bool:
