@@ -61,52 +61,88 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         self._message_queue: Queue = Queue()
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._error: Optional[Exception] = None
+        self._shutdown_event: Optional[asyncio.Event] = None
 
     def start(self, starttime, endtime):
         """Start the adapter."""
+        log.debug(f"MessageReaderPushAdapter.start() called, starttime={starttime}, endtime={endtime}")
         self._thread = threading.Thread(target=self._run, daemon=True)
         self._running = True
         self._thread.start()
+        log.debug("MessageReaderPushAdapter thread started")
+        # Push an initial empty tick to signal to CSP that this adapter is active
+        # This prevents CSP from exiting early before any messages arrive
+        self.push_tick([])
 
     def stop(self):
         """Stop the adapter."""
+        log.debug("MessageReaderPushAdapter.stop() called")
         if self._running:
             self._running = False
             self._message_queue.put(None)
-            if self._loop:
-                self._loop.call_soon_threadsafe(self._loop.stop)
+            # Signal shutdown via the event rather than stopping the loop
+            if self._shutdown_event and self._loop:
+                self._loop.call_soon_threadsafe(self._shutdown_event.set)
             if self._thread:
-                self._thread.join(timeout=5.0)
+                self._thread.join(timeout=2.0)  # Shorter timeout for faster Ctrl+C response
 
         if self._error:
             raise self._error
 
     def _run(self):
-        """Run the message stream in a background thread."""
-        self._loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self._loop)
+        """Run the message stream in a background thread.
+
+        Uses asyncio.run() which properly sets up the task context
+        that aiohttp requires. This is critical because aiohttp's
+        timeout context manager checks asyncio.current_task().
+        """
+        log.debug("MessageReaderPushAdapter._run() thread function starting")
         try:
-            self._loop.run_until_complete(self._async_run())
+            asyncio.run(self._async_run_with_setup())
         except Exception as e:
             log.exception(f"Error in message reader: {e}")
             self._error = e
             self._running = False
         finally:
-            if self._loop and not self._loop.is_closed():
-                self._loop.close()
             self._message_queue.put(None)
+        log.debug("MessageReaderPushAdapter._run() thread function finished")
+
+    async def _async_run_with_setup(self):
+        """Async wrapper that captures the loop for external stop calls."""
+        log.debug("_async_run_with_setup starting")
+        self._loop = asyncio.get_running_loop()
+        self._shutdown_event = asyncio.Event()
+        try:
+            await self._async_run()
+        finally:
+            self._loop = None
+            self._shutdown_event = None
+        log.debug("_async_run_with_setup finished")
 
     async def _async_run(self):
         """Async main loop for reading messages."""
-        # Connect if not already connected
-        if not self._backend.connected:
-            await self._backend.connect()
+        log.debug("_async_run starting")
+        # Create a new backend instance for this thread to avoid event loop issues
+        # This is necessary because aiohttp sessions are bound to specific event loops
+        backend_class = type(self._backend)
+        log.debug(f"Creating thread-local backend of type {backend_class.__name__}")
+        thread_backend = backend_class(config=self._backend.config)
+        log.debug("Connecting thread-local backend...")
+        await thread_backend.connect()
+        log.debug("Thread-local backend connected")
 
         # Resolve channel names to IDs
-        await self._resolve_channels()
+        await self._resolve_channels(thread_backend)
+        log.debug(f"Resolved channels: {self._resolved_channel_ids}")
 
         # Start processing queue in parallel with reading
         queue_task = asyncio.create_task(self._process_queue())
+
+        # Create a shutdown watcher task
+        async def shutdown_watcher():
+            await self._shutdown_event.wait()
+
+        shutdown_task = asyncio.create_task(shutdown_watcher())
 
         try:
             # If we have specific channels, stream each one
@@ -114,33 +150,56 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
                 # For now, stream from first channel
                 # TODO: Support multiple channels with asyncio.gather
                 for channel_id in self._resolved_channel_ids:
-                    async for message in self._backend.stream_messages(
+                    log.debug(f"Starting to stream messages from channel {channel_id}")
+                    async for message in thread_backend.stream_messages(
                         channel_id=channel_id,
                         skip_own=self._skip_own,
                         skip_history=self._skip_history,
                     ):
-                        if not self._running:
+                        log.debug(f"Received message: {message.id}")
+                        if not self._running or self._shutdown_event.is_set():
+                            log.debug("Stopping stream due to _running=False or shutdown_event")
                             break
                         self._message_queue.put(message)
-                    if not self._running:
+                    log.debug(f"Stream from channel {channel_id} ended")
+                    if not self._running or self._shutdown_event.is_set():
                         break
             else:
                 # Stream all messages
-                async for message in self._backend.stream_messages(
+                log.debug("Starting to stream all messages")
+                async for message in thread_backend.stream_messages(
                     skip_own=self._skip_own,
                     skip_history=self._skip_history,
                 ):
-                    if not self._running:
+                    log.debug(f"Received message: {message.id}")
+                    if not self._running or self._shutdown_event.is_set():
+                        log.debug("Stopping stream due to _running=False or shutdown_event")
                         break
                     self._message_queue.put(message)
+                log.debug("Stream all messages ended")
         finally:
             queue_task.cancel()
+            shutdown_task.cancel()
+            try:
+                await queue_task
+            except asyncio.CancelledError:
+                pass
+            try:
+                await shutdown_task
+            except asyncio.CancelledError:
+                pass
+            # Disconnect the thread-local backend
+            try:
+                await thread_backend.disconnect()
+            except Exception:
+                pass
 
-    async def _resolve_channels(self):
+    async def _resolve_channels(self, backend):
         """Resolve channel names to IDs.
 
         For each channel in self._channels, determine if it's an ID or name
         and resolve names to IDs using the backend's fetch_channel method.
+        Symphony stream IDs look like 'wi__BW5M9bd910N25XXUP3___nrUDOBKdA'.
         """
         if not self._channels:
             return
@@ -148,18 +207,21 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         for channel in self._channels:
             try:
                 # First try to fetch by ID
-                result = await self._backend.fetch_channel(id=channel)
+                result = await backend.fetch_channel(id=channel)
                 if result:
                     self._resolved_channel_ids.add(result.id)
                     continue
 
                 # If not found by ID, try by name
-                result = await self._backend.fetch_channel(name=channel)
+                result = await backend.fetch_channel(name=channel)
                 if result:
                     self._resolved_channel_ids.add(result.id)
                     log.info(f"Resolved channel name '{channel}' to ID '{result.id}'")
                 else:
-                    log.warning(f"Could not resolve channel: {channel}")
+                    # Could not find it, but it might still be a valid stream ID
+                    # (e.g., the API returned None but the ID is still usable)
+                    log.debug(f"Could not resolve channel '{channel}', using as-is")
+                    self._resolved_channel_ids.add(channel)
             except NotImplementedError:
                 # Backend doesn't support fetch_channel, assume it's an ID
                 self._resolved_channel_ids.add(channel)
@@ -238,34 +300,57 @@ def message_reader(
 
 
 def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
-    """Thread function to send messages from queue using the backend."""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    """Thread function to send messages from queue using the backend.
+
+    Uses asyncio.run() which properly sets up the task context
+    that aiohttp requires. We create a new backend instance in this thread
+    to ensure the aiohttp session is bound to our event loop.
+    """
+    log.debug("Message writer thread started")
 
     async def run():
-        # Connect if not already connected
-        if not backend.connected:
-            await backend.connect()
+        # Create a new backend instance for this thread to avoid event loop issues
+        # This is necessary because aiohttp sessions are bound to specific event loops
+        backend_class = type(backend)
+        log.debug(f"Creating thread-local backend of type {backend_class.__name__}")
+        thread_backend = backend_class(config=backend.config)
+        log.debug("Connecting thread-local backend...")
+        await thread_backend.connect()
+        log.debug("Thread-local backend connected")
 
-        while True:
-            msg = await loop.run_in_executor(None, msg_queue.get)
-            msg_queue.task_done()
+        loop = asyncio.get_running_loop()
+        try:
+            while True:
+                log.debug("Waiting for message from queue...")
+                msg = await loop.run_in_executor(None, msg_queue.get)
+                msg_queue.task_done()
 
-            if msg is None:
-                break
+                if msg is None:
+                    log.debug("Received None, stopping writer thread")
+                    break
 
+                log.debug(f"Sending message to channel_id={msg.channel_id}")
+                try:
+                    await thread_backend.send_message(
+                        channel_id=msg.channel_id,
+                        content=msg.content,
+                    )
+                    log.debug("Message sent successfully")
+                except Exception:
+                    log.exception("Failed sending message")
+        finally:
+            # Disconnect cleanly
+            log.debug("Disconnecting thread-local backend")
             try:
-                await backend.send_message(
-                    channel_id=msg.channel_id,
-                    content=msg.content,
-                )
+                await thread_backend.disconnect()
             except Exception:
-                log.exception("Failed sending message")
+                pass
 
     try:
-        loop.run_until_complete(run())
-    finally:
-        loop.close()
+        asyncio.run(run())
+    except Exception:
+        log.exception("Error in message writer thread")
+    log.debug("Message writer thread finished")
 
 
 @csp.node

@@ -24,17 +24,49 @@ from chatom.csp import HAS_CSP, BackendAdapter, message_reader, message_writer
 from chatom.csp.nodes import MessageReaderPushAdapterImpl, _send_messages_thread
 
 
-class MockBackendForCSP:
-    """Mock backend for testing CSP integration."""
+class MockBackendConfig:
+    """Mock config for MockBackendForCSP."""
 
-    def __init__(self):
+    pass
+
+
+# Class-level storage for tracking messages across all MockBackendForCSP instances
+# This is needed because CSP nodes create new backend instances per thread
+_mock_sent_messages: List[Message] = []
+_mock_presence_updates: List[str] = []
+
+
+def reset_mock_tracking():
+    """Reset class-level message tracking."""
+    global _mock_sent_messages, _mock_presence_updates
+    _mock_sent_messages = []
+    _mock_presence_updates = []
+
+
+class MockBackendForCSP:
+    """Mock backend for testing CSP integration.
+
+    Note: CSP nodes create new backend instances per thread, so we use
+    class-level tracking for sent_messages and presence_updates.
+    """
+
+    def __init__(self, config=None):
+        self.config = config or MockBackendConfig()
         self.connected = False
-        self.sent_messages: List[Message] = []
-        self.presence_updates: List[str] = []
         self._channels = {}
         self._messages_to_stream: List[Message] = []
         self._stream_delay = 0.01
         self._bot_user_id = "bot123"
+
+    @property
+    def sent_messages(self) -> List[Message]:
+        """Get all sent messages (class-level for cross-instance tracking)."""
+        return _mock_sent_messages
+
+    @property
+    def presence_updates(self) -> List[str]:
+        """Get all presence updates (class-level for cross-instance tracking)."""
+        return _mock_presence_updates
 
     async def connect(self):
         """Connect to backend."""
@@ -47,17 +79,17 @@ class MockBackendForCSP:
     async def send_message(self, channel_id: str, content: str) -> Message:
         """Send a message."""
         msg = Message(
-            id=f"msg_{len(self.sent_messages)}",
+            id=f"msg_{len(_mock_sent_messages)}",
             channel_id=channel_id,
             content=content,
             author_id=self._bot_user_id,
         )
-        self.sent_messages.append(msg)
+        _mock_sent_messages.append(msg)
         return msg
 
     async def set_presence(self, status: str):
         """Set presence."""
-        self.presence_updates.append(status)
+        _mock_presence_updates.append(status)
 
     async def fetch_channel(
         self,
@@ -170,21 +202,31 @@ class TestMessageReaderPushAdapterImpl:
         assert impl._skip_own is False
         assert impl._skip_history is False
 
-    def test_start_creates_thread(self, mock_backend):
+    def test_start_creates_thread(self, mock_backend, mocker):
         """Test that start creates and starts a thread."""
         impl = MessageReaderPushAdapterImpl(mock_backend)
+        # Mock push_tick since CSP engine isn't running
+        mocker.patch.object(impl, "push_tick")
+        # Mock _run to prevent thread from doing async work
+        mocker.patch.object(impl, "_run")
         impl.start(datetime.now(), datetime.now() + timedelta(hours=1))
 
         assert impl._running is True
         assert impl._thread is not None
-        assert impl._thread.is_alive()
+        # Thread may finish quickly since _run is mocked, so just verify it was created
 
         # Cleanup
-        impl.stop()
+        impl._running = False
+        if impl._thread.is_alive():
+            impl._thread.join(timeout=1.0)
 
-    def test_stop_stops_thread(self, mock_backend):
+    def test_stop_stops_thread(self, mock_backend, mocker):
         """Test that stop stops the thread."""
         impl = MessageReaderPushAdapterImpl(mock_backend)
+        # Mock push_tick since CSP engine isn't running
+        mocker.patch.object(impl, "push_tick")
+        # Mock _run to prevent thread from doing async work
+        mocker.patch.object(impl, "_run")
         impl.start(datetime.now(), datetime.now() + timedelta(hours=1))
         impl.stop()
 
@@ -209,7 +251,7 @@ class TestChannelResolution:
 
         # Simulate connection
         await mock_backend.connect()
-        await impl._resolve_channels()
+        await impl._resolve_channels(mock_backend)
 
         assert "C123" in impl._resolved_channel_ids
 
@@ -219,7 +261,7 @@ class TestChannelResolution:
         impl = MessageReaderPushAdapterImpl(mock_backend, channels={"general"})
 
         await mock_backend.connect()
-        await impl._resolve_channels()
+        await impl._resolve_channels(mock_backend)
 
         # Should resolve "general" to "C123"
         assert "C123" in impl._resolved_channel_ids
@@ -233,7 +275,7 @@ class TestChannelResolution:
         )
 
         await mock_backend.connect()
-        await impl._resolve_channels()
+        await impl._resolve_channels(mock_backend)
 
         assert "C123" in impl._resolved_channel_ids
         assert "C456" in impl._resolved_channel_ids
@@ -244,11 +286,10 @@ class TestChannelResolution:
         impl = MessageReaderPushAdapterImpl(mock_backend, channels={"unknown_channel"})
 
         await mock_backend.connect()
-        await impl._resolve_channels()
+        await impl._resolve_channels(mock_backend)
 
-        # The channel was not found by ID or name
-        # Current implementation logs warning and doesn't add it
-        assert "unknown_channel" not in impl._resolved_channel_ids
+        # The channel was not found by ID or name, so it gets added as-is
+        assert "unknown_channel" in impl._resolved_channel_ids
 
     @pytest.mark.asyncio
     async def test_resolve_empty_channels(self, mock_backend):
@@ -256,7 +297,7 @@ class TestChannelResolution:
         impl = MessageReaderPushAdapterImpl(mock_backend, channels=set())
 
         await mock_backend.connect()
-        await impl._resolve_channels()
+        await impl._resolve_channels(mock_backend)
 
         assert impl._resolved_channel_ids == set()
 
@@ -267,6 +308,7 @@ class TestSendMessagesThread:
     @pytest.fixture
     def mock_backend(self):
         """Create a mock backend."""
+        reset_mock_tracking()
         return MockBackendForCSP()
 
     def test_send_messages(self, mock_backend):
@@ -322,6 +364,7 @@ class TestCSPGraphExecution:
     @pytest.fixture
     def mock_backend(self):
         """Create a mock backend."""
+        reset_mock_tracking()
         return MockBackendForCSP()
 
     def test_publish_single_message(self, mock_backend):
@@ -419,6 +462,7 @@ class TestMessageReaderFunction:
     @pytest.fixture
     def mock_backend(self):
         """Create a mock backend."""
+        reset_mock_tracking()
         backend = MockBackendForCSP()
         backend.add_channel("C123", "general")
         return backend
@@ -438,6 +482,7 @@ class TestMessageWriterNode:
     @pytest.fixture
     def mock_backend(self):
         """Create a mock backend."""
+        reset_mock_tracking()
         return MockBackendForCSP()
 
     def test_message_writer_sends_messages(self, mock_backend):
@@ -487,7 +532,7 @@ class TestBackendNotImplementedFetchChannel:
         """Test that channels are used as IDs when fetch_channel not implemented."""
         impl = MessageReaderPushAdapterImpl(mock_backend_no_fetch, channels={"some_channel"})
 
-        await impl._resolve_channels()
+        await impl._resolve_channels(mock_backend_no_fetch)
 
         # Should just add the channel as-is since fetch_channel raises NotImplementedError
         assert "some_channel" in impl._resolved_channel_ids
@@ -499,6 +544,7 @@ class TestEdgeCases:
     @pytest.fixture
     def mock_backend(self):
         """Create a mock backend."""
+        reset_mock_tracking()
         return MockBackendForCSP()
 
     def test_adapter_with_none_channels(self, mock_backend):
@@ -541,6 +587,7 @@ class TestEdgeCases:
 
         class FailingBackend:
             connected = True
+            config = MockBackendConfig()
 
             async def fetch_channel(self, *args, **kwargs):
                 raise RuntimeError("Connection failed")
@@ -549,7 +596,7 @@ class TestEdgeCases:
         impl = MessageReaderPushAdapterImpl(backend, channels={"failing_channel"})
 
         # Should not raise, should log warning and use channel as ID
-        await impl._resolve_channels()
+        await impl._resolve_channels(backend)
 
         assert "failing_channel" in impl._resolved_channel_ids
 
@@ -559,6 +606,7 @@ class TestIntegrationScenarios:
 
     def test_publish_only_pattern(self):
         """Test a simple publish-only pattern (no subscription)."""
+        reset_mock_tracking()
         backend = MockBackendForCSP()
         adapter = BackendAdapter(backend)
 
@@ -584,6 +632,7 @@ class TestIntegrationScenarios:
 
     def test_scheduled_messages_pattern(self):
         """Test scheduling multiple messages over time."""
+        reset_mock_tracking()
         backend = MockBackendForCSP()
         adapter = BackendAdapter(backend)
 
