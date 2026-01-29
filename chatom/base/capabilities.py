@@ -113,6 +113,10 @@ class Capability(str, Enum):
     SELECT_MENUS = "select_menus"
     """Supports select menus/dropdowns."""
 
+    # Organizations
+    ORGANIZATIONS = "organizations"
+    """Supports organization/guild/workspace operations."""
+
 
 class BackendCapabilities(BaseModel):
     """Describes the capabilities of a chat backend.
@@ -212,6 +216,7 @@ DISCORD_CAPABILITIES = BackendCapabilities(
             Capability.TYPING_INDICATORS,
             Capability.BUTTONS,
             Capability.SELECT_MENUS,
+            Capability.ORGANIZATIONS,
         }
     ),
     max_message_length=2000,

@@ -6,6 +6,7 @@ This module provides Discord-specific models and utilities.
 from .backend import DiscordBackend
 from .channel import DiscordChannel, DiscordChannelType
 from .config import DiscordConfig
+from .guild import DiscordGuild
 from .mention import (
     mention_channel,
     mention_everyone,
@@ -24,6 +25,7 @@ __all__ = (
     "DiscordUser",
     "DiscordChannel",
     "DiscordChannelType",
+    "DiscordGuild",
     "DiscordMessage",
     "DiscordMessageType",
     "DiscordMessageFlags",

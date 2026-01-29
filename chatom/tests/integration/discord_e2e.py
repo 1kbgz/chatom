@@ -129,34 +129,21 @@ class DiscordE2ETest:
         self.section("Resolving Guild")
 
         try:
-            # We need to start the client to access guilds
-            # First, let's connect to the gateway
-            client = self.backend._client
+            # Use the backend's fetch_organization_by_name method
+            guild = await self.backend.fetch_organization_by_name(self.guild_name)
 
-            # Start the client connection in the background
-            # We use get_running_loop().create_task to avoid the unused variable warning
-            asyncio.get_running_loop().create_task(client.connect())
-
-            # Wait for the client to be ready
-            for _ in range(30):  # Wait up to 30 seconds
-                await asyncio.sleep(1)
-                if client.is_ready():
-                    break
-            else:
-                raise RuntimeError("Discord client failed to connect to gateway")
-
-            # Now search for the guild
-            for guild in client.guilds:
-                if guild.name.lower() == self.guild_name.lower():
-                    self.guild_id = str(guild.id)
-                    self.backend.config.guild_id = self.guild_id
-                    self.log(f"Found guild '{self.guild_name}' -> {self.guild_id}")
-                    return self.guild_id
+            if guild:
+                self.guild_id = guild.id
+                self.backend.config.guild_id = self.guild_id
+                self.log(f"Found guild '{guild.name}'")
+                print(f"  Guild ID: {guild.id}")
+                return self.guild_id
 
             # List available guilds for debugging
             print("  Available guilds:")
-            for guild in client.guilds:
-                print(f"    - {guild.name} ({guild.id})")
+            guilds = await self.backend.list_organizations()
+            for g in guilds:
+                print(f"    - {g.name} ({g.id})")
 
             self.log(f"Guild '{self.guild_name}' not found", success=False)
             return None
@@ -175,22 +162,9 @@ class DiscordE2ETest:
             channel = await self.backend.fetch_channel_by_name(name, self.guild_id)
 
             if channel:
-                self.log(f"Found channel '{name}' -> {channel.id}")
+                self.log(f"Found channel '#{channel.name}'")
+                print(f"  Channel ID: {channel.id}")
                 return channel.id
-
-            # List available channels for debugging
-            if self.backend._client and self.guild_id:
-                guild = await self.backend._client.fetch_guild(int(self.guild_id))
-                if guild:
-                    channels = await guild.fetch_channels()
-                    print("  Available text channels:")
-                    for ch in channels:
-                        if hasattr(ch, "name") and hasattr(ch, "type"):
-                            try:
-                                if ch.type.value == 0:  # GUILD_TEXT
-                                    print(f"    - {ch.name} ({ch.id})")
-                            except Exception:
-                                pass
 
             self.log(f"Channel '{name}' not found", success=False)
             return None
@@ -209,7 +183,10 @@ class DiscordE2ETest:
             user = await self.backend.fetch_user_by_name(name, self.guild_id)
 
             if user:
-                self.log(f"Found user '{name}' -> {user.id} (name={user.name}, handle={user.handle})")
+                self.log(f"Found user '@{user.handle or user.name}'")
+                print(f"  User ID: {user.id}")
+                print(f"  Name: {user.name}")
+                print(f"  Handle: {user.handle}")
                 return user.id
 
             # Fallback: try to find the user from recent message history
