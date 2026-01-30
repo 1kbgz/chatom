@@ -89,6 +89,31 @@ class TestBaseMessageConversion:
 
         assert restored.content == original.content
 
+    def test_message_to_formatted_with_attachments(self):
+        """Test converting a message with attachments to FormattedMessage."""
+        from chatom.base import Attachment
+
+        attachment = Attachment(
+            id="a1",
+            filename="document.pdf",
+            url="https://example.com/document.pdf",
+            content_type="application/pdf",
+            size=1024,
+        )
+        msg = Message(
+            id="m1",
+            content="Check out this file!",
+            attachments=[attachment],
+            backend="test",
+        )
+        formatted = msg.to_formatted()
+
+        assert len(formatted.attachments) == 1
+        assert formatted.attachments[0].filename == "document.pdf"
+        assert formatted.attachments[0].url == "https://example.com/document.pdf"
+        assert formatted.attachments[0].content_type == "application/pdf"
+        assert formatted.attachments[0].size == 1024
+
 
 class TestSlackMessageConversion:
     """Tests for SlackMessage conversion methods."""
@@ -144,6 +169,73 @@ class TestSlackMessageConversion:
         assert msg.is_bot is True
         assert msg.backend == "slack"
         assert msg.raw == data
+
+    def test_slack_message_to_formatted_with_files(self):
+        """Test converting SlackMessage with file attachments to FormattedMessage."""
+        from chatom.slack import SlackMessage
+
+        msg = SlackMessage(
+            ts="1234567890.123456",
+            channel="C12345",
+            sender_id="U12345",
+            text="Check out this file!",
+            files=[
+                {
+                    "name": "document.pdf",
+                    "url_private": "https://files.slack.com/doc.pdf",
+                    "mimetype": "application/pdf",
+                    "size": 1024,
+                },
+                {
+                    "name": "image.png",
+                    "permalink": "https://files.slack.com/img.png",
+                    "mimetype": "image/png",
+                    "size": 2048,
+                },
+            ],
+            thread_ts="1234567890.000001",
+            team="T12345",
+        )
+        formatted = msg.to_formatted()
+
+        assert len(formatted.attachments) == 2
+        assert formatted.attachments[0].filename == "document.pdf"
+        assert formatted.attachments[0].content_type == "application/pdf"
+        assert formatted.attachments[1].filename == "image.png"
+        assert formatted.metadata["thread_ts"] == "1234567890.000001"
+        assert formatted.metadata["team_id"] == "T12345"
+
+    def test_slack_message_from_api_response_with_subtype(self):
+        """Test creating SlackMessage from API response with message subtype."""
+        from chatom.slack import SlackMessage, SlackMessageSubtype
+
+        data = {
+            "ts": "1234567890.123456",
+            "channel": "C12345",
+            "user": "U12345",
+            "text": "has joined the channel",
+            "subtype": "channel_join",
+        }
+        msg = SlackMessage.from_api_response(data)
+
+        assert msg.subtype == SlackMessageSubtype.CHANNEL_JOIN
+        assert msg.text == "has joined the channel"
+
+    def test_slack_message_from_api_response_with_unknown_subtype(self):
+        """Test creating SlackMessage from API response with unknown subtype."""
+        from chatom.slack import SlackMessage
+
+        data = {
+            "ts": "1234567890.123456",
+            "channel": "C12345",
+            "user": "U12345",
+            "text": "Something happened",
+            "subtype": "unknown_future_subtype",
+        }
+        msg = SlackMessage.from_api_response(data)
+
+        # Unknown subtypes should not crash, just be None
+        assert msg.subtype is None
 
 
 class TestDiscordMessageConversion:
@@ -656,6 +748,49 @@ class TestSlackMessageProperties:
         msg = SlackMessage(id="m1", ts="1234567890.000001")
         assert msg.permalink is None
 
+    def test_mentions_user_in_content(self):
+        """Test mentions_user finds mention in content field."""
+        from chatom.slack import SlackMessage
+
+        msg = SlackMessage(
+            id="m1",
+            ts="1234567890.000001",
+            content="Hello <@U12345678>!",
+        )
+        assert msg.mentions_user("U12345678") is True
+        assert msg.mentions_user("U99999999") is False
+
+    def test_mentions_user_in_text(self):
+        """Test mentions_user finds mention in text field."""
+        from chatom.slack import SlackMessage
+
+        msg = SlackMessage(
+            id="m1",
+            ts="1234567890.000001",
+            text="Hi <@U12345678>, please review",
+        )
+        assert msg.mentions_user("U12345678") is True
+        assert msg.mentions_user("U99999999") is False
+
+    def test_mentions_user_in_mention_ids_list(self):
+        """Test mentions_user finds user in mention_ids list."""
+        from chatom.slack import SlackMessage
+
+        msg = SlackMessage(
+            id="m1",
+            ts="1234567890.000001",
+            mention_ids=["U12345678", "U87654321"],
+        )
+        assert msg.mentions_user("U12345678") is True
+        assert msg.mentions_user("U99999999") is False
+
+    def test_mentions_user_false_when_empty(self):
+        """Test mentions_user returns False when no mentions."""
+        from chatom.slack import SlackMessage
+
+        msg = SlackMessage(id="m1", ts="1234567890.000001", content="Hello world!")
+        assert msg.mentions_user("U12345678") is False
+
 
 class TestSymphonyMessageProperties:
     """Tests for SymphonyMessage computed properties."""
@@ -785,3 +920,200 @@ class TestSymphonyMessageProperties:
             content="Plain text",
         )
         assert msg.rendered_content == "Plain text"
+
+
+class TestSymphonyMentionsUser:
+    """Tests for SymphonyMessage.mentions_user() method."""
+
+    def test_mentions_user_in_mention_ids(self):
+        """Test mentions_user finds user in mention_ids (string list)."""
+        from chatom.symphony import SymphonyMessage
+
+        msg = SymphonyMessage(
+            id="m1",
+            message_id="msgid1",
+            mention_ids=["12345", "67890"],
+        )
+        assert msg.mentions_user("12345") is True
+        assert msg.mentions_user("99999") is False
+
+    def test_mentions_user_in_mentions_list(self):
+        """Test mentions_user finds user in mentions (int list)."""
+        from chatom.symphony import SymphonyMessage
+
+        msg = SymphonyMessage(
+            id="m1",
+            message_id="msgid1",
+            mentions=[12345, 67890],
+        )
+        assert msg.mentions_user("12345") is True
+        assert msg.mentions_user(12345) is True
+        assert msg.mentions_user("99999") is False
+
+    def test_mentions_user_in_entity_data(self):
+        """Test mentions_user finds user in entity_data."""
+        from chatom.symphony import SymphonyMessage
+
+        msg = SymphonyMessage(
+            id="m1",
+            message_id="msgid1",
+            entity_data={
+                "mention0": {
+                    "type": "com.symphony.user.mention",
+                    "id": [{"value": "12345"}],
+                }
+            },
+        )
+        assert msg.mentions_user("12345") is True
+        assert msg.mentions_user("99999") is False
+
+    def test_mentions_user_in_data_field(self):
+        """Test mentions_user extracts from data field when entity_data is empty."""
+        import json
+
+        from chatom.symphony import SymphonyMessage
+
+        data = json.dumps(
+            {
+                "mention0": {
+                    "type": "com.symphony.user.mention",
+                    "id": [{"value": "12345"}],
+                }
+            }
+        )
+        msg = SymphonyMessage(
+            id="m1",
+            message_id="msgid1",
+            data=data,
+        )
+        assert msg.mentions_user("12345") is True
+        assert msg.mentions_user("99999") is False
+
+    def test_mentions_user_with_non_numeric_id(self):
+        """Test mentions_user handles non-numeric user IDs gracefully."""
+        from chatom.symphony import SymphonyMessage
+
+        msg = SymphonyMessage(
+            id="m1",
+            message_id="msgid1",
+            mention_ids=["abc-user"],
+        )
+        assert msg.mentions_user("abc-user") is True
+        # Non-numeric can't match int mentions list
+        assert msg.mentions_user("xyz") is False
+
+    def test_mentions_user_no_mentions(self):
+        """Test mentions_user returns False when no mentions exist."""
+        from chatom.symphony import SymphonyMessage
+
+        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        assert msg.mentions_user("12345") is False
+
+
+class TestSymphonyExtractMentionsFromData:
+    """Tests for SymphonyMessage.extract_mentions_from_data() static method."""
+
+    def test_extract_mentions_from_valid_data(self):
+        """Test extracting mentions from valid JSON data."""
+        import json
+
+        from chatom.symphony import SymphonyMessage
+
+        data = json.dumps(
+            {
+                "mention0": {
+                    "type": "com.symphony.user.mention",
+                    "id": [{"value": "12345"}],
+                },
+                "mention1": {
+                    "type": "com.symphony.user.mention",
+                    "id": [{"value": "67890"}],
+                },
+            }
+        )
+        result = SymphonyMessage.extract_mentions_from_data(data)
+        assert result == [12345, 67890]
+
+    def test_extract_mentions_from_empty_data(self):
+        """Test extracting mentions from None data."""
+        from chatom.symphony import SymphonyMessage
+
+        assert SymphonyMessage.extract_mentions_from_data(None) == []
+        assert SymphonyMessage.extract_mentions_from_data("") == []
+
+    def test_extract_mentions_from_invalid_json(self):
+        """Test extracting mentions from invalid JSON."""
+        from chatom.symphony import SymphonyMessage
+
+        assert SymphonyMessage.extract_mentions_from_data("not json") == []
+        assert SymphonyMessage.extract_mentions_from_data("{invalid}") == []
+
+    def test_extract_mentions_ignores_non_mention_entities(self):
+        """Test that non-mention entities are ignored."""
+        import json
+
+        from chatom.symphony import SymphonyMessage
+
+        data = json.dumps(
+            {
+                "hashtag0": {"type": "org.symphonyoss.taxonomy", "value": "test"},
+                "mention0": {
+                    "type": "com.symphony.user.mention",
+                    "id": [{"value": "12345"}],
+                },
+            }
+        )
+        result = SymphonyMessage.extract_mentions_from_data(data)
+        assert result == [12345]
+
+    def test_extract_mentions_handles_missing_id_field(self):
+        """Test handling entities with missing id field."""
+        import json
+
+        from chatom.symphony import SymphonyMessage
+
+        data = json.dumps(
+            {
+                "mention0": {
+                    "type": "com.symphony.user.mention",
+                    # No id field
+                },
+            }
+        )
+        result = SymphonyMessage.extract_mentions_from_data(data)
+        assert result == []
+
+    def test_extract_mentions_handles_empty_id_list(self):
+        """Test handling entities with empty id list."""
+        import json
+
+        from chatom.symphony import SymphonyMessage
+
+        data = json.dumps(
+            {
+                "mention0": {
+                    "type": "com.symphony.user.mention",
+                    "id": [],
+                },
+            }
+        )
+        result = SymphonyMessage.extract_mentions_from_data(data)
+        assert result == []
+
+    def test_extract_mentions_handles_non_dict_entity(self):
+        """Test handling non-dict entity values."""
+        import json
+
+        from chatom.symphony import SymphonyMessage
+
+        data = json.dumps(
+            {
+                "mention0": "not a dict",
+                "mention1": {
+                    "type": "com.symphony.user.mention",
+                    "id": [{"value": "12345"}],
+                },
+            }
+        )
+        result = SymphonyMessage.extract_mentions_from_data(data)
+        assert result == [12345]
