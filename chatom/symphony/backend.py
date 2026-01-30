@@ -493,6 +493,74 @@ class SymphonyBackend(BackendBase):
         except Exception as e:
             raise RuntimeError(f"Failed to fetch messages: {e}") from e
 
+    async def search_messages(
+        self,
+        query: str,
+        channel: Optional[Union[str, Channel]] = None,
+        limit: int = 50,
+        **kwargs: Any,
+    ) -> List[Message]:
+        """Search for messages matching a query.
+
+        Uses Symphony's message search API.
+
+        Args:
+            query: The search query string.
+            channel: Optional stream to limit search to (ID string or Channel object).
+            limit: Maximum number of results.
+            **kwargs: Additional options:
+                      - from_user: Filter by sender user ID
+                      - hashtags: List of hashtags to filter by
+                      - cashtags: List of cashtags to filter by
+
+        Returns:
+            List of messages matching the query.
+        """
+        if self._bdk is None:
+            raise RuntimeError("Symphony not connected")
+
+        try:
+            message_service = self._bdk.messages()
+
+            # Build search parameters
+            search_params: dict = {
+                "query": query,
+                "limit": limit,
+            }
+
+            # Add stream filter if provided
+            if channel:
+                channel_id = await self._resolve_channel_id(channel)
+                search_params["stream_id"] = channel_id
+
+            # Add optional filters
+            if "from_user" in kwargs:
+                search_params["from_user_id"] = kwargs["from_user"]
+            if "hashtags" in kwargs:
+                search_params["hashtags"] = kwargs["hashtags"]
+            if "cashtags" in kwargs:
+                search_params["cashtags"] = kwargs["cashtags"]
+
+            # Use Symphony search API
+            messages_data = await message_service.search_messages(**search_params)
+
+            messages: List[Message] = []
+            for msg in messages_data:
+                stream_id = getattr(msg, "stream_id", "") or ""
+                message = SymphonyMessage(
+                    id=msg.message_id,
+                    content=msg.message,
+                    timestamp=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
+                    user_id=str(msg.user.user_id) if msg.user else None,
+                    channel_id=stream_id,
+                )
+                messages.append(message)
+
+            return messages
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to search messages: {e}") from e
+
     async def send_message(
         self,
         channel: Union[str, Channel],
@@ -770,6 +838,37 @@ class SymphonyBackend(BackendBase):
         if isinstance(channel, SymphonyChannel):
             return channel.name or channel.stream_id or channel.id
         return channel.name or channel.id
+
+    def mention_here(self) -> str:
+        """Format an @here mention for Symphony.
+
+        Symphony doesn't have an @here equivalent.
+        Returns an empty string (no-op).
+
+        Returns:
+            Empty string (Symphony doesn't support @here).
+        """
+        return ""
+
+    def mention_everyone(self) -> str:
+        """Format an @everyone mention for Symphony.
+
+        Uses Symphony's mention all users tag.
+
+        Returns:
+            Symphony MessageML mention all tag.
+        """
+        return '<mention uid="all"/>'
+
+    def mention_channel_all(self) -> str:
+        """Format an @channel mention for Symphony.
+
+        Symphony uses the same tag for all broadcast mentions.
+
+        Returns:
+            Symphony MessageML mention all tag.
+        """
+        return '<mention uid="all"/>'
 
     # Additional Symphony-specific methods
 

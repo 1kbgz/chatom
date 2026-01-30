@@ -457,6 +457,108 @@ class BackendBase(BaseModel):
         return await self.fetch_channel(identifier, id=id, name=name)
 
     # =========================================================================
+    # Resolution methods for incomplete objects
+    # =========================================================================
+
+    async def resolve_user(self, user: User) -> User:
+        """Resolve an incomplete user to a complete one.
+
+        If the user is already complete (has all required fields), returns it as-is.
+        Otherwise, fetches the full user data from the backend.
+
+        Args:
+            user: A User object that may be incomplete.
+
+        Returns:
+            A complete User object with all fields populated.
+
+        Raises:
+            ValueError: If the user cannot be resolved (no id or name).
+
+        Example:
+            >>> # User from a message might only have id
+            >>> incomplete_user = message.author
+            >>> full_user = await backend.resolve_user(incomplete_user)
+            >>> print(full_user.email)  # Now populated
+        """
+        # If already complete and not marked incomplete, return as-is
+        if user.is_complete and not user.is_incomplete:
+            return user
+
+        # Try to resolve using available identifiers
+        if user.id:
+            resolved = await self.fetch_user(id=user.id)
+        elif user.name:
+            resolved = await self.fetch_user(name=user.name)
+        elif hasattr(user, "handle") and user.handle:
+            resolved = await self.fetch_user(handle=user.handle)
+        elif hasattr(user, "email") and user.email:
+            resolved = await self.fetch_user(email=user.email)
+        else:
+            raise ValueError("Cannot resolve user: no id, name, handle, or email available")
+
+        if resolved:
+            resolved.mark_complete()
+            return resolved
+
+        # If we couldn't resolve but have partial info, return original
+        return user
+
+    async def resolve_channel(self, channel: Channel) -> Channel:
+        """Resolve an incomplete channel to a complete one.
+
+        If the channel is already complete (has all required fields), returns it as-is.
+        Otherwise, fetches the full channel data from the backend.
+
+        Args:
+            channel: A Channel object that may be incomplete.
+
+        Returns:
+            A complete Channel object with all fields populated.
+
+        Raises:
+            ValueError: If the channel cannot be resolved (no id or name).
+
+        Example:
+            >>> # Channel from config might only have name
+            >>> incomplete_channel = Channel(name="general")
+            >>> full_channel = await backend.resolve_channel(incomplete_channel)
+            >>> print(full_channel.id)  # Now populated
+        """
+        # If already complete and not marked incomplete, return as-is
+        if channel.is_complete and not channel.is_incomplete:
+            return channel
+
+        # Try to resolve using available identifiers
+        if channel.id:
+            resolved = await self.fetch_channel(id=channel.id)
+        elif channel.name:
+            resolved = await self.fetch_channel(name=channel.name)
+        else:
+            raise ValueError("Cannot resolve channel: no id or name available")
+
+        if resolved:
+            resolved.mark_complete()
+            return resolved
+
+        # If we couldn't resolve but have partial info, return original
+        return channel
+
+    async def resolve_room(self, room: Channel) -> Channel:
+        """Resolve an incomplete room to a complete one.
+
+        This is an alias for resolve_channel. Use whichever terminology
+        fits your platform (room for Symphony/Matrix, channel for Slack/Discord).
+
+        Args:
+            room: A Channel object that may be incomplete.
+
+        Returns:
+            A complete Channel object with all fields populated.
+        """
+        return await self.resolve_channel(room)
+
+    # =========================================================================
     # Organization lookup methods
     # =========================================================================
 
@@ -556,89 +658,6 @@ class BackendBase(BaseModel):
             List of users who are members of the room.
         """
         return await self.fetch_channel_members(room_id)
-
-    # =========================================================================
-    # Resolution methods
-    # =========================================================================
-
-    async def resolve_user(self, user: User) -> User:
-        """Resolve an incomplete User to a complete one.
-
-        If the user is already complete (has an id), returns it as-is.
-        Otherwise, attempts to look it up using available identifiers
-        (handle, email, name).
-
-        Args:
-            user: The user to resolve.
-
-        Returns:
-            A complete User with all fields populated.
-
-        Raises:
-            ValueError: If the user cannot be resolved.
-
-        Example:
-            >>> incomplete = User(email="john@example.com")
-            >>> complete = await backend.resolve_user(incomplete)
-            >>> print(complete.id)  # Now has the id
-        """
-        if user.is_complete:
-            return user
-
-        if not user.is_resolvable:
-            raise ValueError("Cannot resolve user: no identifying information provided")
-
-        # Try to fetch using available identifiers
-        resolved = await self.fetch_user(
-            id=user.id if user.id else None,
-            name=user.name if user.name else None,
-            handle=user.handle if user.handle else None,
-            email=user.email if user.email else None,
-        )
-
-        if resolved is None:
-            raise ValueError("Cannot resolve user: not found")
-
-        resolved.mark_complete()
-        return resolved
-
-    async def resolve_channel(self, channel: Channel) -> Channel:
-        """Resolve an incomplete Channel to a complete one.
-
-        If the channel is already complete (has an id), returns it as-is.
-        Otherwise, attempts to look it up using available identifiers (name).
-
-        Args:
-            channel: The channel to resolve.
-
-        Returns:
-            A complete Channel with all fields populated.
-
-        Raises:
-            ValueError: If the channel cannot be resolved.
-
-        Example:
-            >>> incomplete = Channel(name="general")
-            >>> complete = await backend.resolve_channel(incomplete)
-            >>> print(complete.id)  # Now has the id
-        """
-        if channel.is_complete:
-            return channel
-
-        if not channel.is_resolvable:
-            raise ValueError("Cannot resolve channel: no identifying information provided")
-
-        # Try to fetch using available identifiers
-        resolved = await self.fetch_channel(
-            id=channel.id if channel.id else None,
-            name=channel.name if channel.name else None,
-        )
-
-        if resolved is None:
-            raise ValueError("Cannot resolve channel: not found")
-
-        resolved.mark_complete()
-        return resolved
 
     async def resolve_message(self, message: Message) -> Message:
         """Resolve incomplete nested objects in a Message.
@@ -784,6 +803,47 @@ class BackendBase(BaseModel):
             >>> msgs = await backend.fetch_messages(Channel(name="general"))  # Resolves
         """
         raise NotImplementedError("Subclass must implement fetch_messages()")
+
+    async def search_messages(
+        self,
+        query: str,
+        channel: Optional[Union[str, Channel]] = None,
+        limit: int = 50,
+        **kwargs: Any,
+    ) -> List[Message]:
+        """Search for messages matching a query.
+
+        Searches message content across channels. Requires the MESSAGE_SEARCH
+        capability to be supported by the backend.
+
+        Args:
+            query: The search query string.
+            channel: Optional channel to limit search to (ID string or Channel object).
+            limit: Maximum number of results to return.
+            **kwargs: Additional platform-specific search options (e.g., from_user,
+                      has_file, date range).
+
+        Returns:
+            List of messages matching the query.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support MESSAGE_SEARCH capability.
+
+        Example:
+            >>> # Search all channels
+            >>> results = await backend.search_messages("important meeting")
+            >>> # Search specific channel
+            >>> results = await backend.search_messages("bug fix", channel="C123")
+            >>> # With filters
+            >>> results = await backend.search_messages("report", from_user="U123")
+        """
+        from ..base.capabilities import Capability
+
+        if Capability.MESSAGE_SEARCH not in self.capabilities.capabilities:
+            raise NotImplementedError(f"{self.__class__.__name__} does not support message search")
+
+        # Default implementation - subclasses should override
+        raise NotImplementedError("Subclass must implement search_messages()")
 
     async def fetch_new_messages(
         self,
@@ -1433,6 +1493,40 @@ class BackendBase(BaseModel):
         from ..base.mention import mention_channel_for_backend
 
         return mention_channel_for_backend(channel, self.__class__.name)
+
+    def mention_here(self) -> str:
+        """Format an @here mention for this backend.
+
+        Notifies all users who are currently active/online in the channel.
+        Subclasses should override this with platform-specific format.
+
+        Returns:
+            The formatted @here mention string.
+        """
+        return "@here"
+
+    def mention_everyone(self) -> str:
+        """Format an @everyone mention for this backend.
+
+        Notifies all members of the channel/server.
+        Subclasses should override this with platform-specific format.
+
+        Returns:
+            The formatted @everyone mention string.
+        """
+        return "@everyone"
+
+    def mention_channel_all(self) -> str:
+        """Format an @channel mention for this backend.
+
+        Notifies all members of the current channel (Slack-specific concept).
+        For platforms without this distinction, defaults to @everyone.
+        Subclasses should override this with platform-specific format.
+
+        Returns:
+            The formatted @channel mention string.
+        """
+        return self.mention_everyone()
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(connected={self.connected})"

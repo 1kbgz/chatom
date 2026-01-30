@@ -114,6 +114,10 @@ class Capability(str, Enum):
     ORGANIZATIONS = "organizations"
     """Supports organization/guild/workspace operations."""
 
+    # Search
+    MESSAGE_SEARCH = "message_search"
+    """Supports searching messages by content."""
+
 
 class BackendCapabilities(BaseModel):
     """Describes the capabilities of a chat backend.
@@ -214,6 +218,7 @@ DISCORD_CAPABILITIES = BackendCapabilities(
             Capability.BUTTONS,
             Capability.SELECT_MENUS,
             Capability.ORGANIZATIONS,
+            Capability.MESSAGE_SEARCH,
         }
     ),
     max_message_length=2000,
@@ -249,6 +254,7 @@ SLACK_CAPABILITIES = BackendCapabilities(
             Capability.FORMS,
             Capability.SELECT_MENUS,
             Capability.TABLES,
+            Capability.MESSAGE_SEARCH,
         }
     ),
     max_message_length=40000,
@@ -273,6 +279,7 @@ SYMPHONY_CAPABILITIES = BackendCapabilities(
             Capability.DELETING,
             Capability.TABLES,
             Capability.FORMS,
+            Capability.MESSAGE_SEARCH,
         }
     ),
     max_message_length=40000,

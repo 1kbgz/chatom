@@ -6,6 +6,17 @@ HTML, Slack mrkdwn, Discord Markdown, and Symphony MessageML.
 """
 
 from .attachment import FormattedAttachment, FormattedImage
+from .components import (
+    ActionRow,
+    Button,
+    ButtonStyle,
+    ComponentContainer,
+    Modal,
+    SelectMenu,
+    SelectOption,
+    TextInput,
+    TextInputStyle,
+)
 from .message import (
     BACKEND_FORMAT_MAP,
     FormattedMessage,
@@ -111,4 +122,14 @@ __all__ = (
     "format_message",
     "BACKEND_FORMAT_MAP",
     "get_format_for_backend",
+    # Interactive Components
+    "Button",
+    "ButtonStyle",
+    "SelectOption",
+    "SelectMenu",
+    "ActionRow",
+    "TextInput",
+    "TextInputStyle",
+    "Modal",
+    "ComponentContainer",
 )

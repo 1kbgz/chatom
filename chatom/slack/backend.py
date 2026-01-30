@@ -451,6 +451,67 @@ class SlackBackend(BackendBase):
         # Slack returns newest first, reverse for oldest first
         return list(reversed(messages))
 
+    async def search_messages(
+        self,
+        query: str,
+        channel: Optional[Union[str, Channel]] = None,
+        limit: int = 50,
+        **kwargs: Any,
+    ) -> List[SlackMessage]:
+        """Search for messages matching a query.
+
+        Uses the search.messages API. Requires search:read scope.
+
+        Args:
+            query: The search query string. Supports Slack search modifiers
+                   like "from:@user", "in:#channel", "has:link", etc.
+            channel: Optional channel to limit search to (ID string or Channel object).
+            limit: Maximum number of results (1-100).
+            **kwargs: Additional options:
+                      - sort: "score" or "timestamp" (default: "score")
+                      - sort_dir: "asc" or "desc" (default: "desc")
+
+        Returns:
+            List of messages matching the query.
+
+        Example:
+            >>> results = await backend.search_messages("important")
+            >>> results = await backend.search_messages("from:@john has:file")
+        """
+        self._ensure_connected()
+
+        # Build search query with channel filter if provided
+        search_query = query
+        if channel:
+            channel_id = await self._resolve_channel_id(channel)
+            # Fetch channel name for search query
+            channel_obj = await self.fetch_channel(id=channel_id)
+            if channel_obj and channel_obj.name:
+                search_query = f"in:#{channel_obj.name} {query}"
+            else:
+                search_query = f"in:{channel_id} {query}"
+
+        sort = kwargs.pop("sort", "score")
+        sort_dir = kwargs.pop("sort_dir", "desc")
+
+        response = await self._async_client.search_messages(
+            query=search_query,
+            count=min(limit, 100),
+            sort=sort,
+            sort_dir=sort_dir,
+        )
+
+        if not response.get("ok"):
+            raise RuntimeError(f"Failed to search messages: {response.get('error')}")
+
+        messages = []
+        matches = response.get("messages", {}).get("matches", [])
+        for match in matches:
+            channel_id = match.get("channel", {}).get("id", "")
+            messages.append(self._parse_slack_message(match, channel_id))
+
+        return messages
+
     async def send_message(
         self,
         channel: Union[str, Channel],
@@ -720,6 +781,32 @@ class SlackBackend(BackendBase):
         if isinstance(channel, SlackChannel):
             return _mention_channel(channel)
         return f"<#{channel.id}>"
+
+    def mention_here(self) -> str:
+        """Format an @here mention for Slack.
+
+        Returns:
+            Slack @here mention format (<!here>).
+        """
+        return "<!here>"
+
+    def mention_everyone(self) -> str:
+        """Format an @everyone mention for Slack.
+
+        Returns:
+            Slack @everyone mention format (<!everyone>).
+        """
+        return "<!everyone>"
+
+    def mention_channel_all(self) -> str:
+        """Format an @channel mention for Slack.
+
+        Notifies all members of the current channel.
+
+        Returns:
+            Slack @channel mention format (<!channel>).
+        """
+        return "<!channel>"
 
     async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create a DM/IM channel with the specified users.

@@ -11,6 +11,7 @@ from pydantic import Field
 from chatom.base import BaseModel
 
 from .attachment import FormattedAttachment, FormattedImage
+from .components import ActionRow, Button, ButtonStyle, ComponentContainer, SelectOption
 from .table import Table
 from .text import (
     Bold,
@@ -100,6 +101,10 @@ class FormattedMessage(BaseModel):
     attachments: List[FormattedAttachment] = Field(
         default_factory=list,
         description="File attachments.",
+    )
+    components: Optional[ComponentContainer] = Field(
+        default=None,
+        description="Interactive components (buttons, menus, etc.).",
     )
     metadata: Dict[str, Any] = Field(
         default_factory=dict,
@@ -226,6 +231,110 @@ class FormattedMessage(BaseModel):
             >>> msg.add_text("Check out ").add_raw('<hash tag="chatom"/>').add_text("!")
         """
         return self.append(Raw(content=content))
+
+    # =========================================================================
+    # Interactive Component Methods
+    # =========================================================================
+
+    def add_button(
+        self,
+        label: str,
+        action_id: str = "",
+        style: ButtonStyle = ButtonStyle.PRIMARY,
+        url: Optional[str] = None,
+        value: Optional[str] = None,
+    ) -> "FormattedMessage":
+        """Add an interactive button to the message.
+
+        Creates a component container if needed and adds a button.
+
+        Args:
+            label: Button text.
+            action_id: Unique identifier for button callback.
+            style: Visual style (PRIMARY, SECONDARY, SUCCESS, DANGER, LINK).
+            url: URL to open (for LINK style buttons).
+            value: Value sent with callback.
+
+        Returns:
+            Self for method chaining.
+
+        Example:
+            >>> msg = FormattedMessage()
+            >>> msg.add_text("Click here: ").add_button("Submit", action_id="submit_form")
+        """
+        if self.components is None:
+            self.components = ComponentContainer()
+
+        self.components.add_button(label, action_id, style, url)
+        if value and self.components.rows:
+            # Set value on the last button
+            last_row = self.components.rows[-1]
+            if last_row.components:
+                last_button = last_row.components[-1]
+                if isinstance(last_button, Button):
+                    last_button.value = value
+        return self
+
+    def add_select(
+        self,
+        action_id: str,
+        options: List[SelectOption],
+        placeholder: str = "Select an option",
+    ) -> "FormattedMessage":
+        """Add a select menu to the message.
+
+        Args:
+            action_id: Unique identifier for select callback.
+            options: List of SelectOption objects.
+            placeholder: Placeholder text.
+
+        Returns:
+            Self for method chaining.
+
+        Example:
+            >>> options = [
+            ...     SelectOption(label="Option A", value="a"),
+            ...     SelectOption(label="Option B", value="b"),
+            ... ]
+            >>> msg = FormattedMessage()
+            >>> msg.add_text("Choose:").add_select("my_select", options)
+        """
+        if self.components is None:
+            self.components = ComponentContainer()
+
+        self.components.add_select(action_id, options, placeholder)
+        return self
+
+    def add_action_row(self) -> ActionRow:
+        """Add a new action row for components.
+
+        Returns the ActionRow for direct component addition.
+
+        Returns:
+            The new ActionRow.
+
+        Example:
+            >>> msg = FormattedMessage()
+            >>> row = msg.add_action_row()
+            >>> row.add_button("Yes", "yes").add_button("No", "no")
+        """
+        if self.components is None:
+            self.components = ComponentContainer()
+
+        return self.components.add_row()
+
+    def get_components(self, format: FORMAT = Format.MARKDOWN) -> List[Dict[str, Any]]:
+        """Get rendered components for the specified format.
+
+        Args:
+            format: The output format.
+
+        Returns:
+            List of component dicts for the platform API.
+        """
+        if self.components is None:
+            return []
+        return self.components.render(format)
 
 
 class MessageBuilder:

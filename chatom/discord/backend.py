@@ -418,6 +418,77 @@ class DiscordBackend(BackendBase):
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to fetch messages: {e}") from e
 
+    async def search_messages(
+        self,
+        query: str,
+        channel: Optional[Union[str, Channel]] = None,
+        limit: int = 50,
+        **kwargs: Any,
+    ) -> List[Message]:
+        """Search for messages matching a query.
+
+        Note: Discord's API doesn't have a direct message search endpoint for bots.
+        This implementation fetches recent messages and filters locally.
+        For production use with large channels, consider using Discord's
+        user account search or a database-backed solution.
+
+        Args:
+            query: The search query string (case-insensitive substring match).
+            channel: Channel to search in (required for Discord).
+            limit: Maximum number of results.
+            **kwargs: Additional options:
+                      - from_user: Filter by author ID
+
+        Returns:
+            List of messages containing the query.
+        """
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        if channel is None:
+            raise ValueError("Discord search requires a channel parameter")
+
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
+        from_user = kwargs.get("from_user")
+        query_lower = query.lower()
+
+        try:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
+                return []
+
+            messages: List[Message] = []
+            # Fetch more messages than limit to account for filtering
+            fetch_limit = min(limit * 5, 500)
+
+            async for msg in discord_channel.history(limit=fetch_limit):
+                # Check if message matches query
+                if query_lower not in msg.content.lower():
+                    continue
+
+                # Check user filter
+                if from_user and str(msg.author.id) != from_user:
+                    continue
+
+                message = DiscordMessage(
+                    id=str(msg.id),
+                    content=msg.content,
+                    timestamp=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    user_id=str(msg.author.id),
+                    channel_id=str(msg.channel.id),
+                    guild_id=str(msg.guild.id) if msg.guild else "",
+                    edited=msg.edited_at is not None,
+                )
+                messages.append(message)
+
+                if len(messages) >= limit:
+                    break
+
+            return messages
+        except (discord.NotFound, discord.HTTPException, ValueError) as e:
+            raise RuntimeError(f"Failed to search messages: {e}") from e
+
     async def send_message(
         self,
         channel: Union[str, Channel],
@@ -716,6 +787,22 @@ class DiscordBackend(BackendBase):
         if isinstance(channel, DiscordChannel):
             return _mention_channel(channel)
         return f"<#{channel.id}>"
+
+    def mention_here(self) -> str:
+        """Format an @here mention for Discord.
+
+        Returns:
+            Discord @here mention format.
+        """
+        return "@here"
+
+    def mention_everyone(self) -> str:
+        """Format an @everyone mention for Discord.
+
+        Returns:
+            Discord @everyone mention format.
+        """
+        return "@everyone"
 
     async def get_bot_info(self) -> Optional[User]:
         """Get information about the connected bot user.
