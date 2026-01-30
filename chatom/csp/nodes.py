@@ -332,7 +332,7 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
                 log.debug(f"Sending message to channel_id={msg.channel_id}")
                 try:
                     await thread_backend.send_message(
-                        channel_id=msg.channel_id,
+                        channel=msg.channel_id,
                         content=msg.content,
                     )
                     log.debug("Message sent successfully")

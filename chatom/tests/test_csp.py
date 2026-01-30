@@ -76,11 +76,11 @@ class MockBackendForCSP:
         """Disconnect from backend."""
         self.connected = False
 
-    async def send_message(self, channel_id: str, content: str) -> Message:
+    async def send_message(self, channel: str, content: str, **kwargs) -> Message:
         """Send a message."""
         msg = Message(
             id=f"msg_{len(_mock_sent_messages)}",
-            channel=Channel(id=channel_id),
+            channel=Channel(id=channel),
             content=content,
             author=User(id=self._bot_user_id),
         )

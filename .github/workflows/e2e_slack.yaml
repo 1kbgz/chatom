@@ -42,4 +42,4 @@ jobs:
         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_TEST_CHANNEL_NAME: ${{ secrets.SLACK_TEST_CHANNEL_NAME }}
         SLACK_TEST_USER_NAME: ${{ secrets.SLACK_TEST_USER_NAME }}
-      run: python -m chatom.tests.integration.e2e.${{ github.event.inputs.variant || 'slack' }}
+      run: python -m chatom.tests.${{ github.event.inputs.variant || 'slack' }}_e2e
