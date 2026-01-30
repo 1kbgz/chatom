@@ -46,6 +46,9 @@ class MessageType(str, Enum):
     THREAD_CREATED = "thread_created"
     """Thread creation notification."""
 
+    FORWARD = "forward"
+    """A forwarded message."""
+
     CALL = "call"
     """Voice/video call notification."""
 
@@ -178,6 +181,10 @@ class Message(Identifiable):
     reply_to: Optional["Message"] = Field(
         default=None,
         description="The message this is replying to.",
+    )
+    forwarded_from: Optional["Message"] = Field(
+        default=None,
+        description="The original message if this is a forwarded message.",
     )
     formatted_content: str = Field(
         default="",
@@ -498,3 +505,21 @@ class Message(Identifiable):
             bool: True if the message is in a thread.
         """
         return self.thread is not None or bool(self.thread_id)
+
+    @property
+    def is_forwarded(self) -> bool:
+        """Check if this message is a forwarded message.
+
+        Returns:
+            bool: True if this message was forwarded from another message.
+        """
+        return self.message_type == MessageType.FORWARD or self.forwarded_from is not None
+
+    @property
+    def forwarded_from_id(self) -> str:
+        """Get the ID of the original message if this is a forward.
+
+        Returns:
+            str: The original message ID or empty string if not a forward.
+        """
+        return self.forwarded_from.id if self.forwarded_from else ""

@@ -2043,3 +2043,280 @@ class TestDiscordConfigProperties:
 
         config = DiscordConfig(bot_token="super-secret-token")
         assert config.bot_token_str == "super-secret-token"
+
+
+class TestForwardMessageSlack:
+    """Tests for forward_message on MockSlackBackend."""
+
+    @pytest.fixture
+    def backend(self):
+        """Create a mock Slack backend."""
+        from chatom.slack import MockSlackBackend, SlackConfig
+
+        config = SlackConfig(
+            bot_token="xoxb-test-token",
+            app_token="xapp-test-token",
+        )
+        return MockSlackBackend(config=config)
+
+    @pytest.mark.asyncio
+    async def test_forward_message_basic(self, backend):
+        """Test basic message forwarding."""
+        from chatom.base import MessageType
+
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+        backend.add_mock_user("U123", "Test User", "testuser")
+
+        # Create source message
+        source_msg = await backend.send_message("C123", "Hello, world!")
+
+        # Forward the message
+        forwarded = await backend.forward_message(source_msg, "C456")
+
+        assert forwarded is not None
+        assert "Hello, world!" in forwarded.content
+        assert forwarded.message_type == MessageType.FORWARD
+        assert forwarded.forwarded_from == source_msg
+        assert forwarded.is_forwarded is True
+
+    @pytest.mark.asyncio
+    async def test_forward_message_with_attribution(self, backend):
+        """Test forwarding with attribution."""
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        source_msg = await backend.send_message("C123", "Important message")
+        forwarded = await backend.forward_message(source_msg, "C456", include_attribution=True)
+
+        assert "Forwarded from" in forwarded.content
+
+    @pytest.mark.asyncio
+    async def test_forward_message_without_attribution(self, backend):
+        """Test forwarding without attribution."""
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        source_msg = await backend.send_message("C123", "Simple message")
+        forwarded = await backend.forward_message(source_msg, "C456", include_attribution=False)
+
+        assert "Forwarded from" not in forwarded.content
+        assert forwarded.content == "Simple message"
+
+    @pytest.mark.asyncio
+    async def test_forward_message_with_prefix(self, backend):
+        """Test forwarding with custom prefix."""
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        source_msg = await backend.send_message("C123", "Alert content")
+        forwarded = await backend.forward_message(source_msg, "C456", prefix="⚠️ ALERT: ", include_attribution=False)
+
+        assert forwarded.content.startswith("⚠️ ALERT: ")
+
+    @pytest.mark.asyncio
+    async def test_forward_message_with_channel_object(self, backend):
+        """Test forwarding using Channel object."""
+
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        dest_channel = backend.add_mock_channel("C456", "dest-channel")
+
+        source_msg = await backend.send_message("C123", "Message to forward")
+        forwarded = await backend.forward_message(source_msg, dest_channel)
+
+        assert forwarded is not None
+        assert forwarded.channel.id == "C456"
+
+    @pytest.mark.asyncio
+    async def test_forward_message_requires_message_object(self, backend):
+        """Test that forwarding requires a Message object, not just an ID."""
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        with pytest.raises(ValueError, match="requires a SlackMessage object"):
+            await backend.forward_message("some-message-id", "C456")
+
+
+class TestForwardMessageDiscord:
+    """Tests for forward_message on MockDiscordBackend."""
+
+    @pytest.fixture
+    def backend(self):
+        """Create a mock Discord backend."""
+        from chatom.discord import DiscordConfig, MockDiscordBackend
+
+        config = DiscordConfig(
+            bot_token="discord-test-token",
+        )
+        return MockDiscordBackend(config=config)
+
+    @pytest.mark.asyncio
+    async def test_forward_message_basic(self, backend):
+        """Test basic message forwarding."""
+        from chatom.base import MessageType
+
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        source_msg = await backend.send_message("C123", "Discord message!")
+
+        forwarded = await backend.forward_message(source_msg, "C456")
+
+        assert forwarded is not None
+        assert "Discord message!" in forwarded.content
+        assert forwarded.message_type == MessageType.FORWARD
+        assert forwarded.forwarded_from == source_msg
+
+    @pytest.mark.asyncio
+    async def test_forward_message_without_attribution(self, backend):
+        """Test forwarding without attribution."""
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        source_msg = await backend.send_message("C123", "Simple discord message")
+        forwarded = await backend.forward_message(source_msg, "C456", include_attribution=False)
+
+        assert "Forwarded from" not in forwarded.content
+        assert forwarded.content == "Simple discord message"
+
+    @pytest.mark.asyncio
+    async def test_forward_message_requires_message_object(self, backend):
+        """Test that forwarding requires a Message object."""
+        await backend.connect()
+        backend.add_mock_channel("C123", "source-channel")
+        backend.add_mock_channel("C456", "dest-channel")
+
+        with pytest.raises(ValueError, match="requires a Message object"):
+            await backend.forward_message("some-message-id", "C456")
+
+
+class TestForwardMessageSymphony:
+    """Tests for forward_message on MockSymphonyBackend."""
+
+    @pytest.fixture
+    def backend(self):
+        """Create a mock Symphony backend."""
+        from chatom.symphony import MockSymphonyBackend, SymphonyConfig
+
+        config = SymphonyConfig(
+            host="test.symphony.com",
+            bot_username="test-bot",
+        )
+        return MockSymphonyBackend(config=config)
+
+    @pytest.mark.asyncio
+    async def test_forward_message_basic(self, backend):
+        """Test basic message forwarding."""
+        from chatom.base import MessageType
+
+        await backend.connect()
+        backend.add_mock_stream("S123", "source-room")
+        backend.add_mock_stream("S456", "dest-room")
+
+        source_msg = await backend.send_message("S123", "Symphony message!")
+
+        forwarded = await backend.forward_message(source_msg, "S456")
+
+        assert forwarded is not None
+        assert "Symphony message!" in forwarded.content
+        assert forwarded.message_type == MessageType.FORWARD
+        assert forwarded.forwarded_from == source_msg
+
+    @pytest.mark.asyncio
+    async def test_forward_message_with_messageml_content(self, backend):
+        """Test forwarding preserves MessageML formatting."""
+        await backend.connect()
+        backend.add_mock_stream("S123", "source-room")
+        backend.add_mock_stream("S456", "dest-room")
+
+        source_msg = await backend.send_message("S123", "Formatted message")
+        forwarded = await backend.forward_message(source_msg, "S456")
+
+        # Should have MessageML structure
+        assert "<messageML>" in forwarded.formatted_content
+
+    @pytest.mark.asyncio
+    async def test_forward_message_requires_message_object(self, backend):
+        """Test that forwarding requires a Message object."""
+        await backend.connect()
+        backend.add_mock_stream("S123", "source-room")
+        backend.add_mock_stream("S456", "dest-room")
+
+        with pytest.raises(ValueError, match="requires a Message object"):
+            await backend.forward_message("some-message-id", "S456")
+
+
+class TestForwardMessageProperties:
+    """Tests for Message forwarding-related properties."""
+
+    def test_message_is_forwarded_property(self):
+        """Test is_forwarded property returns True for forwarded messages."""
+        from chatom.base import Message, MessageType
+
+        msg = Message(content="Test", message_type=MessageType.FORWARD)
+        assert msg.is_forwarded is True
+
+        regular_msg = Message(content="Test", message_type=MessageType.DEFAULT)
+        assert regular_msg.is_forwarded is False
+
+    def test_message_is_forwarded_with_forwarded_from(self):
+        """Test is_forwarded returns True when forwarded_from is set."""
+        from chatom.base import Message
+
+        original = Message(id="orig-123", content="Original")
+        forwarded = Message(content="Forwarded", forwarded_from=original)
+
+        assert forwarded.is_forwarded is True
+
+    def test_forwarded_from_id_property(self):
+        """Test forwarded_from_id property returns the original message ID."""
+        from chatom.base import Message
+
+        original = Message(id="orig-123", content="Original")
+        forwarded = Message(content="Forwarded", forwarded_from=original)
+
+        assert forwarded.forwarded_from_id == "orig-123"
+
+    def test_forwarded_from_id_empty_when_not_forwarded(self):
+        """Test forwarded_from_id returns empty string when not a forward."""
+        from chatom.base import Message
+
+        msg = Message(content="Regular message")
+        assert msg.forwarded_from_id == ""
+
+
+class TestForwardingCapability:
+    """Tests for FORWARDING capability."""
+
+    def test_forwarding_capability_exists(self):
+        """Test that FORWARDING capability is defined."""
+        from chatom.base import Capability
+
+        assert hasattr(Capability, "FORWARDING")
+        assert Capability.FORWARDING.value == "forwarding"
+
+    def test_slack_has_forwarding_capability(self):
+        """Test Slack capabilities include FORWARDING."""
+        from chatom.base import SLACK_CAPABILITIES, Capability
+
+        assert Capability.FORWARDING in SLACK_CAPABILITIES.capabilities
+
+    def test_discord_has_forwarding_capability(self):
+        """Test Discord capabilities include FORWARDING."""
+        from chatom.base import DISCORD_CAPABILITIES, Capability
+
+        assert Capability.FORWARDING in DISCORD_CAPABILITIES.capabilities
+
+    def test_symphony_has_forwarding_capability(self):
+        """Test Symphony capabilities include FORWARDING."""
+        from chatom.base import SYMPHONY_CAPABILITIES, Capability
+
+        assert Capability.FORWARDING in SYMPHONY_CAPABILITIES.capabilities

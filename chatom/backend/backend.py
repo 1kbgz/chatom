@@ -995,6 +995,65 @@ class BackendBase(BaseModel):
             **kwargs,
         )
 
+    async def forward_message(
+        self,
+        message: Message,
+        to_channel: Union[str, Channel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> Message:
+        """Forward a message to another channel.
+
+        This method forwards a message from one channel to another,
+        optionally including attribution about the original source.
+        The forwarded message can include the original content,
+        attachments, and optionally embeds.
+
+        Different backends handle forwarding differently:
+        - Some have native forwarding (Discord has reference links)
+        - Others simulate it by re-sending with attribution
+
+        Args:
+            message: The message to forward.
+            to_channel: The destination channel (ID string or Channel object).
+            include_attribution: If True (default), include information about
+                                the original message source (author, channel, time).
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional platform-specific options (e.g., embeds,
+                      thread_id for threading).
+
+        Returns:
+            The forwarded message in the destination channel.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support forwarding.
+            ValueError: If the message or channel cannot be resolved.
+
+        Example:
+            >>> # Forward a message to another channel
+            >>> forwarded = await backend.forward_message(
+            ...     incoming_message,
+            ...     to_channel="C456789",
+            ... )
+            >>>
+            >>> # Forward with custom prefix
+            >>> forwarded = await backend.forward_message(
+            ...     incoming_message,
+            ...     to_channel=Channel(name="alerts"),
+            ...     prefix="⚠️ Escalated: ",
+            ... )
+            >>>
+            >>> # Forward without attribution
+            >>> forwarded = await backend.forward_message(
+            ...     incoming_message,
+            ...     to_channel="C456789",
+            ...     include_attribution=False,
+            ... )
+        """
+        raise NotImplementedError("This backend does not support message forwarding")
+
     # =========================================================================
     # Real-time message streaming
     # =========================================================================

@@ -118,6 +118,10 @@ class Capability(str, Enum):
     MESSAGE_SEARCH = "message_search"
     """Supports searching messages by content."""
 
+    # Forwarding
+    FORWARDING = "forwarding"
+    """Supports forwarding messages to other channels."""
+
 
 class BackendCapabilities(BaseModel):
     """Describes the capabilities of a chat backend.
@@ -219,6 +223,7 @@ DISCORD_CAPABILITIES = BackendCapabilities(
             Capability.SELECT_MENUS,
             Capability.ORGANIZATIONS,
             Capability.MESSAGE_SEARCH,
+            Capability.FORWARDING,
         }
     ),
     max_message_length=2000,
@@ -255,6 +260,7 @@ SLACK_CAPABILITIES = BackendCapabilities(
             Capability.SELECT_MENUS,
             Capability.TABLES,
             Capability.MESSAGE_SEARCH,
+            Capability.FORWARDING,
         }
     ),
     max_message_length=40000,
@@ -280,6 +286,7 @@ SYMPHONY_CAPABILITIES = BackendCapabilities(
             Capability.TABLES,
             Capability.FORMS,
             Capability.MESSAGE_SEARCH,
+            Capability.FORWARDING,
         }
     ),
     max_message_length=40000,

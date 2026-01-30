@@ -16,6 +16,7 @@ from ..base import (
     BackendCapabilities,
     Channel,
     Message,
+    MessageType,
     Presence,
     User,
 )
@@ -475,6 +476,85 @@ class MockSymphonyBackend(BackendBase):
         # Remove from mock messages
         if channel_id in self.mock_messages:
             self.mock_messages[channel_id] = [m for m in self.mock_messages[channel_id] if m["message_id"] != message_id]
+
+    async def forward_message(
+        self,
+        message: Union[str, Message],
+        to_channel: Union[str, Channel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> SymphonyMessage:
+        """Forward a mock message to another stream.
+
+        Args:
+            message: The message to forward (SymphonyMessage object).
+            to_channel: The destination stream (ID string or Channel object).
+            include_attribution: If True, include info about original source.
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional options.
+
+        Returns:
+            The forwarded message in the destination stream.
+        """
+        if isinstance(message, str):
+            raise ValueError("forward_message requires a Message object, not just a message ID.")
+
+        # Resolve destination channel ID
+        if isinstance(to_channel, Channel):
+            dest_channel_id = to_channel.id
+        else:
+            dest_channel_id = to_channel
+
+        # Build forwarded content in MessageML
+        content_parts = []
+        if prefix:
+            content_parts.append(f"<p>{prefix}</p>")
+        if include_attribution:
+            author_name = message.author.name if message.author else "Unknown"
+            channel_name = message.channel.name if message.channel else "unknown room"
+            content_parts.append(f"<p><i>Forwarded from {channel_name} by {author_name}</i></p>")
+
+        # Add the original content
+        if message.formatted_content:
+            content_parts.append(message.formatted_content)
+        else:
+            content_parts.append(f"<p>{message.content}</p>")
+
+        forwarded_content = "<messageML>" + "".join(content_parts) + "</messageML>"
+
+        # Create the forwarded message
+        message_id = str(uuid.uuid4())
+        timestamp = datetime.now(timezone.utc)
+
+        forwarded_msg = SymphonyMessage(
+            id=message_id,
+            content=message.content,
+            formatted_content=forwarded_content,
+            timestamp=timestamp,
+            user_id=str(self._mock_bot_user_id),
+            channel_id=dest_channel_id,
+            message_type=MessageType.FORWARD,
+        )
+        forwarded_msg.forwarded_from = message
+
+        self.sent_messages.append(forwarded_msg)
+
+        if dest_channel_id not in self.mock_messages:
+            self.mock_messages[dest_channel_id] = []
+        self.mock_messages[dest_channel_id].append(
+            {
+                "message_id": message_id,
+                "stream_id": dest_channel_id,
+                "user_id": str(self._mock_bot_user_id),
+                "content": message.content,
+                "formatted_content": forwarded_content,
+                "timestamp": timestamp,
+            }
+        )
+
+        return forwarded_msg
 
     async def set_presence(
         self,
