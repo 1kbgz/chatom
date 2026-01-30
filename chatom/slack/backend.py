@@ -1045,6 +1045,23 @@ class SlackBackend(BackendBase):
                         except Exception:
                             pass  # Lookup failed, continue with basic info
 
+                        # Parse user mentions from text (<@U12345678> format) and resolve
+                        import re
+
+                        mention_users = []
+                        mention_pattern = re.compile(r"<@([UW][A-Z0-9]+)(?:\|[^>]+)?>")
+                        for match in mention_pattern.finditer(text):
+                            mention_user_id = match.group(1)
+                            try:
+                                mention_user = await backend_ref._fetch_user_by_id(mention_user_id)
+                                if mention_user:
+                                    mention_users.append(mention_user)
+                                else:
+                                    # Fallback to just ID if resolution fails
+                                    mention_users.append(SlackUser(id=mention_user_id))
+                            except Exception:
+                                mention_users.append(SlackUser(id=mention_user_id))
+
                         # Create SlackMessage with full user/channel info
                         slack_msg = SlackMessage(
                             id=ts,
@@ -1056,6 +1073,7 @@ class SlackBackend(BackendBase):
                             channel_id=event_channel_id or "",
                             thread=Thread(id=thread_ts) if thread_ts else None,
                             timestamp=datetime.fromtimestamp(float(ts)) if ts else datetime.now(),
+                            mentions=mention_users,  # Resolved mention users
                             metadata={
                                 "is_im": is_im,
                                 "is_dm": is_im,

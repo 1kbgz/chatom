@@ -5,6 +5,7 @@ This module provides the Discord backend using the discord.py library.
 
 import asyncio
 from datetime import datetime, timezone
+from logging import getLogger
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
 
 from pydantic import Field
@@ -30,6 +31,8 @@ from .presence import DiscordPresence
 from .user import DiscordUser
 
 __all__ = ("DiscordBackend",)
+
+_log = getLogger(__name__)
 
 # Try to import discord.py
 try:
@@ -568,7 +571,7 @@ class DiscordBackend(BackendBase):
             raise RuntimeError("Not connected to Discord")
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         try:
             discord_channel = await self._client.fetch_channel(int(channel_id))
@@ -605,7 +608,7 @@ class DiscordBackend(BackendBase):
             raise RuntimeError("Not connected to Discord")
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         try:
             discord_channel = await self._client.fetch_channel(int(channel_id))
@@ -720,7 +723,7 @@ class DiscordBackend(BackendBase):
             raise RuntimeError("Not connected to Discord")
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         try:
             discord_channel = await self._client.fetch_channel(int(channel_id))
@@ -749,7 +752,7 @@ class DiscordBackend(BackendBase):
             raise RuntimeError("Not connected to Discord")
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         try:
             discord_channel = await self._client.fetch_channel(int(channel_id))
@@ -1269,19 +1272,43 @@ class DiscordBackend(BackendBase):
         async def on_message(msg: Any) -> None:
             """Handle incoming messages."""
             try:
+                _log.debug(
+                    "stream_messages on_message: id=%s, channel=%s, author=%s, content=%s...",
+                    msg.id,
+                    msg.channel.id,
+                    msg.author,
+                    (msg.content[:50] if msg.content else "empty"),
+                )
                 # Skip bot's own messages
                 if skip_own and bot_user_id and str(msg.author.id) == bot_user_id:
+                    _log.debug("stream_messages on_message: Skipping own message")
                     return
 
                 # Filter by channel if specified
                 if channel_id and str(msg.channel.id) != channel_id:
+                    _log.debug("stream_messages on_message: Skipping channel mismatch: msg.channel.id=%s, filter=%s", msg.channel.id, channel_id)
                     return
 
                 # Skip messages from before the stream started
                 if skip_history:
                     msg_time = msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc)
                     if msg_time < stream_start_time:
+                        _log.debug("stream_messages on_message: Skipping old message: %s < %s", msg_time, stream_start_time)
                         return
+
+                _log.debug("stream_messages on_message: Creating DiscordMessage and queueing...")
+
+                # Create DiscordUser objects for mentions
+                mention_users = [
+                    DiscordUser(
+                        id=str(u.id),
+                        name=u.name,
+                        handle=str(u),
+                        is_bot=u.bot if hasattr(u, "bot") else False,
+                        discriminator=u.discriminator if hasattr(u, "discriminator") else "0",
+                    )
+                    for u in msg.mentions
+                ]
 
                 # Create DiscordMessage
                 discord_msg = DiscordMessage(
@@ -1292,40 +1319,48 @@ class DiscordBackend(BackendBase):
                     user_id=str(msg.author.id),
                     channel_id=str(msg.channel.id),
                     guild_id=str(msg.guild.id) if msg.guild else "",
-                    mentions=[str(u.id) for u in msg.mentions],
+                    mentions=mention_users,
                     mention_everyone=msg.mention_everyone,
                     mention_roles=[str(r.id) for r in msg.role_mentions] if msg.role_mentions else [],
                 )
 
                 await message_queue.put(discord_msg)
+                _log.debug("stream_messages on_message: Queued message, queue size now: %d", message_queue.qsize())
 
-            except Exception:
-                # Silently handle errors to keep stream running
+            except Exception as e:
+                # Log errors for debugging
+                _log.warning("stream_messages on_message exception: %s", e)
                 pass
 
         # Register the message handler
         self._client.event(on_message)
         self._client._original_on_message = original_handler
+        _log.debug("stream_messages: Registered on_message handler, channel_id filter=%s", channel_id)
 
         # Start the client's event loop if not already running
         # The client needs to be connected to the gateway to receive events
         client_task = None
+        _log.debug("stream_messages: is_ready=%s", self._client.is_ready())
         if not self._client.is_ready():
             # Start the client in the background to connect to gateway
+            _log.debug("stream_messages: Starting client.connect()...")
             client_task = asyncio.create_task(self._client.connect())
             # Wait for the client to be ready
-            for _ in range(30):  # Wait up to 30 seconds
+            for i in range(30):  # Wait up to 30 seconds
                 await asyncio.sleep(1)
+                _log.debug("stream_messages: Waiting for ready... %d/30 is_ready=%s", i + 1, self._client.is_ready())
                 if self._client.is_ready():
                     break
             else:
                 raise RuntimeError("Discord client failed to connect to gateway")
+        _log.debug("stream_messages: Client ready, starting message loop")
 
         try:
             while not stop_event.is_set():
                 try:
                     # Wait for messages with a timeout to allow checking stop_event
                     message = await asyncio.wait_for(message_queue.get(), timeout=1.0)
+                    _log.debug("stream_messages: Yielding message %s", message.id)
                     yield message
                 except asyncio.TimeoutError:
                     continue
