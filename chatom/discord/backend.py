@@ -134,6 +134,20 @@ class DiscordBackend(BackendBase):
     # Discord.py client instance
     _client: Any = None
 
+    # Cached bot info (set during connect or on first get_bot_info call)
+    _bot_user_id: Optional[str] = None
+    _bot_user_name: Optional[str] = None
+
+    @property
+    def bot_user_id(self) -> Optional[str]:
+        """Get the bot's user ID (cached from connect/get_bot_info)."""
+        return self._bot_user_id
+
+    @property
+    def bot_user_name(self) -> Optional[str]:
+        """Get the bot's username (cached from connect/get_bot_info)."""
+        return self._bot_user_name
+
     class Config:
         """Pydantic config."""
 
@@ -682,7 +696,7 @@ class DiscordBackend(BackendBase):
         try:
             bot_user = self._client.user
             if bot_user:
-                return DiscordUser(
+                user = DiscordUser(
                     id=str(bot_user.id),
                     name=bot_user.display_name,
                     handle=bot_user.name,
@@ -692,6 +706,10 @@ class DiscordBackend(BackendBase):
                     is_bot=bot_user.bot,
                     is_system=bot_user.system,
                 )
+                # Cache bot info
+                self._bot_user_id = user.id
+                self._bot_user_name = user.name or user.handle
+                return user
         except Exception:
             pass
 
