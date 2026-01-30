@@ -15,6 +15,7 @@ from ..base import (
     BackendCapabilities,
     Channel,
     Message,
+    MessageType,
     Organization,
     Presence,
     PresenceStatus,
@@ -616,6 +617,82 @@ class DiscordBackend(BackendBase):
             await msg.delete()
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to delete message: {e}") from e
+
+    async def forward_message(
+        self,
+        message: Union[str, Message],
+        to_channel: Union[str, Channel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> DiscordMessage:
+        """Forward a message to another Discord channel.
+
+        Discord doesn't have native forwarding, so this creates a new message
+        with the original content and optional attribution using embeds.
+
+        Args:
+            message: The message to forward (DiscordMessage object or message ID).
+            to_channel: The destination channel (ID string or Channel object).
+            include_attribution: If True, include info about original source.
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional options (embed, reference, etc.).
+
+        Returns:
+            The forwarded message in the destination channel.
+        """
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        # Resolve the source message if it's just an ID
+        if isinstance(message, str):
+            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")
+
+        # Resolve destination channel
+        dest_channel_id = await self._resolve_channel_id(to_channel)
+
+        try:
+            discord_channel = await self._client.fetch_channel(int(dest_channel_id))
+            if discord_channel is None:
+                raise RuntimeError(f"Channel {dest_channel_id} not found")
+
+            # Build the forwarded message content
+            content_parts = []
+
+            if prefix:
+                content_parts.append(prefix)
+
+            if include_attribution:
+                # Add attribution info
+                author_name = message.author.name if message.author else "Unknown"
+                channel_name = message.channel.name if message.channel else "unknown channel"
+                attribution = f"*Forwarded from #{channel_name} by {author_name}*\n"
+                content_parts.append(attribution)
+
+            # Add the original message content
+            content_parts.append(message.content)
+
+            forwarded_content = "".join(content_parts)
+
+            # Send the forwarded message
+            sent_msg = await discord_channel.send(content=forwarded_content, **kwargs)
+
+            # Create the DiscordMessage result
+            forwarded_msg = DiscordMessage(
+                id=str(sent_msg.id),
+                content=sent_msg.content,
+                timestamp=sent_msg.created_at.replace(tzinfo=timezone.utc) if sent_msg.created_at else datetime.now(timezone.utc),
+                user_id=str(sent_msg.author.id),
+                channel_id=str(sent_msg.channel.id),
+                guild_id=str(sent_msg.guild.id) if sent_msg.guild else "",
+                message_type=MessageType.FORWARD,
+            )
+            forwarded_msg.forwarded_from = message
+
+            return forwarded_msg
+        except (discord.HTTPException, ValueError) as e:
+            raise RuntimeError(f"Failed to forward message: {e}") from e
 
     async def set_presence(
         self,

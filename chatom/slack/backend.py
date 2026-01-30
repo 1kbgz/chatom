@@ -12,6 +12,7 @@ from ..base import (
     SLACK_CAPABILITIES,
     BackendCapabilities,
     Channel,
+    MessageType,
     PresenceStatus,
     Thread,
     User,
@@ -619,6 +620,83 @@ class SlackBackend(BackendBase):
 
         if not response.get("ok"):
             raise RuntimeError(f"Failed to delete message: {response.get('error')}")
+
+    async def forward_message(
+        self,
+        message: Union[str, SlackMessage],
+        to_channel: Union[str, Channel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> SlackMessage:
+        """Forward a message to another Slack channel.
+
+        Slack doesn't have native forwarding, so this creates a new message
+        with the original content and optional attribution.
+
+        Args:
+            message: The message to forward (SlackMessage object or message ts).
+            to_channel: The destination channel (ID string or Channel object).
+            include_attribution: If True, include info about original source.
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional options (thread_id, blocks, etc.).
+
+        Returns:
+            The forwarded message in the destination channel.
+        """
+        self._ensure_connected()
+
+        # Resolve the source message if it's just an ID
+        if isinstance(message, str):
+            raise ValueError(
+                "forward_message requires a SlackMessage object, not just a message ID. Use fetch_messages() to get the full message first."
+            )
+
+        # Resolve destination channel
+        dest_channel_id = await self._resolve_channel_id(to_channel)
+
+        # Build the forwarded message content
+        content_parts = []
+
+        if prefix:
+            content_parts.append(prefix)
+
+        if include_attribution:
+            # Add attribution block
+            author_name = message.author.name if message.author else "Unknown"
+            channel_name = message.channel.name if message.channel else "unknown channel"
+            attribution = f"_Forwarded from #{channel_name} by {author_name}_\n"
+            content_parts.append(attribution)
+
+        # Add the original message content
+        content_parts.append(message.content)
+
+        forwarded_content = "".join(content_parts)
+
+        # Translate thread_id to thread_ts if provided
+        if "thread_id" in kwargs and "thread_ts" not in kwargs:
+            kwargs["thread_ts"] = kwargs.pop("thread_id")
+
+        # Send the forwarded message
+        response = await self._async_client.chat_postMessage(
+            channel=dest_channel_id,
+            text=forwarded_content,
+            **kwargs,
+        )
+
+        if not response.get("ok"):
+            raise RuntimeError(f"Failed to forward message: {response.get('error')}")
+
+        msg_data = response.get("message", {})
+        msg_data["ts"] = response.get("ts", msg_data.get("ts", ""))
+
+        # Parse and set the forwarded_from reference
+        forwarded_msg = self._parse_slack_message(msg_data, dest_channel_id)
+        forwarded_msg.forwarded_from = message
+        forwarded_msg.message_type = MessageType.FORWARD
+
+        return forwarded_msg
 
     async def set_presence(
         self,

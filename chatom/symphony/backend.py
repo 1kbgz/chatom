@@ -16,6 +16,7 @@ from ..base import (
     BackendCapabilities,
     Channel,
     Message,
+    MessageType,
     Presence,
     User,
 )
@@ -692,6 +693,88 @@ class SymphonyBackend(BackendBase):
 
         except Exception as e:
             raise RuntimeError(f"Failed to delete message: {e}") from e
+
+    async def forward_message(
+        self,
+        message: Union[str, Message],
+        to_channel: Union[str, Channel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> SymphonyMessage:
+        """Forward a message to another Symphony room/stream.
+
+        Symphony doesn't have native forwarding, so this creates a new message
+        with the original content and optional attribution in MessageML format.
+
+        Args:
+            message: The message to forward (SymphonyMessage object or message ID).
+            to_channel: The destination stream (ID string or Channel object).
+            include_attribution: If True, include info about original source.
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional options (data for entity data, etc.).
+
+        Returns:
+            The forwarded message in the destination stream.
+        """
+        if self._bdk is None:
+            raise RuntimeError("Symphony not connected")
+
+        # Resolve the source message if it's just an ID
+        if isinstance(message, str):
+            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")
+
+        # Resolve destination channel/stream
+        dest_channel_id = await self._resolve_channel_id(to_channel)
+
+        try:
+            message_service = self._bdk.messages()
+
+            # Build the forwarded message content in MessageML
+            content_parts = []
+
+            if prefix:
+                content_parts.append(f"<p>{prefix}</p>")
+
+            if include_attribution:
+                # Add attribution info in MessageML format
+                author_name = message.author.name if message.author else "Unknown"
+                channel_name = message.channel.name if message.channel else "unknown room"
+                attribution = f"<p><i>Forwarded from {channel_name} by {author_name}</i></p>"
+                content_parts.append(attribution)
+
+            # Add the original message content
+            # If the message has formatted_content (MessageML), use it; otherwise wrap plain text
+            if message.formatted_content:
+                content_parts.append(message.formatted_content)
+            else:
+                content_parts.append(f"<p>{message.content}</p>")
+
+            forwarded_content = "<messageML>" + "".join(content_parts) + "</messageML>"
+
+            # Send the forwarded message
+            result = await message_service.send_message(
+                dest_channel_id,
+                forwarded_content,
+            )
+
+            # Create the SymphonyMessage result
+            forwarded_msg = SymphonyMessage(
+                id=result.id if hasattr(result, "id") else str(result),
+                content=message.content,
+                formatted_content=forwarded_content,
+                timestamp=datetime.now(timezone.utc),
+                user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
+                channel_id=dest_channel_id,
+                message_type=MessageType.FORWARD,
+            )
+            forwarded_msg.forwarded_from = message
+
+            return forwarded_msg
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to forward message: {e}") from e
 
     async def set_presence(
         self,

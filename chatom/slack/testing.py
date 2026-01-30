@@ -7,7 +7,7 @@ for use in tests without requiring actual Slack API credentials.
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional, Union
 
-from ..base import PresenceStatus, Thread
+from ..base import MessageType, PresenceStatus, Thread
 from .backend import SlackBackend
 from .channel import SlackChannel
 from .message import SlackMessage
@@ -520,6 +520,69 @@ class MockSlackBackend(SlackBackend):
 
         messages = self._mock_messages.get(channel_id, [])
         self._mock_messages[channel_id] = [m for m in messages if m.ts != message_id]
+
+    async def forward_message(
+        self,
+        message: Union[str, SlackMessage],
+        to_channel: Union[str, SlackChannel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> SlackMessage:
+        """Forward a mock message to another channel.
+
+        Args:
+            message: The message to forward (SlackMessage object).
+            to_channel: The destination channel (ID string or Channel object).
+            include_attribution: If True, include info about original source.
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional options.
+
+        Returns:
+            The forwarded message in the destination channel.
+        """
+        if isinstance(message, str):
+            raise ValueError("forward_message requires a SlackMessage object, not just a message ID.")
+
+        # Resolve destination channel ID
+        if isinstance(to_channel, SlackChannel):
+            dest_channel_id = to_channel.id
+        else:
+            dest_channel_id = to_channel
+
+        # Build forwarded content
+        content_parts = []
+        if prefix:
+            content_parts.append(prefix)
+        if include_attribution:
+            author_name = message.author.name if message.author else "Unknown"
+            channel_name = message.channel.name if message.channel else "unknown channel"
+            content_parts.append(f"_Forwarded from #{channel_name} by {author_name}_\n")
+        content_parts.append(message.content)
+
+        forwarded_content = "".join(content_parts)
+
+        # Create the forwarded message
+        self._message_counter += 1
+        ts = f"{datetime.now().timestamp():.6f}"
+
+        forwarded_msg = SlackMessage(
+            id=ts,
+            content=forwarded_content,
+            channel=SlackChannel(id=dest_channel_id),
+            created_at=datetime.now(),
+            message_type=MessageType.FORWARD,
+        )
+        forwarded_msg.forwarded_from = message
+
+        self._sent_messages.append(forwarded_msg)
+
+        if dest_channel_id not in self._mock_messages:
+            self._mock_messages[dest_channel_id] = []
+        self._mock_messages[dest_channel_id].append(forwarded_msg)
+
+        return forwarded_msg
 
     async def set_presence(
         self,

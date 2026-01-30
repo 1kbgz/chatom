@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import PrivateAttr
 
-from ..base import Channel, Message, Presence, PresenceStatus, User
+from ..base import Channel, Message, MessageType, Presence, PresenceStatus, User
 from .backend import DiscordBackend
 from .channel import DiscordChannel, DiscordChannelType
 from .message import DiscordMessage
@@ -522,6 +522,70 @@ class MockDiscordBackend(DiscordBackend):
         # Remove from mock messages if present
         if channel_id in self._mock_messages:
             self._mock_messages[channel_id] = [m for m in self._mock_messages[channel_id] if m.id != message_id]
+
+    async def forward_message(
+        self,
+        message: Union[str, Message],
+        to_channel: Union[str, Channel],
+        *,
+        include_attribution: bool = True,
+        prefix: Optional[str] = None,
+        **kwargs: Any,
+    ) -> DiscordMessage:
+        """Forward a mock message to another channel.
+
+        Args:
+            message: The message to forward (DiscordMessage object).
+            to_channel: The destination channel (ID string or Channel object).
+            include_attribution: If True, include info about original source.
+            prefix: Optional text to prepend to the forwarded message.
+            **kwargs: Additional options.
+
+        Returns:
+            The forwarded message in the destination channel.
+        """
+        if isinstance(message, str):
+            raise ValueError("forward_message requires a Message object, not just a message ID.")
+
+        # Resolve destination channel ID
+        if isinstance(to_channel, Channel):
+            dest_channel_id = to_channel.id
+        else:
+            dest_channel_id = to_channel
+
+        # Build forwarded content
+        content_parts = []
+        if prefix:
+            content_parts.append(prefix)
+        if include_attribution:
+            author_name = message.author.name if message.author else "Unknown"
+            channel_name = message.channel.name if message.channel else "unknown channel"
+            content_parts.append(f"*Forwarded from #{channel_name} by {author_name}*\n")
+        content_parts.append(message.content)
+
+        forwarded_content = "".join(content_parts)
+
+        # Create the forwarded message
+        self._message_counter += 1
+        message_id = f"mock_msg_{self._message_counter}"
+
+        forwarded_msg = DiscordMessage(
+            id=message_id,
+            content=forwarded_content,
+            timestamp=datetime.now(timezone.utc),
+            user_id="bot_user",
+            channel_id=dest_channel_id,
+            message_type=MessageType.FORWARD,
+        )
+        forwarded_msg.forwarded_from = message
+
+        self._sent_messages.append(forwarded_msg)
+
+        if dest_channel_id not in self._mock_messages:
+            self._mock_messages[dest_channel_id] = []
+        self._mock_messages[dest_channel_id].append(forwarded_msg)
+
+        return forwarded_msg
 
     async def set_presence(
         self,
