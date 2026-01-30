@@ -371,6 +371,9 @@ class SlackBackend(BackendBase):
                 is_bot=is_bot,
             )
 
+        thread_id = msg_data.get("thread_ts")
+        thread = Thread(id=thread_id) if thread_id else None
+
         return SlackMessage(
             id=ts,
             content=msg_data.get("text", ""),
@@ -381,7 +384,7 @@ class SlackBackend(BackendBase):
             team=msg_data.get("team"),
             created_at=created_at,
             blocks=msg_data.get("blocks", []),
-            threads=Thread(id=msg_data.get("thread_ts")),
+            threads=thread,
             reply_count=msg_data.get("reply_count", 0),
         )
 
