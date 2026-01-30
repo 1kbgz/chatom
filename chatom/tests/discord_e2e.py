@@ -385,7 +385,7 @@ class DiscordE2ETest:
             # Add reactions (Discord uses unicode emoji)
             reactions = ["👍", "👎", "🎉", "❤️"]
             for emoji in reactions:
-                await self.backend.add_reaction(self.channel_id, message_id, emoji)
+                await self.backend.add_reaction(message_id, emoji, channel=self.channel_id)
                 print(f"  Added reaction: {emoji}")
                 await asyncio.sleep(0.5)  # Rate limit
 
@@ -393,7 +393,7 @@ class DiscordE2ETest:
 
             # Wait a moment then remove one
             await asyncio.sleep(2)
-            await self.backend.remove_reaction(self.channel_id, message_id, "👎")
+            await self.backend.remove_reaction(message_id, "👎", channel=self.channel_id)
             self.log("Removed 👎 reaction")
 
         except Exception as e:
@@ -597,7 +597,7 @@ class DiscordE2ETest:
                     await receive_task
                 except asyncio.CancelledError:
                     pass
-                self.log("Timeout waiting for inbound message (60s)", success=False)
+                self.log("Timeout waiting for inbound message (30s)", success=False)
                 return
 
             if received_message:

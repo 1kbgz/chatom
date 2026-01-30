@@ -1100,10 +1100,17 @@ class SymphonyBackend(BackendBase):
                 if self._filter_channel and stream_id != self._filter_channel:
                     return
 
-                # Extract mentions from data field and convert to User objects
+                # Extract mentions from data field and resolve to full User objects
                 mention_ids_int = SymphonyMessage.extract_mentions_from_data(msg.data)
-                # Convert integer IDs to SymphonyUser objects for the mentions field
-                mention_users = [SymphonyUser(id=str(uid)) for uid in mention_ids_int]
+                # Resolve mention IDs to full SymphonyUser objects (with name/handle)
+                mention_users = []
+                for uid in mention_ids_int:
+                    user = await self._backend._fetch_user_by_id(str(uid))
+                    if user:
+                        mention_users.append(user)
+                    else:
+                        # Fallback to just ID if resolution fails
+                        mention_users.append(SymphonyUser(id=str(uid)))
 
                 # Parse message timestamp
                 msg_timestamp = datetime.fromtimestamp(int(msg.timestamp) / 1000, tz=timezone.utc) if msg.timestamp else datetime.now(tz=timezone.utc)
