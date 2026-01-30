@@ -573,3 +573,70 @@ class TestMessageReference:
         assert ref.message_id == "msg-123"
         assert ref.channel_id == "ch-456"
         assert ref.guild_id == "guild-789"
+
+
+class TestMessageProperties:
+    """Tests for Message computed properties."""
+
+    def test_user_alias_returns_author(self):
+        """Test user property returns author (backwards compat alias)."""
+        user = User(id="u1", name="Alice")
+        msg = Message(id="m1", content="Hello", author=user)
+        assert msg.user == user
+        assert msg.user.name == "Alice"
+
+    def test_user_none_when_no_author(self):
+        """Test user property returns None when no author."""
+        msg = Message(id="m1", content="Hello")
+        assert msg.user is None
+
+    def test_tags_returns_mentions(self):
+        """Test tags property returns mentions list."""
+        user1 = User(id="u1", name="Alice")
+        user2 = User(id="u2", name="Bob")
+        msg = Message(id="m1", content="Hello", mentions=[user1, user2])
+        assert msg.tags == [user1, user2]
+        assert len(msg.tags) == 2
+
+    def test_tags_empty_by_default(self):
+        """Test tags property returns empty list when no mentions."""
+        msg = Message(id="m1", content="Hello")
+        assert msg.tags == []
+
+    def test_has_attachments_true(self):
+        """Test has_attachments returns True when attachments present."""
+        attachment = Attachment(id="a1", filename="file.txt", url="http://example.com/file.txt")
+        msg = Message(id="m1", content="Hello", attachments=[attachment])
+        assert msg.has_attachments is True
+
+    def test_has_attachments_false(self):
+        """Test has_attachments returns False when no attachments."""
+        msg = Message(id="m1", content="Hello")
+        assert msg.has_attachments is False
+
+    def test_has_embeds_true(self):
+        """Test has_embeds returns True when embeds present."""
+        embed = Embed(title="Test Embed", description="A test")
+        msg = Message(id="m1", content="Hello", embeds=[embed])
+        assert msg.has_embeds is True
+
+    def test_has_embeds_false(self):
+        """Test has_embeds returns False when no embeds."""
+        msg = Message(id="m1", content="Hello")
+        assert msg.has_embeds is False
+
+    def test_is_reply_with_reference(self):
+        """Test is_reply returns True when reference is set."""
+        ref = MessageReference(message_id="orig-msg")
+        msg = Message(id="m1", content="Hello", reference=ref)
+        assert msg.is_reply is True
+
+    def test_is_reply_with_message_type_reply(self):
+        """Test is_reply returns True when message_type is REPLY."""
+        msg = Message(id="m1", content="Hello", message_type=MessageType.REPLY)
+        assert msg.is_reply is True
+
+    def test_is_reply_false(self):
+        """Test is_reply returns False for regular messages."""
+        msg = Message(id="m1", content="Hello")
+        assert msg.is_reply is False
