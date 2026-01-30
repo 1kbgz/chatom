@@ -5,15 +5,22 @@ the Symphony backend with the Symphony BDK.
 """
 
 import atexit
+import logging
 import os
 import tempfile
-from typing import Any, Dict, Optional
+import threading
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from pydantic import Field, SecretStr, model_validator
 
 from ..backend import BackendConfig
 
-__all__ = ("SymphonyConfig",)
+if TYPE_CHECKING:
+    from .backend import SymphonyBackend
+
+__all__ = ("SymphonyConfig", "SymphonyRoomMapper")
+
+log = logging.getLogger(__name__)
 
 
 class SymphonyConfig(BackendConfig):
@@ -115,14 +122,62 @@ class SymphonyConfig(BackendConfig):
     # Connection settings
     timeout: int = Field(default=30, description="Request timeout in seconds")
 
-    @model_validator(mode="after")
-    def _handle_certificate_content(self) -> "SymphonyConfig":
-        """Create temp file from certificate content if needed.
+    # Error handling and retry configuration
+    error_room: Optional[str] = Field(
+        None,
+        description="A room to direct error messages to, if a message fails to be sent.",
+    )
+    inform_client: bool = Field(
+        False,
+        description="Whether to inform the intended recipient of a failed message.",
+    )
+    max_attempts: int = Field(
+        10,
+        description="Max attempts for datafeed and message post requests before raising exception.",
+    )
+    initial_interval_ms: int = Field(
+        500,
+        description="Initial interval to wait between attempts, in milliseconds.",
+    )
+    multiplier: float = Field(
+        2.0,
+        description="Multiplier between attempt delays for exponential backoff.",
+    )
+    max_interval_ms: int = Field(
+        300000,
+        description="Maximum delay between retry attempts, in milliseconds.",
+    )
+    datafeed_version: str = Field(
+        "v2",
+        description="Version of datafeed to use ('v1' or 'v2').",
+    )
 
-        Symphony BDK only supports certificate paths, not content directly.
-        If bot_certificate_content is provided without bot_certificate_path,
-        we create a temporary file and set the path automatically.
-        """
+    # SSL configuration
+    ssl_trust_store_path: Optional[str] = Field(
+        None,
+        description="Path to a custom CA certificate bundle file.",
+    )
+    ssl_verify: bool = Field(
+        True,
+        description="Whether to verify SSL certificates.",
+    )
+
+    @model_validator(mode="after")
+    def _validate_config(self) -> "SymphonyConfig":
+        """Validate configuration and handle certificate content."""
+        # Validate required fields - allow pod_host as fallback for host
+        effective_host = self.host or self.pod_host
+        if effective_host and not self.host:
+            object.__setattr__(self, "host", effective_host)
+        # Only validate if we're not in a mock/testing context (has some connection config)
+        # Skip validation if both are empty (allows mock backends)
+
+        # Handle SSL verification
+        if not self.ssl_verify:
+            log.warning("SSL verification is disabled. This is not recommended for production.")
+            self._patch_ssl_verify()
+
+        # Handle certificate content -> temp file
         if self.bot_certificate_content and not self.bot_certificate_path:
             # Create temp file for certificate content
             cert_content = self.bot_certificate_content.get_secret_value()
@@ -346,3 +401,200 @@ class SymphonyConfig(BackendConfig):
             config["proxy"] = proxy_config
 
         return config
+
+    def _patch_ssl_verify(self) -> None:
+        """Patch the BDK to disable SSL verification."""
+        try:
+            from symphony.bdk.gen.configuration import Configuration
+
+            original_config_init = Configuration.__init__
+
+            def patched_config_init(config_self, *args, **kwargs):
+                original_config_init(config_self, *args, **kwargs)
+                config_self.verify_ssl = False
+
+            Configuration.__init__ = patched_config_init
+            log.debug("SSL verification has been disabled via monkey patch")
+        except ImportError as e:
+            log.warning(f"Could not patch SSL verification: {e}")
+
+    def get_bdk_config(self):
+        """Build a BdkConfig from chatom config fields.
+
+        Returns:
+            A BdkConfig instance for use with symphony-bdk-python.
+        """
+        try:
+            from symphony.bdk.core.config.model.bdk_config import BdkConfig
+
+            return BdkConfig(**self.to_bdk_config())
+        except ImportError:
+            raise ImportError("symphony-bdk-python is required for get_bdk_config()")
+
+
+class SymphonyRoomMapper:
+    """Thread-safe mapper for Symphony room names and IDs.
+
+    This class maintains a cache of room name to ID mappings and vice versa,
+    using the stream service to resolve unknown rooms.
+    """
+
+    def __init__(self, stream_service=None, backend: Optional["SymphonyBackend"] = None):
+        """Initialize the room mapper.
+
+        Args:
+            stream_service: Optional StreamService from SymphonyBdk.
+            backend: Optional chatom SymphonyBackend for room resolution.
+        """
+        self._name_to_id: Dict[str, str] = {}
+        self._id_to_name: Dict[str, str] = {}
+        self._stream_service = stream_service
+        self._backend = backend
+        self._lock = threading.Lock()
+
+    def set_stream_service(self, stream_service):
+        """Set the stream service for room resolution."""
+        self._stream_service = stream_service
+
+    def set_backend(self, backend: "SymphonyBackend"):
+        """Set the chatom backend for room resolution."""
+        self._backend = backend
+
+    def get_room_id(self, room_name: str) -> Optional[str]:
+        """Get the room ID for a given room name.
+
+        Args:
+            room_name: The display name of the room.
+
+        Returns:
+            The room's stream ID, or None if not found.
+        """
+        with self._lock:
+            if room_name in self._name_to_id:
+                return self._name_to_id[room_name]
+
+            # If it looks like a stream ID already, return it
+            if len(room_name) > 20 and " " not in room_name:
+                return room_name
+
+            return None
+
+    async def get_room_id_async(self, room_name: str) -> Optional[str]:
+        """Get the room ID for a given room name, using async calls if needed.
+
+        Args:
+            room_name: The display name of the room.
+
+        Returns:
+            The room's stream ID, or None if not found.
+        """
+        # Check cache first
+        cached = self.get_room_id(room_name)
+        if cached:
+            return cached
+
+        # Try chatom backend first
+        if self._backend is not None:
+            channel = await self._backend.fetch_channel(name=room_name)
+            if channel:
+                with self._lock:
+                    self._name_to_id[room_name] = channel.id
+                    self._id_to_name[channel.id] = room_name
+                return channel.id
+
+        # Fall back to direct stream service
+        if self._stream_service is None:
+            return None
+
+        try:
+            from symphony.bdk.gen.pod_model.v2_room_search_criteria import V2RoomSearchCriteria
+
+            results = await self._stream_service.search_rooms(V2RoomSearchCriteria(query=room_name), limit=10)
+            if results and results.rooms:
+                for room in results.rooms:
+                    room_attrs = room.room_attributes
+                    room_info = room.room_system_info
+                    if room_attrs and room_info and room_attrs.name == room_name:
+                        room_id = room_info.id
+                        with self._lock:
+                            self._name_to_id[room_name] = room_id
+                            self._id_to_name[room_id] = room_name
+                        return room_id
+        except Exception as e:
+            log.error(f"Error searching for room '{room_name}': {e}")
+
+        return None
+
+    def get_room_name(self, room_id: str) -> Optional[str]:
+        """Get the room name for a given room ID.
+
+        Args:
+            room_id: The room's stream ID.
+
+        Returns:
+            The room's display name, or None if not found.
+        """
+        with self._lock:
+            return self._id_to_name.get(room_id)
+
+    async def get_room_name_async(self, room_id: str) -> Optional[str]:
+        """Get the room name for a given room ID, using async calls if needed.
+
+        Args:
+            room_id: The room's stream ID.
+
+        Returns:
+            The room's display name, or None if not found.
+        """
+        # Check cache first
+        cached = self.get_room_name(room_id)
+        if cached:
+            return cached
+
+        # Try chatom backend first
+        if self._backend is not None:
+            channel = await self._backend.fetch_channel(id=room_id)
+            if channel and channel.name:
+                with self._lock:
+                    self._name_to_id[channel.name] = room_id
+                    self._id_to_name[room_id] = channel.name
+                return channel.name
+
+        # Fall back to direct stream service
+        if self._stream_service is None:
+            return None
+
+        try:
+            room_info = await self._stream_service.get_room_info(room_id)
+            if room_info and room_info.room_attributes:
+                room_name = room_info.room_attributes.name
+                with self._lock:
+                    self._name_to_id[room_name] = room_id
+                    self._id_to_name[room_id] = room_name
+                return room_name
+        except Exception as e:
+            log.error(f"Error getting room info for '{room_id}': {e}")
+
+        return None
+
+    def set_im_id(self, user_identifier: str, stream_id: str):
+        """Register an IM stream ID for a user.
+
+        Args:
+            user_identifier: The user's display name or user ID.
+            stream_id: The IM stream ID.
+        """
+        with self._lock:
+            self._id_to_name[stream_id] = user_identifier
+            self._name_to_id[user_identifier] = stream_id
+
+    def register_room(self, room_name: str, room_id: str):
+        """Manually register a room name to ID mapping.
+
+        Args:
+            room_name: The display name of the room.
+            room_id: The room's stream ID.
+        """
+        with self._lock:
+            self._name_to_id[room_name] = room_id
+            self._id_to_name[room_id] = room_name

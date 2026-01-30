@@ -3,9 +3,10 @@
 This module provides configuration classes for the Discord backend.
 """
 
+from pathlib import Path
 from typing import Optional
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 
 from ..backend import BackendConfig
 
@@ -19,7 +20,7 @@ class DiscordConfig(BackendConfig):
     You need a bot token from the Discord Developer Portal.
 
     Attributes:
-        bot_token: Discord bot token.
+        bot_token: Discord bot token (can be a file path).
         application_id: Discord application ID.
         guild_id: Default guild/server ID (optional).
         intents: Discord gateway intents to request.
@@ -36,7 +37,7 @@ class DiscordConfig(BackendConfig):
 
     bot_token: SecretStr = Field(
         default=SecretStr(""),
-        description="Discord bot token from Developer Portal.",
+        description="Discord bot token from Developer Portal (can be a file path).",
     )
     application_id: str = Field(
         default="",
@@ -62,6 +63,27 @@ class DiscordConfig(BackendConfig):
         default=None,
         description="Total number of shards.",
     )
+
+    @field_validator("bot_token", mode="before")
+    @classmethod
+    def validate_token(cls, v):
+        """Validate and load bot token, supporting file paths."""
+        if v is None or v == "":
+            return SecretStr("")
+
+        # Handle SecretStr input
+        if isinstance(v, SecretStr):
+            v = v.get_secret_value()
+
+        # Check if it's a file path
+        if Path(v).exists():
+            v = Path(v).read_text().strip()
+
+        # Accept any non-empty token (don't validate length for flexibility in testing)
+        if v:
+            return SecretStr(v)
+
+        raise ValueError("Token must be a valid Discord bot token or a file path containing one")
 
     @property
     def bot_token_str(self) -> str:

@@ -5,7 +5,7 @@ This module provides Symphony-specific models and utilities.
 
 from .backend import SymphonyBackend
 from .channel import SymphonyChannel, SymphonyRoom, SymphonyStreamType
-from .config import SymphonyConfig
+from .config import SymphonyConfig, SymphonyRoomMapper
 from .mention import (
     format_cashtag,
     format_hashtag,
@@ -21,6 +21,7 @@ from .user import SymphonyUser
 __all__ = (
     "SymphonyBackend",
     "SymphonyConfig",
+    "SymphonyRoomMapper",
     "SymphonyUser",
     "SymphonyChannel",
     "SymphonyRoom",
