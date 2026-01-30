@@ -5,9 +5,9 @@ data structures inherit from. It uses Pydantic for data validation
 and serialization.
 """
 
-from typing import Any, Dict, TypeVar
+from typing import Any, Dict, Self, TypeVar
 
-from pydantic import BaseModel as PydanticBaseModel, ConfigDict, Field
+from pydantic import BaseModel as PydanticBaseModel, ConfigDict, Field, PrivateAttr, model_validator
 
 __all__ = ("BaseModel", "Field", "Identifiable")
 
@@ -19,6 +19,11 @@ class BaseModel(PydanticBaseModel):
 
     Provides common configuration and utilities for all models.
     Inherits from Pydantic's BaseModel for validation and serialization.
+
+    Models can be marked as "incomplete" when they have partial information
+    that needs to be resolved by a backend (e.g., a Channel with only a name
+    but no id). Use `is_incomplete` to check, and `mark_incomplete()` /
+    `mark_complete()` to change the state.
     """
 
     model_config = ConfigDict(
@@ -27,6 +32,36 @@ class BaseModel(PydanticBaseModel):
         populate_by_name=True,
         validate_assignment=True,
     )
+
+    # Private attribute to track if this object needs resolution
+    _incomplete: bool = PrivateAttr(default=False)
+
+    @property
+    def is_incomplete(self) -> bool:
+        """Check if this object is marked as incomplete.
+
+        Incomplete objects have partial information and need to be
+        resolved by a backend to populate missing fields.
+
+        Returns:
+            bool: True if the object is incomplete.
+        """
+        return self._incomplete
+
+    def mark_incomplete(self) -> None:
+        """Mark this object as incomplete.
+
+        Call this when the object has partial information that needs
+        to be resolved by a backend.
+        """
+        self._incomplete = True
+
+    def mark_complete(self) -> None:
+        """Mark this object as complete.
+
+        Call this after a backend has resolved all missing fields.
+        """
+        self._incomplete = False
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert model to dictionary representation.
@@ -91,3 +126,14 @@ class Identifiable(BaseModel):
             bool: True if the object can potentially be resolved.
         """
         return bool(self.id or self.name)
+
+    @model_validator(mode="after")
+    def _check_completeness(self) -> Self:
+        """Auto-mark object as incomplete if it has no id but has other info.
+
+        This allows users to create objects with partial information
+        (e.g., Channel(name="general")) that can later be resolved.
+        """
+        if not self.id and self.is_resolvable:
+            self.mark_incomplete()
+        return self

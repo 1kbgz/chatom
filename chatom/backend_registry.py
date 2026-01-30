@@ -566,13 +566,208 @@ class BackendBase(BaseModel):
         return await self.fetch_channel_members(room_id)
 
     # =========================================================================
+    # Resolution methods
+    # =========================================================================
+
+    async def resolve_user(self, user: User) -> User:
+        """Resolve an incomplete User to a complete one.
+
+        If the user is already complete (has an id), returns it as-is.
+        Otherwise, attempts to look it up using available identifiers
+        (handle, email, name).
+
+        Args:
+            user: The user to resolve.
+
+        Returns:
+            A complete User with all fields populated.
+
+        Raises:
+            ValueError: If the user cannot be resolved.
+
+        Example:
+            >>> incomplete = User(email="john@example.com")
+            >>> complete = await backend.resolve_user(incomplete)
+            >>> print(complete.id)  # Now has the id
+        """
+        if user.is_complete:
+            return user
+
+        if not user.is_resolvable:
+            raise ValueError("Cannot resolve user: no identifying information provided")
+
+        # Try to fetch using available identifiers
+        resolved = await self.fetch_user(
+            id=user.id if user.id else None,
+            name=user.name if user.name else None,
+            handle=user.handle if user.handle else None,
+            email=user.email if user.email else None,
+        )
+
+        if resolved is None:
+            raise ValueError("Cannot resolve user: not found")
+
+        resolved.mark_complete()
+        return resolved
+
+    async def resolve_channel(self, channel: Channel) -> Channel:
+        """Resolve an incomplete Channel to a complete one.
+
+        If the channel is already complete (has an id), returns it as-is.
+        Otherwise, attempts to look it up using available identifiers (name).
+
+        Args:
+            channel: The channel to resolve.
+
+        Returns:
+            A complete Channel with all fields populated.
+
+        Raises:
+            ValueError: If the channel cannot be resolved.
+
+        Example:
+            >>> incomplete = Channel(name="general")
+            >>> complete = await backend.resolve_channel(incomplete)
+            >>> print(complete.id)  # Now has the id
+        """
+        if channel.is_complete:
+            return channel
+
+        if not channel.is_resolvable:
+            raise ValueError("Cannot resolve channel: no identifying information provided")
+
+        # Try to fetch using available identifiers
+        resolved = await self.fetch_channel(
+            id=channel.id if channel.id else None,
+            name=channel.name if channel.name else None,
+        )
+
+        if resolved is None:
+            raise ValueError("Cannot resolve channel: not found")
+
+        resolved.mark_complete()
+        return resolved
+
+    async def resolve_message(self, message: Message) -> Message:
+        """Resolve incomplete nested objects in a Message.
+
+        Resolves the message's author and channel if they are incomplete.
+        This is useful when a message is created with partial information
+        that needs to be filled in before sending.
+
+        Args:
+            message: The message to resolve.
+
+        Returns:
+            The message with resolved author and channel.
+
+        Example:
+            >>> msg = Message(
+            ...     content="Hello",
+            ...     channel=Channel(name="general"),
+            ...     author=User(email="john@example.com"),
+            ... )
+            >>> resolved = await backend.resolve_message(msg)
+            >>> print(resolved.channel.id)  # Now populated
+        """
+        if message.author and message.author.is_incomplete:
+            message.author = await self.resolve_user(message.author)
+
+        if message.channel and message.channel.is_incomplete:
+            message.channel = await self.resolve_channel(message.channel)
+
+        return message
+
+    # =========================================================================
     # Message methods
     # =========================================================================
+
+    async def _resolve_channel_id(self, channel: Union[str, Channel]) -> str:
+        """Helper to resolve a channel argument to an ID string.
+
+        Handles string IDs, complete Channel objects, and incomplete
+        Channel objects that need resolution.
+
+        Args:
+            channel: A channel ID string or Channel object.
+
+        Returns:
+            The channel ID string.
+
+        Raises:
+            ValueError: If the channel cannot be resolved.
+        """
+        if isinstance(channel, str):
+            return channel
+
+        if channel.is_complete:
+            return channel.id
+
+        # Resolve incomplete channel
+        resolved = await self.resolve_channel(channel)
+        return resolved.id
+
+    async def _resolve_user_id(self, user: Union[str, User]) -> str:
+        """Helper to resolve a user argument to an ID string.
+
+        Handles string IDs, complete User objects, and incomplete
+        User objects that need resolution.
+
+        Args:
+            user: A user ID string or User object.
+
+        Returns:
+            The user ID string.
+
+        Raises:
+            ValueError: If the user cannot be resolved.
+        """
+        if isinstance(user, str):
+            return user
+
+        if user.is_complete:
+            return user.id
+
+        # Resolve incomplete user
+        resolved = await self.resolve_user(user)
+        return resolved.id
+
+    async def _resolve_message_id(self, message: Union[str, Message], channel: Optional[Union[str, Channel]] = None) -> tuple[str, str]:
+        """Helper to resolve a message argument to (channel_id, message_id).
+
+        Handles string message IDs (requires channel), complete Message objects,
+        and incomplete Message objects.
+
+        Args:
+            message: A message ID string or Message object.
+            channel: Optional channel (required if message is a string).
+
+        Returns:
+            Tuple of (channel_id, message_id).
+
+        Raises:
+            ValueError: If the message/channel cannot be resolved.
+        """
+        if isinstance(message, str):
+            if channel is None:
+                raise ValueError("channel is required when message is a string ID")
+            channel_id = await self._resolve_channel_id(channel)
+            return channel_id, message
+
+        # It's a Message object
+        if message.channel:
+            channel_id = await self._resolve_channel_id(message.channel)
+        elif channel:
+            channel_id = await self._resolve_channel_id(channel)
+        else:
+            raise ValueError("Message has no channel and no channel was provided")
+
+        return channel_id, message.id
 
     @abstractmethod
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -582,19 +777,25 @@ class BackendBase(BaseModel):
         Retrieves historical messages from the specified channel.
 
         Args:
-            channel_id: The channel to fetch messages from.
+            channel: The channel to fetch messages from (ID string or Channel object).
             limit: Maximum number of messages to fetch.
             before: Fetch messages before this message ID (for pagination).
             after: Fetch messages after this message ID (for pagination).
 
         Returns:
             List of messages, ordered from oldest to newest.
+
+        Example:
+            >>> # All of these work:
+            >>> msgs = await backend.fetch_messages("C123")
+            >>> msgs = await backend.fetch_messages(Channel(id="C123"))
+            >>> msgs = await backend.fetch_messages(Channel(name="general"))  # Resolves
         """
         raise NotImplementedError("Subclass must implement fetch_messages()")
 
     async def fetch_new_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         after: Optional[str] = None,
     ) -> List[Message]:
         """Fetch new messages from a channel.
@@ -603,47 +804,53 @@ class BackendBase(BaseModel):
         specific point, typically used for getting updates.
 
         Args:
-            channel_id: The channel to fetch messages from.
+            channel: The channel to fetch messages from (ID string or Channel object).
             after: Fetch messages after this message ID.
 
         Returns:
             List of new messages.
         """
-        return await self.fetch_messages(channel_id=channel_id, after=after)
+        return await self.fetch_messages(channel=channel, after=after)
 
     @abstractmethod
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a message to a channel.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional platform-specific options (e.g., embeds,
                       attachments, thread_id).
 
         Returns:
             The sent message.
+
+        Example:
+            >>> # All of these work:
+            >>> msg = await backend.send_message("C123", "Hello!")
+            >>> msg = await backend.send_message(Channel(id="C123"), "Hello!")
+            >>> msg = await backend.send_message(Channel(name="general"), "Hello!")  # Resolves
         """
         raise NotImplementedError("Subclass must implement send_message()")
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         content: str,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> Message:
         """Edit an existing message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The ID of the message to edit.
+            message: The message to edit (ID string or Message object).
             content: The new message content.
+            channel: The channel containing the message (required if message is a string).
             **kwargs: Additional platform-specific options.
 
         Returns:
@@ -651,22 +858,34 @@ class BackendBase(BaseModel):
 
         Raises:
             NotImplementedError: If the backend doesn't support editing.
+
+        Example:
+            >>> # Edit using Message object
+            >>> edited = await backend.edit_message(msg, "Updated content")
+            >>> # Edit using IDs
+            >>> edited = await backend.edit_message("M123", "Updated", channel="C123")
         """
         raise NotImplementedError("This backend does not support message editing")
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete a message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The ID of the message to delete.
+            message: The message to delete (ID string or Message object).
+            channel: The channel containing the message (required if message is a string).
 
         Raises:
             NotImplementedError: If the backend doesn't support deletion.
+
+        Example:
+            >>> # Delete using Message object
+            >>> await backend.delete_message(msg)
+            >>> # Delete using IDs
+            >>> await backend.delete_message("M123", channel="C123")
         """
         raise NotImplementedError("This backend does not support message deletion")
 
@@ -709,13 +928,16 @@ class BackendBase(BaseModel):
         # Default implementation uses send_message with thread_id
         # Get the thread ID: either the message's thread or start a new thread
         thread_id = message.thread_id or message.id
-        channel_id = message.channel_id or (message.channel.id if message.channel else "")
+        channel = message.channel
 
-        if not channel_id:
+        if not channel and not message.channel_id:
             raise ValueError("Cannot reply: message has no channel information")
 
+        # Use channel object if available, otherwise use channel_id
+        target_channel: Union[str, Channel] = channel if channel else message.channel_id
+
         return await self.send_message(
-            channel_id=channel_id,
+            channel=target_channel,
             content=content,
             thread_id=thread_id,
             **kwargs,
@@ -727,7 +949,7 @@ class BackendBase(BaseModel):
 
     async def stream_messages(
         self,
-        channel_id: Optional[str] = None,
+        channel: Optional[Union[str, Channel]] = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[Message]:
@@ -740,9 +962,9 @@ class BackendBase(BaseModel):
         The stream continues until the generator is closed or an error occurs.
 
         Args:
-            channel_id: Optional channel ID to filter messages to a specific
-                        channel. If None, yields messages from all channels
-                        the bot has access to.
+            channel: Optional channel to filter messages to a specific
+                     channel (ID string or Channel object). If None, yields
+                     messages from all channels the bot has access to.
             skip_own: If True (default), skip messages sent by the bot itself.
             skip_history: If True (default), skip messages that existed before
                          the stream started. Only yields new messages.
@@ -761,7 +983,11 @@ class BackendBase(BaseModel):
             ...         await backend.reply_in_thread(message, "Hello!")
             >>>
             >>> # Filter to a specific channel
-            >>> async for message in backend.stream_messages(channel_id="C123"):
+            >>> async for message in backend.stream_messages(channel="C123"):
+            ...     await process_message(message)
+            >>>
+            >>> # Filter using Channel object
+            >>> async for message in backend.stream_messages(channel=Channel(name="general")):
             ...     await process_message(message)
         """
         raise NotImplementedError("This backend does not support message streaming")
@@ -809,17 +1035,23 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support presence")
 
-    async def get_presence(self, user_id: str) -> Optional[Presence]:
+    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
         """Get a user's presence status.
 
         Args:
-            user_id: The user ID to get presence for.
+            user: The user to get presence for (ID string or User object).
 
         Returns:
             The user's presence, or None if not available.
 
         Raises:
             NotImplementedError: If the backend doesn't support presence.
+
+        Example:
+            >>> # All of these work:
+            >>> presence = await backend.get_presence("U123")
+            >>> presence = await backend.get_presence(User(id="U123"))
+            >>> presence = await backend.get_presence(User(email="john@example.com"))  # Resolves
         """
         raise NotImplementedError("This backend does not support presence")
 
@@ -895,37 +1127,49 @@ class BackendBase(BaseModel):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a reaction to a message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message to react to.
+            message: The message to react to (ID string or Message object).
             emoji: The emoji to add (name or unicode).
+            channel: The channel containing the message (required if message is a string).
 
         Raises:
             NotImplementedError: If the backend doesn't support reactions.
+
+        Example:
+            >>> # React using Message object
+            >>> await backend.add_reaction(msg, "👍")
+            >>> # React using IDs
+            >>> await backend.add_reaction("M123", "👍", channel="C123")
         """
         raise NotImplementedError("This backend does not support reactions")
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a reaction from a message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message to remove reaction from.
+            message: The message to remove reaction from (ID string or Message object).
             emoji: The emoji to remove (name or unicode).
+            channel: The channel containing the message (required if message is a string).
 
         Raises:
             NotImplementedError: If the backend doesn't support reactions.
+
+        Example:
+            >>> # Remove reaction using Message object
+            >>> await backend.remove_reaction(msg, "👍")
+            >>> # Remove reaction using IDs
+            >>> await backend.remove_reaction("M123", "👍", channel="C123")
         """
         raise NotImplementedError("This backend does not support reactions")
 
@@ -935,7 +1179,7 @@ class BackendBase(BaseModel):
 
     async def create_dm(
         self,
-        user_ids: List[str],
+        users: List[Union[str, User]],
     ) -> Optional[str]:
         """Create a direct message (DM) or instant message (IM) channel.
 
@@ -944,19 +1188,27 @@ class BackendBase(BaseModel):
         this may create a group DM/MIM depending on the platform.
 
         Args:
-            user_ids: List of user IDs to include in the DM.
+            users: List of users to include in the DM (ID strings or User objects).
 
         Returns:
             The channel/stream ID of the created DM, or None if failed.
 
         Raises:
             NotImplementedError: If the backend doesn't support DM creation.
+
+        Example:
+            >>> # Create DM with user IDs
+            >>> dm_id = await backend.create_dm(["U123", "U456"])
+            >>> # Create DM with User objects
+            >>> dm_id = await backend.create_dm([User(id="U123")])
+            >>> # Create DM with incomplete User (will resolve)
+            >>> dm_id = await backend.create_dm([User(email="john@example.com")])
         """
         raise NotImplementedError("This backend does not support DM creation")
 
     async def create_im(
         self,
-        user_ids: List[str],
+        users: List[Union[str, User]],
     ) -> Optional[str]:
         """Create an instant message (IM) channel.
 
@@ -964,12 +1216,12 @@ class BackendBase(BaseModel):
         fits your platform (IM for Symphony, DM for Discord/Slack).
 
         Args:
-            user_ids: List of user IDs to include in the IM.
+            users: List of users to include in the IM (ID strings or User objects).
 
         Returns:
             The channel/stream ID of the created IM, or None if failed.
         """
-        return await self.create_dm(user_ids)
+        return await self.create_dm(users)
 
     async def create_channel(
         self,
@@ -1024,7 +1276,7 @@ class BackendBase(BaseModel):
 
     async def join_channel(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         **kwargs: Any,
     ) -> None:
         """Join a channel.
@@ -1032,19 +1284,25 @@ class BackendBase(BaseModel):
         Makes the bot/user a member of the specified channel.
 
         Args:
-            channel_id: The channel ID or name to join.
+            channel: The channel to join (ID string or Channel object).
             **kwargs: Additional platform-specific options:
                 - key: Channel password/key (IRC).
                 - invite_code: Invite code (Discord).
 
         Raises:
             NotImplementedError: If the backend doesn't support joining channels.
+
+        Example:
+            >>> # Join using channel ID
+            >>> await backend.join_channel("C123")
+            >>> # Join using Channel object
+            >>> await backend.join_channel(Channel(name="general"))
         """
         raise NotImplementedError("This backend does not support joining channels")
 
     async def join_room(
         self,
-        room_id: str,
+        room: Union[str, Channel],
         **kwargs: Any,
     ) -> None:
         """Join a room.
@@ -1053,14 +1311,14 @@ class BackendBase(BaseModel):
         fits your platform.
 
         Args:
-            room_id: The room ID or name to join.
+            room: The room to join (ID string or Channel object).
             **kwargs: Additional platform-specific options.
         """
-        return await self.join_channel(room_id, **kwargs)
+        return await self.join_channel(room, **kwargs)
 
     async def leave_channel(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         **kwargs: Any,
     ) -> None:
         """Leave a channel.
@@ -1068,18 +1326,24 @@ class BackendBase(BaseModel):
         Removes the bot/user from the specified channel.
 
         Args:
-            channel_id: The channel ID or name to leave.
+            channel: The channel to leave (ID string or Channel object).
             **kwargs: Additional platform-specific options:
                 - message: Part message (IRC).
 
         Raises:
             NotImplementedError: If the backend doesn't support leaving channels.
+
+        Example:
+            >>> # Leave using channel ID
+            >>> await backend.leave_channel("C123")
+            >>> # Leave using Channel object
+            >>> await backend.leave_channel(Channel(id="C123", name="general"))
         """
         raise NotImplementedError("This backend does not support leaving channels")
 
     async def leave_room(
         self,
-        room_id: str,
+        room: Union[str, Channel],
         **kwargs: Any,
     ) -> None:
         """Leave a room.
@@ -1088,10 +1352,10 @@ class BackendBase(BaseModel):
         fits your platform.
 
         Args:
-            room_id: The room ID or name to leave.
+            room: The room to leave (ID string or Channel object).
             **kwargs: Additional platform-specific options.
         """
-        return await self.leave_channel(room_id, **kwargs)
+        return await self.leave_channel(room, **kwargs)
 
     # =========================================================================
     # Extended messaging methods
@@ -1099,7 +1363,7 @@ class BackendBase(BaseModel):
 
     async def send_action(
         self,
-        target: str,
+        target: Union[str, Channel, User],
         action: str,
     ) -> None:
         """Send an action/emote message.
@@ -1109,17 +1373,23 @@ class BackendBase(BaseModel):
         this may be formatted as italicized text or similar.
 
         Args:
-            target: The channel or user to send to.
+            target: The channel or user to send to (ID string, Channel, or User).
             action: The action text (e.g., "waves hello").
 
         Raises:
             NotImplementedError: If the backend doesn't support actions.
+
+        Example:
+            >>> # Send action to channel
+            >>> await backend.send_action(Channel(name="#general"), "waves hello")
+            >>> # Send action to user
+            >>> await backend.send_action(User(id="U123"), "waves hello")
         """
         raise NotImplementedError("This backend does not support action messages")
 
     async def send_notice(
         self,
-        target: str,
+        target: Union[str, Channel, User],
         text: str,
     ) -> None:
         """Send a notice message.
@@ -1128,11 +1398,17 @@ class BackendBase(BaseModel):
         On IRC this is a NOTICE. Other platforms may not distinguish notices.
 
         Args:
-            target: The channel or user to send to.
+            target: The channel or user to send to (ID string, Channel, or User).
             text: The notice text.
 
         Raises:
             NotImplementedError: If the backend doesn't support notices.
+
+        Example:
+            >>> # Send notice to channel
+            >>> await backend.send_notice(Channel(name="#general"), "Server maintenance")
+            >>> # Send notice to user
+            >>> await backend.send_notice(User(id="U123"), "You have been warned")
         """
         raise NotImplementedError("This backend does not support notice messages")
 

@@ -527,7 +527,7 @@ class SlackE2ETest:
                 nonlocal received_message
                 print("  [receive_one_message] Starting to iterate stream_messages...")
                 # skip_own=True and skip_history=True are defaults, so we just get user messages
-                async for message in self.backend.stream_messages(channel_id=self.channel_id):
+                async for message in self.backend.stream_messages(channel=self.channel_id):
                     print(f"  [receive_one_message] Got message: {message}")
                     received_message = message
                     return  # Got one message from a user, exit
