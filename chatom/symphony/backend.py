@@ -434,24 +434,35 @@ class SymphonyBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, Message]] = None,
+        after: Optional[Union[str, Message]] = None,
     ) -> List[Message]:
         """Fetch messages from a Symphony stream.
 
         Args:
-            channel_id: The stream ID to fetch messages from.
+            channel: The stream to fetch messages from (ID string or Channel object).
             limit: Maximum number of messages.
-            before: Fetch messages before this message ID.
-            after: Fetch messages after this message ID.
+            before: Fetch messages before this message (ID string or Message object).
+            after: Fetch messages after this message (ID string or Message object).
 
         Returns:
             List of messages.
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
+
+        # Resolve after message ID
+        after_id = None
+        if after:
+            if isinstance(after, Message):
+                after_id = after.id
+            else:
+                after_id = after
 
         try:
             message_service = self._bdk.messages()
@@ -460,9 +471,9 @@ class SymphonyBackend(BackendBase):
             kwargs: dict = {"stream_id": channel_id, "limit": limit}
 
             # Symphony uses timestamps for pagination
-            if after:
+            if after_id:
                 # Try to parse as timestamp
-                kwargs["since"] = int(after)
+                kwargs["since"] = int(after_id)
 
             messages_data = await message_service.list_messages(**kwargs)
 
@@ -484,14 +495,14 @@ class SymphonyBackend(BackendBase):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a message to a Symphony stream.
 
         Args:
-            channel_id: The stream ID to send to.
+            channel: The stream to send to (ID string or Channel object).
             content: The message content (MessageML).
             **kwargs: Additional options:
                 - data: Template data as dict.
@@ -502,6 +513,9 @@ class SymphonyBackend(BackendBase):
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
 
         try:
             message_service = self._bdk.messages()
@@ -534,9 +548,9 @@ class SymphonyBackend(BackendBase):
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         content: str,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a Symphony message.
@@ -545,9 +559,9 @@ class SymphonyBackend(BackendBase):
         update_message API.
 
         Args:
-            channel_id: The stream containing the message.
-            message_id: The message ID.
+            message: The message to edit (ID string or Message object).
             content: The new content (MessageML).
+            channel: The stream containing the message (required if message is a string).
             **kwargs: Additional options.
 
         Returns:
@@ -555,6 +569,9 @@ class SymphonyBackend(BackendBase):
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
 
         try:
             message_service = self._bdk.messages()
@@ -583,17 +600,23 @@ class SymphonyBackend(BackendBase):
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete (suppress) a Symphony message.
 
         Args:
-            channel_id: The stream containing the message.
-            message_id: The message ID.
+            message: The message to delete (ID string or Message object).
+            channel: The stream containing the message (not used for Symphony).
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        # Resolve message ID (channel not needed for Symphony suppress)
+        if isinstance(message, Message):
+            message_id = message.id
+        else:
+            message_id = message
 
         try:
             message_service = self._bdk.messages()
@@ -679,9 +702,9 @@ class SymphonyBackend(BackendBase):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a reaction to a message.
 
@@ -689,9 +712,9 @@ class SymphonyBackend(BackendBase):
         This raises NotImplementedError.
 
         Args:
-            channel_id: The stream containing the message.
-            message_id: The message ID.
+            message: The message to react to (ID string or Message object).
             emoji: The emoji.
+            channel: The stream containing the message (not used).
 
         Raises:
             NotImplementedError: Symphony doesn't support emoji reactions.
@@ -700,18 +723,18 @@ class SymphonyBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a reaction from a message.
 
         Note: Symphony doesn't support reactions.
 
         Args:
-            channel_id: The stream containing the message.
-            message_id: The message ID.
+            message: The message to remove reaction from (ID string or Message object).
             emoji: The emoji to remove.
+            channel: The stream containing the message (not used).
 
         Raises:
             NotImplementedError: Symphony doesn't support emoji reactions.
@@ -750,13 +773,13 @@ class SymphonyBackend(BackendBase):
 
     # Additional Symphony-specific methods
 
-    async def create_dm(self, user_ids: List[str]) -> Optional[str]:
+    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create a direct message (IM) or multi-party IM.
 
         Args:
-            user_ids: List of user IDs to include in the DM.
-                      If one user ID, creates a 1:1 IM.
-                      If multiple user IDs, uses admin endpoint for MIM.
+            users: List of users to include in the DM (ID strings or User objects).
+                   If one user, creates a 1:1 IM.
+                   If multiple users, uses admin endpoint for MIM.
 
         Returns:
             The stream ID of the created DM.
@@ -766,6 +789,19 @@ class SymphonyBackend(BackendBase):
 
         try:
             stream_service = self._bdk.streams()
+
+            # Resolve user IDs
+            user_ids: List[str] = []
+            for user in users:
+                if isinstance(user, User):
+                    if user.is_incomplete:
+                        resolved = await self.resolve_user(user)
+                        user_ids.append(resolved.id)
+                    else:
+                        user_ids.append(user.id)
+                else:
+                    user_ids.append(user)
+
             # Convert string IDs to int for Symphony API
             int_user_ids = [int(uid) for uid in user_ids]
 
@@ -781,18 +817,18 @@ class SymphonyBackend(BackendBase):
         except Exception as e:
             raise RuntimeError(f"Failed to create DM: {e}") from e
 
-    async def create_im(self, user_ids: List[str]) -> Optional[str]:
+    async def create_im(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create an instant message (IM) or multi-party IM.
 
         This is an alias for create_dm, using Symphony's terminology.
 
         Args:
-            user_ids: List of user IDs to include in the IM.
+            users: List of users to include in the IM (ID strings or User objects).
 
         Returns:
             The stream ID of the created IM.
         """
-        return await self.create_dm(user_ids)
+        return await self.create_dm(users)
 
     async def create_channel(
         self,
@@ -883,7 +919,7 @@ class SymphonyBackend(BackendBase):
 
     async def stream_messages(
         self,
-        channel_id: Optional[str] = None,
+        channel: Optional[Union[str, Channel]] = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> "AsyncIterator[Message]":
@@ -892,7 +928,7 @@ class SymphonyBackend(BackendBase):
         This async generator yields Message objects as they arrive.
 
         Args:
-            channel_id: Optional stream ID to filter messages.
+            channel: Optional stream to filter messages (ID string or Channel object).
             skip_own: If True (default), skip messages sent by the bot itself.
             skip_history: If True (default), skip messages that existed before
                          the stream started. Only yields new messages.
@@ -902,6 +938,11 @@ class SymphonyBackend(BackendBase):
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        # Resolve channel ID if provided
+        channel_id: Optional[str] = None
+        if channel is not None:
+            channel_id = await self._resolve_channel_id(channel)
 
         try:
             from symphony.bdk.core.service.datafeed.real_time_event_listener import (

@@ -352,18 +352,18 @@ class DiscordBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, Message]] = None,
+        after: Optional[Union[str, Message]] = None,
     ) -> List[Message]:
         """Fetch messages from a Discord channel.
 
         Args:
-            channel_id: The channel to fetch messages from.
+            channel: The channel to fetch messages from (ID string or Channel object).
             limit: Maximum number of messages (1-100).
-            before: Fetch messages before this message ID.
-            after: Fetch messages after this message ID.
+            before: Fetch messages before this message (ID string or Message object).
+            after: Fetch messages after this message (ID string or Message object).
 
         Returns:
             List of messages.
@@ -371,20 +371,38 @@ class DiscordBackend(BackendBase):
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
+
+        # Resolve before/after message IDs
+        before_id = None
+        if before:
+            if isinstance(before, Message):
+                before_id = before.id
+            else:
+                before_id = before
+
+        after_id = None
+        if after:
+            if isinstance(after, Message):
+                after_id = after.id
+            else:
+                after_id = after
+
         try:
-            channel = await self._client.fetch_channel(int(channel_id))
-            if channel is None:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
                 return []
 
             # Build kwargs for history()
             kwargs: dict[str, Any] = {"limit": min(limit, 100)}
-            if before:
-                kwargs["before"] = discord.Object(id=int(before))
-            if after:
-                kwargs["after"] = discord.Object(id=int(after))
+            if before_id:
+                kwargs["before"] = discord.Object(id=int(before_id))
+            if after_id:
+                kwargs["after"] = discord.Object(id=int(after_id))
 
             messages: List[Message] = []
-            async for msg in channel.history(**kwargs):
+            async for msg in discord_channel.history(**kwargs):
                 message = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
@@ -402,14 +420,14 @@ class DiscordBackend(BackendBase):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a message to a Discord channel.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional options (embed, file, tts, etc.).
 
@@ -419,9 +437,12 @@ class DiscordBackend(BackendBase):
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
+
         try:
-            channel = await self._client.fetch_channel(int(channel_id))
-            if channel is None:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
                 raise RuntimeError(f"Channel {channel_id} not found")
 
             # Extract common kwargs
@@ -441,7 +462,7 @@ class DiscordBackend(BackendBase):
             if files:
                 send_kwargs["files"] = files
 
-            msg = await channel.send(**send_kwargs)
+            msg = await discord_channel.send(**send_kwargs)
 
             return DiscordMessage(
                 id=str(msg.id),
@@ -456,17 +477,17 @@ class DiscordBackend(BackendBase):
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         content: str,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a Discord message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to edit (ID string or Message object).
             content: The new content.
+            channel: The channel containing the message (required if message is a string).
             **kwargs: Additional options.
 
         Returns:
@@ -475,12 +496,15 @@ class DiscordBackend(BackendBase):
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
+
         try:
-            channel = await self._client.fetch_channel(int(channel_id))
-            if channel is None:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
                 raise RuntimeError(f"Channel {channel_id} not found")
 
-            msg = await channel.fetch_message(int(message_id))
+            msg = await discord_channel.fetch_message(int(message_id))
             edited_msg = await msg.edit(content=content, **kwargs)
 
             return DiscordMessage(
@@ -497,24 +521,27 @@ class DiscordBackend(BackendBase):
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete a Discord message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to delete (ID string or Message object).
+            channel: The channel containing the message (required if message is a string).
         """
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
+
         try:
-            channel = await self._client.fetch_channel(int(channel_id))
-            if channel is None:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
                 raise RuntimeError(f"Channel {channel_id} not found")
 
-            msg = await channel.fetch_message(int(message_id))
+            msg = await discord_channel.fetch_message(int(message_id))
             await msg.delete()
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to delete message: {e}") from e
@@ -607,52 +634,58 @@ class DiscordBackend(BackendBase):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a reaction to a message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to react to (ID string or Message object).
             emoji: The emoji (unicode or custom format <:name:id>).
+            channel: The channel containing the message (required if message is a string).
         """
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
+
         try:
-            channel = await self._client.fetch_channel(int(channel_id))
-            if channel is None:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
                 raise RuntimeError(f"Channel {channel_id} not found")
 
-            msg = await channel.fetch_message(int(message_id))
+            msg = await discord_channel.fetch_message(int(message_id))
             await msg.add_reaction(emoji)
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to add reaction: {e}") from e
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a reaction from a message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to remove reaction from (ID string or Message object).
             emoji: The emoji to remove.
+            channel: The channel containing the message (required if message is a string).
         """
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
+
         try:
-            channel = await self._client.fetch_channel(int(channel_id))
-            if channel is None:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
                 raise RuntimeError(f"Channel {channel_id} not found")
 
-            msg = await channel.fetch_message(int(message_id))
+            msg = await discord_channel.fetch_message(int(message_id))
             # Remove the bot's own reaction
             await msg.remove_reaction(emoji, self._client.user)
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
@@ -1103,7 +1136,7 @@ class DiscordBackend(BackendBase):
 
     async def stream_messages(
         self,
-        channel_id: Optional[str] = None,
+        channel: Optional[Union[str, Channel]] = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[DiscordMessage]:
@@ -1114,7 +1147,7 @@ class DiscordBackend(BackendBase):
         and have MESSAGE_CONTENT intent enabled.
 
         Args:
-            channel_id: Optional channel ID to filter messages.
+            channel: Optional channel to filter messages (ID string or Channel object).
             skip_own: If True (default), skip messages sent by the bot itself.
             skip_history: If True (default), skip messages that existed before
                          the stream started. Only yields new messages.
@@ -1127,6 +1160,11 @@ class DiscordBackend(BackendBase):
 
         if not HAS_DISCORD:
             raise RuntimeError("discord.py is not installed")
+
+        # Resolve channel ID if provided
+        channel_id: Optional[str] = None
+        if channel is not None:
+            channel_id = await self._resolve_channel_id(channel)
 
         # Get bot info for filtering
         bot_user_id = str(self._client.user.id) if self._client.user else None

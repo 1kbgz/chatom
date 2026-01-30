@@ -666,13 +666,13 @@ class SymphonyE2ETest:
             received_message = None
             try:
                 async with asyncio.timeout(30.0):
-                    async for message in self.backend.stream_messages(channel_id=self.stream_id):
+                    async for message in self.backend.stream_messages(channel=self.stream_id):
                         # First message from a user after stream started - that's the one we want
                         received_message = message
                         break
 
             except asyncio.TimeoutError:
-                self.log("Timeout waiting for inbound message (60s)", success=False)
+                self.log("Timeout waiting for inbound message (30s)", success=False)
                 timeout_msg = FormattedMessage().add_text("⏰ ").add_bold("[E2E Test] Timeout").add_text(" - No message received within 30 seconds.")
                 await self.backend.send_message(self.stream_id, timeout_msg.render(Format.SYMPHONY_MESSAGEML))
                 return

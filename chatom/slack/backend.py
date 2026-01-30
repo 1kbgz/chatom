@@ -302,6 +302,7 @@ class SlackBackend(BackendBase):
                         cursor=cursor,
                     )
                     if not response.get("ok"):
+                        _log.warning(f"conversations_list failed: {response.get('error')}")
                         break
 
                     for channel_data in response.get("channels", []):
@@ -312,8 +313,8 @@ class SlackBackend(BackendBase):
                     cursor = response.get("response_metadata", {}).get("next_cursor")
                     if not cursor:
                         break
-            except Exception:
-                pass
+            except Exception as e:
+                _log.warning(f"Error listing channels: {e}")
 
         return None
 
@@ -323,6 +324,9 @@ class SlackBackend(BackendBase):
             response = await self._async_client.conversations_info(channel=channel_id)
             if response.get("ok"):
                 channel_data = response.get("channel", {})
+                # Creator is a user ID string - create incomplete User object
+                creator_id = channel_data.get("creator")
+                creator = SlackUser(id=creator_id, name="") if creator_id else None
                 channel = SlackChannel(
                     id=channel_data.get("id", channel_id),
                     name=channel_data.get("name", ""),
@@ -335,14 +339,14 @@ class SlackBackend(BackendBase):
                     is_shared=channel_data.get("is_shared", False),
                     is_ext_shared=channel_data.get("is_ext_shared", False),
                     is_org_shared=channel_data.get("is_org_shared", False),
-                    creator=channel_data.get("creator", ""),
+                    creator=creator,
                     purpose=channel_data.get("purpose", {}).get("value", ""),
                     num_members=channel_data.get("num_members"),
                 )
                 self.channels.add(channel)
                 return channel
-        except Exception:
-            pass
+        except Exception as e:
+            _log.warning(f"Error fetching channel {channel_id}: {e}")
         return None
 
     def _parse_slack_message(self, msg_data: dict, channel_id: str) -> SlackMessage:
@@ -371,6 +375,7 @@ class SlackBackend(BackendBase):
                 is_bot=is_bot,
             )
 
+        # Create thread object only if thread_ts exists
         thread_id = msg_data.get("thread_ts")
         thread = Thread(id=thread_id) if thread_id else None
 
@@ -390,31 +395,49 @@ class SlackBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, "SlackMessage"]] = None,
+        after: Optional[Union[str, "SlackMessage"]] = None,
     ) -> List[SlackMessage]:
         """Fetch messages from a Slack channel.
 
         Uses the conversations.history API.
 
         Args:
-            channel_id: The channel to fetch messages from.
+            channel: The channel to fetch messages from (ID string or Channel object).
             limit: Maximum number of messages (1-1000).
-            before: Fetch messages before this timestamp (latest).
-            after: Fetch messages after this timestamp (oldest).
+            before: Fetch messages before this timestamp/message (latest).
+            after: Fetch messages after this timestamp/message (oldest).
 
         Returns:
             List of messages, newest first.
         """
         self._ensure_connected()
 
-        kwargs: dict = {"channel": channel_id, "limit": min(limit, 1000)}
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
+
+        # Resolve before/after message IDs
+        before_ts = None
         if before:
-            kwargs["latest"] = before
+            if isinstance(before, SlackMessage):
+                before_ts = before.id
+            else:
+                before_ts = before
+
+        after_ts = None
         if after:
-            kwargs["oldest"] = after
+            if isinstance(after, SlackMessage):
+                after_ts = after.id
+            else:
+                after_ts = after
+
+        kwargs: dict = {"channel": channel_id, "limit": min(limit, 1000)}
+        if before_ts:
+            kwargs["latest"] = before_ts
+        if after_ts:
+            kwargs["oldest"] = after_ts
 
         response = await self._async_client.conversations_history(**kwargs)
 
@@ -430,7 +453,7 @@ class SlackBackend(BackendBase):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> SlackMessage:
@@ -439,7 +462,7 @@ class SlackBackend(BackendBase):
         Uses the chat.postMessage API.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional options. Accepts both:
                       - thread_id (chatom standard) - translated to thread_ts
@@ -450,6 +473,9 @@ class SlackBackend(BackendBase):
             The sent message.
         """
         self._ensure_connected()
+
+        # Resolve channel ID
+        channel_id = await self._resolve_channel_id(channel)
 
         # Translate thread_id to thread_ts for Slack API
         if "thread_id" in kwargs and "thread_ts" not in kwargs:
@@ -470,9 +496,9 @@ class SlackBackend(BackendBase):
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
         content: str,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Edit a Slack message.
@@ -480,15 +506,18 @@ class SlackBackend(BackendBase):
         Uses the chat.update API.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp (ts).
+            message: The message to edit (ts string or SlackMessage object).
             content: The new content.
+            channel: The channel containing the message (required if message is a string).
             **kwargs: Additional options.
 
         Returns:
             The edited message.
         """
         self._ensure_connected()
+
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
 
         response = await self._async_client.chat_update(
             channel=channel_id,
@@ -506,18 +535,21 @@ class SlackBackend(BackendBase):
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete a Slack message.
 
         Uses the chat.delete API.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp (ts).
+            message: The message to delete (ts string or SlackMessage object).
+            channel: The channel containing the message (required if message is a string).
         """
         self._ensure_connected()
+
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
 
         response = await self._async_client.chat_delete(
             channel=channel_id,
@@ -595,20 +627,23 @@ class SlackBackend(BackendBase):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a reaction to a message.
 
         Uses the reactions.add API.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp (ts).
+            message: The message to react to (ts string or SlackMessage object).
             emoji: The emoji name (without colons).
+            channel: The channel containing the message (required if message is a string).
         """
         self._ensure_connected()
+
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
 
         # Remove colons if present
         emoji = emoji.strip(":")
@@ -627,20 +662,23 @@ class SlackBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a reaction from a message.
 
         Uses the reactions.remove API.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp (ts).
+            message: The message to remove reaction from (ts string or SlackMessage object).
             emoji: The emoji name to remove.
+            channel: The channel containing the message (required if message is a string).
         """
         self._ensure_connected()
+
+        # Resolve message and channel IDs
+        message_id, channel_id = await self._resolve_message_id(message, channel)
 
         # Remove colons if present
         emoji = emoji.strip(":")
@@ -683,7 +721,7 @@ class SlackBackend(BackendBase):
             return _mention_channel(channel)
         return f"<#{channel.id}>"
 
-    async def create_dm(self, user_ids: List[str]) -> Optional[str]:
+    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create a DM/IM channel with the specified users.
 
         Uses conversations.open API to create or retrieve a DM channel.
@@ -691,17 +729,25 @@ class SlackBackend(BackendBase):
         a group DM (multi-party DM).
 
         Args:
-            user_ids: List of user IDs to include in the DM.
-                      Can be a single user ID or a list.
+            users: List of users to include in the DM (ID strings or User objects).
+                   Can be a single user or a list.
 
         Returns:
             The DM channel ID, or None if creation failed.
         """
         self._ensure_connected()
 
-        # Handle both single user_id string and list of user_ids
-        if isinstance(user_ids, str):
-            user_ids = [user_ids]
+        # Resolve user IDs
+        user_ids: List[str] = []
+        for user in users:
+            if isinstance(user, User):
+                if user.is_incomplete:
+                    resolved = await self.resolve_user(user)
+                    user_ids.append(resolved.id)
+                else:
+                    user_ids.append(user.id)
+            else:
+                user_ids.append(user)
 
         if len(user_ids) == 1:
             # Single user DM
@@ -802,7 +848,7 @@ class SlackBackend(BackendBase):
 
     async def stream_messages(
         self,
-        channel_id: Optional[str] = None,
+        channel: Optional[Union[str, Channel]] = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[SlackMessage]:
@@ -811,7 +857,7 @@ class SlackBackend(BackendBase):
         This requires an app token (xapp-...) to be configured.
 
         Args:
-            channel_id: Optional channel ID to filter messages.
+            channel: Optional channel to filter messages (ID string or Channel object).
             skip_own: If True (default), skip messages sent by the bot itself.
             skip_history: If True (default), skip messages that existed before
                          the stream started. Only yields new messages.
@@ -820,6 +866,11 @@ class SlackBackend(BackendBase):
             Message: Each message as it arrives.
         """
         self._ensure_connected()
+
+        # Resolve channel ID if provided
+        channel_id: Optional[str] = None
+        if channel is not None:
+            channel_id = await self._resolve_channel_id(channel)
 
         if not self.config.app_token:
             raise RuntimeError("Socket Mode requires an app token (xapp-...). Set app_token in SlackConfig to enable message streaming.")

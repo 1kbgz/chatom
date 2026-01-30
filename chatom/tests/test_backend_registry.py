@@ -49,10 +49,10 @@ class TestBackendBase:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -79,10 +79,10 @@ class TestBackendBase:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -111,10 +111,10 @@ class TestSyncHelper:
             async def fetch_channel(self, id: str):
                 return Channel(id=id, name=f"Channel {id}")
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -140,10 +140,10 @@ class TestSyncHelper:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -170,10 +170,10 @@ class TestSyncHelper:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -203,10 +203,10 @@ class TestSyncHelper:
             async def fetch_channel(self, id: str = None, name: str = None):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -240,10 +240,10 @@ class TestBackendRegistry:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         # Should be able to get the backend
@@ -270,10 +270,10 @@ class TestBackendRegistry:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         retrieved = BackendRegistry.get("my_custom_backend")
@@ -304,10 +304,10 @@ class TestBackendRegistry:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         format_val = BackendRegistry.get_format("format_test")
@@ -340,10 +340,10 @@ class TestBackendRegistry:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         instance1 = BackendRegistry.get_instance("instance_test")
@@ -374,10 +374,10 @@ class TestConvenienceFunctions:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         backend_class = get_backend("convenience_test")
@@ -403,10 +403,10 @@ class TestConvenienceFunctions:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="1", content=content)
 
         format_val = get_backend_format("format_convenience")
@@ -580,7 +580,7 @@ class TestFetchMessages:
         sig = inspect.signature(BackendBase.fetch_messages)
         params = list(sig.parameters.keys())
         assert "self" in params
-        assert "channel_id" in params
+        assert "channel" in params  # Changed from channel_id to channel
         assert "limit" in params
         assert "before" in params
         assert "after" in params
@@ -605,10 +605,10 @@ class TestFetchMessages:
             async def fetch_channel(self, id):
                 return None
 
-            async def fetch_messages(self, channel_id, limit=100, before=None, after=None):
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id, content, **kwargs):
+            async def send_message(self, channel, content, **kwargs):
                 return None
 
         backend = MockBackend()
@@ -662,14 +662,14 @@ class TestFetchMessages:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 # Return some test messages
                 return [
                     Message(id="1", content="First message"),
                     Message(id="2", content="Second message"),
                 ]
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="new", content=content)
 
         backend = CustomBackend()
@@ -697,12 +697,12 @@ class TestFetchMessages:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 # Return up to 'limit' messages
                 all_messages = [Message(id=str(i), content=f"Message {i}") for i in range(10)]
                 return all_messages[:limit]
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="new", content=content)
 
         backend = LimitTestBackend()
@@ -734,7 +734,7 @@ class TestFetchMessages:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 messages = [Message(id=str(i), content=f"Message {i}") for i in range(1, 11)]
                 if after:
                     messages = [m for m in messages if int(m.id) > int(after)]
@@ -742,7 +742,7 @@ class TestFetchMessages:
                     messages = [m for m in messages if int(m.id) < int(before)]
                 return messages[:limit]
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="new", content=content)
 
         backend = PaginationTestBackend()
@@ -786,7 +786,7 @@ class TestPresenceMethods:
         sig = inspect.signature(BackendBase.get_presence)
         params = list(sig.parameters.keys())
         assert "self" in params
-        assert "user_id" in params
+        assert "user" in params  # Changed from user_id to user
 
     def test_set_presence_signature(self):
         """Test that set_presence has the correct signature."""
@@ -943,10 +943,10 @@ class TestPresenceMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="new", content=content)
 
             async def get_presence(self, user_id: str):
@@ -986,10 +986,10 @@ class TestPresenceMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="new", content=content)
 
             async def get_presence(self, user_id: str):
@@ -1056,10 +1056,10 @@ class TestReplyInThread:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, thread_id: str = None, **kwargs):
+            async def send_message(self, channel: str, content: str, thread_id: str = None, **kwargs):
                 self.last_thread_id = thread_id
                 return Message(id="reply", content=content, thread=Thread(id=thread_id) if thread_id else None)
 
@@ -1091,10 +1091,10 @@ class TestReplyInThread:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, thread_id: str = None, **kwargs):
+            async def send_message(self, channel: str, content: str, thread_id: str = None, **kwargs):
                 self.last_thread_id = thread_id
                 return Message(id="reply", content=content, thread=Thread(id=thread_id) if thread_id else None)
 
@@ -1125,10 +1125,10 @@ class TestReplyInThread:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="reply", content=content)
 
         backend = ThreadBackend()
@@ -1160,10 +1160,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
         backend = BasicBackend()
@@ -1198,10 +1198,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
             async def send_action(self, target: str, action: str):
@@ -1231,10 +1231,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
             async def send_notice(self, target: str, text: str):
@@ -1264,10 +1264,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
             async def join_channel(self, channel_id: str, **kwargs):
@@ -1300,10 +1300,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
             async def leave_channel(self, channel_id: str, **kwargs):
@@ -1336,10 +1336,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
             async def create_dm(self, user_ids: list):
@@ -1374,10 +1374,10 @@ class TestSyncHelperMethods:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
             async def create_channel(self, name: str, **kwargs):
@@ -1414,10 +1414,10 @@ class TestSyncHelperMethods:
             async def fetch_room(self, id: str):
                 return await self.fetch_channel(id)
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
         backend = FetchBackend()
@@ -1448,10 +1448,10 @@ class TestBackendBaseRepr:
             async def fetch_channel(self, id: str):
                 return None
 
-            async def fetch_messages(self, channel_id: str, limit: int = 100, before=None, after=None):
+            async def fetch_messages(self, channel: str, limit: int = 100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel_id: str, content: str, **kwargs):
+            async def send_message(self, channel: str, content: str, **kwargs):
                 return Message(id="msg", content=content)
 
         backend = ReprBackend()
