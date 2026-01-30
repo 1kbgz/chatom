@@ -61,6 +61,20 @@ class SlackBackend(BackendBase):
     _client: Any = None
     _async_client: Any = None
 
+    # Cached bot info (set during connect or on first get_bot_info call)
+    _bot_user_id: Optional[str] = None
+    _bot_user_name: Optional[str] = None
+
+    @property
+    def bot_user_id(self) -> Optional[str]:
+        """Get the bot's user ID (cached from connect/get_bot_info)."""
+        return self._bot_user_id
+
+    @property
+    def bot_user_name(self) -> Optional[str]:
+        """Get the bot's username (cached from connect/get_bot_info)."""
+        return self._bot_user_name
+
     class Config:
         arbitrary_types_allowed = True
 
@@ -88,6 +102,9 @@ class SlackBackend(BackendBase):
         response = await self._async_client.auth_test()
         if response.get("ok"):
             self.connected = True
+            # Cache bot info from auth.test response
+            self._bot_user_id = response.get("user_id")
+            self._bot_user_name = response.get("user")
         else:
             raise ConnectionError(f"Slack auth failed: {response.get('error')}")
 

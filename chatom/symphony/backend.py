@@ -101,7 +101,18 @@ class SymphonyBackend(BackendBase):
 
     # SDK instance
     _bdk: Any = None
-    _bot_user_id: Optional[int] = None
+    _bot_user_id_int: Optional[int] = None
+    _bot_user_name_cached: Optional[str] = None
+
+    @property
+    def bot_user_id(self) -> Optional[str]:
+        """Get the bot's user ID as a string (cached from connect)."""
+        return str(self._bot_user_id_int) if self._bot_user_id_int else None
+
+    @property
+    def bot_user_name(self) -> Optional[str]:
+        """Get the bot's username (from config or cached from connect)."""
+        return self._bot_user_name_cached or self.config.bot_username
 
     class Config:
         """Pydantic config."""
@@ -135,7 +146,8 @@ class SymphonyBackend(BackendBase):
             # Get bot session info
             session_service = self._bdk.sessions()
             session = await session_service.get_session()
-            self._bot_user_id = session.id
+            self._bot_user_id_int = session.id
+            self._bot_user_name_cached = getattr(session, "username", None) or self.config.bot_username
 
             self.connected = True
 
@@ -151,7 +163,8 @@ class SymphonyBackend(BackendBase):
                 pass
             self._bdk = None
 
-        self._bot_user_id = None
+        self._bot_user_id_int = None
+        self._bot_user_name_cached = None
         self.connected = False
 
     async def fetch_user(
@@ -512,7 +525,7 @@ class SymphonyBackend(BackendBase):
                 id=result.message_id,
                 content=content,
                 timestamp=datetime.fromtimestamp(result.timestamp / 1000, tz=timezone.utc),
-                user_id=str(self._bot_user_id) if self._bot_user_id else None,
+                user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
                 channel_id=channel_id,
             )
 
@@ -561,7 +574,7 @@ class SymphonyBackend(BackendBase):
                 id=result.message_id,
                 content=content,
                 timestamp=datetime.now(timezone.utc),
-                user_id=str(self._bot_user_id) if self._bot_user_id else None,
+                user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
                 channel_id=channel_id,
             )
 
