@@ -353,6 +353,69 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
     log.debug("Message writer thread finished")
 
 
+def _set_presence_thread(presence_queue: Queue, backend: BackendBase):
+    """Thread function to set presence from queue using the backend.
+
+    Uses asyncio.run() which properly sets up the task context.
+    We create a new backend instance in this thread to ensure
+    the aiohttp session is bound to our event loop.
+    """
+    log.debug("Presence writer thread started")
+
+    async def run():
+        # Create a new backend instance for this thread to avoid event loop issues
+        backend_class = type(backend)
+        log.debug(f"Creating thread-local backend of type {backend_class.__name__}")
+        thread_backend = backend_class(config=backend.config)
+        log.debug("Connecting thread-local backend...")
+        await thread_backend.connect()
+        log.debug("Thread-local backend connected")
+
+        loop = asyncio.get_running_loop()
+        try:
+            while True:
+                log.debug("Waiting for presence from queue...")
+                item = await loop.run_in_executor(None, presence_queue.get)
+                presence_queue.task_done()
+
+                if item is None:
+                    log.debug("Received None, stopping presence thread")
+                    break
+
+                presence, timeout = item
+                log.debug(f"Setting presence to status={getattr(presence, 'status', presence)}")
+                try:
+                    # Handle both Presence objects and status strings
+                    if hasattr(presence, "status"):
+                        await asyncio.wait_for(
+                            thread_backend.set_presence(str(presence.status.value)),
+                            timeout=timeout,
+                        )
+                    else:
+                        await asyncio.wait_for(
+                            thread_backend.set_presence(str(presence)),
+                            timeout=timeout,
+                        )
+                    log.debug("Presence set successfully")
+                except asyncio.TimeoutError:
+                    log.error("Timeout setting presence")
+                except Exception:
+                    log.exception("Failed setting presence")
+        finally:
+            # Disconnect cleanly
+            log.debug("Disconnecting thread-local backend")
+            try:
+                await thread_backend.disconnect()
+            except Exception:
+                pass
+
+    try:
+        asyncio.run(run())
+    except Exception:
+        log.exception("Error in presence writer thread")
+    log.debug("Presence writer thread finished")
+
+
 @csp.node
 def message_writer(
     backend: object,  # BackendBase

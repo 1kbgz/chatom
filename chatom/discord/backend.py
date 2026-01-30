@@ -735,6 +735,11 @@ class DiscordBackend(BackendBase):
             else:  # playing
                 activity = Game(name=status_text)
 
+        # Check if websocket is connected (required for presence updates)
+        if not hasattr(self._client, "ws") or self._client.ws is None:
+            _log.warning("Cannot set presence: Discord gateway websocket not connected. Presence requires an active gateway connection.")
+            return
+
         await self._client.change_presence(status=discord_status, activity=activity)
 
     async def get_presence(self, user_id: str) -> Optional[Presence]:

@@ -5,7 +5,6 @@ backend and provides convenient CSP graph/node methods for reading
 and writing messages.
 """
 
-import asyncio
 import logging
 import threading
 from queue import Queue
@@ -16,7 +15,7 @@ from csp import ts
 
 from ..backend import BackendBase
 from ..base import Message
-from .nodes import MessageReaderPushAdapter, _send_messages_thread
+from .nodes import MessageReaderPushAdapter, _send_messages_thread, _set_presence_thread
 
 __all__ = ("BackendAdapter",)
 
@@ -140,25 +139,28 @@ class BackendAdapter:
 
     @csp.node
     def _set_presence(self, presence: ts[str], timeout: float = 5.0):
-        """Internal node for setting presence."""
+        """Internal node for setting presence using a background thread."""
+        with csp.state():
+            s_queue: Queue = None
+            s_thread: threading.Thread = None
+
+        with csp.start():
+            s_queue = Queue(maxsize=0)
+            s_thread = threading.Thread(
+                target=_set_presence_thread,
+                args=(s_queue, self._backend),
+                daemon=True,
+            )
+            s_thread.start()
+
+        with csp.stop():
+            if s_thread:
+                s_queue.put(None)
+                s_queue.join()
+                s_thread.join(timeout=5.0)
+
         if csp.ticked(presence):
-            try:
-                loop = asyncio.new_event_loop()
-                try:
-                    loop.run_until_complete(
-                        asyncio.wait_for(
-                            self._backend.set_presence(presence),
-                            timeout=timeout,
-                        )
-                    )
-                except asyncio.TimeoutError:
-                    log.error("Timeout setting presence")
-                except Exception:
-                    log.exception("Failed setting presence")
-                finally:
-                    loop.close()
-            except Exception:
-                log.exception("Error in presence update")
+            s_queue.put((presence, timeout))
 
     @csp.graph
     def publish_presence(self, presence: ts[str], timeout: float = 5.0):
