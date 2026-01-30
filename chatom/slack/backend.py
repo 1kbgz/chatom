@@ -376,8 +376,8 @@ class SlackBackend(BackendBase):
             )
 
         # Create thread object only if thread_ts exists
-        thread_ts = msg_data.get("thread_ts")
-        threads = Thread(id=thread_ts) if thread_ts else None
+        thread_id = msg_data.get("thread_ts")
+        thread = Thread(id=thread_id) if thread_id else None
 
         return SlackMessage(
             id=ts,
@@ -389,7 +389,7 @@ class SlackBackend(BackendBase):
             team=msg_data.get("team"),
             created_at=created_at,
             blocks=msg_data.get("blocks", []),
-            threads=threads,
+            threads=thread,
             reply_count=msg_data.get("reply_count", 0),
         )
 
