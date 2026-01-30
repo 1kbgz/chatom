@@ -170,9 +170,8 @@ class TestReactionEvent:
         """Test creating a reaction added event."""
         emoji = Emoji(name="thumbsup", unicode="👍")
         event = ReactionEvent(
-            message_id="M123",
-            channel_id="C456",
-            user_id="U789",
+            message=Message(id="M123", channel=Channel(id="C456")),
+            user=User(id="U789"),
             emoji=emoji,
             event_type=ReactionEventType.ADDED,
             timestamp=datetime.now(),
@@ -188,9 +187,8 @@ class TestReactionEvent:
         """Test creating a reaction removed event."""
         emoji = Emoji(name="fire")
         event = ReactionEvent(
-            message_id="M123",
-            channel_id="C456",
-            user_id="U789",
+            message=Message(id="M123", channel=Channel(id="C456")),
+            user=User(id="U789"),
             emoji=emoji,
             event_type=ReactionEventType.REMOVED,
         )
@@ -202,9 +200,7 @@ class TestReactionEvent:
         user = User(id="U123", name="John")
         emoji = Emoji(name="heart")
         event = ReactionEvent(
-            message_id="M123",
-            channel_id="C456",
-            user_id="U123",
+            message=Message(id="M123", channel=Channel(id="C456")),
             user=user,
             emoji=emoji,
             event_type=ReactionEventType.ADDED,

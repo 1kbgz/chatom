@@ -1,9 +1,9 @@
 from typing import Literal, Union
 
 DISCORD = "discord"
-EMAIL = "email"
-IRC = "irc"
-MATRIX = "matrix"
+# EMAIL = "email"
+# IRC = "irc"
+# MATRIX = "matrix"
 # MATTERMOST = "mattermost"
 # MESSENGER = "messenger"
 SLACK = "slack"
@@ -15,9 +15,9 @@ SYMPHONY = "symphony"
 
 BACKEND = Union[
     Literal[DISCORD],
-    Literal[EMAIL],
-    Literal[IRC],
-    Literal[MATRIX],
+    # Literal[EMAIL],
+    # Literal[IRC],
+    # Literal[MATRIX],
     # Literal[MATTERMOST],
     # Literal[MESSENGER],
     Literal[SLACK],
@@ -30,8 +30,8 @@ BACKEND = Union[
 ]
 ALL_BACKENDS = [
     DISCORD,
-    EMAIL,
-    IRC,
+    # EMAIL,
+    # IRC,
     # MATRIX,
     # MATTERMOST,
     # MESSENGER,
@@ -46,9 +46,9 @@ ALL_BACKENDS = [
 __all__ = (
     "BACKEND",
     "DISCORD",
-    "EMAIL",
-    "IRC",
-    "MATRIX",
+    # "EMAIL",
+    # "IRC",
+    # "MATRIX",
     # "MATTERMOST",
     # "MESSENGER",
     "SLACK",

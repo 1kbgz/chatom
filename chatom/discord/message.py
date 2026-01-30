@@ -6,7 +6,7 @@ This module provides the Discord-specific Message class.
 from enum import IntEnum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from chatom.base import Field, Message
+from chatom.base import Field, Message, Organization
 from chatom.discord.user import DiscordUser
 
 if TYPE_CHECKING:
@@ -89,7 +89,7 @@ class DiscordMessage(Message):
 
     Attributes:
         discord_type: The Discord message type.
-        guild_id: The guild/server ID.
+        guild: The guild/server this message was sent in.
         member: Guild member data for the author.
         mention_everyone: Whether @everyone was mentioned.
         mention_roles: List of mentioned role IDs.
@@ -108,9 +108,9 @@ class DiscordMessage(Message):
         default=DiscordMessageType.DEFAULT,
         description="The Discord message type.",
     )
-    guild_id: Optional[str] = Field(
+    guild: Optional[Organization] = Field(
         default=None,
-        description="The guild/server ID.",
+        description="The guild/server this message was sent in.",
     )
     member: Optional[Dict[str, Any]] = Field(
         default=None,
@@ -160,6 +160,15 @@ class DiscordMessage(Message):
         default=None,
         description="Position in thread.",
     )
+
+    @property
+    def guild_id(self) -> str:
+        """Get the guild/server ID.
+
+        Returns:
+            str: The guild ID, or empty string if not set.
+        """
+        return self.guild.id if self.guild else ""
 
     @property
     def is_reply(self) -> bool:

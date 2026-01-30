@@ -7,7 +7,7 @@ from typing import Optional
 
 from pydantic import model_validator
 
-from chatom.base import Channel, ChannelType, Field
+from chatom.base import Channel, ChannelType, Field, User
 
 __all__ = ("SlackChannel",)
 
@@ -64,9 +64,9 @@ class SlackChannel(Channel):
         default=False,
         description="Whether this channel is shared org-wide.",
     )
-    creator: str = Field(
-        default="",
-        description="User ID of the channel creator.",
+    creator: Optional[User] = Field(
+        default=None,
+        description="The user who created the channel.",
     )
     purpose: str = Field(
         default="",
@@ -88,6 +88,15 @@ class SlackChannel(Channel):
         default="",
         description="Timestamp of latest message.",
     )
+
+    @property
+    def creator_id(self) -> str:
+        """Get the creator's user ID.
+
+        Returns:
+            str: The creator's ID, or empty string if not set.
+        """
+        return self.creator.id if self.creator else ""
 
     @property
     def slack_channel_type(self) -> ChannelType:

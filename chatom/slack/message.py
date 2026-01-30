@@ -133,6 +133,15 @@ class SlackMessage(Message):
         return self.id or None
 
     @property
+    def thread_ts(self) -> Optional[str]:
+        """Get the thread timestamp (thread_ts).
+
+        Returns the thread's id if this message is in a thread,
+        None otherwise.
+        """
+        return self.thread.id if self.thread else None
+
+    @property
     def team(self) -> Optional[Organization]:
         """Get the team/workspace ID."""
         return self.organization if self.organization else None

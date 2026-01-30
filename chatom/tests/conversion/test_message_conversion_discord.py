@@ -6,6 +6,7 @@ class TestDiscordMessageConversion:
 
     def test_discord_message_to_formatted(self):
         """Test converting DiscordMessage to FormattedMessage."""
+        from chatom.base import Organization
         from chatom.discord import DiscordMessage
         from chatom.discord.channel import DiscordChannel
         from chatom.discord.user import DiscordUser
@@ -15,7 +16,7 @@ class TestDiscordMessageConversion:
             content="Hello from Discord!",
             channel=DiscordChannel(id="987654321"),
             author=DiscordUser(id="111222333", name="Test User"),
-            guild_id="444555666",
+            guild=Organization(id="444555666"),
         )
         formatted = msg.to_formatted()
 

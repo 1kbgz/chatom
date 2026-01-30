@@ -43,13 +43,14 @@ class TestDiscordBackend:
 
     def test_discord_channel_creation(self):
         """Test creating a Discord channel."""
+        from chatom.base import Organization
         from chatom.discord import DiscordChannel, DiscordChannelType
 
         channel = DiscordChannel(
             id="987654321",
             name="general",
             discord_type=DiscordChannelType.GUILD_TEXT,
-            guild_id="111222333",
+            guild=Organization(id="111222333"),
             position=0,
             nsfw=False,
         )
@@ -150,6 +151,7 @@ class TestSlackBackend:
 
     def test_slack_channel_creation(self):
         """Test creating a Slack channel."""
+        from chatom.base import User
         from chatom.slack import SlackChannel
 
         channel = SlackChannel(
@@ -157,7 +159,7 @@ class TestSlackBackend:
             name="general",
             is_channel=True,
             is_private=False,
-            creator="U111",
+            creator=User(id="U111"),
             purpose="General discussion",
             num_members=50,
         )

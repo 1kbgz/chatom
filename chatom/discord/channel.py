@@ -6,7 +6,7 @@ This module provides the Discord-specific Channel class.
 from enum import Enum
 from typing import Optional
 
-from chatom.base import Channel, Field
+from chatom.base import Channel, Field, Organization
 
 __all__ = ("DiscordChannel", "DiscordChannelType")
 
@@ -33,7 +33,7 @@ class DiscordChannel(Channel):
     """Discord-specific channel with additional Discord fields.
 
     Attributes:
-        guild_id: The ID of the guild this channel belongs to.
+        guild: The guild/server this channel belongs to.
         position: Sorting position of the channel.
         nsfw: Whether the channel is NSFW.
         slowmode_delay: Slowmode delay in seconds.
@@ -43,9 +43,9 @@ class DiscordChannel(Channel):
         rate_limit_per_user: Slowmode rate limit.
     """
 
-    guild_id: str = Field(
-        default="",
-        description="The ID of the guild this channel belongs to.",
+    guild: Optional[Organization] = Field(
+        default=None,
+        description="The guild/server this channel belongs to.",
     )
     position: int = Field(
         default=0,
@@ -75,6 +75,15 @@ class DiscordChannel(Channel):
         default=0,
         description="Slowmode rate limit.",
     )
+
+    @property
+    def guild_id(self) -> str:
+        """Get the guild/server ID.
+
+        Returns:
+            str: The guild ID, or empty string if not set.
+        """
+        return self.guild.id if self.guild else ""
 
     @property
     def is_voice(self) -> bool:

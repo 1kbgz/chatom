@@ -10,6 +10,7 @@ from chatom import (
     BackendNotFoundError,
     Channel,
     # Exceptions
+    Organization,
     Presence,
     PresenceStatus,
     User,
@@ -275,13 +276,14 @@ class TestPromote:
 
     def test_promote_channel_to_discord(self):
         """Test promoting Channel to DiscordChannel."""
+        from chatom.base import Organization
         from chatom.discord import DiscordChannel, DiscordChannelType
 
         channel = Channel(id="123456789", name="general", topic="General chat")
         discord_channel = promote(
             channel,
             DISCORD,
-            guild_id="987654321",
+            guild=Organization(id="987654321"),
             discord_type=DiscordChannelType.GUILD_TEXT,
         )
 
@@ -297,11 +299,11 @@ class TestPromote:
         from chatom.slack import SlackChannel
 
         channel = Channel(id="C123ABC", name="general")
-        slack_channel = promote(channel, SLACK, is_channel=True, creator="U123", purpose="General channel")
+        slack_channel = promote(channel, SLACK, is_channel=True, creator=User(id="U123"), purpose="General channel")
 
         assert isinstance(slack_channel, SlackChannel)
         assert slack_channel.is_channel is True
-        assert slack_channel.creator == "U123"
+        assert slack_channel.creator_id == "U123"
         assert slack_channel.purpose == "General channel"
 
     def test_promote_presence_to_discord(self):
@@ -476,7 +478,7 @@ class TestRoundTrip:
         original = Channel(id="456", name="general", topic="General discussion")
 
         # Promote
-        discord_channel = promote(original, DISCORD, guild_id="123")
+        discord_channel = promote(original, DISCORD, guild=Organization(id="123"))
         assert discord_channel.guild_id == "123"
 
         # Demote back

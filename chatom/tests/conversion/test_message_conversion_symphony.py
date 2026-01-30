@@ -12,7 +12,7 @@ class TestSymphonyMessageConversion:
 
         msg = SymphonyMessage(
             author=SymphonyUser(id="12345", name="Symphony User"),
-            message_id="ABC123",
+            id="ABC123",  # Use id instead of message_id (message_id is now a property)
             channel=SymphonyChannel(id="stream_xyz"),
             content="Hello from Symphony!",
             message_ml="<messageML>Hello from Symphony!</messageML>",

@@ -960,9 +960,10 @@ class SymphonyBackend(BackendBase):
                 if self._filter_channel and stream_id != self._filter_channel:
                     return
 
-                # Extract mentions from data field
-                mentions = SymphonyMessage.extract_mentions_from_data(msg.data)
-                mention_ids = [str(m) for m in mentions]
+                # Extract mentions from data field and convert to User objects
+                mention_ids_int = SymphonyMessage.extract_mentions_from_data(msg.data)
+                # Convert integer IDs to SymphonyUser objects for the mentions field
+                mention_users = [SymphonyUser(id=str(uid)) for uid in mention_ids_int]
 
                 # Parse message timestamp
                 msg_timestamp = datetime.fromtimestamp(int(msg.timestamp) / 1000, tz=timezone.utc) if msg.timestamp else datetime.now(tz=timezone.utc)
@@ -1006,17 +1007,13 @@ class SymphonyBackend(BackendBase):
                 # Convert to SymphonyMessage
                 symphony_msg = SymphonyMessage(
                     id=msg.message_id,
-                    message_id=msg.message_id,
                     content=msg.message or "",
                     presentation_ml=msg.message or "",
                     author=author,  # Use looked-up author with full info
-                    author_id=sender_id or "",
-                    channel_id=stream_id,
                     channel=channel,
                     timestamp=msg_timestamp,
                     data=msg.data,
-                    mentions=mentions,
-                    mention_ids=mention_ids,
+                    mentions=mention_users,  # List of SymphonyUser objects
                 )
 
                 # If we didn't find the author via lookup, use info from initiator

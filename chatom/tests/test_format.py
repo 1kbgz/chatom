@@ -445,6 +445,31 @@ class TestFormattedMessage:
         assert "Hello " in msg.render(Format.PLAINTEXT)
         assert "world" in msg.render(Format.PLAINTEXT)
 
+    def test_formatted_message_add_raw_preserves_xml(self):
+        """Test that add_raw preserves XML tags without escaping.
+
+        This is critical for Symphony mentions like <mention uid="12345"/>
+        which should NOT be escaped when rendered.
+        """
+        msg = FormattedMessage()
+        mention_xml = '<mention uid="12345"/>'
+        msg.add_text("Hello ").add_raw(mention_xml).add_text("!")
+
+        # When rendered for Symphony MessageML, the XML should be preserved
+        result = msg.render(Format.SYMPHONY_MESSAGEML)
+        assert '<mention uid="12345"/>' in result
+        # The angle brackets should NOT be escaped
+        assert "&lt;mention" not in result
+        assert "&gt;" not in result
+
+    def test_formatted_message_add_raw_for_hashtags(self):
+        """Test add_raw preserves Symphony hashtag XML."""
+        msg = FormattedMessage()
+        msg.add_text("Check out ").add_raw('<hash tag="chatom"/>').add_text("!")
+
+        result = msg.render(Format.SYMPHONY_MESSAGEML)
+        assert '<hash tag="chatom"/>' in result
+
     def test_formatted_message_default_format(self):
         """Test render with default format."""
         msg = FormattedMessage()

@@ -29,9 +29,6 @@ from .backend_registry import (
 )
 from .base import (
     DISCORD_CAPABILITIES,
-    EMAIL_CAPABILITIES,
-    IRC_CAPABILITIES,
-    MATRIX_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
     # Presence
@@ -71,6 +68,8 @@ from .base import (
     Message,
     MessageReference,
     MessageType,
+    # Organization
+    Organization,
     Presence,
     PresenceStatus,
     Reaction,
@@ -98,9 +97,6 @@ from .enums import (
     ALL_BACKENDS,
     BACKEND,
     DISCORD,
-    EMAIL,
-    IRC,
-    MATRIX,
     SLACK,
     SYMPHONY,
 )
@@ -221,9 +217,6 @@ __all__ = (
     "BackendCapabilities",
     "Capability",
     "DISCORD_CAPABILITIES",
-    "EMAIL_CAPABILITIES",
-    "IRC_CAPABILITIES",
-    "MATRIX_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
     # Conversion utilities

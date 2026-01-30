@@ -406,8 +406,9 @@ class SymphonyE2ETest:
             msg = (
                 FormattedMessage()
                 .add_text("🧪 [E2E Test] Mentions:\n")
-                .add_text(f"User mention: {user_mention}\n")
-                .add_text("Check if you got notified!")
+                .add_text("User mention: ")
+                .add_raw(user_mention)  # Use add_raw to preserve XML mention tag
+                .add_text("\nCheck if you got notified!")
             )
             content = msg.render(Format.SYMPHONY_MESSAGEML)
 
@@ -487,7 +488,7 @@ class SymphonyE2ETest:
             for msg in messages[:5]:
                 # Symphony messages have PresentationML
                 content_preview = (msg.content or msg.presentation_ml or "")[:50].replace("\n", " ")
-                print(f"  - [{msg.message_id[:8] if msg.message_id else msg.id[:8]}...] {content_preview}...")
+                print(f"  - [{msg.id[:8]}...] {content_preview}...")
 
             # Test reading a message with the format system
             if messages:
@@ -672,7 +673,7 @@ class SymphonyE2ETest:
 
             except asyncio.TimeoutError:
                 self.log("Timeout waiting for inbound message (60s)", success=False)
-                timeout_msg = FormattedMessage().add_text("⏰ ").add_bold("[E2E Test] Timeout").add_text(" - No message received within 60 seconds.")
+                timeout_msg = FormattedMessage().add_text("⏰ ").add_bold("[E2E Test] Timeout").add_text(" - No message received within 30 seconds.")
                 await self.backend.send_message(self.stream_id, timeout_msg.render(Format.SYMPHONY_MESSAGEML))
                 return
 

@@ -323,18 +323,12 @@ from chatom import (
     DISCORD_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
-    EMAIL_CAPABILITIES,
-    IRC_CAPABILITIES,
-    MATRIX_CAPABILITIES,
 )
 
 # Check what a backend supports
 print(DISCORD_CAPABILITIES.supports(Capability.THREADS))        # True
 print(DISCORD_CAPABILITIES.supports(Capability.VOICE_CHAT))     # True
 print(DISCORD_CAPABILITIES.supports(Capability.EMOJI_REACTIONS)) # True
-
-print(EMAIL_CAPABILITIES.supports(Capability.THREADS))          # True (email threading)
-print(EMAIL_CAPABILITIES.supports(Capability.VOICE_CHAT))       # False
 ```
 
 ### Presence and Status

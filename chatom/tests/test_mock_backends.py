@@ -1825,7 +1825,7 @@ class TestDiscordMessageProperties:
 
     def test_to_formatted(self):
         """Test to_formatted converts message to FormattedMessage."""
-        from chatom.base import Channel, User
+        from chatom.base import Channel, Organization, User
         from chatom.discord import DiscordMessage, DiscordUser
 
         msg = DiscordMessage(
@@ -1833,7 +1833,7 @@ class TestDiscordMessageProperties:
             content="Hello **world**!",
             author=User(id="user123"),
             channel=Channel(id="ch123"),
-            guild_id="guild123",
+            guild=Organization(id="guild123"),
             mentions=[DiscordUser(id="user456")],
             webhook_id="webhook123",
         )

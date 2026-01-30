@@ -185,16 +185,12 @@ print(mention_user(slack_user))    # "<@U123>"
 ## Checking Capabilities
 
 ```python
-from chatom import Capability, DISCORD_CAPABILITIES, EMAIL_CAPABILITIES
+from chatom import Capability, DISCORD_CAPABILITIES
 
 # Check what Discord supports
 print(DISCORD_CAPABILITIES.supports(Capability.THREADS))        # True
 print(DISCORD_CAPABILITIES.supports(Capability.VOICE_CHAT))     # True
 print(DISCORD_CAPABILITIES.supports(Capability.EMOJI_REACTIONS)) # True
-
-# Check what Email supports
-print(EMAIL_CAPABILITIES.supports(Capability.THREADS))          # True
-print(EMAIL_CAPABILITIES.supports(Capability.VOICE_CHAT))       # False
 ```
 
 ## Next Steps

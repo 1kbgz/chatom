@@ -16,9 +16,6 @@ from .authorization import (
 from .base import BaseModel, Field, Identifiable
 from .capabilities import (
     DISCORD_CAPABILITIES,
-    EMAIL_CAPABILITIES,
-    IRC_CAPABILITIES,
-    MATRIX_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
     BackendCapabilities,
@@ -63,6 +60,9 @@ from .testing import MockBackendMixin, MockDataStore
 from .thread import Thread
 from .user import User
 
+# Rebuild ReactionEvent to resolve forward reference to Message
+ReactionEvent.model_rebuild()
+
 __all__ = (
     # Base
     "BaseModel",
@@ -106,9 +106,6 @@ __all__ = (
     "BackendCapabilities",
     "Capability",
     "DISCORD_CAPABILITIES",
-    "EMAIL_CAPABILITIES",
-    "IRC_CAPABILITIES",
-    "MATRIX_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
     # Conversion utilities

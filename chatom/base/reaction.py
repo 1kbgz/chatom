@@ -3,12 +3,17 @@
 This module provides the Reaction class representing an emoji reaction.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from .base import BaseModel, Field
 from .user import User
+
+if TYPE_CHECKING:
+    from .message import Message
 
 __all__ = ("Reaction", "Emoji", "ReactionEvent", "ReactionEventType")
 
@@ -101,10 +106,8 @@ class ReactionEvent(BaseModel):
     and with what emoji.
 
     Attributes:
-        message_id: ID of the message the reaction is on.
-        channel_id: ID of the channel containing the message.
-        user_id: ID of the user who added/removed the reaction.
-        user: The user who added/removed the reaction, if available.
+        message: The message the reaction is on.
+        user: The user who added/removed the reaction.
         emoji: The emoji that was added/removed.
         event_type: Whether the reaction was added or removed.
         timestamp: When the reaction event occurred.
@@ -113,21 +116,16 @@ class ReactionEvent(BaseModel):
         >>> # Handle a reaction event in a bot
         >>> async def on_reaction(event: ReactionEvent):
         ...     if event.event_type == ReactionEventType.ADDED:
-        ...         print(f"User {event.user_id} added {event.emoji}")
+        ...         print(f"User {event.user.id} added {event.emoji}")
     """
 
-    message_id: str = Field(
-        description="ID of the message the reaction is on.",
-    )
-    channel_id: str = Field(
-        description="ID of the channel containing the message.",
-    )
-    user_id: str = Field(
-        description="ID of the user who added/removed the reaction.",
+    message: Optional["Message"] = Field(
+        default=None,
+        description="The message the reaction is on.",
     )
     user: Optional[User] = Field(
         default=None,
-        description="The user who added/removed the reaction, if available.",
+        description="The user who added/removed the reaction.",
     )
     emoji: Emoji = Field(
         description="The emoji that was added/removed.",
@@ -139,7 +137,30 @@ class ReactionEvent(BaseModel):
         default=None,
         description="When the reaction event occurred.",
     )
-    guild_id: str = Field(
-        default="",
-        description="ID of the guild/server, if applicable (Discord).",
-    )
+
+    @property
+    def message_id(self) -> str:
+        """Get the message ID.
+
+        Returns:
+            str: The message ID, or empty string if not set.
+        """
+        return self.message.id if self.message else ""
+
+    @property
+    def channel_id(self) -> str:
+        """Get the channel ID from the message.
+
+        Returns:
+            str: The channel ID, or empty string if not set.
+        """
+        return self.message.channel_id if self.message else ""
+
+    @property
+    def user_id(self) -> str:
+        """Get the user ID.
+
+        Returns:
+            str: The user ID, or empty string if not set.
+        """
+        return self.user.id if self.user else ""

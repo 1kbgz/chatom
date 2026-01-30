@@ -5,9 +5,9 @@ This module provides the Symphony-specific Message class.
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from chatom.base import Field, Message
+from chatom.base import Field, Message, User
 
 from .channel import SymphonyChannel
 from .user import SymphonyUser
@@ -117,6 +117,22 @@ class SymphonyMessage(Message):
         return self.shared_message is not None
 
     @property
+    def message_id(self) -> str:
+        """Get the message ID (same as id).
+
+        Returns the message's id for backward compatibility.
+        """
+        return self.id
+
+    @property
+    def stream_id(self) -> str:
+        """Get the stream ID (channel.id).
+
+        Returns the channel's id, or empty string if no channel.
+        """
+        return self.channel.id if self.channel else ""
+
+    @property
     def has_entity_data(self) -> bool:
         """Check if this message has entity data."""
         return len(self.entity_data) > 0
@@ -136,17 +152,18 @@ class SymphonyMessage(Message):
         """Check if this message contains user mentions."""
         return len(self.mentions) > 0
 
-    def mentions_user(self, user_id: str) -> bool:
+    def mentions_user(self, user_or_id: Union[str, User]) -> bool:
         """Check if this message mentions a specific user.
 
         Args:
-            user_id: The user ID to check for (as string).
+            user_or_id: The user ID (as string) or User object to check for.
 
         Returns:
             True if the user is mentioned in this message.
         """
-        user_id_str = str(user_id)
-        user_id_int = int(user_id) if user_id_str.isdigit() else None
+        # Extract user_id from User object or use as-is
+        user_id_str = user_or_id.id if isinstance(user_or_id, User) else str(user_or_id)
+        user_id_int = int(user_id_str) if user_id_str.isdigit() else None
 
         # Check mentions (User objects from base class)
         for user in self.mentions:
@@ -266,7 +283,6 @@ class SymphonyMessage(Message):
 
         return cls(
             id=data.get("messageId", ""),
-            message_id=data.get("messageId", ""),
             channel=SymphonyChannel(id=stream_data.get("streamId", "")),
             content=data.get("message", ""),
             message_ml=data.get("message", ""),

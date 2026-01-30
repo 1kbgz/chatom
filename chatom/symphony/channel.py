@@ -6,7 +6,7 @@ In Symphony, channels are called "streams" or "rooms".
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import model_validator
 
@@ -41,7 +41,6 @@ class SymphonyChannel(Channel):
         active: Whether the stream is active.
         read_only: Whether the stream is read-only.
         public: Whether the stream is public.
-        members: List of user IDs in the stream.
         creation_date: When the stream was created.
         last_message_date: When the last message was sent.
     """
@@ -69,10 +68,6 @@ class SymphonyChannel(Channel):
     public: bool = Field(
         default=False,
         description="Whether the stream is public.",
-    )
-    members: List[str] = Field(
-        default_factory=list,
-        description="List of user IDs in the stream.",
     )
     creation_date: Optional[datetime] = Field(
         default=None,

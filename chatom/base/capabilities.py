@@ -14,9 +14,6 @@ __all__ = (
     "DISCORD_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
-    "EMAIL_CAPABILITIES",
-    "IRC_CAPABILITIES",
-    "MATRIX_CAPABILITIES",
 )
 
 
@@ -280,58 +277,4 @@ SYMPHONY_CAPABILITIES = BackendCapabilities(
     ),
     max_message_length=40000,
     max_attachment_size=25 * 1024 * 1024,
-)
-
-EMAIL_CAPABILITIES = BackendCapabilities(
-    capabilities=frozenset(
-        {
-            Capability.PLAINTEXT,
-            Capability.HTML,
-            Capability.RICH_TEXT,
-            Capability.IMAGES,
-            Capability.FILES,
-            Capability.TABLES,
-            Capability.REPLIES,
-        }
-    ),
-    max_message_length=100000,
-    max_attachment_size=25 * 1024 * 1024,
-)
-
-IRC_CAPABILITIES = BackendCapabilities(
-    capabilities=frozenset(
-        {
-            Capability.PLAINTEXT,
-            Capability.USER_MENTIONS,
-            Capability.CHANNEL_MENTIONS,
-        }
-    ),
-    max_message_length=512,
-    max_attachment_size=0,
-    max_attachments=0,
-)
-
-MATRIX_CAPABILITIES = BackendCapabilities(
-    capabilities=frozenset(
-        {
-            Capability.PLAINTEXT,
-            Capability.MARKDOWN,
-            Capability.HTML,
-            Capability.CODE_BLOCKS,
-            Capability.IMAGES,
-            Capability.FILES,
-            Capability.VIDEOS,
-            Capability.AUDIO,
-            Capability.EMOJI_REACTIONS,
-            Capability.CUSTOM_EMOJI,
-            Capability.THREADS,
-            Capability.REPLIES,
-            Capability.USER_MENTIONS,
-            Capability.EDITING,
-            Capability.DELETING,
-            Capability.PRESENCE,
-            Capability.TYPING_INDICATORS,
-        }
-    ),
-    max_message_length=65535,
 )
