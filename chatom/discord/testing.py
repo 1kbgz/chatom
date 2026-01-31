@@ -62,6 +62,8 @@ class MockDiscordBackend(DiscordBackend):
         self._deleted_messages = []
         self._reactions = []
         self._presence_updates = []
+        self._created_dms: List[List[str]] = []
+        self._dm_counter = 0
         self._message_counter = 0
 
     def add_mock_user(
@@ -449,20 +451,23 @@ class MockDiscordBackend(DiscordBackend):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a mock message.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional options.
 
         Returns:
             The mock sent message.
         """
+        # Resolve channel ID
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
+
         # Generate a mock message ID
         existing_count = len(self._sent_messages) + sum(len(msgs) for msgs in self._mock_messages.values())
         message_id = str(1000000000000000000 + existing_count)
@@ -694,3 +699,52 @@ class MockDiscordBackend(DiscordBackend):
                 "action": "remove",
             }
         )
+
+    @property
+    def created_dms(self) -> List[List[str]]:
+        """Get all DMs created through this backend.
+
+        Returns:
+            List of user ID lists for each created DM.
+        """
+        return self._created_dms
+
+    async def create_dm(
+        self,
+        users: List[Union[str, User]],
+    ) -> Optional[str]:
+        """Create a mock DM channel with the specified users.
+
+        Args:
+            users: List of users to include in the DM (ID strings or User objects).
+
+        Returns:
+            The DM channel ID.
+        """
+        # Extract user IDs
+        user_ids = []
+        for user in users:
+            if isinstance(user, DiscordUser):
+                user_ids.append(user.id)
+            elif hasattr(user, "id"):
+                user_ids.append(user.id)
+            else:
+                user_ids.append(str(user))
+
+        # Track the created DM
+        self._created_dms.append(user_ids)
+
+        # Generate a DM channel ID
+        self._dm_counter += 1
+        dm_channel_id = f"{self._dm_counter:018d}"
+
+        # Create the DM channel in mock channels
+        dm_channel = DiscordChannel(
+            id=dm_channel_id,
+            name=f"dm-{'-'.join(user_ids)}",
+            discord_type=DiscordChannelType.DM,
+        )
+        self._mock_channels[dm_channel_id] = dm_channel
+        self.channels.add(dm_channel)
+
+        return dm_channel_id

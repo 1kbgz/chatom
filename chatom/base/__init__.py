@@ -43,11 +43,15 @@ from .conversion import (
 )
 from .embed import Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
 from .mention import (
+    ChannelMentionMatch,
     MentionMatch,
+    extract_channel_ids,
+    extract_mention_ids,
     mention_channel,
     mention_channel_for_backend,
     mention_user,
     mention_user_for_backend,
+    parse_channel_mentions,
     parse_mentions,
 )
 from .message import Message, MessageReference, MessageType
@@ -60,8 +64,11 @@ from .testing import MockBackendMixin, MockDataStore
 from .thread import Thread
 from .user import User
 
-# Rebuild ReactionEvent to resolve forward reference to Message
+# Rebuild models to resolve forward references
 ReactionEvent.model_rebuild()
+Thread.model_rebuild()
+Organization.model_rebuild()
+Channel.model_rebuild()
 
 __all__ = (
     # Base
@@ -126,7 +133,11 @@ __all__ = (
     "mention_channel_for_backend",
     "mention_user_for_backend",
     "parse_mentions",
+    "parse_channel_mentions",
+    "extract_mention_ids",
+    "extract_channel_ids",
     "MentionMatch",
+    "ChannelMentionMatch",
     # Authorization
     "AuthorizationPolicy",
     "AuthorizationResult",

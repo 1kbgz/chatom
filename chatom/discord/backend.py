@@ -1200,49 +1200,31 @@ class DiscordBackend(BackendBase):
 
         # Name-based lookup
         if name:
-            return await self.fetch_organization_by_name(name)
-
-        return None
-
-    async def fetch_organization_by_name(
-        self,
-        name: str,
-    ) -> Optional[Organization]:
-        """Fetch a guild by name.
-
-        This searches through guilds the bot is a member of.
-
-        Args:
-            name: The guild name to search for (case-insensitive).
-
-        Returns:
-            The guild if found, None otherwise.
-        """
-        if self._client is None:
-            return None
-
-        # Need to be connected to the gateway to access guilds
-        if not self._client.is_ready():
-            # Start the client connection in the background
-            connect_task = asyncio.create_task(self._client.connect())
-            # Wait for the client to be ready
-            for _ in range(30):  # Wait up to 30 seconds
-                await asyncio.sleep(1)
-                if self._client.is_ready():
-                    break
-            else:
-                # Clean up if we didn't connect
-                connect_task.cancel()
-                try:
-                    await connect_task
-                except asyncio.CancelledError:
-                    pass
+            if self._client is None:
                 return None
 
-        # Search through guilds
-        for guild in self._client.guilds:
-            if guild.name.lower() == name.lower():
-                return DiscordGuild.from_discord_guild(guild)
+            # Need to be connected to the gateway to access guilds
+            if not self._client.is_ready():
+                # Start the client connection in the background
+                connect_task = asyncio.create_task(self._client.connect())
+                # Wait for the client to be ready
+                for _ in range(30):  # Wait up to 30 seconds
+                    await asyncio.sleep(1)
+                    if self._client.is_ready():
+                        break
+                else:
+                    # Clean up if we didn't connect
+                    connect_task.cancel()
+                    try:
+                        await connect_task
+                    except asyncio.CancelledError:
+                        pass
+                    return None
+
+            # Search through guilds
+            for guild in self._client.guilds:
+                if guild.name.lower() == name.lower():
+                    return DiscordGuild.from_discord_guild(guild)
 
         return None
 
@@ -1288,16 +1270,6 @@ class DiscordBackend(BackendBase):
         This is an alias for fetch_organization using Discord terminology.
         """
         return await self.fetch_organization(identifier, id=id, name=name)
-
-    async def fetch_guild_by_name(
-        self,
-        name: str,
-    ) -> Optional[Organization]:
-        """Fetch a guild by name.
-
-        This is an alias for fetch_organization_by_name using Discord terminology.
-        """
-        return await self.fetch_organization_by_name(name)
 
     async def list_guilds(self) -> List[Organization]:
         """List all guilds the bot has access to.

@@ -7,6 +7,8 @@ from typing import Any, Optional
 
 from chatom.base import Field, Organization
 
+from .user import DiscordUser
+
 __all__ = ("DiscordGuild",)
 
 
@@ -70,7 +72,7 @@ class DiscordGuild(Organization):
             description=guild.description or "",
             icon_url=str(guild.icon.url) if guild.icon else "",
             member_count=guild.member_count,
-            owner_id=str(guild.owner_id) if guild.owner_id else "",
+            owner=DiscordUser.from_discord_user(guild.owner) if guild.owner else None,
             premium_tier=guild.premium_tier,
             nsfw_level=guild.nsfw_level.value if hasattr(guild.nsfw_level, "value") else 0,
             preferred_locale=str(guild.preferred_locale),

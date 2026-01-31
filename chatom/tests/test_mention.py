@@ -201,7 +201,7 @@ class TestMentionChannelForBackend:
         from chatom import Channel, mention_channel_for_backend
 
         channel = Channel(id="123", name="general")
-        result = mention_channel_for_backend(channel, "matrix")
+        result = mention_channel_for_backend(channel, "unknown_backend")
         assert result == "#general"
 
 
@@ -269,5 +269,99 @@ class TestMentionEdgeCases:
         from chatom import Channel, mention_channel_for_backend
 
         channel = Channel(id="C12345", name="")  # No name
-        result = mention_channel_for_backend(channel, "matrix")
+        result = mention_channel_for_backend(channel, "unknown_backend")
         assert result == "#C12345"
+
+
+class TestParseMentions:
+    """Tests for parse_mentions function."""
+
+    def test_parse_mentions_slack(self):
+        """Test parsing Slack mentions."""
+        from chatom.base.mention import parse_mentions
+
+        mentions = parse_mentions("Hey <@U123> and <@U456>!", "slack")
+        assert len(mentions) == 2
+        assert mentions[0].user_id == "U123"
+        assert mentions[1].user_id == "U456"
+
+    def test_parse_mentions_discord(self):
+        """Test parsing Discord mentions."""
+        from chatom.base.mention import parse_mentions
+
+        mentions = parse_mentions("<@123456789> Hello!", "discord")
+        assert len(mentions) == 1
+        assert mentions[0].user_id == "123456789"
+
+    def test_parse_mentions_symphony(self):
+        """Test parsing Symphony mentions."""
+        from chatom.base.mention import parse_mentions
+
+        mentions = parse_mentions('<mention uid="12345"/>!', "symphony")
+        assert len(mentions) == 1
+        assert mentions[0].user_id == "12345"
+
+    def test_parse_mentions_symphony_email(self):
+        """Test parsing Symphony mentions with email."""
+        from chatom.base.mention import parse_mentions
+
+        mentions = parse_mentions('<mention email="test@example.com"/>!', "symphony")
+        assert len(mentions) == 1
+        assert mentions[0].user_id == "test@example.com"
+
+    def test_parse_mentions_unknown_backend(self):
+        """Test parsing mentions for unknown backend returns empty list."""
+        from chatom.base.mention import parse_mentions
+
+        mentions = parse_mentions("<@U123>!", "unknown")
+        assert len(mentions) == 0
+
+
+class TestExtractMentionIds:
+    """Tests for extract_mention_ids function."""
+
+    def test_extract_mention_ids_slack(self):
+        """Test extracting mention IDs for Slack."""
+        from chatom.base.mention import extract_mention_ids
+
+        ids = extract_mention_ids("Hey <@U123> and <@U456>!", "slack")
+        assert ids == ["U123", "U456"]
+
+
+class TestParseChannelMentions:
+    """Tests for parse_channel_mentions function."""
+
+    def test_parse_channel_mentions_slack(self):
+        """Test parsing Slack channel mentions."""
+        from chatom.base.mention import parse_channel_mentions
+
+        mentions = parse_channel_mentions("Join <#C123> and <#C456>!", "slack")
+        assert len(mentions) == 2
+        assert mentions[0].channel_id == "C123"
+        assert mentions[1].channel_id == "C456"
+
+    def test_parse_channel_mentions_discord(self):
+        """Test parsing Discord channel mentions."""
+        from chatom.base.mention import parse_channel_mentions
+
+        mentions = parse_channel_mentions("Check <#987654321>!", "discord")
+        assert len(mentions) == 1
+        assert mentions[0].channel_id == "987654321"
+
+    def test_parse_channel_mentions_unknown_backend(self):
+        """Test parsing channel mentions for unknown backend returns empty list."""
+        from chatom.base.mention import parse_channel_mentions
+
+        mentions = parse_channel_mentions("<#C123>!", "unknown")
+        assert len(mentions) == 0
+
+
+class TestExtractChannelIds:
+    """Tests for extract_channel_ids function."""
+
+    def test_extract_channel_ids_slack(self):
+        """Test extracting channel IDs for Slack."""
+        from chatom.base.mention import extract_channel_ids
+
+        ids = extract_channel_ids("Join <#C123> and <#C456>!", "slack")
+        assert ids == ["C123", "C456"]

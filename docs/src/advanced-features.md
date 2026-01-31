@@ -75,9 +75,6 @@ reaction = Reaction(
 | Discord | ✅ | ✅ | ✅ | ✅ |
 | Slack | ✅ | ✅ | ✅ | ✅ |
 | Symphony | ❌ | ❌ | ❌ | ❌ |
-| Matrix | ✅ | ✅ | ✅ | ✅ |
-| IRC | ❌ | ❌ | ❌ | ❌ |
-| Email | ❌ | ❌ | ❌ | ❌ |
 
 ### Reaction Events
 
@@ -209,9 +206,6 @@ await backend.send_message(
 | Discord | ✅ | ✅ | 25MB (100MB Nitro) |
 | Slack | ✅ | ✅ | Workspace dependent |
 | Symphony | ✅ | ✅ | 100MB |
-| Matrix | ✅ | ✅ | Homeserver dependent |
-| IRC | Limited | Via DCC/URL | N/A |
-| Email | ✅ | ✅ | ~25MB typical |
 
 ---
 
@@ -361,9 +355,6 @@ await backend.send_message(
 | Discord | ✅ Full | ✅ | ✅ |
 | Slack | ✅ (attachments) | ✅ | ✅ |
 | Symphony | ✅ (cards) | ✅ | ❌ |
-| Matrix | ❌ | ✅ | ❌ |
-| IRC | ❌ | ❌ | ❌ |
-| Email | ✅ (HTML) | Varies | ✅ |
 
 ---
 
@@ -374,17 +365,17 @@ Threads are sub-conversations attached to a message.
 ### Thread Model
 
 ```python
-from chatom import Thread
+from chatom import Thread, Message, Channel
+
+parent_msg = Message(id="msg_456", content="Original message")
+channel = Channel(id="C123456", name="general")
 
 thread = Thread(
     id="thread_123",
-    parent_message_id="msg_456",
-    channel_id="C123456",
+    parent_message=parent_msg,
+    parent_channel=channel,
     name="Discussion about feature X",
     message_count=15,
-    participant_count=3,
-    locked=False,
-    archived=False,
 )
 ```
 
@@ -393,9 +384,9 @@ thread = Thread(
 ```python
 # Reply in a thread
 await backend.send_message(
-    channel_id="C123456",
+    channel=channel,
     content="This is a thread reply",
-    thread_id="thread_123",  # or parent message ID
+    thread=thread,  # or parent message
 )
 ```
 
@@ -404,8 +395,8 @@ await backend.send_message(
 ```python
 # Fetch messages from a thread
 thread_messages = await backend.fetch_messages(
-    channel_id="C123456",
-    thread_id="thread_123",
+    channel=channel,
+    thread=thread,
     limit=50,
 )
 ```
@@ -415,9 +406,9 @@ thread_messages = await backend.fetch_messages(
 ```python
 # Start a new thread from a message (Discord)
 await backend.send_message(
-    channel_id="C123456",
+    channel=channel,
     content="Let's discuss this further",
-    thread_id=parent_message_id,  # Reply to start thread
+    thread=parent_msg,  # Reply to start thread
 )
 ```
 
@@ -445,17 +436,6 @@ await backend.send_message(
 )
 ```
 
-#### Matrix
-
-```python
-# Matrix uses relations for threads
-await backend.send_message(
-    room_id,
-    "Reply in Matrix thread",
-    reply_to=parent_event_id,  # Creates a threaded reply
-)
-```
-
 ### Platform Support
 
 | Backend | Native Threads | Reply-to | Thread Names |
@@ -463,9 +443,6 @@ await backend.send_message(
 | Discord | ✅ | ✅ | ✅ |
 | Slack | ✅ | ✅ | ❌ |
 | Symphony | ✅ | ✅ | ❌ |
-| Matrix | ✅ | ✅ | ❌ |
-| IRC | ❌ | ❌ | ❌ |
-| Email | ✅ (threading) | ✅ | ✅ (subject) |
 
 ---
 
@@ -557,9 +534,7 @@ await backend.set_presence(
 | Discord | `online` | `idle` | `dnd` | `invisible` |
 | Slack | `auto` | `away` | N/A | N/A |
 | Symphony | `AVAILABLE` | `AWAY` | `BUSY` | `OFF_WORK` |
-| Matrix | `online` | `unavailable` | N/A | `offline` |
-| IRC | N/A | AWAY msg | N/A | N/A |
-| Email | N/A | N/A | N/A | N/A |
+
 
 ### Presence Heartbeat
 
@@ -610,9 +585,6 @@ await backend.set_presence(
 | Discord | ✅ | ✅ | ❌ | ✅ |
 | Slack | ✅ | ✅ | ✅ | ❌ |
 | Symphony | ✅ | ✅ | ❌ | ❌ |
-| Matrix | ✅ | ✅ | ✅ | ❌ |
-| IRC | Limited | ✅ (AWAY) | ✅ | ❌ |
-| Email | ❌ | ❌ | ❌ | ❌ |
 
 ---
 

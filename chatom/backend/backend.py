@@ -586,25 +586,6 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support organizations")
 
-    async def fetch_organization_by_name(
-        self,
-        name: str,
-    ) -> Optional[Organization]:
-        """Fetch an organization by name.
-
-        This is a convenience method for looking up organizations by name.
-
-        Args:
-            name: The organization name to search for (case-insensitive).
-
-        Returns:
-            The organization if found, None otherwise.
-
-        Raises:
-            NotImplementedError: If the backend doesn't support organizations.
-        """
-        raise NotImplementedError("This backend does not support organizations")
-
     async def list_organizations(self) -> List[Organization]:
         """List all organizations the bot has access to.
 
@@ -618,7 +599,10 @@ class BackendBase(BaseModel):
 
     async def fetch_channel_members(
         self,
-        channel_id: str,
+        identifier: Optional[Union[str, Channel]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> List[User]:
         """Fetch members of a channel.
 
@@ -626,8 +610,15 @@ class BackendBase(BaseModel):
         This is useful for authorization checks, mention validation, or
         building user interfaces.
 
+        This method accepts flexible input types for convenience:
+        - Pass a Channel object to use its ID
+        - Pass an ID string as the first positional argument
+        - Use keyword arguments for lookup by id or name
+
         Args:
-            channel_id: The channel ID to fetch members for.
+            identifier: A Channel object or channel ID string.
+            id: Channel ID (alternative to positional identifier).
+            name: Channel name to search for.
 
         Returns:
             List of users who are members of the channel.
@@ -636,7 +627,11 @@ class BackendBase(BaseModel):
             NotImplementedError: If the backend doesn't support member listing.
 
         Example:
+            >>> # All of these work:
             >>> members = await backend.fetch_channel_members("C123")
+            >>> members = await backend.fetch_channel_members(id="C123")
+            >>> members = await backend.fetch_channel_members(name="general")
+            >>> members = await backend.fetch_channel_members(channel)
             >>> for user in members:
             ...     print(user.name)
         """
@@ -644,7 +639,10 @@ class BackendBase(BaseModel):
 
     async def fetch_room_members(
         self,
-        room_id: str,
+        identifier: Optional[Union[str, Channel]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> List[User]:
         """Fetch members of a room.
 
@@ -652,12 +650,14 @@ class BackendBase(BaseModel):
         fits your platform.
 
         Args:
-            room_id: The room ID to fetch members for.
+            identifier: A Channel object or room ID string.
+            id: Room ID (alternative to positional identifier).
+            name: Room name to search for.
 
         Returns:
             List of users who are members of the room.
         """
-        return await self.fetch_channel_members(room_id)
+        return await self.fetch_channel_members(identifier, id=id, name=name)
 
     async def resolve_message(self, message: Message) -> Message:
         """Resolve incomplete nested objects in a Message.
@@ -697,7 +697,8 @@ class BackendBase(BaseModel):
         """Helper to resolve a channel argument to an ID string.
 
         Handles string IDs, complete Channel objects, and incomplete
-        Channel objects that need resolution.
+        Channel objects that need resolution. For DM channels with users
+        but no ID, creates or retrieves the DM channel.
 
         Args:
             channel: A channel ID string or Channel object.
@@ -714,7 +715,14 @@ class BackendBase(BaseModel):
         if channel.is_complete:
             return channel.id
 
-        # Resolve incomplete channel
+        # Handle DM channels with users - create/get the DM
+        if channel.users and channel.is_dm:
+            dm_channel_id = await self.create_dm(channel.users)
+            if dm_channel_id:
+                return dm_channel_id
+            raise ValueError(f"Failed to create DM channel with users: {[u.id for u in channel.users]}")
+
+        # Resolve incomplete channel by name or other identifiers
         resolved = await self.resolve_channel(channel)
         return resolved.id
 
@@ -1334,6 +1342,57 @@ class BackendBase(BaseModel):
         """
         return await self.create_dm(users)
 
+    async def send_dm(
+        self,
+        user: Union[str, User],
+        content: str,
+        **kwargs: Any,
+    ) -> Message:
+        """Send a direct message to a user.
+
+        This is a convenience method that creates a DM channel with the user
+        if needed, then sends the message. It simplifies the common pattern of:
+
+            dm_id = await backend.create_dm([user])
+            await backend.send_message(dm_id, content)
+
+        Args:
+            user: The user to send to (ID string or User object).
+            content: The message content.
+            **kwargs: Additional platform-specific options passed to send_message.
+
+        Returns:
+            The sent message.
+
+        Raises:
+            ValueError: If the DM channel could not be created.
+            NotImplementedError: If the backend doesn't support DM creation.
+
+        Example:
+            >>> # Send DM using user ID
+            >>> msg = await backend.send_dm("U123", "Hello!")
+            >>> # Send DM using User object
+            >>> msg = await backend.send_dm(user, "Hello!")
+            >>> # With additional options
+            >>> msg = await backend.send_dm(user, "Check this!", thread_id="T123")
+        """
+        # Normalize to list for create_dm
+        user_list = [user]
+
+        # Create or get existing DM channel
+        dm_channel_id = await self.create_dm(user_list)
+
+        if not dm_channel_id:
+            user_id = user.id if isinstance(user, User) else user
+            raise ValueError(f"Failed to create DM channel with user {user_id}")
+
+        # Send the message
+        return await self.send_message(
+            channel=dm_channel_id,
+            content=content,
+            **kwargs,
+        )
+
     async def create_channel(
         self,
         name: str,
@@ -1552,6 +1611,32 @@ class BackendBase(BaseModel):
         from ..base.mention import mention_channel_for_backend
 
         return mention_channel_for_backend(channel, self.__class__.name)
+
+    def channel_link(self, channel: Union[str, Channel]) -> str:
+        """Generate a clickable channel link/mention for this backend.
+
+        This is a convenience method that accepts either a channel ID string
+        or a Channel object and returns the appropriate platform-specific
+        channel reference.
+
+        Args:
+            channel: A channel ID string or Channel object.
+
+        Returns:
+            The formatted channel link/mention string.
+
+        Example:
+            >>> # From channel ID
+            >>> link = backend.channel_link("C123")
+            >>> # From Channel object
+            >>> link = backend.channel_link(channel)
+            >>> # Use in message
+            >>> await backend.send_message(ch, f"Join us in {backend.channel_link('general')}")
+        """
+        if isinstance(channel, str):
+            # Create a minimal Channel object with just the ID
+            channel = Channel(id=channel)
+        return self.mention_channel(channel)
 
     def mention_here(self) -> str:
         """Format an @here mention for this backend.

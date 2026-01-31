@@ -41,6 +41,7 @@ from datetime import datetime
 from typing import Optional
 
 # Chatom imports
+from chatom.base import Channel
 from chatom.format import Format, FormattedMessage, Table
 from chatom.slack import SlackBackend, SlackConfig, mention_channel_all, mention_everyone, mention_here
 
@@ -450,58 +451,260 @@ class SlackE2ETest:
             self.log(f"Failed to test presence: {e}", success=False)
 
     async def test_channel_creation(self):
-        """Test channel and DM creation."""
-        self.section("Test: Room/DM Creation")
+        """Test channel and DM creation using new convenience methods."""
+        self.section("Test: Room/DM Creation (using Channel.dm_to)")
 
         try:
-            # Test DM creation with the test user
+            # Get user object for DM convenience methods
+            test_user = None
             if self.user_id:
-                print(f"  Creating DM with user {self.user_id}...")
-                dm_channel = await self.backend.create_dm([self.user_id])
-                if dm_channel:
-                    self.log(f"Created DM channel: {dm_channel}")
+                test_user = await self.backend.fetch_user(self.user_id)
+
+            if test_user:
+                # Method 1: Use Channel.dm_to() convenience method
+                print(f"\n  Method 1: Using Channel.dm_to({test_user.display_name})...")
+                dm_channel = Channel.dm_to(test_user)
+                print(f"    Created incomplete DM channel: {dm_channel}")
+                print(f"    Channel type: {dm_channel.channel_type}")
+                print(f"    Users: {[u.display_name for u in dm_channel.users]}")
+                print(f"    Is incomplete: {dm_channel.is_incomplete}")
+
+                # Send message to incomplete channel - backend will resolve it
+                msg = (
+                    FormattedMessage()
+                    .add_text("🧪 [E2E Test] DM via Channel.dm_to() convenience\n")
+                    .add_text(f"Created at: {datetime.now().isoformat()}")
+                )
+                _result = await self.backend.send_message(dm_channel, msg.render(Format.SLACK_MARKDOWN))
+                self.log("Sent DM using Channel.dm_to() - resolved channel")
+
+                # Method 2: Use create_dm directly (legacy approach)
+                print(f"\n  Method 2: Using create_dm([{self.user_id}]) directly...")
+                dm_channel_id = await self.backend.create_dm([self.user_id])
+                if dm_channel_id:
+                    self.log(f"Created DM channel via create_dm(): {dm_channel_id}")
 
                     # Send a test message to the DM
-                    msg = (
-                        FormattedMessage().add_text("🧪 [E2E Test] DM creation test message\n").add_text(f"Created at: {datetime.now().isoformat()}")
-                    )
-                    await self.backend.send_message(dm_channel, msg.render(Format.SLACK_MARKDOWN))
+                    msg = FormattedMessage().add_text("🧪 [E2E Test] DM via create_dm()\n").add_text(f"Created at: {datetime.now().isoformat()}")
+                    await self.backend.send_message(dm_channel_id, msg.render(Format.SLACK_MARKDOWN))
                     self.log("Sent message to DM")
                 else:
                     self.log("DM creation returned no channel ID", success=False)
             else:
-                print("  Skipping DM test - no user ID available")
+                print("  Skipping DM test - no user available")
 
             # Skip channel creation to avoid clutter
             print("\n  Skipping public/private channel creation test to avoid creating test channels.")
             print("  To test, uncomment the code in this method.")
 
-            # Uncomment to test channel creation:
-            # timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-            # channel_name = f"test-e2e-{timestamp}"
-            # print(f"\n  Creating private channel: {channel_name}...")
-            # channel_id = await self.backend.create_room(
-            #     name=channel_name,
-            #     description="Test channel created by E2E test",
-            #     public=False,
-            # )
-            # if channel_id:
-            #     self.log(f"Created channel: {channel_name} ({channel_id})")
-            #
-            #     # Send a test message to the new channel
-            #     msg = (
-            #         FormattedMessage()
-            #         .add_text(f"🧪 [E2E Test] Channel creation test\n")
-            #         .add_text(f"Channel: {channel_name}\n")
-            #         .add_text(f"Created at: {datetime.now().isoformat()}")
-            #     )
-            #     await self.backend.send_message(channel_id, msg.render(Format.SLACK_MARKDOWN))
-            #     self.log("Sent message to new channel")
-            # else:
-            #     self.log("Channel creation not supported or failed", success=False)
-
         except Exception as e:
             self.log(f"Failed to test room/DM creation: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_dm_reply_convenience(self):
+        """Test as_dm_to_author() convenience method."""
+        self.section("Test: as_dm_to_author() Convenience")
+
+        try:
+            # Get a recent message from the test channel to use as source
+            messages = await self.backend.fetch_messages(self.channel_id, limit=20)
+
+            # Find a message from a non-bot user
+            source_message = None
+            for msg in messages:
+                # Skip bot messages
+                if msg.author and not getattr(msg.author, "is_bot", False):
+                    source_message = msg
+                    break
+
+            if source_message:
+                print(f"  Found message from {source_message.author.display_name}")
+                print(f"  Original content: {(source_message.content or '')[:50]}...")
+
+                # Use as_dm_to_author() to create a DM response
+                dm_message = source_message.as_dm_to_author(
+                    f"🧪 [E2E Test] DM reply via as_dm_to_author()\n"
+                    f"This is a response to your message in #{self.channel_name}.\n"
+                    f"Created at: {datetime.now().isoformat()}"
+                )
+
+                print(f"  DM message channel type: {dm_message.channel.channel_type}")
+                print(f"  DM message channel users: {[u.display_name for u in dm_message.channel.users]}")
+                print(f"  DM message is incomplete: {dm_message.channel.is_incomplete}")
+
+                # Send the DM message - backend will resolve the channel
+                _result = await self.backend.send_message(dm_message.channel, dm_message.content)
+                self.log("Sent DM using as_dm_to_author() convenience")
+
+            else:
+                print("  No non-bot message found to test with")
+                self.log("as_dm_to_author test skipped - no source message", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test as_dm_to_author: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_replies(self):
+        """Test message replies using as_reply() convenience method."""
+        self.section("Test: Message Replies (as_reply)")
+
+        try:
+            # Send a message that will receive a reply
+            result = await self.backend.send_message(self.channel_id, "🧪 [E2E Test] Original message - will receive a reply")
+            parent_ts = result.ts if hasattr(result, "ts") else result
+
+            if parent_ts:
+                print(f"  Original message TS: {parent_ts}")
+
+                # Use as_reply() convenience method
+                reply_msg = result.as_reply("🧪 [E2E Test] This is a reply using as_reply() convenience!")
+                print(f"  Reply message thread: {reply_msg.thread}")
+
+                # Send the reply
+                reply_result = await self.backend.send_message(
+                    self.channel_id,
+                    reply_msg.content,
+                    thread_id=reply_msg.thread.id if reply_msg.thread else parent_ts,
+                )
+                if reply_result:
+                    self.log("Sent reply using as_reply() convenience")
+                    print(f"  Reply TS: {reply_result.ts if hasattr(reply_result, 'ts') else reply_result}")
+                else:
+                    self.log("as_reply() failed", success=False)
+            else:
+                self.log("Failed to send original message for reply test", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test replies: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_forwarding(self):
+        """Test message forwarding using forward_message()."""
+        self.section("Test: Message Forwarding")
+
+        try:
+            # Get a recent message to forward
+            messages = await self.backend.fetch_messages(self.channel_id, limit=10)
+
+            if messages:
+                source_message = messages[0]
+                print(f"  Source message: {(source_message.content or '')[:50]}...")
+
+                # Forward the message to the same channel (for testing)
+                forwarded = await self.backend.forward_message(
+                    source_message,
+                    self.channel_id,
+                    include_attribution=True,
+                    prefix="📤 ",
+                )
+                if forwarded:
+                    self.log("Forwarded message with attribution")
+                    print(f"  Forwarded message TS: {forwarded.ts if hasattr(forwarded, 'ts') else forwarded.id}")
+            else:
+                self.log("No messages found to forward", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test forwarding: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_group_dm(self):
+        """Test multi-person group DM using Channel.group_dm_to()."""
+        self.section("Test: Group DM (Multi-Person)")
+
+        try:
+            # Get the test user
+            test_user = None
+            if self.user_id:
+                test_user = await self.backend.fetch_user(self.user_id)
+
+            if test_user:
+                # Demonstrate Channel.group_dm_to() API
+                print("  Channel.group_dm_to() requires 2+ users")
+                print("  Example: group_dm = Channel.group_dm_to([user1, user2])")
+
+                # For actual group DM, we need 2+ users - try to find another user from history
+                messages = await self.backend.fetch_messages(self.channel_id, limit=50)
+                other_users = []
+                seen_ids = {self.user_id}
+
+                for msg in messages:
+                    if msg.author and msg.author.id not in seen_ids:
+                        if not getattr(msg.author, "is_bot", False):
+                            other_users.append(msg.author)
+                            seen_ids.add(msg.author.id)
+                            if len(other_users) >= 1:
+                                break
+
+                if other_users:
+                    # Create group DM with test_user and other_user
+                    group_users = [test_user] + other_users
+                    print(f"  Creating group DM with {len(group_users)} users:")
+                    for u in group_users:
+                        print(f"    - {u.display_name} ({u.id})")
+
+                    group_dm = Channel.group_dm_to(group_users)
+                    print(f"  Group DM channel type: {group_dm.channel_type}")
+                    print(f"  Is incomplete: {group_dm.is_incomplete}")
+
+                    # Send message to group DM
+                    msg = (
+                        FormattedMessage()
+                        .add_text("🧪 [E2E Test] Group DM via Channel.group_dm_to()\n")
+                        .add_text(f"Created at: {datetime.now().isoformat()}")
+                    )
+                    _result = await self.backend.send_message(group_dm, msg.render(Format.SLACK_MARKDOWN))
+                    self.log("Sent group DM using Channel.group_dm_to()")
+                else:
+                    print("  No other users found for group DM test")
+                    self.log("Group DM API demonstrated (need 2+ real users to send)")
+            else:
+                print("  Skipping group DM test - no user available")
+                self.log("Group DM test skipped - no user", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test group DM: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_file_attachment(self):
+        """Test sending a file attachment."""
+        self.section("Test: File Attachment")
+
+        try:
+            import os as temp_os
+            import tempfile
+
+            # Create a temporary text file
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+                f.write("This is a test file created by the chatom E2E test suite.\n")
+                f.write(f"Created at: {datetime.now().isoformat()}\n")
+                f.write("This file can be safely deleted.\n")
+                temp_file_path = f.name
+
+            print(f"  Created temp file: {temp_file_path}")
+
+            try:
+                # Upload the file using Slack's files.upload API
+                response = await self.backend._async_client.files_upload_v2(
+                    channel=self.channel_id,
+                    file=temp_file_path,
+                    title="E2E Test File",
+                    initial_comment="🧪 [E2E Test] File attachment test",
+                )
+
+                if response.get("ok"):
+                    self.log("Uploaded file attachment successfully")
+                    file_info = response.get("file", {})
+                    print(f"  File ID: {file_info.get('id', 'N/A')}")
+                    print(f"  File name: {file_info.get('name', 'N/A')}")
+                else:
+                    self.log(f"File upload failed: {response.get('error')}", success=False)
+
+            finally:
+                # Clean up temp file
+                temp_os.unlink(temp_file_path)
+
+        except Exception as e:
+            self.log(f"Failed to test file attachment: {e}", success=False)
             traceback.print_exc()
 
     async def test_inbound_messages(self, bot_user_id: str, bot_name: str):
@@ -674,8 +877,23 @@ class SlackE2ETest:
             # Test presence
             await self.test_presence(user)
 
-            # Test channel creation (optional)
+            # Test channel creation (with Channel.dm_to convenience)
             await self.test_channel_creation()
+
+            # Test as_dm_to_author convenience
+            await self.test_dm_reply_convenience()
+
+            # Test replies
+            await self.test_replies()
+
+            # Test forwarding
+            await self.test_forwarding()
+
+            # Test group DM
+            await self.test_group_dm()
+
+            # Test file attachment
+            await self.test_file_attachment()
 
             # Test inbound messages (requires app token)
             # Get bot info for inbound test

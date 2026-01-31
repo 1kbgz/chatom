@@ -56,6 +56,8 @@ class MockSlackBackend(SlackBackend):
         self._removed_reactions: List[tuple] = []
         self._reactions: Dict[tuple, List[str]] = {}
         self._presence_changes: List[Dict[str, Any]] = []
+        self._created_dms: List[List[str]] = []
+        self._dm_counter: int = 0
         self._message_counter: int = 0
         self._current_presence: str = "auto"
         self._current_status_text: str = ""
@@ -236,6 +238,15 @@ class MockSlackBackend(SlackBackend):
         return self._presence_changes
 
     @property
+    def created_dms(self) -> List[List[str]]:
+        """Get all DMs created through this backend.
+
+        Returns:
+            List of user ID lists for each created DM.
+        """
+        return self._created_dms
+
+    @property
     def mock_users(self) -> Dict[str, SlackUser]:
         """Get all mock users.
 
@@ -256,6 +267,8 @@ class MockSlackBackend(SlackBackend):
         self._removed_reactions.clear()
         self._reactions.clear()
         self._presence_changes.clear()
+        self._created_dms.clear()
+        self._dm_counter = 0
         self._message_counter = 0
         self.users.clear()
         self.channels.clear()
@@ -439,20 +452,23 @@ class MockSlackBackend(SlackBackend):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, SlackChannel],
         content: str,
         **kwargs: Any,
     ) -> SlackMessage:
         """Send a mock message.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional options.
 
         Returns:
             The sent message.
         """
+        # Resolve channel ID
+        channel_id = channel.id if isinstance(channel, SlackChannel) else str(channel)
+
         self._message_counter += 1
         ts = f"{datetime.now().timestamp():.6f}"
 
@@ -692,3 +708,43 @@ class MockSlackBackend(SlackBackend):
         if key in self._reactions and emoji in self._reactions[key]:
             self._reactions[key].remove(emoji)
         self._removed_reactions.append((channel_id, message_id, emoji))
+
+    async def create_dm(
+        self,
+        users: List[Union[str, SlackUser]],
+    ) -> Optional[str]:
+        """Create a mock DM channel with the specified users.
+
+        Args:
+            users: List of users to include in the DM (ID strings or User objects).
+
+        Returns:
+            The DM channel ID.
+        """
+        # Extract user IDs
+        user_ids = []
+        for user in users:
+            if isinstance(user, SlackUser):
+                user_ids.append(user.id)
+            elif hasattr(user, "id"):
+                user_ids.append(user.id)
+            else:
+                user_ids.append(str(user))
+
+        # Track the created DM
+        self._created_dms.append(user_ids)
+
+        # Generate a DM channel ID
+        self._dm_counter += 1
+        dm_channel_id = f"D{self._dm_counter:010d}"
+
+        # Create the DM channel in mock channels
+        dm_channel = SlackChannel(
+            id=dm_channel_id,
+            name=f"dm-{'-'.join(user_ids)}",
+            is_dm=True,
+        )
+        self._mock_channels[dm_channel_id] = dm_channel
+        self.channels.add(dm_channel)
+
+        return dm_channel_id

@@ -4,7 +4,7 @@ This module provides utilities for building and converting messages
 between different chat platform formats.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic import Field
 
@@ -15,6 +15,7 @@ from .components import ActionRow, Button, ButtonStyle, ComponentContainer, Sele
 from .table import Table
 from .text import (
     Bold,
+    ChannelMention,
     Code,
     CodeBlock,
     Heading,
@@ -34,6 +35,9 @@ from .text import (
 )
 from .variant import FORMAT, Format
 
+if TYPE_CHECKING:
+    from chatom.base import Channel, User
+
 __all__ = (
     "FormattedMessage",
     "MessageBuilder",
@@ -51,9 +55,6 @@ BACKEND_FORMAT_MAP = {
     "discord": Format.DISCORD_MARKDOWN,
     "slack": Format.SLACK_MARKDOWN,
     "symphony": Format.SYMPHONY_MESSAGEML,
-    "matrix": Format.HTML,
-    "irc": Format.PLAINTEXT,
-    "email": Format.HTML,
 }
 
 
@@ -212,6 +213,68 @@ class FormattedMessage(BaseModel):
             Self for method chaining.
         """
         return self.append(UserMention(user_id=user_id, display_name=display_name))
+
+    def mention(self, user: "User") -> "FormattedMessage":
+        """Add a user mention from a User object.
+
+        This is a convenience method that extracts the user's ID and display name
+        automatically. The mention will render correctly for each backend format.
+
+        Args:
+            user: The User object to mention.
+
+        Returns:
+            Self for method chaining.
+
+        Example:
+            >>> from chatom import User
+            >>> user = User(id="U123", name="Alice")
+            >>> msg = FormattedMessage().mention(user).add_text(" check this!")
+            >>> msg.render_for("slack")   # '<@U123> check this!'
+            >>> msg.render_for("discord") # '<@U123> check this!'
+        """
+        from chatom.base import User as BaseUser
+
+        if isinstance(user, BaseUser):
+            return self.append(
+                UserMention(
+                    user_id=user.id,
+                    display_name=user.display_name,
+                )
+            )
+        # Fallback for string user IDs
+        return self.append(UserMention(user_id=str(user), display_name=""))
+
+    def channel_mention(self, channel: "Channel") -> "FormattedMessage":
+        """Add a channel mention from a Channel object.
+
+        This is a convenience method that extracts the channel's ID and name
+        automatically. The mention will render correctly for each backend format.
+
+        Args:
+            channel: The Channel object to mention.
+
+        Returns:
+            Self for method chaining.
+
+        Example:
+            >>> from chatom import Channel
+            >>> channel = Channel(id="C123", name="general")
+            >>> msg = FormattedMessage().add_text("Join ").channel_mention(channel)
+            >>> msg.render_for("slack")   # 'Join <#C123>'
+            >>> msg.render_for("discord") # 'Join <#C123>'
+        """
+        from chatom.base import Channel as BaseChannel
+
+        if isinstance(channel, BaseChannel):
+            return self.append(
+                ChannelMention(
+                    channel_id=channel.id,
+                    display_name=channel.name,
+                )
+            )
+        # Fallback for string channel IDs
+        return self.append(ChannelMention(channel_id=str(channel), display_name=""))
 
     def add_raw(self, content: str) -> "FormattedMessage":
         """Add raw content that will not be escaped.
