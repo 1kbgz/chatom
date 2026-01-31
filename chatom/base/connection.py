@@ -56,9 +56,9 @@ class Registry(BaseModel, Generic[T]):
             entity: The entity to add.
         """
         if hasattr(entity, "id") and entity.id:
-            self._cache_by_id[entity.id] = entity
+            self._cache_by_id[entity.id] = entity  # type: ignore[index]
         if hasattr(entity, "name") and entity.name:
-            self._cache_by_name[entity.name] = entity
+            self._cache_by_name[entity.name] = entity  # type: ignore[index]
 
     def get_by_id(self, id: str) -> Optional[T]:
         """Get an entity by ID from cache.
@@ -118,17 +118,17 @@ class UserRegistry(Registry[User]):
         object.__setattr__(self, "_cache_by_email", {})
         object.__setattr__(self, "_cache_by_handle", {})
 
-    def add(self, user: User) -> None:
+    def add(self, entity: User) -> None:
         """Add a user to the registry.
 
         Args:
-            user: The user to add.
+            entity: The user to add.
         """
-        super().add(user)
-        if user.email:
-            self._cache_by_email[user.email.lower()] = user
-        if user.handle:
-            self._cache_by_handle[user.handle.lower()] = user
+        super().add(entity)
+        if entity.email:
+            self._cache_by_email[entity.email.lower()] = entity
+        if entity.handle:
+            self._cache_by_handle[entity.handle.lower()] = entity
 
     def get_by_email(self, email: str) -> Optional[User]:
         """Get a user by email address.

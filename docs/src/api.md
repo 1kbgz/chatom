@@ -19,9 +19,6 @@ The full API documentation is auto-generated from the source code docstrings.
 - **chatom.discord** - Discord-specific models and utilities
 - **chatom.slack** - Slack-specific models and utilities
 - **chatom.symphony** - Symphony-specific models and utilities
-- **chatom.email** - Email-specific models and utilities
-- **chatom.irc** - IRC-specific models and utilities
-- **chatom.matrix** - Matrix-specific models and utilities
 
 ## Quick Reference
 
@@ -66,9 +63,6 @@ The full API documentation is auto-generated from the source code docstrings.
 | Discord | `DiscordUser` | `DiscordChannel` | `DiscordPresence` |
 | Slack | `SlackUser` | `SlackChannel` | `SlackPresence` |
 | Symphony | `SymphonyUser` | `SymphonyChannel` | `SymphonyPresence` |
-| Email | `EmailUser` | - | - |
-| IRC | `IRCUser` | `IRCChannel` | - |
-| Matrix | `MatrixUser` | - | - |
 
 ### Mention Functions
 
@@ -77,9 +71,7 @@ The full API documentation is auto-generated from the source code docstrings.
 | Discord | `mention_user`, `mention_channel`, `mention_role`, `mention_everyone`, `mention_here` |
 | Slack | `mention_user`, `mention_channel`, `mention_user_group`, `mention_here`, `mention_channel_all`, `mention_everyone` |
 | Symphony | `mention_user`, `mention_user_by_email`, `format_hashtag`, `format_cashtag` |
-| Email | `mention_user` |
-| IRC | `mention_user`, `highlight_user` |
-| Matrix | `mention_user`, `mention_room`, `create_pill` |
+
 
 ### Backend Methods
 
@@ -105,9 +97,6 @@ All backends inherit from `BackendBase` and provide these core methods:
 | Discord | ✅ Returns user presence with activity | ✅ Set bot presence/status |
 | Slack | ✅ Returns active/away status | ✅ Set presence and status text |
 | Symphony | ✅ Returns Symphony presence category | ✅ Set availability status |
-| Matrix | ✅ Returns online/offline/unavailable | ✅ Set presence and status message |
-| Email | ❌ Returns `None` | ❌ Not supported |
-| IRC | ❌ Returns `None` | ⚠️ Maps to AWAY command |
 
 #### Sync Helper
 

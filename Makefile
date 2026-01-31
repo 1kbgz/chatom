@@ -27,16 +27,16 @@ lint-py:  ## lint python with ruff
 	python -m ruff format --check chatom
 
 lint-docs:  ## lint docs with mdformat and codespell
-	python -m mdformat --check README.md 
-	python -m codespell_lib README.md 
+	python -m mdformat --check README.md
+	python -m codespell_lib README.md
 
 fix-py:  ## autoformat python code with ruff
 	python -m ruff check --fix chatom
 	python -m ruff format chatom
 
 fix-docs:  ## autoformat docs with mdformat and codespell
-	python -m mdformat README.md 
-	python -m codespell_lib --write README.md 
+	python -m mdformat README.md
+	python -m codespell_lib --write README.md
 
 lint: lint-py lint-docs  ## run all linters
 lints: lint
@@ -46,12 +46,15 @@ format: fix
 ################
 # Other Checks #
 ################
-.PHONY: check-manifest checks check
+.PHONY: check-manifest types checks check
 
 check-manifest:  ## check python sdist manifest with check-manifest
 	check-manifest -v
 
-checks: check-manifest
+types: ## run type checking with ty
+	ty check --python `which python`
+
+checks: check-manifest types
 
 # Alias
 check: checks

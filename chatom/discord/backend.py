@@ -13,6 +13,7 @@ from pydantic import Field
 from ..backend import BackendBase
 from ..base import (
     DISCORD_CAPABILITIES,
+    Avatar,
     BackendCapabilities,
     Channel,
     Message,
@@ -44,11 +45,11 @@ try:
     HAS_DISCORD = True
 except ImportError:
     HAS_DISCORD = False
-    discord = None  # type: ignore
-    DiscordStatus = None  # type: ignore
-    Game = None  # type: ignore
-    Activity = None  # type: ignore
-    ActivityType = None  # type: ignore
+    discord = None  # type: ignore[assignment]
+    DiscordStatus = None  # type: ignore[assignment]
+    Game = None  # type: ignore[assignment]
+    Activity = None  # type: ignore[assignment]
+    ActivityType = None  # type: ignore[assignment]
 
 
 def _status_to_discord(status: str) -> Any:
@@ -72,7 +73,7 @@ def _discord_status_to_presence(status: Any) -> PresenceStatus:
         return PresenceStatus.UNKNOWN
     status_map = {
         DiscordStatus.online: PresenceStatus.ONLINE,
-        DiscordStatus.idle: PresenceStatus.AWAY,
+        DiscordStatus.idle: PresenceStatus.IDLE,
         DiscordStatus.dnd: PresenceStatus.DND,
         DiscordStatus.invisible: PresenceStatus.INVISIBLE,
         DiscordStatus.offline: PresenceStatus.OFFLINE,
@@ -233,7 +234,7 @@ class DiscordBackend(BackendBase):
         if isinstance(identifier, DiscordUser):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -258,7 +259,7 @@ class DiscordBackend(BackendBase):
                         id=str(discord_user.id),
                         name=discord_user.display_name,
                         handle=discord_user.name,
-                        avatar_url=str(discord_user.display_avatar.url) if discord_user.display_avatar else "",
+                        avatar=Avatar(url=str(discord_user.display_avatar.url)) if discord_user.display_avatar else None,
                         discriminator=discord_user.discriminator or "0",
                         global_name=discord_user.global_name,
                         is_bot=discord_user.bot,
@@ -309,7 +310,7 @@ class DiscordBackend(BackendBase):
         if isinstance(identifier, DiscordChannel):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -334,7 +335,7 @@ class DiscordBackend(BackendBase):
                         id=str(discord_channel.id),
                         name=getattr(discord_channel, "name", "DM"),
                         topic=getattr(discord_channel, "topic", "") or "",
-                        guild_id=str(discord_channel.guild.id) if hasattr(discord_channel, "guild") and discord_channel.guild else "",
+                        guild=Organization(id=str(discord_channel.guild.id)) if hasattr(discord_channel, "guild") and discord_channel.guild else None,
                         position=getattr(discord_channel, "position", 0),
                         nsfw=getattr(discord_channel, "nsfw", False),
                         slowmode_delay=getattr(discord_channel, "slowmode_delay", 0),
@@ -410,11 +411,11 @@ class DiscordBackend(BackendBase):
                 message = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
-                    timestamp=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
-                    user_id=str(msg.author.id),
-                    channel_id=str(msg.channel.id),
-                    guild_id=str(msg.guild.id) if msg.guild else "",
-                    edited=msg.edited_at is not None,
+                    created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    author=DiscordUser(id=str(msg.author.id)),
+                    channel=DiscordChannel(id=str(msg.channel.id)),
+                    guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
+                    is_edited=msg.edited_at is not None,
                 )
                 messages.append(message)
 
@@ -478,11 +479,11 @@ class DiscordBackend(BackendBase):
                 message = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
-                    timestamp=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
-                    user_id=str(msg.author.id),
-                    channel_id=str(msg.channel.id),
-                    guild_id=str(msg.guild.id) if msg.guild else "",
-                    edited=msg.edited_at is not None,
+                    created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    author=DiscordUser(id=str(msg.author.id)),
+                    channel=DiscordChannel(id=str(msg.channel.id)),
+                    guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
+                    is_edited=msg.edited_at is not None,
                 )
                 messages.append(message)
 
@@ -542,10 +543,10 @@ class DiscordBackend(BackendBase):
             return DiscordMessage(
                 id=str(msg.id),
                 content=msg.content,
-                timestamp=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
-                user_id=str(msg.author.id),
-                channel_id=str(msg.channel.id),
-                guild_id=str(msg.guild.id) if msg.guild else "",
+                created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                author=DiscordUser(id=str(msg.author.id)),
+                channel=DiscordChannel(id=str(msg.channel.id)),
+                guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
             )
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to send message: {e}") from e
@@ -585,11 +586,11 @@ class DiscordBackend(BackendBase):
             return DiscordMessage(
                 id=str(edited_msg.id),
                 content=edited_msg.content,
-                timestamp=edited_msg.created_at.replace(tzinfo=timezone.utc) if edited_msg.created_at else datetime.now(timezone.utc),
-                user_id=str(edited_msg.author.id),
-                channel_id=str(edited_msg.channel.id),
-                guild_id=str(edited_msg.guild.id) if edited_msg.guild else "",
-                edited=True,
+                created_at=edited_msg.created_at.replace(tzinfo=timezone.utc) if edited_msg.created_at else datetime.now(timezone.utc),
+                author=DiscordUser(id=str(edited_msg.author.id)),
+                channel=DiscordChannel(id=str(edited_msg.channel.id)),
+                guild=Organization(id=str(edited_msg.guild.id)) if edited_msg.guild else None,
+                is_edited=True,
             )
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to edit message: {e}") from e
@@ -685,10 +686,10 @@ class DiscordBackend(BackendBase):
             forwarded_msg = DiscordMessage(
                 id=str(sent_msg.id),
                 content=sent_msg.content,
-                timestamp=sent_msg.created_at.replace(tzinfo=timezone.utc) if sent_msg.created_at else datetime.now(timezone.utc),
-                user_id=str(sent_msg.author.id),
-                channel_id=str(sent_msg.channel.id),
-                guild_id=str(sent_msg.guild.id) if sent_msg.guild else "",
+                created_at=sent_msg.created_at.replace(tzinfo=timezone.utc) if sent_msg.created_at else datetime.now(timezone.utc),
+                author=DiscordUser(id=str(sent_msg.author.id)),
+                channel=DiscordChannel(id=str(sent_msg.channel.id)),
+                guild=Organization(id=str(sent_msg.guild.id)) if sent_msg.guild else None,
                 message_type=MessageType.FORWARD,
             )
             forwarded_msg.forwarded_from = message
@@ -742,7 +743,7 @@ class DiscordBackend(BackendBase):
 
         await self._client.change_presence(status=discord_status, activity=activity)
 
-    async def get_presence(self, user_id: str) -> Optional[Presence]:
+    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
         """Get a user's presence on Discord.
 
         Note: This requires the GUILD_PRESENCES intent and caching.
@@ -754,6 +755,8 @@ class DiscordBackend(BackendBase):
         Returns:
             The user's presence or None if not available.
         """
+        user_id = str(user.id) if isinstance(user, User) else str(user)
+
         if self._client is None:
             return None
 
@@ -773,7 +776,7 @@ class DiscordBackend(BackendBase):
                         )
 
                     return DiscordPresence(
-                        user_id=user_id,
+                        user=DiscordUser(id=user_id),
                         status=_discord_status_to_presence(member.status),
                         activities=activities,
                         desktop_status=_discord_status_to_presence(member.desktop_status)
@@ -905,7 +908,7 @@ class DiscordBackend(BackendBase):
                     id=str(bot_user.id),
                     name=bot_user.display_name,
                     handle=bot_user.name,
-                    avatar_url=str(bot_user.display_avatar.url) if bot_user.display_avatar else "",
+                    avatar=Avatar(url=str(bot_user.display_avatar.url)) if bot_user.display_avatar else None,
                     discriminator=bot_user.discriminator or "0",
                     global_name=bot_user.global_name,
                     is_bot=bot_user.bot,
@@ -920,15 +923,24 @@ class DiscordBackend(BackendBase):
 
         return None
 
-    async def create_dm(self, user_id: str) -> Optional[str]:
+    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create a DM channel with a user.
 
+        Note: Discord only supports 1:1 DMs from bots, so only the first
+        user in the list is used.
+
         Args:
-            user_id: The user ID to create a DM with.
+            users: List of users to create a DM with. Only first user is used.
 
         Returns:
             The DM channel ID, or None if creation failed.
         """
+        if not users:
+            return None
+
+        user = users[0]
+        user_id = str(user.id) if isinstance(user, User) else str(user)
+
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
@@ -1041,7 +1053,7 @@ class DiscordBackend(BackendBase):
                         id=str(discord_channel.id),
                         name=getattr(discord_channel, "name", ""),
                         topic=getattr(discord_channel, "topic", "") or "",
-                        guild_id=str(guild.id),
+                        guild=Organization(id=str(guild.id)),
                         position=getattr(discord_channel, "position", 0),
                         nsfw=getattr(discord_channel, "nsfw", False),
                         slowmode_delay=getattr(discord_channel, "slowmode_delay", 0),
@@ -1113,7 +1125,7 @@ class DiscordBackend(BackendBase):
                             id=str(member.id),
                             name=member.display_name,
                             handle=member.name,
-                            avatar_url=str(member.display_avatar.url) if member.display_avatar else "",
+                            avatar=Avatar(url=str(member.display_avatar.url)) if member.display_avatar else None,
                             discriminator=member.discriminator or "0",
                             global_name=member.global_name,
                             is_bot=member.bot,
@@ -1137,7 +1149,7 @@ class DiscordBackend(BackendBase):
                             id=str(member.id),
                             name=member.display_name,
                             handle=member.name,
-                            avatar_url=str(member.display_avatar.url) if member.display_avatar else "",
+                            avatar=Avatar(url=str(member.display_avatar.url)) if member.display_avatar else None,
                             discriminator=member.discriminator or "0",
                             global_name=member.global_name,
                             is_bot=member.bot,
@@ -1179,7 +1191,7 @@ class DiscordBackend(BackendBase):
         if isinstance(identifier, DiscordGuild):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -1200,49 +1212,31 @@ class DiscordBackend(BackendBase):
 
         # Name-based lookup
         if name:
-            return await self.fetch_organization_by_name(name)
-
-        return None
-
-    async def fetch_organization_by_name(
-        self,
-        name: str,
-    ) -> Optional[Organization]:
-        """Fetch a guild by name.
-
-        This searches through guilds the bot is a member of.
-
-        Args:
-            name: The guild name to search for (case-insensitive).
-
-        Returns:
-            The guild if found, None otherwise.
-        """
-        if self._client is None:
-            return None
-
-        # Need to be connected to the gateway to access guilds
-        if not self._client.is_ready():
-            # Start the client connection in the background
-            connect_task = asyncio.create_task(self._client.connect())
-            # Wait for the client to be ready
-            for _ in range(30):  # Wait up to 30 seconds
-                await asyncio.sleep(1)
-                if self._client.is_ready():
-                    break
-            else:
-                # Clean up if we didn't connect
-                connect_task.cancel()
-                try:
-                    await connect_task
-                except asyncio.CancelledError:
-                    pass
+            if self._client is None:
                 return None
 
-        # Search through guilds
-        for guild in self._client.guilds:
-            if guild.name.lower() == name.lower():
-                return DiscordGuild.from_discord_guild(guild)
+            # Need to be connected to the gateway to access guilds
+            if not self._client.is_ready():
+                # Start the client connection in the background
+                connect_task = asyncio.create_task(self._client.connect())
+                # Wait for the client to be ready
+                for _ in range(30):  # Wait up to 30 seconds
+                    await asyncio.sleep(1)
+                    if self._client.is_ready():
+                        break
+                else:
+                    # Clean up if we didn't connect
+                    connect_task.cancel()
+                    try:
+                        await connect_task
+                    except asyncio.CancelledError:
+                        pass
+                    return None
+
+            # Search through guilds
+            for guild in self._client.guilds:
+                if guild.name.lower() == name.lower():
+                    return DiscordGuild.from_discord_guild(guild)
 
         return None
 
@@ -1288,16 +1282,6 @@ class DiscordBackend(BackendBase):
         This is an alias for fetch_organization using Discord terminology.
         """
         return await self.fetch_organization(identifier, id=id, name=name)
-
-    async def fetch_guild_by_name(
-        self,
-        name: str,
-    ) -> Optional[Organization]:
-        """Fetch a guild by name.
-
-        This is an alias for fetch_organization_by_name using Discord terminology.
-        """
-        return await self.fetch_organization_by_name(name)
 
     async def list_guilds(self) -> List[Organization]:
         """List all guilds the bot has access to.
@@ -1396,12 +1380,11 @@ class DiscordBackend(BackendBase):
                 discord_msg = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
-                    timestamp=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
-                    author_id=str(msg.author.id),
-                    user_id=str(msg.author.id),
-                    channel_id=str(msg.channel.id),
-                    guild_id=str(msg.guild.id) if msg.guild else "",
-                    mentions=mention_users,
+                    created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    author=DiscordUser(id=str(msg.author.id)),
+                    channel=DiscordChannel(id=str(msg.channel.id)),
+                    guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
+                    tags=mention_users,
                     mention_everyone=msg.mention_everyone,
                     mention_roles=[str(r.id) for r in msg.role_mentions] if msg.role_mentions else [],
                 )

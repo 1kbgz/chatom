@@ -71,7 +71,7 @@ class TestSlackMessageConversion:
         from chatom.slack.user import SlackUser
 
         msg = SlackMessage(
-            ts="1234567890.123456",
+            id="1234567890.123456",
             channel=SlackChannel(id="C12345"),
             author=SlackUser(id="U12345", name="Test User"),
             text="Check out this file!",
@@ -151,7 +151,7 @@ class TestSlackMessageProperties:
         """Test is_thread_reply returns False when not in a thread."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001")
+        msg = SlackMessage(id="m1")
         assert msg.is_thread_reply is False
 
     def test_is_thread_reply_false_same_ts(self):
@@ -168,14 +168,14 @@ class TestSlackMessageProperties:
         """Test is_thread_parent returns True when reply_count > 0."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001", reply_count=5)
+        msg = SlackMessage(id="m1", reply_count=5)
         assert msg.is_thread_parent is True
 
     def test_is_thread_parent_false(self):
         """Test is_thread_parent returns False when reply_count == 0."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001")
+        msg = SlackMessage(id="m1")
         assert msg.is_thread_parent is False
 
     def test_is_bot_message_by_is_bot(self):
@@ -184,21 +184,21 @@ class TestSlackMessageProperties:
         from chatom.slack.user import SlackUser
 
         author = SlackUser(id="B12345", name="Bot", is_bot=True)
-        msg = SlackMessage(id="m1", ts="1234567890.000001", author=author, is_bot=True)
+        msg = SlackMessage(id="m1", author=author, is_bot=True)
         assert msg.is_bot_message is True
 
     def test_is_bot_message_by_subtype(self):
         """Test is_bot_message returns True for bot_message subtype."""
         from chatom.slack import SlackMessage, SlackMessageSubtype
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001", subtype=SlackMessageSubtype.BOT_MESSAGE)
+        msg = SlackMessage(id="m1", subtype=SlackMessageSubtype.BOT_MESSAGE)
         assert msg.is_bot_message is True
 
     def test_is_bot_message_false(self):
         """Test is_bot_message returns False for regular messages."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001")
+        msg = SlackMessage(id="m1")
         assert msg.is_bot_message is False
 
     def test_has_blocks(self):
@@ -206,8 +206,7 @@ class TestSlackMessageProperties:
         from chatom.slack import SlackMessage
 
         msg = SlackMessage(
-            id="m1",
-            ts="1234567890.000001",
+            id="1234567890.000001",
             blocks=[{"type": "section", "text": {"type": "mrkdwn", "text": "Hello"}}],
         )
         assert msg.has_blocks is True
@@ -216,7 +215,7 @@ class TestSlackMessageProperties:
         """Test has_blocks returns False when no blocks."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001")
+        msg = SlackMessage(id="m1")
         assert msg.has_blocks is False
 
     def test_has_files(self):
@@ -224,8 +223,7 @@ class TestSlackMessageProperties:
         from chatom.slack import SlackMessage
 
         msg = SlackMessage(
-            id="m1",
-            ts="1234567890.000001",
+            id="1234567890.000001",
             files=[{"id": "F123", "name": "file.txt"}],
         )
         assert msg.has_files is True
@@ -234,7 +232,7 @@ class TestSlackMessageProperties:
         """Test has_files returns False when no files."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001")
+        msg = SlackMessage(id="m1")
         assert msg.has_files is False
 
     def test_permalink(self):
@@ -287,7 +285,7 @@ class TestSlackMessageProperties:
 
         msg = SlackMessage(
             id="1234567890.000001",
-            mentions=[SlackUser(id="U12345678"), SlackUser(id="U87654321")],
+            tags=[SlackUser(id="U12345678"), SlackUser(id="U87654321")],
         )
         assert msg.mentions_user("U12345678") is True
         assert msg.mentions_user("U99999999") is False
@@ -296,5 +294,5 @@ class TestSlackMessageProperties:
         """Test mentions_user returns False when no mentions."""
         from chatom.slack import SlackMessage
 
-        msg = SlackMessage(id="m1", ts="1234567890.000001", content="Hello world!")
+        msg = SlackMessage(id="m1", content="Hello world!")
         assert msg.mentions_user("U12345678") is False

@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from pydantic import PrivateAttr
 
-from ..base import Channel, Message, MessageType, Presence, PresenceStatus, User
+from ..base import Avatar, Channel, Message, MessageType, Organization, Presence, PresenceStatus, User
 from .backend import DiscordBackend
 from .channel import DiscordChannel, DiscordChannelType
 from .message import DiscordMessage
@@ -62,6 +62,8 @@ class MockDiscordBackend(DiscordBackend):
         self._deleted_messages = []
         self._reactions = []
         self._presence_updates = []
+        self._created_dms: List[List[str]] = []
+        self._dm_counter = 0
         self._message_counter = 0
 
     def add_mock_user(
@@ -95,7 +97,7 @@ class MockDiscordBackend(DiscordBackend):
             id=id,
             name=name,
             handle=handle,
-            avatar_url=avatar_url,
+            avatar=Avatar(url=avatar_url) if avatar_url else None,
             discriminator=discriminator,
             global_name=global_name,
             is_bot=is_bot,
@@ -149,7 +151,7 @@ class MockDiscordBackend(DiscordBackend):
             id=id,
             name=name,
             topic=topic,
-            guild_id=guild_id,
+            guild=Organization(id=guild_id) if guild_id else None,
             position=position,
             nsfw=nsfw,
             discord_type=discord_type,
@@ -190,11 +192,11 @@ class MockDiscordBackend(DiscordBackend):
         message = DiscordMessage(
             id=message_id,
             content=content,
-            timestamp=timestamp or datetime.now(timezone.utc),
-            user_id=user_id,
-            channel_id=channel_id,
-            guild_id=guild_id,
-            edited=edited,
+            created_at=timestamp or datetime.now(timezone.utc),
+            author=DiscordUser(id=user_id),
+            channel=DiscordChannel(id=channel_id),
+            guild=Organization(id=guild_id) if guild_id else None,
+            is_edited=edited,
         )
         if channel_id not in self._mock_messages:
             self._mock_messages[channel_id] = []
@@ -224,8 +226,11 @@ class MockDiscordBackend(DiscordBackend):
         Returns:
             The created mock presence.
         """
+        from .user import DiscordUser
+
+        user = DiscordUser(id=user_id)
         presence = DiscordPresence(
-            user_id=user_id,
+            user=user,
             status=status,
             activities=activities or [],
             desktop_status=desktop_status,
@@ -254,7 +259,7 @@ class MockDiscordBackend(DiscordBackend):
         return self._edited_messages
 
     @property
-    def deleted_messages(self) -> List[str]:
+    def deleted_messages(self) -> List[Dict[str, str]]:
         """Get all message IDs deleted through this backend.
 
         Returns:
@@ -313,8 +318,8 @@ class MockDiscordBackend(DiscordBackend):
         self._deleted_messages.clear()
         self._reactions.clear()
         self._presence_updates.clear()
-        self.users._items.clear()
-        self.channels._items.clear()
+        self.users.clear()
+        self.channels.clear()
 
     # Override backend methods for mock behavior
 
@@ -351,7 +356,7 @@ class MockDiscordBackend(DiscordBackend):
         if isinstance(identifier, DiscordUser):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -394,7 +399,7 @@ class MockDiscordBackend(DiscordBackend):
         if isinstance(identifier, DiscordChannel):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -417,31 +422,36 @@ class MockDiscordBackend(DiscordBackend):
 
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, Message]] = None,
+        after: Optional[Union[str, Message]] = None,
     ) -> List[Message]:
         """Fetch mock messages from a channel.
 
         Args:
-            channel_id: The channel to fetch from.
+            channel: The channel to fetch from (ID string or Channel object).
             limit: Maximum number of messages.
-            before: Fetch messages before this ID.
-            after: Fetch messages after this ID.
+            before: Fetch messages before this ID or message.
+            after: Fetch messages after this ID or message.
 
         Returns:
             List of mock messages.
         """
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         messages = self._mock_messages.get(channel_id, [])
 
+        # Extract ID strings from Message objects if needed
+        before_id = before.id if isinstance(before, Message) else before
+        after_id = after.id if isinstance(after, Message) else after
+
         # Apply before filter
-        if before:
-            messages = [m for m in messages if int(m.id) < int(before)]
+        if before_id:
+            messages = [m for m in messages if int(m.id) < int(before_id)]
 
         # Apply after filter
-        if after:
-            messages = [m for m in messages if int(m.id) > int(after)]
+        if after_id:
+            messages = [m for m in messages if int(m.id) > int(after_id)]
 
         # Sort by ID descending (newest first) and limit
         messages = sorted(messages, key=lambda m: int(m.id), reverse=True)
@@ -449,20 +459,23 @@ class MockDiscordBackend(DiscordBackend):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a mock message.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional options.
 
         Returns:
             The mock sent message.
         """
+        # Resolve channel ID
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
+
         # Generate a mock message ID
         existing_count = len(self._sent_messages) + sum(len(msgs) for msgs in self._mock_messages.values())
         message_id = str(1000000000000000000 + existing_count)
@@ -470,10 +483,10 @@ class MockDiscordBackend(DiscordBackend):
         message = DiscordMessage(
             id=message_id,
             content=content,
-            timestamp=datetime.now(timezone.utc),
-            user_id="bot_user",  # Bot's user ID
-            channel_id=channel_id,
-            guild_id=kwargs.get("guild_id", ""),
+            created_at=datetime.now(timezone.utc),
+            author=DiscordUser(id="bot_user"),
+            channel=DiscordChannel(id=channel_id),
+            guild=Organization(id=kwargs.get("guild_id", "")) if kwargs.get("guild_id") else None,
         )
         self._sent_messages.append(message)
         return message
@@ -507,10 +520,10 @@ class MockDiscordBackend(DiscordBackend):
         edited_msg = DiscordMessage(
             id=message_id,
             content=content,
-            timestamp=datetime.now(timezone.utc),
-            user_id="bot_user",
-            channel_id=channel_id,
-            edited=True,
+            created_at=datetime.now(timezone.utc),
+            author=DiscordUser(id="bot_user"),
+            channel=DiscordChannel(id=channel_id) if channel_id else None,
+            is_edited=True,
         )
         self._edited_messages.append(edited_msg)
         return edited_msg
@@ -534,7 +547,7 @@ class MockDiscordBackend(DiscordBackend):
             message_id = message
             channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
 
-        self._deleted_messages.append(message_id)
+        self._deleted_messages.append({"channel_id": channel_id, "message_id": message_id})
         # Remove from mock messages if present
         if channel_id in self._mock_messages:
             self._mock_messages[channel_id] = [m for m in self._mock_messages[channel_id] if m.id != message_id]
@@ -588,9 +601,9 @@ class MockDiscordBackend(DiscordBackend):
         forwarded_msg = DiscordMessage(
             id=message_id,
             content=forwarded_content,
-            timestamp=datetime.now(timezone.utc),
-            user_id="bot_user",
-            channel_id=dest_channel_id,
+            created_at=datetime.now(timezone.utc),
+            author=DiscordUser(id="bot_user"),
+            channel=DiscordChannel(id=dest_channel_id),
             message_type=MessageType.FORWARD,
         )
         forwarded_msg.forwarded_from = message
@@ -624,15 +637,16 @@ class MockDiscordBackend(DiscordBackend):
             }
         )
 
-    async def get_presence(self, user_id: str) -> Optional[Presence]:
+    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
         """Get mock presence for a user.
 
         Args:
-            user_id: The user ID.
+            user: The user ID string or User object.
 
         Returns:
             The mock presence if set, None otherwise.
         """
+        user_id = user.id if isinstance(user, User) else user
         return self._mock_presence.get(user_id)
 
     async def add_reaction(
@@ -694,3 +708,52 @@ class MockDiscordBackend(DiscordBackend):
                 "action": "remove",
             }
         )
+
+    @property
+    def created_dms(self) -> List[List[str]]:
+        """Get all DMs created through this backend.
+
+        Returns:
+            List of user ID lists for each created DM.
+        """
+        return self._created_dms
+
+    async def create_dm(
+        self,
+        users: List[Union[str, User]],
+    ) -> Optional[str]:
+        """Create a mock DM channel with the specified users.
+
+        Args:
+            users: List of users to include in the DM (ID strings or User objects).
+
+        Returns:
+            The DM channel ID.
+        """
+        # Extract user IDs
+        user_ids = []
+        for user in users:
+            if isinstance(user, DiscordUser):
+                user_ids.append(user.id)
+            elif hasattr(user, "id"):
+                user_ids.append(user.id)
+            else:
+                user_ids.append(str(user))
+
+        # Track the created DM
+        self._created_dms.append(user_ids)
+
+        # Generate a DM channel ID
+        self._dm_counter += 1
+        dm_channel_id = f"{self._dm_counter:018d}"
+
+        # Create the DM channel in mock channels
+        dm_channel = DiscordChannel(
+            id=dm_channel_id,
+            name=f"dm-{'-'.join(user_ids)}",
+            discord_type=DiscordChannelType.DM,
+        )
+        self._mock_channels[dm_channel_id] = dm_channel
+        self.channels.add(dm_channel)
+
+        return dm_channel_id

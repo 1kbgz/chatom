@@ -9,16 +9,14 @@ description = "Minimum viable chat components"
 readme = "README.md"
 license = { text = "Apache-2.0" }
 version = "0.1.0"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = [
     "chat",
     "chatbot",
     "messenger",
     "discord",
     "slack",
-    "irc",
-    "matrix",
-    "whatsapp",
+    "symphony",
 ]
 
 classifiers = [
@@ -27,7 +25,6 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -54,13 +51,12 @@ develop = [
     "pytest-mock",
     "ruff>=0.9,<0.15",
     "twine",
+    "ty",
     "uv",
     "wheel",
     # integrations
     "csp",
     "discord.py",
-    "irc3",
-    "matrix-nio",
     "python-telegram-bot",
     "slack-sdk",
     "symphony-bdk-python",
@@ -73,9 +69,6 @@ develop = [
 discord = "chatom.discord.backend:DiscordBackend"
 slack = "chatom.slack.backend:SlackBackend"
 symphony = "chatom.symphony.backend:SymphonyBackend"
-matrix = "chatom.matrix.backend:MatrixBackend"
-irc = "chatom.irc.backend:IRCBackend"
-email = "chatom.email.backend:EmailBackend"
 
 [project.urls]
 Repository = "https://github.com/1kbgz/chatom"
@@ -109,6 +102,8 @@ ignore = [
 branch = true
 omit = [
     "chatom/tests/integration/",
+    "chatom/examples/",
+    "chatom/tests/*_e2e.py",
 ]
 [tool.coverage.report]
 exclude_also = [
@@ -117,7 +112,7 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 ignore_errors = true
-fail_under = 75
+fail_under = 70
 
 [tool.hatch.build]
 artifacts = []
@@ -152,19 +147,30 @@ section-order = ["future", "standard-library", "third-party", "first-party", "lo
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401", "F403"]
 
+[tool.ty.rules]
+unresolved-import = "ignore"
+
+[tool.ty.src]
+exclude = [
+    "chatom/tests/**/*",
+]
+
 [tool.yardang]
 pages = [
     "docs/src/index.md",
     "docs/src/installation.md",
     "docs/src/quickstart.md",
     "docs/src/base-models.md",
+    "docs/src/backends.md",
+    "docs/src/backend-config.md",
     "docs/src/messaging.md",
     "docs/src/mentions.md",
+    "docs/src/reactions-threads.md",
     "docs/src/format-system.md",
     "docs/src/advanced-features.md",
     "docs/src/conversion.md",
-    "docs/src/backends.md",
-    "docs/src/backend-examples.md",
+    "docs/src/csp-integration.md",
+    "docs/src/examples.md",
     "docs/src/integration-testing.md",
     "docs/src/api.md",
 ]

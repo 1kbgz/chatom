@@ -285,6 +285,7 @@ class SlackMessage(Message):
     def from_formatted(
         cls,
         formatted: "FormattedMessage",
+        backend: str = "",
         **kwargs: Any,
     ) -> "SlackMessage":
         """Create a SlackMessage from a FormattedMessage.
@@ -293,6 +294,7 @@ class SlackMessage(Message):
 
         Args:
             formatted: The FormattedMessage to convert.
+            backend: Target backend (ignored, always uses slack format).
             **kwargs: Additional message attributes.
 
         Returns:

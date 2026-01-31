@@ -29,6 +29,8 @@ from chatom.base import (
     Message,
     MessageReference,
     MessageType,
+    # Organization
+    Organization,
     Presence,
     PresenceStatus,
     Reaction,
@@ -66,6 +68,18 @@ class TestBaseModel:
         assert copy.value == 2
         assert original.value == 1  # Original unchanged
 
+    def test_mark_incomplete_complete(self):
+        """Test mark_incomplete and mark_complete methods."""
+        # Test the _incomplete flag via mark_incomplete/mark_complete
+        obj = Identifiable(id="123", name="test")
+        assert obj.is_incomplete is False  # Default is not incomplete
+
+        obj.mark_incomplete()
+        assert obj.is_incomplete is True  # Now marked incomplete
+
+        obj.mark_complete()
+        assert obj.is_incomplete is False  # Back to complete
+
 
 class TestIdentifiable:
     """Tests for the Identifiable class."""
@@ -75,6 +89,44 @@ class TestIdentifiable:
         obj = Identifiable(id="123", name="Test Object")
         assert obj.id == "123"
         assert obj.name == "Test Object"
+
+
+class TestOrganization:
+    """Tests for the Organization class."""
+
+    def test_create_organization(self):
+        """Test creating an organization."""
+        org = Organization(id="org123", name="My Org", description="A test org")
+        assert org.id == "org123"
+        assert org.name == "My Org"
+        assert org.description == "A test org"
+
+    def test_organization_defaults(self):
+        """Test organization default values."""
+        org = Organization(id="org1", name="Test")
+        assert org.description == ""
+        assert org.icon_url == ""
+        assert org.member_count is None
+        assert org.owner is None
+
+    def test_organization_display_name(self):
+        """Test organization display_name property."""
+        org1 = Organization(id="org1", name="My Organization")
+        assert org1.display_name == "My Organization"
+
+        org2 = Organization(id="org2", name="")
+        assert org2.display_name == "org2"
+
+    def test_organization_owner_id(self):
+        """Test organization owner_id property."""
+        # Without owner
+        org1 = Organization(id="org1", name="Test")
+        assert org1.owner_id == ""
+
+        # With owner
+        owner = User(id="user123", name="Owner")
+        org2 = Organization(id="org2", name="Test", owner=owner)
+        assert org2.owner_id == "user123"
 
 
 class TestUser:
@@ -139,6 +191,112 @@ class TestChannel:
         assert channel.channel_type == ChannelType.UNKNOWN
         assert channel.is_archived is False
 
+    def test_dm_to_creates_incomplete_channel(self):
+        """Test Channel.dm_to() creates an incomplete DM channel."""
+        user = User(id="u1", name="Alice")
+        dm = Channel.dm_to(user)
+
+        assert dm.channel_type == ChannelType.DIRECT
+        assert dm.users == [user]
+        assert dm.is_incomplete
+        assert not dm.is_complete
+        assert not dm.id  # No ID until resolved
+
+    def test_group_dm_to_creates_incomplete_channel(self):
+        """Test Channel.group_dm_to() creates an incomplete group DM."""
+        user1 = User(id="u1", name="Alice")
+        user2 = User(id="u2", name="Bob")
+        group = Channel.group_dm_to([user1, user2])
+
+        assert group.channel_type == ChannelType.GROUP
+        assert group.users == [user1, user2]
+        assert group.is_incomplete
+        assert not group.is_complete
+        assert not group.id  # No ID until resolved
+
+    def test_direct_channel_requires_one_user(self):
+        """Test DIRECT channel must have exactly 1 user."""
+        user1 = User(id="u1", name="Alice")
+        user2 = User(id="u2", name="Bob")
+
+        # Valid: exactly 1 user
+        dm = Channel(channel_type=ChannelType.DIRECT, users=[user1])
+        assert len(dm.users) == 1
+
+        # Invalid: 0 users (not an error - users is optional)
+        empty = Channel(channel_type=ChannelType.DIRECT, users=[])
+        assert len(empty.users) == 0  # Empty is allowed
+
+        # Invalid: 2 users
+        import pytest
+
+        with pytest.raises(ValueError, match="DIRECT channel must have exactly 1 user"):
+            Channel(channel_type=ChannelType.DIRECT, users=[user1, user2])
+
+    def test_group_channel_requires_two_or_more_users(self):
+        """Test GROUP channel must have at least 2 users."""
+        user1 = User(id="u1", name="Alice")
+        user2 = User(id="u2", name="Bob")
+        user3 = User(id="u3", name="Charlie")
+
+        # Valid: 2 users
+        group2 = Channel(channel_type=ChannelType.GROUP, users=[user1, user2])
+        assert len(group2.users) == 2
+
+        # Valid: 3 users
+        group3 = Channel(channel_type=ChannelType.GROUP, users=[user1, user2, user3])
+        assert len(group3.users) == 3
+
+        # Invalid: 1 user
+        import pytest
+
+        with pytest.raises(ValueError, match="GROUP channel must have at least 2 users"):
+            Channel(channel_type=ChannelType.GROUP, users=[user1])
+
+    def test_users_field_infers_channel_type(self):
+        """Test that users field auto-infers channel type for UNKNOWN."""
+        user1 = User(id="u1", name="Alice")
+        user2 = User(id="u2", name="Bob")
+
+        # 1 user -> DIRECT
+        dm = Channel(users=[user1])
+        assert dm.channel_type == ChannelType.DIRECT
+
+        # 2+ users -> GROUP
+        group = Channel(users=[user1, user2])
+        assert group.channel_type == ChannelType.GROUP
+
+    def test_dm_channel_is_resolvable(self):
+        """Test that DM channels with users are resolvable."""
+        user = User(id="u1", name="Alice")
+        dm = Channel.dm_to(user)
+
+        assert dm.is_resolvable
+        assert dm.is_dm
+        assert dm.is_direct_message
+
+    def test_dm_channel_is_incomplete_without_id(self):
+        """Test DM channel with users but no ID is incomplete."""
+        user = User(id="u1", name="Alice")
+
+        # DM with users but no ID - incomplete
+        dm = Channel(channel_type=ChannelType.DIRECT, users=[user])
+        dm.mark_incomplete()
+        assert dm.is_incomplete
+        assert not dm.is_complete
+
+        # DM with users AND ID - can be complete
+        dm_with_id = Channel(id="dm-123", channel_type=ChannelType.DIRECT, users=[user])
+        assert dm_with_id.is_complete
+
+    def test_channel_is_thread(self):
+        """Test is_thread property."""
+        thread_channel = Channel(id="t1", name="thread", channel_type=ChannelType.THREAD)
+        assert thread_channel.is_thread is True
+
+        regular_channel = Channel(id="c1", name="general", channel_type=ChannelType.PUBLIC)
+        assert regular_channel.is_thread is False
+
 
 class TestThread:
     """Tests for the Thread class."""
@@ -146,15 +304,32 @@ class TestThread:
     def test_create_thread(self):
         """Test creating a thread."""
         parent = Channel(id="parent", name="parent-channel")
+        parent_msg = Message(id="msg-123", content="Thread starter")
         thread = Thread(
             id="thread-1",
             name="Discussion Thread",
             parent_channel=parent,
-            parent_message_id="msg-123",
+            parent_message=parent_msg,
         )
         assert thread.id == "thread-1"
         assert thread.parent_channel.id == "parent"
+        assert thread.parent_message is parent_msg
         assert thread.parent_message_id == "msg-123"
+
+    def test_thread_is_resolvable(self):
+        """Test is_resolvable property."""
+        # Thread with ID is resolvable
+        thread1 = Thread(id="thread-1", name="Thread with ID")
+        assert thread1.is_resolvable is True
+
+        # Thread with parent message is resolvable
+        parent_msg = Message(id="msg-123", content="Parent")
+        thread2 = Thread(id="", name="Thread with parent", parent_message=parent_msg)
+        assert thread2.is_resolvable is True
+
+        # Thread without ID or parent message is not resolvable
+        thread3 = Thread(id="", name="Empty thread")
+        assert thread3.is_resolvable is False
 
 
 class TestMessage:
@@ -223,6 +398,58 @@ class TestMessage:
         )
         assert reply.reference is not None
         assert reply.reference.message_id == "original-msg"
+
+    def test_message_channel_name(self):
+        """Test channel_name property."""
+        channel = Channel(id="c1", name="general")
+        msg1 = Message(id="m1", content="Test", channel=channel)
+        assert msg1.channel_name == "general"
+
+        # Test fallback to metadata
+        msg2 = Message(id="m2", content="Test", metadata={"channel_name": "alt-channel"})
+        assert msg2.channel_name == "alt-channel"
+
+        # Test empty
+        msg3 = Message(id="m3", content="Test")
+        assert msg3.channel_name == ""
+
+    def test_message_author_name(self):
+        """Test author_name property."""
+        user = User(id="u1", name="Alice")
+        msg1 = Message(id="m1", content="Test", author=user)
+        assert msg1.author_name == "Alice"
+
+        # Test fallback to metadata
+        msg2 = Message(id="m2", content="Test", metadata={"author_name": "Bob"})
+        assert msg2.author_name == "Bob"
+
+        # Test empty
+        msg3 = Message(id="m3", content="Test")
+        assert msg3.author_name == ""
+
+    def test_message_get_mentioned_user_ids(self):
+        """Test get_mentioned_user_ids method."""
+        msg = Message(id="m1", content="Hey <@U123> and <@U456>!", backend="slack")
+        ids = msg.get_mentioned_user_ids()
+        assert "U123" in ids
+        assert "U456" in ids
+
+    def test_message_get_mentioned_channel_ids(self):
+        """Test get_mentioned_channel_ids method."""
+        msg = Message(id="m1", content="Join <#C123>!", backend="slack")
+        ids = msg.get_mentioned_channel_ids()
+        assert "C123" in ids
+
+    def test_message_mentions_user(self):
+        """Test mentions_user method."""
+        user = User(id="U123", name="Alice")
+        msg1 = Message(id="m1", content="Test", tags=[user])
+        assert msg1.mentions_user("U123") is True
+        assert msg1.mentions_user("U999") is False
+
+        # Also test via content parsing
+        msg2 = Message(id="m2", content="Hey <@U456>!", backend="slack")
+        assert msg2.mentions_user("U456") is True
 
 
 class TestAttachment:
@@ -298,6 +525,16 @@ class TestEmbed:
         embed = Embed(title="Info", fields=fields)
         assert len(embed.fields) == 2
         assert embed.fields[1].inline is True
+
+    def test_embed_add_field(self):
+        """Test embed add_field method."""
+        embed = Embed(title="Test")
+        result = embed.add_field("Name", "Value", inline=True)
+        assert result is embed  # Returns self for chaining
+        assert len(embed.fields) == 1
+        assert embed.fields[0].name == "Name"
+        assert embed.fields[0].value == "Value"
+        assert embed.fields[0].inline is True
 
 
 class TestReaction:
@@ -594,7 +831,7 @@ class TestMessageProperties:
         """Test tags property returns mentions list."""
         user1 = User(id="u1", name="Alice")
         user2 = User(id="u2", name="Bob")
-        msg = Message(id="m1", content="Hello", mentions=[user1, user2])
+        msg = Message(id="m1", content="Hello", tags=[user1, user2])
         assert msg.tags == [user1, user2]
         assert len(msg.tags) == 2
 
@@ -640,3 +877,158 @@ class TestMessageProperties:
         """Test is_reply returns False for regular messages."""
         msg = Message(id="m1", content="Hello")
         assert msg.is_reply is False
+
+
+class TestMessageConvenienceMethods:
+    """Tests for Message convenience methods for creating new messages."""
+
+    def setup_method(self):
+        """Set up test fixtures."""
+        self.author = User(id="u1", name="Alice")
+        self.channel = Channel(id="c1", name="general")
+        self.target_channel = Channel(id="c2", name="logs")
+        self.thread = Thread(id="t1")
+        self.message = Message(
+            id="m1",
+            content="Hello world",
+            author=self.author,
+            channel=self.channel,
+            backend="test",
+        )
+        self.threaded_message = Message(
+            id="m2",
+            content="Thread reply",
+            author=self.author,
+            channel=self.channel,
+            thread=self.thread,
+            backend="test",
+        )
+
+    def test_as_reply(self):
+        """Test as_reply creates a new reply message."""
+        result = self.message.as_reply("My reply")
+        assert isinstance(result, Message)
+        assert result.content == "My reply"
+        assert result.channel is self.channel
+        assert result.reply_to is self.message
+        assert result.message_type == MessageType.REPLY
+        assert result.backend == "test"
+
+    def test_as_reply_with_extra_kwargs(self):
+        """Test as_reply passes through extra kwargs."""
+        result = self.message.as_reply("My reply", is_pinned=True)
+        assert isinstance(result, Message)
+        assert result.content == "My reply"
+        assert result.is_pinned is True
+
+    def test_as_thread_reply_on_regular_message(self):
+        """Test as_thread_reply on non-threaded message creates thread."""
+        result = self.message.as_thread_reply("Continue thread")
+        assert isinstance(result, Message)
+        assert result.content == "Continue thread"
+        assert result.channel is self.channel
+        assert result.thread is not None
+        assert result.thread.id == "m1"  # Thread from parent message
+        assert result.reply_to is self.message
+        assert result.message_type == MessageType.REPLY
+
+    def test_as_thread_reply_on_threaded_message(self):
+        """Test as_thread_reply on threaded message continues thread."""
+        result = self.threaded_message.as_thread_reply("Continue thread")
+        assert isinstance(result, Message)
+        assert result.content == "Continue thread"
+        assert result.channel is self.channel
+        assert result.thread is self.thread  # Uses existing thread
+
+    def test_as_forward(self):
+        """Test as_forward creates a forwarded message."""
+        result = self.message.as_forward(self.target_channel)
+        assert isinstance(result, Message)
+        assert result.channel is self.target_channel
+        assert result.forwarded_from is self.message
+        assert result.message_type == MessageType.FORWARD
+        assert "Forwarded from Alice in #general" in result.content
+        assert "Hello world" in result.content
+        assert result.backend == "test"
+
+    def test_as_forward_with_extra_kwargs(self):
+        """Test as_forward passes through extra kwargs."""
+        result = self.message.as_forward(self.target_channel, is_pinned=True)
+        assert isinstance(result, Message)
+        assert result.channel is self.target_channel
+        assert result.is_pinned is True
+
+    def test_as_quote_reply(self):
+        """Test as_quote_reply creates quoted message."""
+        result = self.message.as_quote_reply("I agree!")
+        assert isinstance(result, Message)
+        assert result.channel is self.channel
+        assert "> Hello world" in result.content
+        assert "I agree!" in result.content
+        assert result.reply_to is self.message
+        assert result.thread is not None
+        assert result.message_type == MessageType.REPLY
+
+    def test_as_quote_reply_multiline(self):
+        """Test as_quote_reply handles multiline content."""
+        multi = Message(
+            id="m3",
+            content="Line 1\nLine 2\nLine 3",
+            author=self.author,
+            channel=self.channel,
+        )
+        result = multi.as_quote_reply("My response")
+        assert isinstance(result, Message)
+        assert "> Line 1" in result.content
+        assert "> Line 2" in result.content
+        assert "> Line 3" in result.content
+        assert "My response" in result.content
+
+    def test_reply_context(self):
+        """Test reply_context returns useful context dict."""
+        result = self.message.reply_context()
+        assert result["channel"] is self.channel
+        assert result["message"] is self.message
+        assert result["thread"] is None  # No thread on this message
+        assert result["author"] is self.author
+
+    def test_reply_context_with_thread(self):
+        """Test reply_context uses existing thread object."""
+        result = self.threaded_message.reply_context()
+        assert result["thread"] is self.thread
+        assert result["message"] is self.threaded_message
+
+    def test_as_reply_preserves_subclass(self):
+        """Test that as_reply returns same class as original."""
+
+        # Create a subclass instance
+        class CustomMessage(Message):
+            pass
+
+        custom = CustomMessage(
+            id="c1",
+            content="Custom",
+            channel=self.channel,
+        )
+        result = custom.as_reply("Reply")
+        assert isinstance(result, CustomMessage)
+        assert type(result) is CustomMessage
+
+    def test_as_dm_to_author(self):
+        """Test as_dm_to_author creates DM message to original author."""
+        result = self.message.as_dm_to_author("Private message")
+        assert isinstance(result, Message)
+        assert result.content == "Private message"
+        # Channel should be a DM to the author
+        assert result.channel.channel_type == ChannelType.DIRECT
+        assert result.channel.users == [self.author]
+        assert result.channel.is_incomplete
+        assert not result.channel.id  # No ID until resolved
+
+    def test_as_dm_to_author_with_extra_kwargs(self):
+        """Test as_dm_to_author passes through extra kwargs."""
+        result = self.message.as_dm_to_author("Secret", is_pinned=True)
+        assert isinstance(result, Message)
+        assert result.content == "Secret"
+        assert result.channel.channel_type == ChannelType.DIRECT
+        assert result.is_pinned is True

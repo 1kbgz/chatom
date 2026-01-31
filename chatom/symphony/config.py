@@ -9,7 +9,7 @@ import logging
 import os
 import tempfile
 import threading
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from pydantic import Field, SecretStr, model_validator
 
@@ -83,15 +83,15 @@ class SymphonyConfig(BackendConfig):
     # Bot authentication (RSA)
     bot_username: str = ""
     bot_private_key_path: Optional[str] = None
-    bot_private_key_content: Optional[SecretStr] = None
+    bot_private_key_content: Optional[Union[str, SecretStr]] = None
 
     # Bot authentication (Certificate)
     bot_certificate_path: Optional[str] = None
-    bot_certificate_content: Optional[SecretStr] = Field(
+    bot_certificate_content: Optional[Union[str, SecretStr]] = Field(
         default=None,
         description="Direct content of the certificate PEM. If provided without bot_certificate_path, a temp file will be created automatically.",
     )
-    bot_certificate_password: Optional[SecretStr] = None
+    bot_certificate_password: Optional[Union[str, SecretStr]] = None
 
     # Internal: Path to temp cert file (created from bot_certificate_content)
     _temp_cert_path: Optional[str] = None
@@ -180,7 +180,11 @@ class SymphonyConfig(BackendConfig):
         # Handle certificate content -> temp file
         if self.bot_certificate_content and not self.bot_certificate_path:
             # Create temp file for certificate content
-            cert_content = self.bot_certificate_content.get_secret_value()
+            cert_content = (
+                self.bot_certificate_content.get_secret_value()
+                if isinstance(self.bot_certificate_content, SecretStr)
+                else self.bot_certificate_content
+            )
             fd, temp_path = tempfile.mkstemp(suffix=".pem", prefix="chatom_cert_")
             try:
                 os.write(fd, cert_content.encode("utf-8"))
@@ -258,28 +262,40 @@ class SymphonyConfig(BackendConfig):
     def bot_private_key_str(self) -> Optional[str]:
         """Get the bot private key content as string."""
         if self.bot_private_key_content:
-            return self.bot_private_key_content.get_secret_value()
+            return (
+                self.bot_private_key_content.get_secret_value()
+                if isinstance(self.bot_private_key_content, SecretStr)
+                else self.bot_private_key_content
+            )
         return None
 
     @property
     def bot_certificate_content_str(self) -> Optional[str]:
         """Get the certificate content as string."""
         if self.bot_certificate_content:
-            return self.bot_certificate_content.get_secret_value()
+            return (
+                self.bot_certificate_content.get_secret_value()
+                if isinstance(self.bot_certificate_content, SecretStr)
+                else self.bot_certificate_content
+            )
         return None
 
     @property
     def bot_certificate_password_str(self) -> Optional[str]:
         """Get the certificate password as string."""
         if self.bot_certificate_password:
-            return self.bot_certificate_password.get_secret_value()
+            return (
+                self.bot_certificate_password.get_secret_value()
+                if isinstance(self.bot_certificate_password, SecretStr)
+                else self.bot_certificate_password
+            )
         return None
 
     @property
     def proxy_password_str(self) -> Optional[str]:
         """Get the proxy password as string."""
         if self.proxy_password:
-            return self.proxy_password.get_secret_value()
+            return self.proxy_password.get_secret_value() if isinstance(self.proxy_password, SecretStr) else self.proxy_password
         return None
 
     @property
@@ -413,7 +429,7 @@ class SymphonyConfig(BackendConfig):
                 original_config_init(config_self, *args, **kwargs)
                 config_self.verify_ssl = False
 
-            Configuration.__init__ = patched_config_init
+            Configuration.__init__ = patched_config_init  # type: ignore[method-assign]
             log.debug("SSL verification has been disabled via monkey patch")
         except ImportError as e:
             log.warning(f"Could not patch SSL verification: {e}")

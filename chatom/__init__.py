@@ -175,9 +175,6 @@ __all__ = (
     # Enums
     "BACKEND",
     "DISCORD",
-    "EMAIL",
-    "IRC",
-    "MATRIX",
     "SLACK",
     "SYMPHONY",
     "ALL_BACKENDS",

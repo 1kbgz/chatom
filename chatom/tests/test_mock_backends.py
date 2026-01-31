@@ -5,6 +5,12 @@ for testing purposes.
 """
 
 import pytest
+from pydantic import SecretStr
+
+from chatom.base import Channel, ChannelType, Message, User
+from chatom.discord import DiscordUser
+from chatom.slack import SlackUser
+from chatom.symphony import SymphonyUser
 
 
 class TestMockSlackBackend:
@@ -16,8 +22,8 @@ class TestMockSlackBackend:
         from chatom.slack import MockSlackBackend, SlackConfig
 
         config = SlackConfig(
-            bot_token="xoxb-test-token",
-            app_token="xapp-test-token",
+            bot_token=SecretStr("xoxb-test-token"),
+            app_token=SecretStr("xapp-test-token"),
         )
         return MockSlackBackend(config=config)
 
@@ -127,7 +133,7 @@ class TestMockDiscordBackend:
         from chatom.discord import DiscordConfig, MockDiscordBackend
 
         config = DiscordConfig(
-            bot_token="discord-test-token",
+            token=SecretStr("discord-test-token"),
         )
         return MockDiscordBackend(config=config)
 
@@ -191,7 +197,7 @@ class TestMockDiscordBackend:
         msg_id = backend.add_mock_message("C123", "U123", "Delete me")
 
         await backend.delete_message(message=msg_id, channel="C123")
-        assert msg_id in backend.deleted_messages
+        assert {"channel_id": "C123", "message_id": msg_id} in backend.deleted_messages
 
 
 class TestMockSymphonyBackend:
@@ -331,9 +337,9 @@ class TestConfigClasses:
         from chatom.slack import SlackConfig
 
         config = SlackConfig(
-            bot_token="xoxb-test",
-            app_token="xapp-test",
-            signing_secret="secret123",
+            bot_token=SecretStr("xoxb-test"),
+            app_token=SecretStr("xapp-test"),
+            signing_secret=SecretStr("secret123"),
             team_id="T123456",
         )
         assert config.bot_token_str == "xoxb-test"
@@ -344,7 +350,7 @@ class TestConfigClasses:
         from chatom.discord import DiscordConfig
 
         config = DiscordConfig(
-            bot_token="discord-token",
+            token=SecretStr("discord-token"),
             application_id="123456789",
             guild_id="987654321",
             intents=["guilds", "messages"],
@@ -716,16 +722,16 @@ class TestRoomChannelAliases:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, id):
+            async def fetch_user(self, id):  # type: ignore[override]
                 return None
 
-            async def fetch_channel(self, id):
+            async def fetch_channel(self, id):  # type: ignore[override]
                 return None
 
-            async def fetch_messages(self, channel_id, **kwargs):
+            async def fetch_messages(self, channel_id, **kwargs):  # type: ignore[override]
                 return []
 
-            async def send_message(self, channel_id, content, **kwargs):
+            async def send_message(self, channel_id, content, **kwargs):  # type: ignore[override]
                 raise NotImplementedError()
 
         backend = MinimalBackend()
@@ -759,7 +765,7 @@ class TestMockDiscordAdvanced:
         """Create a mock Discord backend."""
         from chatom.discord import DiscordConfig, MockDiscordBackend
 
-        config = DiscordConfig(token="test-discord-token")
+        config = DiscordConfig(token=SecretStr("test-discord-token"))
         return MockDiscordBackend(config=config)
 
     @pytest.mark.asyncio
@@ -854,8 +860,8 @@ class TestMockSlackAdvanced:
         from chatom.slack import MockSlackBackend, SlackConfig
 
         config = SlackConfig(
-            bot_token="xoxb-test-token",
-            app_token="xapp-test-token",
+            bot_token=SecretStr("xoxb-test-token"),
+            app_token=SecretStr("xapp-test-token"),
         )
         return MockSlackBackend(config=config)
 
@@ -992,7 +998,7 @@ class TestMockDiscordBackendAdvanced:
         """Create a mock Discord backend."""
         from chatom.discord import DiscordConfig, MockDiscordBackend
 
-        config = DiscordConfig(token="test-token")
+        config = DiscordConfig(token=SecretStr("test-token"))
         return MockDiscordBackend(config=config)
 
     @pytest.mark.asyncio
@@ -1028,8 +1034,8 @@ class TestMockDiscordBackendAdvanced:
 
         deleted = backend.get_deleted_messages()
         assert len(deleted) == 1
-        # Discord's deleted_messages is a list of message IDs
-        assert deleted[0] == "msg1"
+        # Discord's deleted_messages is a list of dicts with channel_id and message_id
+        assert deleted[0] == {"channel_id": "123", "message_id": "msg1"}
 
     @pytest.mark.asyncio
     async def test_get_reactions(self, backend):
@@ -1160,8 +1166,8 @@ class TestMockSlackBackendAdvanced:
         from chatom.slack import MockSlackBackend, SlackConfig
 
         config = SlackConfig(
-            bot_token="xoxb-test-token",
-            app_token="xapp-test-token",
+            bot_token=SecretStr("xoxb-test-token"),
+            app_token=SecretStr("xapp-test-token"),
         )
         return MockSlackBackend(config=config)
 
@@ -1379,7 +1385,6 @@ class TestMockSymphonyBackendCoverage:
             id="123",
             name="Cached User",
             handle="cached",
-            user_id=123,
         )
         backend.users.add(cached_user)
 
@@ -1407,7 +1412,6 @@ class TestMockSymphonyBackendCoverage:
         cached_channel = SymphonyChannel(
             id="stream123",
             name="Cached Channel",
-            stream_id="stream123",
         )
         backend.channels.add(cached_channel)
 
@@ -1572,15 +1576,15 @@ class TestDiscordCoverageImprovements:
         """Create a mock Discord backend."""
         from chatom.discord import DiscordConfig, MockDiscordBackend
 
-        config = DiscordConfig(bot_token="test-token")
+        config = DiscordConfig(token=SecretStr("test-token"))
         return MockDiscordBackend(config=config)
 
     # Tests for testing.py: clear() method (lines 307-317)
-    # Note: The clear() method has a bug where it tries to access `_items` which doesn't exist.
-    # This test verifies the clear method executes most of its code before hitting that bug.
+    # The clear() method now works correctly after fixing the _items bug.
+    # This test verifies the clear method properly clears all stores.
     @pytest.mark.asyncio
     async def test_mock_discord_clear_executes_private_store_clearing(self, discord_backend):
-        """Test the clear() method clears the internal stores before registry clear fails."""
+        """Test the clear() method properly clears all internal stores."""
         await discord_backend.connect()
 
         # Add mock data
@@ -1605,12 +1609,10 @@ class TestDiscordCoverageImprovements:
         assert len(discord_backend._deleted_messages) > 0
         assert len(discord_backend._reactions) > 0
 
-        # Call clear - this will raise an AttributeError due to a bug in the code
-        # but the private stores should be cleared before that happens
-        with pytest.raises(AttributeError, match="_items"):
-            discord_backend.clear()
+        # Call clear - this should complete successfully now
+        discord_backend.clear()
 
-        # Verify all private mock stores were cleared before the error
+        # Verify all stores were cleared
         assert len(discord_backend._mock_users) == 0
         assert len(discord_backend._mock_channels) == 0
         assert len(discord_backend._mock_messages) == 0
@@ -1834,7 +1836,7 @@ class TestDiscordMessageProperties:
             author=User(id="user123"),
             channel=Channel(id="ch123"),
             guild=Organization(id="guild123"),
-            mentions=[DiscordUser(id="user456")],
+            tags=[DiscordUser(id="user456")],
             webhook_id="webhook123",
         )
 
@@ -2020,14 +2022,14 @@ class TestDiscordConfigProperties:
         """Test has_token returns True when token is set."""
         from chatom.discord import DiscordConfig
 
-        config = DiscordConfig(bot_token="my-bot-token")
+        config = DiscordConfig(token=SecretStr("my-bot-token"))
         assert config.has_token is True
 
     def test_has_token_false_empty_string(self):
         """Test has_token returns False for empty token."""
         from chatom.discord import DiscordConfig
 
-        config = DiscordConfig(bot_token="")
+        config = DiscordConfig(token=SecretStr(""))
         assert config.has_token is False
 
     def test_has_token_false_default(self):
@@ -2041,7 +2043,7 @@ class TestDiscordConfigProperties:
         """Test bot_token_str returns the plain string token."""
         from chatom.discord import DiscordConfig
 
-        config = DiscordConfig(bot_token="super-secret-token")
+        config = DiscordConfig(token=SecretStr("super-secret-token"))
         assert config.bot_token_str == "super-secret-token"
 
 
@@ -2054,8 +2056,8 @@ class TestForwardMessageSlack:
         from chatom.slack import MockSlackBackend, SlackConfig
 
         config = SlackConfig(
-            bot_token="xoxb-test-token",
-            app_token="xapp-test-token",
+            bot_token=SecretStr("xoxb-test-token"),
+            app_token=SecretStr("xapp-test-token"),
         )
         return MockSlackBackend(config=config)
 
@@ -2139,7 +2141,7 @@ class TestForwardMessageSlack:
         backend.add_mock_channel("C123", "source-channel")
         backend.add_mock_channel("C456", "dest-channel")
 
-        with pytest.raises(ValueError, match="requires a SlackMessage object"):
+        with pytest.raises(ValueError, match="requires a Message object"):
             await backend.forward_message("some-message-id", "C456")
 
 
@@ -2152,7 +2154,7 @@ class TestForwardMessageDiscord:
         from chatom.discord import DiscordConfig, MockDiscordBackend
 
         config = DiscordConfig(
-            bot_token="discord-test-token",
+            token=SecretStr("discord-test-token"),
         )
         return MockDiscordBackend(config=config)
 
@@ -2334,7 +2336,7 @@ class TestResolveMessageIdRegressions:
         """Create a mock Slack backend."""
         from chatom.slack import MockSlackBackend, SlackConfig
 
-        config = SlackConfig(bot_token="xoxb-test")
+        config = SlackConfig(bot_token=SecretStr("xoxb-test"))
         return MockSlackBackend(config=config)
 
     @pytest.fixture
@@ -2342,7 +2344,7 @@ class TestResolveMessageIdRegressions:
         """Create a mock Discord backend."""
         from chatom.discord import DiscordConfig, MockDiscordBackend
 
-        config = DiscordConfig(bot_token="discord-test")
+        config = DiscordConfig(token=SecretStr("discord-test"))
         return MockDiscordBackend(config=config)
 
     @pytest.mark.asyncio
@@ -2358,7 +2360,6 @@ class TestResolveMessageIdRegressions:
             id="1234567890.123456",
             content="Test",
             channel=SlackChannel(id="C123", name="general"),
-            channel_id="C123",
         )
 
         # This should correctly extract channel_id and message_id
@@ -2400,7 +2401,6 @@ class TestResolveMessageIdRegressions:
             id="987654321",
             content="Test",
             channel=DiscordChannel(id="123456789", name="general"),
-            channel_id="123456789",
         )
 
         await discord_backend.add_reaction(message=msg, emoji="👍")
@@ -2474,3 +2474,371 @@ class TestResolveMessageIdRegressions:
         deleted = slack_backend.get_deleted_messages()
         assert len(deleted) == 1
         assert deleted[0] == ("C888", msg_id)
+
+
+class TestChannelDmToConvenience:
+    """Tests for Channel.dm_to() and Channel.group_dm_to() convenience methods."""
+
+    @pytest.fixture
+    def user(self):
+        """Create a test user."""
+        return User(id="U123", name="testuser", display_name="Test User")
+
+    @pytest.fixture
+    def users(self):
+        """Create multiple test users."""
+        return [
+            User(id="U123", name="alice", display_name="Alice"),
+            User(id="U456", name="bob", display_name="Bob"),
+        ]
+
+    def test_dm_to_creates_direct_channel(self, user):
+        """Test Channel.dm_to creates a DIRECT channel with one user."""
+        dm = Channel.dm_to(user)
+        assert dm.channel_type == ChannelType.DIRECT
+        assert dm.users == [user]
+        assert dm.is_incomplete
+        assert not dm.id
+
+    def test_group_dm_to_creates_group_channel(self, users):
+        """Test Channel.group_dm_to creates a GROUP channel with multiple users."""
+        group = Channel.group_dm_to(users)
+        assert group.channel_type == ChannelType.GROUP
+        assert group.users == users
+        assert group.is_incomplete
+        assert not group.id
+
+    def test_dm_channel_is_resolvable(self, user):
+        """Test DM channel with users is resolvable."""
+        dm = Channel.dm_to(user)
+        assert dm.is_resolvable
+        assert dm.is_dm
+        assert dm.is_direct_message
+
+
+class TestMessageAsDmToAuthor:
+    """Tests for Message.as_dm_to_author() convenience method."""
+
+    @pytest.fixture
+    def author(self):
+        """Create a test author."""
+        return User(id="U123", name="author", display_name="Author")
+
+    @pytest.fixture
+    def channel(self):
+        """Create a test channel."""
+        return Channel(id="C456", name="general")
+
+    @pytest.fixture
+    def message(self, author, channel):
+        """Create a test message."""
+        return Message(
+            id="M789",
+            content="Hello world",
+            author=author,
+            channel=channel,
+        )
+
+    def test_as_dm_to_author_creates_dm_message(self, message, author):
+        """Test as_dm_to_author creates a DM to the original author."""
+        dm = message.as_dm_to_author("Private response")
+        assert dm.content == "Private response"
+        assert dm.channel.channel_type == ChannelType.DIRECT
+        assert dm.channel.users == [author]
+        assert dm.channel.is_incomplete
+
+    def test_as_dm_to_author_with_extra_kwargs(self, message, author):
+        """Test as_dm_to_author passes through extra kwargs."""
+        dm = message.as_dm_to_author("Secret", is_pinned=True)
+        assert dm.content == "Secret"
+        assert dm.is_pinned is True
+        assert dm.channel.channel_type == ChannelType.DIRECT
+
+
+class TestSlackDmChannelResolution:
+    """Tests for Slack DM channel resolution using Channel.dm_to()."""
+
+    def test_dm_channel_with_slack_user(self):
+        """Test Channel.dm_to works with SlackUser."""
+        user = SlackUser(id="U123", name="testuser", real_name="Test User")
+        dm_channel = Channel.dm_to(user)
+
+        assert dm_channel.channel_type == ChannelType.DIRECT
+        assert len(dm_channel.users) == 1
+        assert dm_channel.users[0].id == "U123"
+        assert dm_channel.is_incomplete
+
+    def test_group_dm_channel_with_slack_users(self):
+        """Test Channel.group_dm_to works with multiple SlackUsers."""
+        user1 = SlackUser(id="U123", name="alice", real_name="Alice")
+        user2 = SlackUser(id="U456", name="bob", real_name="Bob")
+        group = Channel.group_dm_to([user1, user2])
+
+        assert group.channel_type == ChannelType.GROUP
+        assert len(group.users) == 2
+        assert group.is_incomplete
+
+
+class TestDiscordDmChannelResolution:
+    """Tests for Discord DM channel resolution using Channel.dm_to()."""
+
+    def test_dm_channel_with_discord_user(self):
+        """Test Channel.dm_to works with DiscordUser."""
+        user = DiscordUser(id="123456789", name="testuser", display_name="Test User")
+        dm_channel = Channel.dm_to(user)
+
+        assert dm_channel.channel_type == ChannelType.DIRECT
+        assert len(dm_channel.users) == 1
+        assert dm_channel.users[0].id == "123456789"
+        assert dm_channel.is_incomplete
+
+    def test_group_dm_channel_with_discord_users(self):
+        """Test Channel.group_dm_to works with multiple DiscordUsers."""
+        user1 = DiscordUser(id="123", name="alice", display_name="Alice")
+        user2 = DiscordUser(id="456", name="bob", display_name="Bob")
+        group = Channel.group_dm_to([user1, user2])
+
+        assert group.channel_type == ChannelType.GROUP
+        assert len(group.users) == 2
+        assert group.is_incomplete
+
+
+class TestSymphonyDmChannelResolution:
+    """Tests for Symphony DM channel resolution using Channel.dm_to()."""
+
+    def test_dm_channel_with_symphony_user(self):
+        """Test Channel.dm_to works with SymphonyUser."""
+        user = SymphonyUser(id="123456789", name="testuser", display_name="Test User")
+        dm_channel = Channel.dm_to(user)
+
+        assert dm_channel.channel_type == ChannelType.DIRECT
+        assert len(dm_channel.users) == 1
+        assert dm_channel.users[0].id == "123456789"
+        assert dm_channel.is_incomplete
+
+    @pytest.fixture
+    def backend(self):
+        """Create a mock Symphony backend."""
+        from chatom.symphony import SymphonyConfig
+        from chatom.symphony.testing import MockSymphonyBackend
+
+        config = SymphonyConfig(
+            host="test.symphony.com",
+            bot_username="testbot",
+            bot_private_key_content="fake-key",
+        )
+        return MockSymphonyBackend(config=config)
+
+    @pytest.mark.asyncio
+    async def test_create_im_from_user_id(self, backend):
+        """Test creating IM from user ID extracted from Channel.dm_to()."""
+        await backend.connect()
+        user = SymphonyUser(id="123456789", name="testuser", display_name="Test User")
+        backend.add_mock_user(123456789, "testuser", "testuser")
+
+        # Create DM channel using convenience method
+        dm_channel = Channel.dm_to(user)
+
+        # In real usage, backend would resolve this. For mock, extract user ID manually
+        user_ids = [u.id for u in dm_channel.users]
+        im_id = await backend.create_im(user_ids)
+
+        assert im_id is not None
+        assert len(backend.created_ims) == 1
+
+    def test_group_dm_channel_with_symphony_users(self):
+        """Test Channel.group_dm_to works with multiple SymphonyUsers."""
+        user1 = SymphonyUser(id="123", name="alice", display_name="Alice")
+        user2 = SymphonyUser(id="456", name="bob", display_name="Bob")
+        group = Channel.group_dm_to([user1, user2])
+
+        assert group.channel_type == ChannelType.GROUP
+        assert len(group.users) == 2
+        assert group.is_incomplete
+
+
+class TestDMFunctionality:
+    """Tests for DM/IM functionality across all backends."""
+
+    @pytest.fixture
+    def slack_backend(self):
+        """Create a MockSlackBackend."""
+        from chatom.slack import SlackConfig
+        from chatom.slack.testing import MockSlackBackend
+
+        config = SlackConfig(bot_token=SecretStr("xoxb-test-token"))
+        return MockSlackBackend(config=config)
+
+    @pytest.fixture
+    def discord_backend(self):
+        """Create a MockDiscordBackend."""
+        from chatom.discord import DiscordConfig
+        from chatom.discord.testing import MockDiscordBackend
+
+        config = DiscordConfig(token=SecretStr("discord-test-token"))
+        return MockDiscordBackend(config=config)
+
+    @pytest.fixture
+    def symphony_backend(self):
+        """Create a MockSymphonyBackend."""
+        from chatom.symphony import SymphonyConfig
+        from chatom.symphony.testing import MockSymphonyBackend
+
+        config = SymphonyConfig(
+            host="test.symphony.com",
+            bot_username="testbot",
+            bot_private_key_path="/fake/path",
+        )
+        return MockSymphonyBackend(config=config)
+
+    @pytest.mark.asyncio
+    async def test_slack_create_dm_with_user_id(self, slack_backend):
+        """Test Slack create_dm with user ID string."""
+        await slack_backend.connect()
+        slack_backend.add_mock_user("U123", "testuser", "Test User")
+
+        dm_id = await slack_backend.create_dm(["U123"])
+
+        assert dm_id is not None
+        assert len(slack_backend.created_dms) == 1
+
+    @pytest.mark.asyncio
+    async def test_slack_create_dm_with_user_object(self, slack_backend):
+        """Test Slack create_dm with User object."""
+        await slack_backend.connect()
+        slack_backend.add_mock_user("U456", "alice", "Alice")
+        user = await slack_backend.fetch_user(id="U456")
+
+        dm_id = await slack_backend.create_dm([user])
+
+        assert dm_id is not None
+
+    @pytest.mark.asyncio
+    async def test_slack_send_dm_convenience(self, slack_backend):
+        """Test Slack send_dm convenience method."""
+        await slack_backend.connect()
+        slack_backend.add_mock_user("U789", "bob", "Bob")
+
+        msg = await slack_backend.send_dm(
+            user="U789",
+            content="Hello via send_dm!",
+        )
+
+        assert msg is not None
+        assert msg.id is not None
+        assert "Hello via send_dm!" in msg.text
+
+    @pytest.mark.asyncio
+    async def test_slack_send_dm_with_user_object(self, slack_backend):
+        """Test Slack send_dm with User object."""
+        await slack_backend.connect()
+        slack_backend.add_mock_user("U111", "charlie", "Charlie")
+        user = await slack_backend.fetch_user(id="U111")
+
+        msg = await slack_backend.send_dm(
+            user=user,
+            content="Hello Charlie!",
+        )
+
+        assert msg is not None
+        assert msg.id is not None
+
+    @pytest.mark.asyncio
+    async def test_discord_create_dm_with_user_id(self, discord_backend):
+        """Test Discord create_dm with user ID string."""
+        await discord_backend.connect()
+        discord_backend.add_mock_user("123456789", "testuser", "Test User")
+
+        dm_id = await discord_backend.create_dm(["123456789"])
+
+        assert dm_id is not None
+        assert len(discord_backend.created_dms) == 1
+
+    @pytest.mark.asyncio
+    async def test_discord_send_dm_convenience(self, discord_backend):
+        """Test Discord send_dm convenience method."""
+        await discord_backend.connect()
+        discord_backend.add_mock_user("987654321", "alice", "Alice")
+
+        msg = await discord_backend.send_dm(
+            user="987654321",
+            content="Hello from Discord!",
+        )
+
+        assert msg is not None
+        assert msg.id is not None
+
+    @pytest.mark.asyncio
+    async def test_symphony_create_im_with_user_id(self, symphony_backend):
+        """Test Symphony create_im with user ID string."""
+        await symphony_backend.connect()
+        symphony_backend.add_mock_user(123456, "testuser", "Test User")
+
+        im_id = await symphony_backend.create_im(["123456"])
+
+        assert im_id is not None
+        assert len(symphony_backend.created_ims) == 1
+
+    @pytest.mark.asyncio
+    async def test_symphony_create_dm_alias(self, symphony_backend):
+        """Test Symphony create_dm is an alias for create_im."""
+        await symphony_backend.connect()
+        symphony_backend.add_mock_user(789012, "bob", "Bob")
+
+        dm_id = await symphony_backend.create_dm(["789012"])
+
+        assert dm_id is not None
+        # Should be tracked in created_ims since create_dm calls create_im
+        assert len(symphony_backend.created_ims) == 1
+
+    @pytest.mark.asyncio
+    async def test_symphony_send_dm_convenience(self, symphony_backend):
+        """Test Symphony send_dm convenience method."""
+        await symphony_backend.connect()
+        symphony_backend.add_mock_user(111222, "charlie", "Charlie")
+
+        msg = await symphony_backend.send_dm(
+            user="111222",
+            content="Hello from Symphony!",
+        )
+
+        assert msg is not None
+        assert msg.id is not None
+
+    @pytest.mark.asyncio
+    async def test_create_dm_returns_channel_id_not_channel(self, slack_backend):
+        """Test that create_dm returns a channel ID string, not a Channel object."""
+        await slack_backend.connect()
+        slack_backend.add_mock_user("U999", "user", "User")
+
+        result = await slack_backend.create_dm(["U999"])
+
+        # Should be a string (channel ID), not a Channel object
+        assert isinstance(result, str)
+        assert result.startswith("D")  # Slack DM channels start with D
+
+    @pytest.mark.asyncio
+    async def test_create_im_returns_stream_id_not_channel(self, symphony_backend):
+        """Test that create_im returns a stream ID string, not a Channel object."""
+        await symphony_backend.connect()
+        symphony_backend.add_mock_user(333444, "user", "User")
+
+        result = await symphony_backend.create_im(["333444"])
+
+        # Should be a string (stream ID), not a Channel object
+        assert isinstance(result, str)
+
+    @pytest.mark.asyncio
+    async def test_send_dm_creates_dm_if_needed(self, slack_backend):
+        """Test that send_dm creates the DM channel automatically."""
+        await slack_backend.connect()
+        slack_backend.add_mock_user("U888", "user", "User")
+
+        # No DMs created yet
+        assert len(slack_backend.created_dms) == 0
+
+        # Send DM - should create the channel
+        await slack_backend.send_dm(user="U888", content="Hello!")
+
+        # DM should now be created
+        assert len(slack_backend.created_dms) == 1

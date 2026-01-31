@@ -10,7 +10,7 @@ class TestCrossBackendConversion:
         from chatom.slack.user import SlackUser
 
         slack_msg = SlackMessage(
-            ts="1234567890.123456",
+            id="1234567890.123456",
             channel=SlackChannel(id="C12345"),
             author=SlackUser(id="U12345"),
             text="Hello *bold* and _italic_",
@@ -29,10 +29,11 @@ class TestCrossBackendConversion:
         from chatom.slack import SlackMessage
         from chatom.slack.channel import SlackChannel
         from chatom.symphony import SymphonyMessage
+        from chatom.symphony.channel import SymphonyChannel
 
         symphony_msg = SymphonyMessage(
-            message_id="ABC123",
-            stream_id="stream_xyz",
+            id="ABC123",
+            channel=SymphonyChannel(id="stream_xyz"),
             message_ml="<messageML><b>Alert</b>: New message</messageML>",
         )
 

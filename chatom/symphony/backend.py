@@ -18,6 +18,7 @@ from ..base import (
     Message,
     MessageType,
     Presence,
+    PresenceStatus as BasePresenceStatus,
     User,
 )
 from ..format.variant import Format
@@ -37,9 +38,9 @@ try:
     HAS_SYMPHONY = True
 except ImportError:
     HAS_SYMPHONY = False
-    SymphonyBdk = None  # type: ignore
-    BdkConfig = None  # type: ignore
-    PresenceStatus = None  # type: ignore
+    SymphonyBdk = None  # type: ignore[assignment]
+    BdkConfig = None  # type: ignore[assignment]
+    PresenceStatus = None  # type: ignore[assignment]
 
 __all__ = ("SymphonyBackend",)
 
@@ -301,7 +302,6 @@ class SymphonyBackend(BackendBase):
                 name=display_name or username or "",
                 handle=username or "",
                 email=email or "",
-                user_id=uid,
             )
             self.users.add(user)
             return user
@@ -341,7 +341,6 @@ class SymphonyBackend(BackendBase):
                 name=display_name or username,
                 handle=username,
                 email=email or "",
-                user_id=uid,
             )
             self.users.add(user)
             return user
@@ -426,7 +425,6 @@ class SymphonyBackend(BackendBase):
             channel = SymphonyChannel(
                 id=stream_id,
                 name=getattr(stream_info, "name", None) or stream_id,
-                stream_id=stream_id,
             )
             self.channels.add(channel)
             return channel
@@ -483,9 +481,9 @@ class SymphonyBackend(BackendBase):
                 message = SymphonyMessage(
                     id=msg.message_id,
                     content=msg.message,  # MessageML content
-                    timestamp=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
-                    user_id=str(msg.user.user_id) if msg.user else None,
-                    channel_id=channel_id,
+                    created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
+                    author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
+                    channel=SymphonyChannel(id=channel_id),
                 )
                 messages.append(message)
 
@@ -551,9 +549,9 @@ class SymphonyBackend(BackendBase):
                 message = SymphonyMessage(
                     id=msg.message_id,
                     content=msg.message,
-                    timestamp=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
-                    user_id=str(msg.user.user_id) if msg.user else None,
-                    channel_id=stream_id,
+                    created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
+                    author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
+                    channel=SymphonyChannel(id=stream_id) if stream_id else None,
                 )
                 messages.append(message)
 
@@ -607,9 +605,9 @@ class SymphonyBackend(BackendBase):
             return SymphonyMessage(
                 id=result.message_id,
                 content=content,
-                timestamp=datetime.fromtimestamp(result.timestamp / 1000, tz=timezone.utc),
-                user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
-                channel_id=channel_id,
+                created_at=datetime.fromtimestamp(result.timestamp / 1000, tz=timezone.utc),
+                author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
+                channel=SymphonyChannel(id=channel_id),
             )
 
         except Exception as e:
@@ -659,9 +657,9 @@ class SymphonyBackend(BackendBase):
             return SymphonyMessage(
                 id=result.message_id,
                 content=content,
-                timestamp=datetime.now(timezone.utc),
-                user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
-                channel_id=channel_id,
+                created_at=datetime.now(timezone.utc),
+                author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
+                channel=SymphonyChannel(id=channel_id),
             )
 
         except Exception as e:
@@ -732,24 +730,54 @@ class SymphonyBackend(BackendBase):
             message_service = self._bdk.messages()
 
             # Build the forwarded message content in MessageML
+            # Styled to resemble Symphony's native forwarded message UI
             content_parts = []
 
             if prefix:
                 content_parts.append(f"<p>{prefix}</p>")
 
             if include_attribution:
-                # Add attribution info in MessageML format
-                author_name = message.author.name if message.author else "Unknown"
+                # Build attribution to resemble Symphony's native forward UI:
+                # "Forwarded message:"
+                # "Author Name" in "Room Name" · timestamp
+                author_name = message.author.display_name if message.author else "Unknown"
                 channel_name = message.channel.name if message.channel else "unknown room"
-                attribution = f"<p><i>Forwarded from {channel_name} by {author_name}</i></p>"
-                content_parts.append(attribution)
+                timestamp_str = ""
+                if message.created_at:
+                    timestamp_str = message.created_at.strftime("%b %d, %Y · %H:%M")
+
+                # Create a card-like format resembling Symphony's native forward
+                content_parts.append('<card accent="tempo-bg-color--blue">')
+                content_parts.append("<header>")
+                content_parts.append("<b>Forwarded message:</b>")
+                content_parts.append("</header>")
+                content_parts.append("<body>")
+                content_parts.append(f"<p><b>{author_name}</b> in <i>{channel_name}</i>")
+                if timestamp_str:
+                    content_parts.append(f" · {timestamp_str}")
+                content_parts.append("</p>")
 
             # Add the original message content
-            # If the message has formatted_content (MessageML), use it; otherwise wrap plain text
             if message.formatted_content:
-                content_parts.append(message.formatted_content)
+                # Strip any outer messageML tags if present
+                msg_content = message.formatted_content
+                if msg_content.startswith("<messageML>"):
+                    msg_content = msg_content[11:]
+                if msg_content.endswith("</messageML>"):
+                    msg_content = msg_content[:-12]
+                # Use plain content if available, otherwise use the formatted content directly
+                # Don't wrap in <p> if formatted_content already contains markup
+                if message.content:
+                    content_parts.append(f"<p>{message.content}</p>")
+                else:
+                    # formatted_content may already have <p> tags, add directly
+                    content_parts.append(msg_content)
             else:
                 content_parts.append(f"<p>{message.content}</p>")
+
+            if include_attribution:
+                content_parts.append("</body>")
+                content_parts.append("</card>")
 
             forwarded_content = "<messageML>" + "".join(content_parts) + "</messageML>"
 
@@ -764,9 +792,9 @@ class SymphonyBackend(BackendBase):
                 id=result.id if hasattr(result, "id") else str(result),
                 content=message.content,
                 formatted_content=forwarded_content,
-                timestamp=datetime.now(timezone.utc),
-                user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
-                channel_id=dest_channel_id,
+                created_at=datetime.now(timezone.utc),
+                author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
+                channel=SymphonyChannel(id=dest_channel_id),
                 message_type=MessageType.FORWARD,
             )
             forwarded_msg.forwarded_from = message
@@ -812,17 +840,19 @@ class SymphonyBackend(BackendBase):
         except Exception as e:
             raise RuntimeError(f"Failed to set presence: {e}") from e
 
-    async def get_presence(self, user_id: str) -> Optional[Presence]:
+    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
         """Get a user's presence on Symphony.
 
         Args:
-            user_id: The user ID.
+            user: The user ID string or User object.
 
         Returns:
             The user's presence.
         """
         if self._bdk is None:
             return None
+
+        user_id = user.id if isinstance(user, User) else user
 
         try:
             presence_service = self._bdk.presence()
@@ -841,11 +871,27 @@ class SymphonyBackend(BackendBase):
                 "OFFLINE": SymphonyPresenceStatus.OFFLINE,
             }
 
-            status = status_map.get(presence_data.category, SymphonyPresenceStatus.OFFLINE)
+            symphony_status = status_map.get(presence_data.category, SymphonyPresenceStatus.OFFLINE)
 
+            # Map Symphony status to base PresenceStatus
+            base_status_map = {
+                SymphonyPresenceStatus.AVAILABLE: BasePresenceStatus.ONLINE,
+                SymphonyPresenceStatus.BUSY: BasePresenceStatus.DND,
+                SymphonyPresenceStatus.ON_THE_PHONE: BasePresenceStatus.DND,
+                SymphonyPresenceStatus.IN_A_MEETING: BasePresenceStatus.DND,
+                SymphonyPresenceStatus.AWAY: BasePresenceStatus.IDLE,
+                SymphonyPresenceStatus.BE_RIGHT_BACK: BasePresenceStatus.IDLE,
+                SymphonyPresenceStatus.OUT_OF_OFFICE: BasePresenceStatus.IDLE,
+                SymphonyPresenceStatus.OFF_WORK: BasePresenceStatus.OFFLINE,
+                SymphonyPresenceStatus.OFFLINE: BasePresenceStatus.OFFLINE,
+            }
+            base_status = base_status_map.get(symphony_status, BasePresenceStatus.UNKNOWN)
+
+            user = SymphonyUser(id=user_id)
             return SymphonyPresence(
-                user_id=user_id,
-                status=status,
+                user=user,
+                status=base_status,
+                symphony_status=symphony_status,
             )
 
         except Exception:
@@ -1094,7 +1140,6 @@ class SymphonyBackend(BackendBase):
                 name=session.display_name or session.username or str(session.id),
                 handle=session.username or str(session.id),
                 email=getattr(session, "email_address", None) or "",
-                user_id=session.id,
             )
         except Exception:
             return None
@@ -1226,7 +1271,6 @@ class SymphonyBackend(BackendBase):
                         id=channel.id,
                         name=channel.name,
                         stream_type=stream_type,
-                        stream_id=stream_id,
                     )
 
                 # Lookup author to get full info (id AND name)
@@ -1241,9 +1285,9 @@ class SymphonyBackend(BackendBase):
                     presentation_ml=msg.message or "",
                     author=author,  # Use looked-up author with full info
                     channel=channel,
-                    timestamp=msg_timestamp,
+                    created_at=msg_timestamp,
                     data=msg.data,
-                    mentions=mention_users,  # List of SymphonyUser objects
+                    tags=mention_users,  # List of SymphonyUser objects
                 )
 
                 # If we didn't find the author via lookup, use info from initiator
@@ -1256,7 +1300,6 @@ class SymphonyBackend(BackendBase):
                         name=initiator.user.display_name or str(initiator.user.user_id),
                         handle=username,
                         email=email,
-                        user_id=initiator.user.user_id,
                     )
                     self._backend.users.add(user)
                     symphony_msg.author = user

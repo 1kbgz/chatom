@@ -18,6 +18,30 @@ class SlackPresenceStatus(str, Enum):
     AWAY = "away"
     AUTO = "auto"
 
+    @classmethod
+    def from_base(cls, status: PresenceStatus) -> "SlackPresenceStatus":
+        """Convert a base PresenceStatus to SlackPresenceStatus.
+
+        Args:
+            status: The base PresenceStatus to convert.
+
+        Returns:
+            The corresponding SlackPresenceStatus.
+
+        Example:
+            >>> slack_status = SlackPresenceStatus.from_base(PresenceStatus.ONLINE)
+            >>> print(slack_status)  # SlackPresenceStatus.ACTIVE
+        """
+        status_map = {
+            PresenceStatus.ONLINE: cls.ACTIVE,
+            PresenceStatus.IDLE: cls.AWAY,
+            PresenceStatus.DND: cls.AWAY,
+            PresenceStatus.INVISIBLE: cls.AWAY,
+            PresenceStatus.OFFLINE: cls.AWAY,
+            PresenceStatus.UNKNOWN: cls.AUTO,
+        }
+        return status_map.get(status, cls.AUTO)
+
 
 class SlackPresence(Presence):
     """Slack-specific presence.

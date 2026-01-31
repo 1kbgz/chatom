@@ -4,9 +4,12 @@ This module provides the base Organization class representing a chat platform
 organization (e.g., Discord guild, Slack workspace, Symphony pod).
 """
 
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 from .base import Field, Identifiable
+
+if TYPE_CHECKING:
+    from .user import User
 
 __all__ = ("Organization",)
 
@@ -26,7 +29,7 @@ class Organization(Identifiable):
         description: Description or purpose of the organization.
         icon_url: URL to the organization's icon/logo image.
         member_count: Approximate number of members, if available.
-        owner_id: ID of the organization owner, if applicable.
+        owner: The organization owner, if applicable.
     """
 
     description: str = Field(
@@ -41,10 +44,19 @@ class Organization(Identifiable):
         default=None,
         description="Approximate number of members, if available.",
     )
-    owner_id: str = Field(
-        default="",
-        description="ID of the organization owner, if applicable.",
+    owner: Optional["User"] = Field(
+        default=None,
+        description="The organization owner, if applicable.",
     )
+
+    @property
+    def owner_id(self) -> str:
+        """Get the owner's ID.
+
+        Returns:
+            str: The owner ID or empty string if no owner.
+        """
+        return self.owner.id if self.owner else ""
 
     @property
     def display_name(self) -> str:

@@ -36,7 +36,7 @@ class TestMessageToUser:
         message = Message(
             id="M001",
             content="Hello <@U123>!",
-            mentions=[user],
+            tags=[user],
         )
 
         assert message.is_message_to_user(user) is True
@@ -49,7 +49,7 @@ class TestMessageToUser:
         message = Message(
             id="M001",
             content="Hello!",
-            mentions=[User(id="U123"), User(id="U789")],
+            tags=[User(id="U123"), User(id="U789")],
         )
 
         assert message.is_message_to_user(user) is True
@@ -63,7 +63,7 @@ class TestMessageToUser:
         message = Message(
             id="M001",
             content="Hello everyone!",
-            mentions=[],
+            tags=[],
         )
 
         assert message.is_message_to_user(user) is False
@@ -246,14 +246,6 @@ class TestParseMentions:
 
         assert len(mentions) == 1
         assert mentions[0].user_id == "user@example.com"
-
-    def test_parse_matrix_mentions(self):
-        """Test parsing Matrix-style mentions."""
-        content = "Hey @user:matrix.org, how are you?"
-        mentions = parse_mentions(content, "matrix")
-
-        assert len(mentions) == 1
-        assert mentions[0].user_id == "@user:matrix.org"
 
     def test_parse_mentions_no_matches(self):
         """Test parsing content with no mentions."""

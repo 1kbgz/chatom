@@ -14,14 +14,14 @@ SYMPHONY = "symphony"
 # ZULIP = "zulip"
 
 BACKEND = Union[
-    Literal[DISCORD],
+    Literal["discord"],
     # Literal[EMAIL],
     # Literal[IRC],
     # Literal[MATRIX],
     # Literal[MATTERMOST],
     # Literal[MESSENGER],
-    Literal[SLACK],
-    Literal[SYMPHONY],
+    Literal["slack"],
+    Literal["symphony"],
     # Literal[TEAMS],
     # Literal[TELEGRAM],
     # Literal[WHATSAPP],

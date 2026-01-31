@@ -386,13 +386,14 @@ class TestDemote:
 
     def test_demote_discord_channel(self):
         """Test demoting DiscordChannel to Channel."""
+        from chatom.base import Organization
         from chatom.discord import DiscordChannel, DiscordChannelType
 
         discord_channel = DiscordChannel(
             id="123456789",
             name="general",
             topic="General chat",
-            guild_id="987654321",
+            guild=Organization(id="987654321"),
             discord_type=DiscordChannelType.GUILD_TEXT,
             position=5,
             nsfw=False,
@@ -629,7 +630,7 @@ class TestConversionEdgeCases:
         """Test promoting Presence to Discord."""
         from chatom.discord import DiscordPresence
 
-        presence = Presence(user_id="123", status=PresenceStatus.ONLINE)
+        presence = Presence(user=User(id="123"), status=PresenceStatus.ONLINE)
         discord_presence = promote(presence, DISCORD)
         assert isinstance(discord_presence, DiscordPresence)
 
@@ -637,7 +638,7 @@ class TestConversionEdgeCases:
         """Test promoting Presence to Slack."""
         from chatom.slack import SlackPresence
 
-        presence = Presence(user_id="U123", status=PresenceStatus.ONLINE)
+        presence = Presence(user=User(id="U123"), status=PresenceStatus.ONLINE)
         slack_presence = promote(presence, SLACK)
         assert isinstance(slack_presence, SlackPresence)
 
@@ -645,24 +646,24 @@ class TestConversionEdgeCases:
         """Test promoting Presence to Symphony."""
         from chatom.symphony import SymphonyPresence
 
-        presence = Presence(user_id="12345", status=PresenceStatus.ONLINE)
+        presence = Presence(user=User(id="12345"), status=PresenceStatus.ONLINE)
         symphony_presence = promote(presence, SYMPHONY)
         assert isinstance(symphony_presence, SymphonyPresence)
 
     def test_demote_discord_presence(self):
         """Test demoting DiscordPresence to base Presence."""
-        from chatom.discord import DiscordPresence
+        from chatom.discord import DiscordPresence, DiscordUser
 
-        discord_presence = DiscordPresence(user_id="123", status=PresenceStatus.ONLINE)
+        discord_presence = DiscordPresence(user=DiscordUser(id="123"), status=PresenceStatus.ONLINE)
         base_presence = demote(discord_presence)
         assert isinstance(base_presence, Presence)
         assert base_presence.status == PresenceStatus.ONLINE
 
     def test_demote_slack_presence(self):
         """Test demoting SlackPresence to base Presence."""
-        from chatom.slack import SlackPresence
+        from chatom.slack import SlackPresence, SlackUser
 
-        slack_presence = SlackPresence(user_id="U123", status=PresenceStatus.ONLINE)
+        slack_presence = SlackPresence(user=SlackUser(id="U123"), status=PresenceStatus.ONLINE)
         base_presence = demote(slack_presence)
         assert isinstance(base_presence, Presence)
 

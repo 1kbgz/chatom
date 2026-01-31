@@ -36,6 +36,7 @@ class TestSymphonyMessageConversion:
 
         assert msg.channel.id == "stream_123"
         # Symphony uses <b> tags
+        assert msg.message_ml is not None
         assert "<b>Alert</b>" in msg.message_ml or "Alert" in msg.message_ml
 
     def test_symphony_message_from_api_response(self):
@@ -67,7 +68,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             shared_message={"message_id": "orig1", "content": "Shared content"},
         )
         assert msg.is_shared_message is True
@@ -76,7 +76,7 @@ class TestSymphonyMessageProperties:
         """Test is_shared_message returns False without shared_message."""
         from chatom.symphony import SymphonyMessage
 
-        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        msg = SymphonyMessage(id="m1")
         assert msg.is_shared_message is False
 
     def test_has_entity_data_true(self):
@@ -85,7 +85,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             entity_data={"entity1": {"type": "custom"}},
         )
         assert msg.has_entity_data is True
@@ -94,7 +93,7 @@ class TestSymphonyMessageProperties:
         """Test has_entity_data returns False without entity data."""
         from chatom.symphony import SymphonyMessage
 
-        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        msg = SymphonyMessage(id="m1")
         assert msg.has_entity_data is False
 
     def test_has_hashtags_true(self):
@@ -103,7 +102,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             hashtags=["python", "symphony"],
         )
         assert msg.has_hashtags is True
@@ -112,7 +110,7 @@ class TestSymphonyMessageProperties:
         """Test has_hashtags returns False without hashtags."""
         from chatom.symphony import SymphonyMessage
 
-        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        msg = SymphonyMessage(id="m1")
         assert msg.has_hashtags is False
 
     def test_has_cashtags_true(self):
@@ -121,7 +119,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             cashtags=["AAPL", "GOOGL"],
         )
         assert msg.has_cashtags is True
@@ -130,7 +127,7 @@ class TestSymphonyMessageProperties:
         """Test has_cashtags returns False without cashtags."""
         from chatom.symphony import SymphonyMessage
 
-        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        msg = SymphonyMessage(id="m1")
         assert msg.has_cashtags is False
 
     def test_has_mentions_true(self):
@@ -140,8 +137,7 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
-            mentions=[SymphonyUser(id="12345"), SymphonyUser(id="67890")],
+            tags=[SymphonyUser(id="12345"), SymphonyUser(id="67890")],
         )
         assert msg.has_mentions is True
 
@@ -149,7 +145,7 @@ class TestSymphonyMessageProperties:
         """Test has_mentions returns False without mentions."""
         from chatom.symphony import SymphonyMessage
 
-        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        msg = SymphonyMessage(id="m1")
         assert msg.has_mentions is False
 
     def test_rendered_content_presentation_ml(self):
@@ -158,7 +154,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             presentation_ml="<div>Rendered</div>",
             message_ml="<messageML>Original</messageML>",
             content="Plain text",
@@ -171,7 +166,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             message_ml="<messageML>Original</messageML>",
             content="Plain text",
         )
@@ -183,7 +177,6 @@ class TestSymphonyMessageProperties:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             content="Plain text",
         )
         assert msg.rendered_content == "Plain text"
@@ -199,8 +192,7 @@ class TestSymphonyMentionsUser:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
-            mentions=[SymphonyUser(id="12345"), SymphonyUser(id="67890")],
+            tags=[SymphonyUser(id="12345"), SymphonyUser(id="67890")],
         )
         assert msg.mentions_user("12345") is True
         assert msg.mentions_user("99999") is False
@@ -211,7 +203,6 @@ class TestSymphonyMentionsUser:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             entity_data={
                 "mention0": {
                     "type": "com.symphony.user.mention",
@@ -238,7 +229,6 @@ class TestSymphonyMentionsUser:
         )
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
             data=data,
         )
         assert msg.mentions_user("12345") is True
@@ -251,8 +241,7 @@ class TestSymphonyMentionsUser:
 
         msg = SymphonyMessage(
             id="m1",
-            message_id="msgid1",
-            mentions=[SymphonyUser(id="abc-user")],
+            tags=[SymphonyUser(id="abc-user")],
         )
         assert msg.mentions_user("abc-user") is True
         # Non-numeric can't match int mentions list
@@ -262,7 +251,7 @@ class TestSymphonyMentionsUser:
         """Test mentions_user returns False when no mentions exist."""
         from chatom.symphony import SymphonyMessage
 
-        msg = SymphonyMessage(id="m1", message_id="msgid1")
+        msg = SymphonyMessage(id="m1")
         assert msg.mentions_user("12345") is False
 
 
