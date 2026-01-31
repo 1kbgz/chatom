@@ -1,201 +1,270 @@
 # Quickstart
 
-This guide will help you get started with chatom in just a few minutes.
+This guide walks you through building your first chatom application.
 
-## Basic Models
+## Prerequisites
 
-### Creating Users and Channels
+1. Install chatom: `pip install chatom`
+2. Have credentials for at least one platform (Slack, Discord, or Symphony)
 
-```python
-from chatom import User, Channel
-
-# Create a user
-user = User(
-    id="u123",
-    name="Alice",
-    handle="alice",
-    email="alice@example.com",
-)
-
-# Access properties
-print(user.display_name)  # "Alice"
-print(user.mention_name)  # "alice"
-
-# Create a channel
-channel = Channel(
-    id="c456",
-    name="general",
-    topic="General discussion",
-)
-```
-
-### Creating Messages
-
-```python
-from chatom import User, Channel, Message, Emoji, Reaction
-
-user = User(id="u1", name="Alice")
-channel = Channel(id="c1", name="general")
-
-# Create an emoji and reaction
-emoji = Emoji(name="thumbsup", unicode="👍")
-reaction = Reaction(emoji=emoji, count=5)
-
-# Create a message with reactions
-message = Message(
-    id="m789",
-    content="Hello, world!",
-    author=user,
-    channel=channel,
-    reactions=[reaction],
-)
-
-print(message.author.name)  # "Alice"
-print(len(message.reactions))  # 1
-```
-
-## Rich Text Formatting
-
-### Building Formatted Messages
-
-```python
-from chatom import (
-    Format,
-    Text,
-    Bold,
-    Italic,
-    Paragraph,
-    FormattedMessage,
-)
-
-# Create a formatted message
-msg = FormattedMessage(
-    content=[
-        Paragraph(children=[
-            Text(content="Hello, "),
-            Bold(child=Text(content="world")),
-            Text(content="! This is "),
-            Italic(child=Text(content="chatom")),
-            Text(content="."),
-        ]),
-    ]
-)
-
-# Render to different formats
-print(msg.render(Format.PLAINTEXT))      # "Hello, world! This is chatom.\n"
-print(msg.render(Format.MARKDOWN))       # "Hello, **world**! This is *chatom*.\n"
-print(msg.render(Format.HTML))           # "<p>Hello, <strong>world</strong>!..."
-```
-
-### Creating Tables
-
-```python
-from chatom import Table, Format
-
-# Create a table from data
-data = [
-    ["Alice", "100", "Gold"],
-    ["Bob", "85", "Silver"],
-]
-table = Table.from_data(data, headers=["Name", "Score", "Rank"])
-
-# Render as markdown
-print(table.render(Format.MARKDOWN))
-# | Name | Score | Rank |
-# |---|---|---|
-# | Alice | 100 | Gold |
-# | Bob | 85 | Silver |
-```
-
-## Backend-Specific Models
-
-### Discord
-
-```python
-from chatom.discord import (
-    DiscordUser,
-    DiscordChannel,
-    mention_user,
-    mention_channel,
-    mention_role,
-)
-
-user = DiscordUser(id="123456789", name="Alice")
-print(mention_user(user))  # "<@123456789>"
-
-channel = DiscordChannel(id="987654321", name="general")
-print(mention_channel(channel))  # "<#987654321>"
-
-print(mention_role("111222333"))  # "<@&111222333>"
-```
+## Step 1: Connect to a Backend
 
 ### Slack
 
 ```python
-from chatom.slack import (
-    SlackUser,
-    SlackChannel,
-    mention_user,
-    mention_channel,
-    mention_here,
-)
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
 
-user = SlackUser(id="U123456", name="alice")
-print(mention_user(user))  # "<@U123456>"
+async def main():
+    # Create configuration
+    config = SlackConfig(
+        bot_token="xoxb-your-bot-token",
+        app_token="xapp-your-app-token",  # For Socket Mode (optional)
+    )
 
-channel = SlackChannel(id="C123456", name="general")
-print(mention_channel(channel))  # "<#C123456>"
+    # Create and connect backend
+    backend = SlackBackend(config=config)
+    await backend.connect()
 
-print(mention_here())  # "<!here>"
+    print(f"Connected to {backend.display_name}")
+    print(f"Capabilities: {backend.capabilities}")
+
+    await backend.disconnect()
+
+asyncio.run(main())
+```
+
+### Discord
+
+```python
+import asyncio
+from chatom.discord import DiscordBackend, DiscordConfig
+
+async def main():
+    config = DiscordConfig(
+        bot_token="your-bot-token",
+        intents=["guilds", "guild_messages"],
+    )
+
+    backend = DiscordBackend(config=config)
+    await backend.connect()
+
+    # List available guilds
+    guilds = await backend.list_organizations()
+    for guild in guilds:
+        print(f"Guild: {guild.name} ({guild.id})")
+
+    await backend.disconnect()
+
+asyncio.run(main())
 ```
 
 ### Symphony
 
 ```python
-from chatom.symphony import (
-    SymphonyUser,
-    mention_user,
-    format_hashtag,
-    format_cashtag,
-)
+import asyncio
+from chatom.symphony import SymphonyBackend, SymphonyConfig
 
-user = SymphonyUser(id="123", name="alice", user_id=12345)
-print(mention_user(user))  # '<mention uid="12345"/>'
+async def main():
+    config = SymphonyConfig(
+        host="mycompany.symphony.com",
+        bot_username="my-bot",
+        bot_private_key_path="/path/to/private-key.pem",
+    )
 
-print(format_hashtag("python"))  # '<hash tag="python"/>'
-print(format_cashtag("AAPL"))    # '<cash tag="AAPL"/>'
+    backend = SymphonyBackend(config=config)
+    await backend.connect()
+
+    print(f"Connected to Symphony pod: {config.host}")
+
+    await backend.disconnect()
+
+asyncio.run(main())
 ```
 
-## Polymorphic Mentions
-
-The `mention_user` function automatically dispatches to the correct backend:
+## Step 2: Send a Message
 
 ```python
-from chatom import mention_user
-from chatom.discord import DiscordUser
-from chatom.slack import SlackUser
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
 
-discord_user = DiscordUser(id="123", name="alice")
-slack_user = SlackUser(id="U123", name="alice")
+async def main():
+    config = SlackConfig(bot_token="xoxb-your-token")
+    backend = SlackBackend(config=config)
+    await backend.connect()
 
-print(mention_user(discord_user))  # "<@123>"
-print(mention_user(slack_user))    # "<@U123>"
+    # Look up channel by name
+    channel = await backend.fetch_channel(name="general")
+
+    # Send a message
+    message = await backend.send_message(
+        channel_id=channel.id,
+        content="Hello from chatom! 👋",
+    )
+
+    print(f"Sent message: {message.id}")
+
+    await backend.disconnect()
+
+asyncio.run(main())
 ```
 
-## Checking Capabilities
+## Step 3: Format Your Message
 
 ```python
-from chatom import Capability, DISCORD_CAPABILITIES
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
+from chatom.format import FormattedMessage
 
-# Check what Discord supports
-print(DISCORD_CAPABILITIES.supports(Capability.THREADS))        # True
-print(DISCORD_CAPABILITIES.supports(Capability.VOICE_CHAT))     # True
-print(DISCORD_CAPABILITIES.supports(Capability.EMOJI_REACTIONS)) # True
+async def main():
+    config = SlackConfig(bot_token="xoxb-your-token")
+    backend = SlackBackend(config=config)
+    await backend.connect()
+
+    channel = await backend.fetch_channel(name="general")
+
+    # Create a formatted message
+    msg = FormattedMessage()
+    msg.heading("Welcome!", level=2)
+    msg.paragraph("Here's what you can do:")
+    msg.unordered_list([
+        "Send messages",
+        "Add reactions",
+        "Create threads",
+    ])
+    msg.newline()
+    msg.bold("Need help?")
+    msg.text(" Just ask!")
+
+    # Render for the backend's format
+    content = msg.render(backend.get_format())
+
+    await backend.send_message(channel_id=channel.id, content=content)
+
+    await backend.disconnect()
+
+asyncio.run(main())
+```
+
+## Step 4: Read Message History
+
+```python
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
+
+async def main():
+    config = SlackConfig(bot_token="xoxb-your-token")
+    backend = SlackBackend(config=config)
+    await backend.connect()
+
+    channel = await backend.fetch_channel(name="general")
+
+    # Read last 10 messages
+    print("Recent messages:")
+    async for message in backend.read_messages(channel_id=channel.id, limit=10):
+        author = message.author.name if message.author else "Unknown"
+        print(f"  [{author}]: {message.content[:50]}...")
+
+    await backend.disconnect()
+
+asyncio.run(main())
+```
+
+## Step 5: Add Reactions
+
+```python
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
+
+async def main():
+    config = SlackConfig(bot_token="xoxb-your-token")
+    backend = SlackBackend(config=config)
+    await backend.connect()
+
+    channel = await backend.fetch_channel(name="general")
+
+    # Send a message
+    message = await backend.send_message(
+        channel_id=channel.id,
+        content="React to this message!",
+    )
+
+    # Add reactions
+    await backend.add_reaction(
+        channel_id=channel.id,
+        message_id=message.id,
+        emoji="thumbsup",
+    )
+    await backend.add_reaction(
+        channel_id=channel.id,
+        message_id=message.id,
+        emoji="rocket",
+    )
+
+    await backend.disconnect()
+
+asyncio.run(main())
+```
+
+## Step 6: Create Threads
+
+```python
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
+
+async def main():
+    config = SlackConfig(bot_token="xoxb-your-token")
+    backend = SlackBackend(config=config)
+    await backend.connect()
+
+    channel = await backend.fetch_channel(name="general")
+
+    # Send parent message
+    parent = await backend.send_message(
+        channel_id=channel.id,
+        content="📋 Thread topic: Project Updates",
+    )
+
+    # Reply in thread
+    await backend.reply_to_message(
+        channel_id=channel.id,
+        message_id=parent.id,
+        content="First update: Everything is on track!",
+    )
+
+    await backend.reply_to_message(
+        channel_id=channel.id,
+        message_id=parent.id,
+        content="Second update: New features coming soon.",
+    )
+
+    await backend.disconnect()
+
+asyncio.run(main())
+```
+
+## Using Sync API
+
+If you prefer synchronous code:
+
+```python
+from chatom.slack import SlackBackend, SlackConfig
+
+config = SlackConfig(bot_token="xoxb-your-token")
+backend = SlackBackend(config=config)
+
+# Use .sync for synchronous calls
+backend.sync.connect()
+
+channel = backend.sync.fetch_channel(name="general")
+backend.sync.send_message(channel_id=channel.id, content="Hello!")
+
+backend.sync.disconnect()
 ```
 
 ## Next Steps
 
-- Learn about all the [Base Models](base-models.md)
-- Explore the [Format System](format-system.md)
-- Dive into specific [Backends](backends.md)
-- Check the full [API Reference](api.md)
+- [Base Models](base-models.md) - Understanding User, Channel, Message
+- [Backend Configuration](backend-config.md) - Detailed configuration options
+- [Format System](format-system.md) - Rich text formatting
+- [Examples](examples.md) - Complete example applications

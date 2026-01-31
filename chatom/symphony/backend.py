@@ -732,24 +732,54 @@ class SymphonyBackend(BackendBase):
             message_service = self._bdk.messages()
 
             # Build the forwarded message content in MessageML
+            # Styled to resemble Symphony's native forwarded message UI
             content_parts = []
 
             if prefix:
                 content_parts.append(f"<p>{prefix}</p>")
 
             if include_attribution:
-                # Add attribution info in MessageML format
-                author_name = message.author.name if message.author else "Unknown"
+                # Build attribution to resemble Symphony's native forward UI:
+                # "Forwarded message:"
+                # "Author Name" in "Room Name" · timestamp
+                author_name = message.author.display_name if message.author else "Unknown"
                 channel_name = message.channel.name if message.channel else "unknown room"
-                attribution = f"<p><i>Forwarded from {channel_name} by {author_name}</i></p>"
-                content_parts.append(attribution)
+                timestamp_str = ""
+                if message.created_at:
+                    timestamp_str = message.created_at.strftime("%b %d, %Y · %H:%M")
+
+                # Create a card-like format resembling Symphony's native forward
+                content_parts.append('<card accent="tempo-bg-color--blue">')
+                content_parts.append("<header>")
+                content_parts.append("<b>Forwarded message:</b>")
+                content_parts.append("</header>")
+                content_parts.append("<body>")
+                content_parts.append(f"<p><b>{author_name}</b> in <i>{channel_name}</i>")
+                if timestamp_str:
+                    content_parts.append(f" · {timestamp_str}")
+                content_parts.append("</p>")
 
             # Add the original message content
-            # If the message has formatted_content (MessageML), use it; otherwise wrap plain text
             if message.formatted_content:
-                content_parts.append(message.formatted_content)
+                # Strip any outer messageML tags if present
+                msg_content = message.formatted_content
+                if msg_content.startswith("<messageML>"):
+                    msg_content = msg_content[11:]
+                if msg_content.endswith("</messageML>"):
+                    msg_content = msg_content[:-12]
+                # Use plain content if available, otherwise use the formatted content directly
+                # Don't wrap in <p> if formatted_content already contains markup
+                if message.content:
+                    content_parts.append(f"<p>{message.content}</p>")
+                else:
+                    # formatted_content may already have <p> tags, add directly
+                    content_parts.append(msg_content)
             else:
                 content_parts.append(f"<p>{message.content}</p>")
+
+            if include_attribution:
+                content_parts.append("</body>")
+                content_parts.append("</card>")
 
             forwarded_content = "<messageML>" + "".join(content_parts) + "</messageML>"
 
@@ -764,7 +794,7 @@ class SymphonyBackend(BackendBase):
                 id=result.id if hasattr(result, "id") else str(result),
                 content=message.content,
                 formatted_content=forwarded_content,
-                timestamp=datetime.now(timezone.utc),
+                created_at=datetime.now(timezone.utc),
                 user_id=str(self._bot_user_id_int) if self._bot_user_id_int else None,
                 channel_id=dest_channel_id,
                 message_type=MessageType.FORWARD,

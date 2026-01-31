@@ -366,20 +366,23 @@ class MockSymphonyBackend(BackendBase):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a mock message.
 
         Args:
-            channel_id: The stream ID.
+            channel: The channel to send to (stream ID string or Channel object).
             content: The message content (MessageML).
             **kwargs: Additional options (data, attachments).
 
         Returns:
             The sent message.
         """
+        # Resolve channel ID
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
+
         message_id = str(uuid.uuid4())
         timestamp = datetime.now(timezone.utc)
 

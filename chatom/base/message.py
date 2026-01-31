@@ -345,6 +345,73 @@ class Message(Identifiable):
             return self.author.name
         return self.metadata.get("author_name", "")
 
+    def get_mentioned_user_ids(self) -> List[str]:
+        """Parse and extract user IDs mentioned in the message content.
+
+        This parses the message content using the backend's mention format
+        and returns a list of user IDs that were mentioned. This is useful
+        for detecting when specific users are mentioned in a message.
+
+        Note: This parses the content text. For mentions that were already
+        parsed by the backend, use the `mentions` property instead.
+
+        Returns:
+            List[str]: List of user IDs mentioned in the content.
+
+        Example:
+            >>> msg = Message(content="Hey <@U123> and <@U456>!", backend="slack")
+            >>> msg.get_mentioned_user_ids()
+            ['U123', 'U456']
+        """
+        from .mention import extract_mention_ids
+
+        if not self.content or not self.backend:
+            return []
+        return extract_mention_ids(self.content, self.backend)
+
+    def get_mentioned_channel_ids(self) -> List[str]:
+        """Parse and extract channel IDs mentioned in the message content.
+
+        This parses the message content using the backend's channel mention
+        format and returns a list of channel IDs that were referenced.
+
+        Returns:
+            List[str]: List of channel IDs mentioned in the content.
+
+        Example:
+            >>> msg = Message(content="Join <#C123> and <#C456>!", backend="slack")
+            >>> msg.get_mentioned_channel_ids()
+            ['C123', 'C456']
+        """
+        from .mention import extract_channel_ids
+
+        if not self.content or not self.backend:
+            return []
+        return extract_channel_ids(self.content, self.backend)
+
+    def mentions_user(self, user_id: str) -> bool:
+        """Check if a specific user is mentioned in this message.
+
+        Checks both the parsed mentions list and parses the content
+        to find mentions of the given user ID.
+
+        Args:
+            user_id: The user ID to check for.
+
+        Returns:
+            bool: True if the user is mentioned.
+
+        Example:
+            >>> if message.mentions_user(bot_user_id):
+            ...     await handle_bot_mention(message)
+        """
+        # Check pre-parsed mentions first
+        for user in self.mentions:
+            if user.id == user_id:
+                return True
+        # Also check content
+        return user_id in self.get_mentioned_user_ids()
+
     def to_formatted(self) -> "FormattedMessage":
         """Convert this message to a FormattedMessage.
 
@@ -523,3 +590,188 @@ class Message(Identifiable):
             str: The original message ID or empty string if not a forward.
         """
         return self.forwarded_from.id if self.forwarded_from else ""
+
+    # -------------------------------------------------------------------------
+    # Response Convenience Methods
+    # -------------------------------------------------------------------------
+    # These methods construct new Message instances based on this message.
+    # They make it easy to create replies, forwards, or quotes.
+
+    def as_reply(self, content: str, **kwargs: Any) -> "Message":
+        """Create a new message as a reply to this message.
+
+        Constructs a new message with the same channel, with this message
+        set as the reply_to reference.
+
+        Args:
+            content: The reply content.
+            **kwargs: Additional message attributes to set.
+
+        Returns:
+            A new Message instance configured as a reply.
+
+        Example:
+            >>> reply = message.as_reply("Thanks for letting me know!")
+            >>> reply.reply_to is message
+            True
+        """
+        return self.__class__(
+            content=content,
+            channel=self.channel,
+            reply_to=self,
+            message_type=MessageType.REPLY,
+            backend=self.backend,
+            **kwargs,
+        )
+
+    def as_thread_reply(self, content: str, **kwargs: Any) -> "Message":
+        """Create a new message as a reply in this message's thread.
+
+        If this message is already in a thread, the new message is placed
+        in that thread. Otherwise, a new thread is started on this message.
+
+        Args:
+            content: The reply content.
+            **kwargs: Additional message attributes to set.
+
+        Returns:
+            A new Message instance configured as a thread reply.
+
+        Example:
+            >>> reply = message.as_thread_reply("Following up on this...")
+            >>> reply.thread is not None
+            True
+        """
+        # If already in a thread, use that thread; otherwise create thread from this message
+        thread = self.thread if self.thread else Thread(id=self.id, parent_message=self)
+        return self.__class__(
+            content=content,
+            channel=self.channel,
+            thread=thread,
+            reply_to=self,
+            message_type=MessageType.REPLY,
+            backend=self.backend,
+            **kwargs,
+        )
+
+    def as_dm_to_author(self, content: str, **kwargs: Any) -> "Message":
+        """Create a new message as a DM to this message's author.
+
+        Constructs a new message in an incomplete DM channel that will
+        be resolved by the backend when sent.
+
+        Args:
+            content: The DM content.
+            **kwargs: Additional message attributes to set.
+
+        Returns:
+            A new Message instance configured for a DM to the author.
+
+        Example:
+            >>> dm = message.as_dm_to_author("I'll follow up privately.")
+            >>> dm.channel.users[0] is message.author
+            True
+        """
+        if not self.author:
+            raise ValueError("Cannot create DM: message has no author")
+
+        # Create an incomplete DM channel that the backend will resolve
+        dm_channel = Channel.dm_to(self.author)
+
+        return self.__class__(
+            content=content,
+            channel=dm_channel,
+            backend=self.backend,
+            **kwargs,
+        )
+
+    def as_forward(self, target_channel: Channel, **kwargs: Any) -> "Message":
+        """Create a new message as a forward of this message to another channel.
+
+        Constructs a new message with forwarded content and attribution
+        to the original author and channel.
+
+        Args:
+            target_channel: The channel to forward to.
+            **kwargs: Additional message attributes to set.
+
+        Returns:
+            A new Message instance configured as a forward.
+
+        Example:
+            >>> forward = message.as_forward(log_channel)
+            >>> forward.forwarded_from is message
+            True
+        """
+        # Build forwarded content with attribution
+        author_name = self.author_name or "Unknown"
+        channel_name = self.channel_name or (self.channel.id if self.channel else "unknown")
+        forwarded_content = f"[Forwarded from {author_name} in #{channel_name}]\n{self.content}"
+
+        return self.__class__(
+            content=forwarded_content,
+            channel=target_channel,
+            forwarded_from=self,
+            message_type=MessageType.FORWARD,
+            backend=self.backend,
+            **kwargs,
+        )
+
+    def as_quote_reply(self, content: str, **kwargs: Any) -> "Message":
+        """Create a new message that quotes this message.
+
+        Constructs a new message with the original content quoted,
+        followed by the reply content.
+
+        Args:
+            content: The reply content (after the quote).
+            **kwargs: Additional message attributes to set.
+
+        Returns:
+            A new Message instance with quoted content.
+
+        Example:
+            >>> quote = message.as_quote_reply("I agree with this point!")
+            >>> "> " in quote.content
+            True
+        """
+        # Build quoted content
+        quoted_lines = [f"> {line}" for line in self.content.split("\n")]
+        quoted = "\n".join(quoted_lines)
+        full_content = f"{quoted}\n\n{content}"
+
+        # If in a thread, stay in that thread; otherwise create thread from this message
+        thread = self.thread if self.thread else Thread(id=self.id, parent_message=self)
+
+        return self.__class__(
+            content=full_content,
+            channel=self.channel,
+            thread=thread,
+            reply_to=self,
+            message_type=MessageType.REPLY,
+            backend=self.backend,
+            **kwargs,
+        )
+
+    def reply_context(self) -> Dict[str, Any]:
+        """Get context information for creating a reply.
+
+        Returns useful objects for manually constructing a reply.
+
+        Returns:
+            Dict with channel, message, thread, author objects.
+
+        Example:
+            >>> ctx = message.reply_context()
+            >>> new_msg = Message(
+            ...     channel=ctx["channel"],
+            ...     content="My reply",
+            ...     reply_to=ctx["message"],
+            ... )
+        """
+        return {
+            "channel": self.channel,
+            "message": self,
+            "thread": self.thread,
+            "author": self.author,
+        }

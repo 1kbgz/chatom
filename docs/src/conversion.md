@@ -150,18 +150,18 @@ List all backends that have a registered type for the given base type.
 from chatom import User, Channel, list_backends_for_type
 
 backends = list_backends_for_type(User)
-print(backends)  # ['discord', 'slack', 'symphony', 'email', 'irc', 'matrix']
+print(backends)  # ['discord', 'slack', 'symphony']
 ```
 
 ## Supported Type Conversions
 
 The following base types have backend-specific variants:
 
-| Base Type | Discord | Slack | Symphony | Email | IRC | Matrix |
-|-----------|---------|-------|----------|-------|-----|--------|
-| User | DiscordUser | SlackUser | SymphonyUser | EmailUser | IRCUser | MatrixUser |
-| Channel | DiscordChannel | SlackChannel | SymphonyChannel | EmailChannel | IRCChannel | MatrixChannel |
-| Presence | DiscordPresence | SlackPresence | SymphonyPresence | EmailPresence | IRCPresence | MatrixPresence |
+| Base Type | Discord | Slack | Symphony |
+|-----------|---------|-------|----------|
+| User | DiscordUser | SlackUser | SymphonyUser |
+| Channel | DiscordChannel | SlackChannel | SymphonyChannel |
+| Presence | DiscordPresence | SlackPresence | SymphonyPresence |
 
 ## Cross-Backend Conversion
 

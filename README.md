@@ -18,7 +18,7 @@ Framework-agnostic chat application models and utilities
 `chatom` provides a unified, framework-agnostic representation of chat applications. It offers:
 
 - **Base models** for users, channels, messages, attachments, embeds, reactions, and more
-- **Backend-specific implementations** for Discord, Slack, Symphony, Email, IRC, and Matrix
+- **Backend-specific implementations** for Discord, Slack, and Symphony
 - **Rich text formatting** with nodes for bold, italic, code, tables, lists, and more
 - **Format converters** to render messages as plaintext, markdown, HTML, Slack mrkdwn, Discord markdown, or Symphony MessageML
 
@@ -180,40 +180,6 @@ user = SymphonyUser(id="123", name="alice", user_id=12345)
 print(mention_user(user))  # '<mention uid="12345"/>'
 print(format_hashtag("python"))  # '<hash tag="python"/>'
 print(format_cashtag("AAPL"))  # '<cash tag="AAPL"/>'
-
-# Matrix
-from chatom.matrix import (
-    MatrixUser,
-    mention_user,
-    mention_room,
-    create_pill,
-)
-
-user = MatrixUser(
-    id="alice",
-    name="Alice",
-    user_id="@alice:matrix.org",
-    homeserver="matrix.org",
-)
-print(mention_user(user))  # "@alice:matrix.org"
-print(create_pill(user))   # '<a href="https://matrix.to/#/@alice:matrix.org">Alice</a>'
-
-# IRC
-from chatom.irc import IRCUser, mention_user, highlight_user
-
-user = IRCUser(id="alice", name="alice", nick="alice")
-print(mention_user(user))  # "alice"
-print(highlight_user("alice", "Hello there!"))  # "alice: Hello there!"
-
-# Email
-from chatom.email import EmailUser, mention_user
-
-user = EmailUser(
-    id="alice@example.com",
-    name="Alice",
-    email="alice@example.com",
-)
-print(mention_user(user))  # "<a href='mailto:alice@example.com'>Alice</a>"
 ```
 
 ### Polymorphic Mentions
@@ -245,8 +211,7 @@ channel = Channel(id="C456", name="general")
 # Mention for different backends
 print(mention_user_for_backend(user, "discord"))   # "<@123>"
 print(mention_user_for_backend(user, "slack"))     # "<@123>"
-print(mention_user_for_backend(user, "matrix"))    # "@123"
-print(mention_user_for_backend(user, "email"))     # "<a href='mailto:alice@example.com'>Alice</a>"
+print(mention_user_for_backend(user, "symphony"))  # '<mention uid="123"/>'
 
 print(mention_channel_for_backend(channel, "discord"))  # "<#C456>"
 print(mention_channel_for_backend(channel, "slack"))    # "<#C456>"
@@ -273,7 +238,6 @@ msg = FormattedMessage(
 print(msg.render_for("slack"))     # "Hello, *world*!\n" (Slack mrkdwn)
 print(msg.render_for("discord"))   # "Hello, **world**!\n" (Discord markdown)
 print(msg.render_for("symphony"))  # "<p>Hello, <b>world</b>!</p>" (MessageML)
-print(msg.render_for("email"))     # "<p>Hello, <strong>world</strong>!</p>" (HTML)
 
 # Get the format for a backend
 from chatom import BACKEND_FORMAT_MAP
@@ -424,9 +388,6 @@ class MyBackendConnection(Connection):
 | Discord  | `DiscordUser`  | `DiscordChannel`  | ✅              | `DiscordPresence`  |
 | Slack    | `SlackUser`    | `SlackChannel`    | ✅              | `SlackPresence`    |
 | Symphony | `SymphonyUser` | `SymphonyChannel` | ✅              | `SymphonyPresence` |
-| Email    | `EmailUser`    | -                 | ✅              | -                  |
-| IRC      | `IRCUser`      | `IRCChannel`      | ✅              | -                  |
-| Matrix   | `MatrixUser`   | -                 | ✅              | -                  |
 
 ## Output Formats
 

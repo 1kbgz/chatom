@@ -247,14 +247,6 @@ class TestParseMentions:
         assert len(mentions) == 1
         assert mentions[0].user_id == "user@example.com"
 
-    def test_parse_matrix_mentions(self):
-        """Test parsing Matrix-style mentions."""
-        content = "Hey @user:matrix.org, how are you?"
-        mentions = parse_mentions(content, "matrix")
-
-        assert len(mentions) == 1
-        assert mentions[0].user_id == "@user:matrix.org"
-
     def test_parse_mentions_no_matches(self):
         """Test parsing content with no mentions."""
         content = "Hello world, no mentions here!"

@@ -361,17 +361,17 @@ if __name__ == "__main__":
 
 ## Feature Comparison
 
-| Feature | Discord | Slack | Symphony | Matrix | IRC | Email |
-|---------|---------|-------|----------|--------|-----|-------|
-| Messages | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Formatting | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ |
-| Reactions | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
-| Threads | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Mentions | ✅ | ✅ | ✅ | ✅ | ⚠️ | ⚠️ |
-| History | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Presence | ✅ | ✅ | ✅ | ✅ | ⚠️ | ❌ |
-| Attachments | ✅ | ✅ | ✅ | ✅ | ⚠️ | ✅ |
-| Real-time | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Feature | Discord | Slack | Symphony |
+|---------|---------|-------|----------|
+| Messages | ✅ | ✅ | ✅ |
+| Formatting | ✅ | ✅ | ✅ |
+| Reactions | ✅ | ✅ | ❌ |
+| Threads | ✅ | ✅ | ❌ |
+| Mentions | ✅ | ✅ | ✅ |
+| History | ✅ | ✅ | ✅ |
+| Presence | ✅ | ✅ | ✅ |
+| Attachments | ✅ | ✅ | ✅ |
+| Real-time | ✅ | ✅ | ✅ |
 
 **Legend:**
 - ✅ Fully supported
