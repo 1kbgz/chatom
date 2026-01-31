@@ -474,22 +474,30 @@ class MockSlackBackend(SlackBackend):
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
         content: str,
+        channel: Optional[Union[str, SlackChannel]] = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Edit a mock message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp.
+            message: The message to edit (ts string or SlackMessage object).
             content: The new content.
+            channel: The channel containing the message (required if message is a string).
             **kwargs: Additional options.
 
         Returns:
             The edited message.
         """
+        # Resolve message and channel IDs
+        if isinstance(message, SlackMessage):
+            message_id = message.id
+            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+
         messages = self._mock_messages.get(channel_id, [])
         for i, msg in enumerate(messages):
             if msg.id == message_id:
@@ -507,15 +515,23 @@ class MockSlackBackend(SlackBackend):
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
+        channel: Optional[Union[str, SlackChannel]] = None,
     ) -> None:
         """Delete a mock message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp.
+            message: The message to delete (ts string or SlackMessage object).
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, SlackMessage):
+            message_id = message.id
+            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+
         self._deleted_messages.append((channel_id, message_id))
 
         messages = self._mock_messages.get(channel_id, [])
@@ -622,17 +638,25 @@ class MockSlackBackend(SlackBackend):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
         emoji: str,
+        channel: Optional[Union[str, SlackChannel]] = None,
     ) -> None:
         """Add a mock reaction.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp.
+            message: The message to react to (ts string or SlackMessage object).
             emoji: The emoji name.
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, SlackMessage):
+            message_id = message.id
+            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+
         key = (channel_id, message_id)
         if key not in self._reactions:
             self._reactions[key] = []
@@ -644,17 +668,25 @@ class MockSlackBackend(SlackBackend):
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, SlackMessage],
         emoji: str,
+        channel: Optional[Union[str, SlackChannel]] = None,
     ) -> None:
         """Remove a mock reaction.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message timestamp.
+            message: The message to remove reaction from (ts string or SlackMessage object).
             emoji: The emoji name.
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, SlackMessage):
+            message_id = message.id
+            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+
         key = (channel_id, message_id)
         emoji = emoji.strip(":")
         if key in self._reactions and emoji in self._reactions[key]:

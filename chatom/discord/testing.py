@@ -480,23 +480,31 @@ class MockDiscordBackend(DiscordBackend):
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         content: str,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a mock message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to edit (ID string or Message object).
             content: The new content.
+            channel: The channel containing the message (required if message is a string).
             **kwargs: Additional options.
 
         Returns:
             The mock edited message.
         """
-        message = DiscordMessage(
+        # Resolve message and channel IDs
+        if isinstance(message, Message):
+            message_id = message.id
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
+
+        edited_msg = DiscordMessage(
             id=message_id,
             content=content,
             timestamp=datetime.now(timezone.utc),
@@ -504,20 +512,28 @@ class MockDiscordBackend(DiscordBackend):
             channel_id=channel_id,
             edited=True,
         )
-        self._edited_messages.append(message)
-        return message
+        self._edited_messages.append(edited_msg)
+        return edited_msg
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete a mock message.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to delete (ID string or Message object).
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, Message):
+            message_id = message.id
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
+
         self._deleted_messages.append(message_id)
         # Remove from mock messages if present
         if channel_id in self._mock_messages:
@@ -621,17 +637,25 @@ class MockDiscordBackend(DiscordBackend):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a mock reaction.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to react to (ID string or Message object).
             emoji: The emoji to add.
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, Message):
+            message_id = message.id
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
+
         self._reactions.append(
             {
                 "channel_id": channel_id,
@@ -643,17 +667,25 @@ class MockDiscordBackend(DiscordBackend):
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a mock reaction.
 
         Args:
-            channel_id: The channel containing the message.
-            message_id: The message ID.
+            message: The message to remove reaction from (ID string or Message object).
             emoji: The emoji to remove.
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, Message):
+            message_id = message.id
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
+
         self._reactions.append(
             {
                 "channel_id": channel_id,

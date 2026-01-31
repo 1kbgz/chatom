@@ -417,22 +417,30 @@ class MockSymphonyBackend(BackendBase):
 
     async def edit_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         content: str,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a mock message.
 
         Args:
-            channel_id: The stream ID.
-            message_id: The message ID.
+            message: The message to edit (ID string or Message object).
             content: The new content.
+            channel: The channel containing the message (required if message is a string).
             **kwargs: Additional options.
 
         Returns:
             The edited message.
         """
+        # Resolve message and channel IDs
+        if isinstance(message, Message):
+            message_id = message.id
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
+
         timestamp = datetime.now(timezone.utc)
 
         # Track edit
@@ -462,15 +470,23 @@ class MockSymphonyBackend(BackendBase):
 
     async def delete_message(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete (suppress) a mock message.
 
         Args:
-            channel_id: The stream ID.
-            message_id: The message ID.
+            message: The message to delete (ID string or Message object).
+            channel: The channel containing the message (required if message is a string).
         """
+        # Resolve message and channel IDs
+        if isinstance(message, Message):
+            message_id = message.id
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
+        else:
+            message_id = message
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
+
         self.deleted_messages.append(message_id)
 
         # Remove from mock messages
@@ -629,9 +645,9 @@ class MockSymphonyBackend(BackendBase):
 
     async def add_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a reaction.
 
@@ -644,9 +660,9 @@ class MockSymphonyBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        channel_id: str,
-        message_id: str,
+        message: Union[str, Message],
         emoji: str,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a reaction.
 
