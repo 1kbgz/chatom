@@ -579,7 +579,7 @@ class SlackBackend(BackendBase):
         self._ensure_connected()
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         response = await self._async_client.chat_update(
             channel=channel_id,
@@ -611,7 +611,7 @@ class SlackBackend(BackendBase):
         self._ensure_connected()
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         response = await self._async_client.chat_delete(
             channel=channel_id,
@@ -782,7 +782,7 @@ class SlackBackend(BackendBase):
         self._ensure_connected()
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         # Remove colons if present
         emoji = emoji.strip(":")
@@ -817,7 +817,7 @@ class SlackBackend(BackendBase):
         self._ensure_connected()
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         # Remove colons if present
         emoji = emoji.strip(":")

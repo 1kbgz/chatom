@@ -88,11 +88,11 @@ class TestMockSlackBackend:
         msg_id = backend.add_mock_message("C123", "U456", "React to me")
 
         # Add reaction
-        await backend.add_reaction("C123", msg_id, "thumbsup")
+        await backend.add_reaction(message=msg_id, emoji="thumbsup", channel="C123")
         assert len(backend.added_reactions) == 1
 
         # Remove reaction
-        await backend.remove_reaction("C123", msg_id, "thumbsup")
+        await backend.remove_reaction(message=msg_id, emoji="thumbsup", channel="C123")
         assert len(backend.removed_reactions) == 1
 
     @pytest.mark.asyncio
@@ -179,7 +179,7 @@ class TestMockDiscordBackend:
         # Send a message
         msg = await backend.send_message("C123", "Original")
         # Edit it
-        edited = await backend.edit_message("C123", msg.id, "Edited")
+        edited = await backend.edit_message(message=msg.id, content="Edited", channel="C123")
 
         assert edited.content == "Edited"
         assert len(backend.edited_messages) == 1
@@ -190,7 +190,7 @@ class TestMockDiscordBackend:
         await backend.connect()
         msg_id = backend.add_mock_message("C123", "U123", "Delete me")
 
-        await backend.delete_message("C123", msg_id)
+        await backend.delete_message(message=msg_id, channel="C123")
         assert msg_id in backend.deleted_messages
 
 
@@ -257,7 +257,7 @@ class TestMockSymphonyBackend:
         backend.add_mock_stream("stream123", "Test Room")
 
         msg = await backend.send_message("stream123", "<messageML>Original</messageML>")
-        edited = await backend.edit_message("stream123", msg.id, "<messageML>Edited</messageML>")
+        edited = await backend.edit_message(message=msg.id, content="<messageML>Edited</messageML>", channel="stream123")
 
         assert "Edited" in edited.content
         assert len(backend.edited_messages) == 1
@@ -268,7 +268,7 @@ class TestMockSymphonyBackend:
         await backend.connect()
         msg_id = backend.add_mock_message("stream123", 123456, "<messageML>Delete me</messageML>")
 
-        await backend.delete_message("stream123", msg_id)
+        await backend.delete_message(message=msg_id, channel="stream123")
         assert msg_id in backend.deleted_messages
 
     @pytest.mark.asyncio
@@ -288,7 +288,7 @@ class TestMockSymphonyBackend:
         await backend.connect()
 
         with pytest.raises(NotImplementedError):
-            await backend.add_reaction("stream123", "msg123", "👍")
+            await backend.add_reaction(message="msg123", emoji="👍", channel="stream123")
 
     @pytest.mark.asyncio
     async def test_create_im(self, backend):
@@ -838,7 +838,7 @@ class TestMockDiscordAdvanced:
         discord_backend.add_mock_channel("C123", "general")
 
         msg = await discord_backend.send_message("C123", "Original")
-        await discord_backend.edit_message("C123", msg.id, "Edited")
+        await discord_backend.edit_message(message=msg.id, content="Edited", channel="C123")
 
         edited = discord_backend.edited_messages
         assert len(edited) == 1
@@ -914,8 +914,8 @@ class TestMockSlackAdvanced:
         slack_backend.add_mock_channel("C123", "general")
 
         msg_id = slack_backend.add_mock_message("C123", "U456", "React to me")
-        await slack_backend.add_reaction("C123", msg_id, "thumbsup")
-        await slack_backend.add_reaction("C123", msg_id, "heart")
+        await slack_backend.add_reaction(message=msg_id, emoji="thumbsup", channel="C123")
+        await slack_backend.add_reaction(message=msg_id, emoji="heart", channel="C123")
 
         reactions = slack_backend.added_reactions
         assert len(reactions) == 2
@@ -1014,7 +1014,7 @@ class TestMockDiscordBackendAdvanced:
         backend.add_mock_channel("123", "general")
         # add_mock_message takes (channel_id, user_id, content) positionally
         backend.add_mock_message("123", "user1", "Original", message_id="msg1")
-        await backend.edit_message("123", "msg1", "Edited")
+        await backend.edit_message(message="msg1", content="Edited", channel="123")
 
         edited = backend.get_edited_messages()
         assert len(edited) == 1
@@ -1024,7 +1024,7 @@ class TestMockDiscordBackendAdvanced:
         """Test get_deleted_messages method."""
         await backend.connect()
         backend.add_mock_channel("123", "general")
-        await backend.delete_message("123", "msg1")
+        await backend.delete_message(message="msg1", channel="123")
 
         deleted = backend.get_deleted_messages()
         assert len(deleted) == 1
@@ -1036,7 +1036,7 @@ class TestMockDiscordBackendAdvanced:
         """Test get_reactions method."""
         await backend.connect()
         backend.add_mock_channel("123", "general")
-        await backend.add_reaction("123", "msg1", "👍")
+        await backend.add_reaction(message="msg1", emoji="👍", channel="123")
 
         reactions = backend.get_reactions()
         assert len(reactions) == 1
@@ -1205,7 +1205,7 @@ class TestMockSlackBackendAdvanced:
         """Test get_deleted_messages method."""
         await backend.connect()
         backend.add_mock_channel("C123", "general")
-        await backend.delete_message("C123", "msg_1")
+        await backend.delete_message(message="msg_1", channel="C123")
 
         deleted = backend.get_deleted_messages()
         assert len(deleted) == 1
@@ -1215,7 +1215,7 @@ class TestMockSlackBackendAdvanced:
         """Test added_reactions property."""
         await backend.connect()
         backend.add_mock_channel("C123", "general")
-        await backend.add_reaction("C123", "msg_1", "thumbsup")
+        await backend.add_reaction(message="msg_1", emoji="thumbsup", channel="C123")
 
         reactions = backend.added_reactions
         assert len(reactions) == 1
@@ -1248,8 +1248,8 @@ class TestMockSlackBackendExtended:
         msg_id = backend.add_mock_message("C123", "U456", "Hello")
 
         # Add reactions
-        await backend.add_reaction("C123", msg_id, "thumbsup")
-        await backend.add_reaction("C123", msg_id, "heart")
+        await backend.add_reaction(message=msg_id, emoji="thumbsup", channel="C123")
+        await backend.add_reaction(message=msg_id, emoji="heart", channel="C123")
 
         reactions = backend.get_reactions("C123", msg_id)
         assert "thumbsup" in reactions
@@ -1287,7 +1287,7 @@ class TestMockSlackBackendExtended:
         msg_id = backend.add_mock_message("C123", "U456", "Original text")
 
         # Edit the message
-        edited = await backend.edit_message("C123", msg_id, "Updated text")
+        edited = await backend.edit_message(message=msg_id, content="Updated text", channel="C123")
         assert edited.content == "Updated text"
         assert edited.is_edited is True
 
@@ -1298,7 +1298,7 @@ class TestMockSlackBackendExtended:
         backend.add_mock_channel("C123", "general")
 
         with pytest.raises(RuntimeError, match="not found"):
-            await backend.edit_message("C123", "nonexistent", "New text")
+            await backend.edit_message(message="nonexistent", content="New text", channel="C123")
 
     @pytest.mark.asyncio
     async def test_fetch_user_not_found(self, backend):
@@ -1345,7 +1345,7 @@ class TestMockSymphonyBackendExtended:
         backend.add_mock_stream("stream123", "Test Room")
         msg_id = backend.add_mock_message("stream123", 456, "Original text")
 
-        edited = await backend.edit_message("stream123", msg_id, "Updated text")
+        edited = await backend.edit_message(message=msg_id, content="Updated text", channel="stream123")
         assert edited.content == "Updated text"
 
     @pytest.mark.asyncio
@@ -1524,8 +1524,8 @@ class TestMockSymphonyBackendCoverage:
 
         # Add tracking data
         await backend.send_message("stream123", "<messageML>Sent</messageML>")
-        await backend.edit_message("stream123", "msg1", "<messageML>Edited</messageML>")
-        await backend.delete_message("stream123", "msg2")
+        await backend.edit_message(message="msg1", content="<messageML>Edited</messageML>", channel="stream123")
+        await backend.delete_message(message="msg2", channel="stream123")
         await backend.set_presence("away")
         await backend.create_im(["123", "456"])
         await backend.create_room("New Room")
@@ -1591,9 +1591,9 @@ class TestDiscordCoverageImprovements:
 
         # Add tracking data
         await discord_backend.send_message("456", "Sent message")
-        await discord_backend.edit_message("456", "msg1", "Edited")
-        await discord_backend.delete_message("456", "msg1")
-        await discord_backend.add_reaction("456", "msg1", "👍")
+        await discord_backend.edit_message(message="msg1", content="Edited", channel="456")
+        await discord_backend.delete_message(message="msg1", channel="456")
+        await discord_backend.add_reaction(message="msg1", emoji="👍", channel="456")
 
         # Verify data exists
         assert len(discord_backend._mock_users) > 0
@@ -1653,8 +1653,8 @@ class TestDiscordCoverageImprovements:
         discord_backend.add_mock_channel("123", "general")
 
         # Add and remove reaction
-        await discord_backend.add_reaction("123", "msg1", "👍")
-        await discord_backend.remove_reaction("123", "msg1", "👍")
+        await discord_backend.add_reaction(message="msg1", emoji="👍", channel="123")
+        await discord_backend.remove_reaction(message="msg1", emoji="👍", channel="123")
 
         reactions = discord_backend.get_reactions()
         assert len(reactions) == 2
@@ -2320,3 +2320,157 @@ class TestForwardingCapability:
         from chatom.base import SYMPHONY_CAPABILITIES, Capability
 
         assert Capability.FORWARDING in SYMPHONY_CAPABILITIES.capabilities
+
+
+class TestResolveMessageIdRegressions:
+    """Regression tests for _resolve_message_id tuple unpacking.
+
+    These tests verify that the channel_id and message_id are correctly
+    resolved and used in the right order for reactions, edits, and deletes.
+    """
+
+    @pytest.fixture
+    def slack_backend(self):
+        """Create a mock Slack backend."""
+        from chatom.slack import MockSlackBackend, SlackConfig
+
+        config = SlackConfig(bot_token="xoxb-test")
+        return MockSlackBackend(config=config)
+
+    @pytest.fixture
+    def discord_backend(self):
+        """Create a mock Discord backend."""
+        from chatom.discord import DiscordConfig, MockDiscordBackend
+
+        config = DiscordConfig(bot_token="discord-test")
+        return MockDiscordBackend(config=config)
+
+    @pytest.mark.asyncio
+    async def test_slack_add_reaction_with_message_object(self, slack_backend):
+        """Test add_reaction correctly extracts IDs from a Message object."""
+        from chatom.slack import SlackChannel, SlackMessage
+
+        await slack_backend.connect()
+        slack_backend.add_mock_channel("C123", "general")
+
+        # Create a message object with channel info
+        msg = SlackMessage(
+            id="1234567890.123456",
+            content="Test",
+            channel=SlackChannel(id="C123", name="general"),
+            channel_id="C123",
+        )
+
+        # This should correctly extract channel_id and message_id
+        await slack_backend.add_reaction(message=msg, emoji="thumbsup")
+
+        assert len(slack_backend.added_reactions) == 1
+        channel_id, message_id, emoji = slack_backend.added_reactions[0]
+        assert channel_id == "C123"
+        assert message_id == "1234567890.123456"
+        assert emoji == "thumbsup"
+
+    @pytest.mark.asyncio
+    async def test_slack_add_reaction_with_string_ids(self, slack_backend):
+        """Test add_reaction with string IDs uses keyword args correctly."""
+        await slack_backend.connect()
+        slack_backend.add_mock_channel("C456", "random")
+
+        await slack_backend.add_reaction(
+            message="9876543210.654321",
+            emoji="heart",
+            channel="C456",
+        )
+
+        assert len(slack_backend.added_reactions) == 1
+        channel_id, message_id, emoji = slack_backend.added_reactions[0]
+        assert channel_id == "C456"
+        assert message_id == "9876543210.654321"
+        assert emoji == "heart"
+
+    @pytest.mark.asyncio
+    async def test_discord_add_reaction_with_message_object(self, discord_backend):
+        """Test Discord add_reaction correctly extracts IDs from a Message object."""
+        from chatom.discord import DiscordChannel, DiscordMessage
+
+        await discord_backend.connect()
+        discord_backend.add_mock_channel("123456789", "general")
+
+        msg = DiscordMessage(
+            id="987654321",
+            content="Test",
+            channel=DiscordChannel(id="123456789", name="general"),
+            channel_id="123456789",
+        )
+
+        await discord_backend.add_reaction(message=msg, emoji="👍")
+
+        reactions = discord_backend.get_reactions()
+        assert len(reactions) == 1
+        assert reactions[0]["channel_id"] == "123456789"
+        assert reactions[0]["message_id"] == "987654321"
+        assert reactions[0]["emoji"] == "👍"
+
+    @pytest.mark.asyncio
+    async def test_discord_add_reaction_with_string_ids(self, discord_backend):
+        """Test Discord add_reaction with string IDs uses keyword args correctly."""
+        await discord_backend.connect()
+        discord_backend.add_mock_channel("111222333", "random")
+
+        await discord_backend.add_reaction(
+            message="444555666",
+            emoji="🎉",
+            channel="111222333",
+        )
+
+        reactions = discord_backend.get_reactions()
+        assert len(reactions) == 1
+        assert reactions[0]["channel_id"] == "111222333"
+        assert reactions[0]["message_id"] == "444555666"
+        assert reactions[0]["emoji"] == "🎉"
+
+    @pytest.mark.asyncio
+    async def test_slack_remove_reaction_correct_order(self, slack_backend):
+        """Test remove_reaction uses correct channel/message order."""
+        await slack_backend.connect()
+        slack_backend.add_mock_channel("C789", "test")
+
+        await slack_backend.remove_reaction(
+            message="1111111111.111111",
+            emoji="wave",
+            channel="C789",
+        )
+
+        assert len(slack_backend.removed_reactions) == 1
+        channel_id, message_id, emoji = slack_backend.removed_reactions[0]
+        assert channel_id == "C789"
+        assert message_id == "1111111111.111111"
+        assert emoji == "wave"
+
+    @pytest.mark.asyncio
+    async def test_slack_edit_message_correct_order(self, slack_backend):
+        """Test edit_message uses correct channel/message order."""
+        await slack_backend.connect()
+        slack_backend.add_mock_channel("C999", "edits")
+        msg_id = slack_backend.add_mock_message("C999", "U123", "Original")
+
+        edited = await slack_backend.edit_message(
+            message=msg_id,
+            content="Edited content",
+            channel="C999",
+        )
+
+        assert edited.content == "Edited content"
+
+    @pytest.mark.asyncio
+    async def test_slack_delete_message_correct_order(self, slack_backend):
+        """Test delete_message uses correct channel/message order."""
+        await slack_backend.connect()
+        slack_backend.add_mock_channel("C888", "deletes")
+        msg_id = slack_backend.add_mock_message("C888", "U123", "To delete")
+
+        await slack_backend.delete_message(message=msg_id, channel="C888")
+
+        deleted = slack_backend.get_deleted_messages()
+        assert len(deleted) == 1
+        assert deleted[0] == ("C888", msg_id)

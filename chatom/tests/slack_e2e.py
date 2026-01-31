@@ -303,7 +303,7 @@ class SlackE2ETest:
             # Add reactions (Slack uses emoji names without colons)
             reactions = ["thumbsup", "thumbsdown", "tada", "heart"]
             for emoji in reactions:
-                await self.backend.add_reaction(self.channel_id, message_ts, emoji)
+                await self.backend.add_reaction(message_ts, emoji, self.channel_id)
                 print(f"  Added reaction: :{emoji}:")
                 await asyncio.sleep(0.5)  # Rate limit
 
@@ -311,7 +311,7 @@ class SlackE2ETest:
 
             # Wait a moment then remove one
             await asyncio.sleep(2)
-            await self.backend.remove_reaction(self.channel_id, message_ts, "thumbsdown")
+            await self.backend.remove_reaction(message_ts, "thumbsdown", self.channel_id)
             self.log("Removed :thumbsdown: reaction")
 
         except Exception as e:
@@ -457,7 +457,7 @@ class SlackE2ETest:
             # Test DM creation with the test user
             if self.user_id:
                 print(f"  Creating DM with user {self.user_id}...")
-                dm_channel = await self.backend.create_dm(self.user_id)
+                dm_channel = await self.backend.create_dm([self.user_id])
                 if dm_channel:
                     self.log(f"Created DM channel: {dm_channel}")
 

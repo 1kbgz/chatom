@@ -640,7 +640,7 @@ class SymphonyBackend(BackendBase):
             raise RuntimeError("Symphony not connected")
 
         # Resolve message and channel IDs
-        message_id, channel_id = await self._resolve_message_id(message, channel)
+        channel_id, message_id = await self._resolve_message_id(message, channel)
 
         try:
             message_service = self._bdk.messages()
