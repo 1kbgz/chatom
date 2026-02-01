@@ -1,363 +1,333 @@
 # Base Models
 
-chatom provides a set of base models that represent common concepts across all chat platforms.
+Chatom provides type-safe models for all chat concepts. These models are platform-agnostic and can be converted to/from backend-specific formats.
 
-## Core Entities
+## User
 
-### User
-
-The `User` class represents a user on a chat platform.
+The `User` model represents a chat platform user.
 
 ```python
 from chatom import User
 
+# Create a user with various identifiers
 user = User(
-    id="u123",
+    id="U123456",
     name="Alice Smith",
-    handle="alice",
+    handle="alice.smith",
     email="alice@example.com",
     avatar_url="https://example.com/avatar.png",
-    is_bot=False,
 )
 
-# Properties
-user.display_name  # Returns name, handle, or id (in order of preference)
-user.mention_name  # Returns handle or name
+# Access computed properties
+print(user.display_name)  # "Alice Smith"
+print(user.mention_name)  # "alice.smith"
 ```
 
-**Attributes:**
+### User Properties
 
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `id` | `str` | required | Platform-specific unique identifier |
-| `name` | `str` | `""` | Display name of the user |
-| `handle` | `str` | `""` | Username or handle (e.g., @username) |
-| `email` | `str` | `""` | Email address, if available |
-| `avatar_url` | `str` | `""` | URL to avatar image |
-| `is_bot` | `bool` | `False` | Whether the user is a bot |
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `str` | Unique identifier |
+| `name` | `str` | Display name |
+| `handle` | `str` | Username/handle |
+| `email` | `str` | Email address |
+| `avatar_url` | `str` | Profile picture URL |
+| `is_bot` | `bool` | Whether user is a bot |
+| `metadata` | `dict` | Platform-specific data |
 
-### Channel
+### Incomplete Users
 
-The `Channel` class represents a chat channel or room.
+Users from message events may be incomplete (only have ID):
 
 ```python
-from chatom import Channel
+# User from a message event - only has ID
+incomplete_user = User(id="U123456", is_incomplete=True)
 
+# Resolve to get full details
+full_user = await backend.resolve_user(incomplete_user)
+print(full_user.name)  # Now populated
+```
+
+## Channel
+
+The `Channel` model represents a channel, room, or conversation.
+
+```python
+from chatom import Channel, ChannelType
+
+# Public channel
 channel = Channel(
-    id="c456",
+    id="C123456",
     name="general",
     topic="General discussion",
-    description="A place for general chat",
-    is_private=False,
+    channel_type=ChannelType.PUBLIC,
+)
+
+# Direct message
+dm = Channel(
+    id="D789",
+    channel_type=ChannelType.DM,
+    members=["U123", "U456"],
+)
+
+# Group DM
+group_dm = Channel(
+    id="G789",
+    name="Project Team",
+    channel_type=ChannelType.GROUP_DM,
+    members=["U123", "U456", "U789"],
 )
 ```
 
-**Attributes:**
+### Channel Types
 
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `id` | `str` | required | Platform-specific unique identifier |
-| `name` | `str` | `""` | Channel name |
-| `topic` | `str` | `""` | Channel topic |
-| `description` | `str` | `""` | Channel description |
-| `channel_type` | `str` | `""` | Platform-specific channel type |
-| `is_private` | `bool` | `False` | Whether the channel is private |
+| Type | Description |
+|------|-------------|
+| `ChannelType.PUBLIC` | Public channel visible to all |
+| `ChannelType.PRIVATE` | Private channel (invite only) |
+| `ChannelType.DM` | Direct message between two users |
+| `ChannelType.GROUP_DM` | Group direct message |
 
-### Thread
+### Channel Properties
 
-The `Thread` class represents a thread within a channel.
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `str` | Unique identifier |
+| `name` | `str` | Channel name |
+| `topic` | `str` | Channel topic/description |
+| `channel_type` | `ChannelType` | Type of channel |
+| `members` | `List[str]` | Member user IDs |
+| `organization_id` | `str` | Parent org/guild ID |
+| `metadata` | `dict` | Platform-specific data |
 
-```python
-from chatom import Thread, Channel
+## Message
 
-parent_channel = Channel(id="c1", name="general")
-
-thread = Thread(
-    id="t789",
-    name="Discussion about X",
-    parent_channel=parent_channel,
-    parent_message_id="m123",
-)
-```
-
-### Message
-
-The `Message` class represents a chat message.
+The `Message` model represents a chat message.
 
 ```python
-from chatom import Message, User, Channel
+from chatom import Message, MessageType, User, Channel
+from datetime import datetime
 
+# Create a message
 message = Message(
-    id="m123",
+    id="M123456",
     content="Hello, world!",
-    author=User(id="u1", name="Alice"),
-    author_id="u1",
-    channel=Channel(id="c1", name="general"),
-    channel_id="c1",
+    author=User(id="U123", name="Alice"),
+    channel=Channel(id="C456", name="general"),
     created_at=datetime.now(),
-    is_edited=False,
-    backend="slack",
+    message_type=MessageType.DEFAULT,
+)
+
+# Message with thread
+reply = Message(
+    id="M789",
+    content="Great message!",
+    author=User(id="U456", name="Bob"),
+    channel_id="C456",
+    thread_id="M123456",  # Parent message ID
+    reply_to_id="M123456",
 )
 ```
 
-**Core Attributes:**
+### Message Properties
 
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `id` | `str` | required | Unique message identifier |
-| `content` | `str` | `""` | Message text content |
-| `formatted_content` | `str` | `""` | Rich/formatted content (HTML, MessageML, etc.) |
-| `author` | `User` | `None` | Message author |
-| `author_id` | `str` | `""` | ID of the message author |
-| `channel` | `Channel` | `None` | Channel the message was sent in |
-| `channel_id` | `str` | `""` | ID of the channel |
-| `thread` | `Thread` | `None` | Thread, if in a thread |
-| `thread_id` | `str` | `""` | ID of the thread |
-| `created_at` | `datetime` | `None` | When the message was created |
-| `edited_at` | `datetime` | `None` | When the message was edited |
-| `is_edited` | `bool` | `False` | Whether the message was edited |
-| `is_pinned` | `bool` | `False` | Whether the message is pinned |
-| `is_bot` | `bool` | `False` | Whether sent by a bot |
-| `is_system` | `bool` | `False` | Whether it's a system message |
-| `message_type` | `MessageType` | `DEFAULT` | Message type enum |
-| `backend` | `str` | `""` | The backend this message originated from |
-| `raw` | `Any` | `None` | Raw message data from the backend |
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `str` | Unique identifier |
+| `content` | `str` | Message text content |
+| `author` | `User` | Message author |
+| `author_id` | `str` | Author user ID |
+| `channel` | `Channel` | Channel/room |
+| `channel_id` | `str` | Channel ID |
+| `created_at` | `datetime` | When created |
+| `edited_at` | `datetime` | When last edited |
+| `thread_id` | `str` | Parent thread ID |
+| `reply_to_id` | `str` | Message being replied to |
+| `reactions` | `List[Reaction]` | Emoji reactions |
+| `attachments` | `List[Attachment]` | File attachments |
+| `embeds` | `List[Embed]` | Rich embeds |
+| `metadata` | `dict` | Platform-specific data |
 
-**Mention and Reply Attributes:**
-
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `mentions` | `list[User]` | `[]` | Users mentioned in the message |
-| `mention_ids` | `list[str]` | `[]` | IDs of mentioned users |
-| `reference` | `MessageReference` | `None` | Reference to replied message |
-| `reply_to` | `Message` | `None` | Parent message if a reply |
-| `reply_to_id` | `str` | `""` | ID of the replied-to message |
-
-**Content Attributes:**
-
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `attachments` | `list[Attachment]` | `[]` | File attachments |
-| `embeds` | `list[Embed]` | `[]` | Rich embeds |
-| `reactions` | `list[Reaction]` | `[]` | Message reactions |
-| `metadata` | `dict` | `{}` | Platform-specific metadata |
-
-#### Message Conversion
-
-Messages can be converted to and from `FormattedMessage` for cross-platform rendering:
+### Message Types
 
 ```python
-from chatom import Message
-from chatom.format import FormattedMessage, MessageBuilder, Format
+from chatom import MessageType
 
-# Create a message and convert to FormattedMessage
-msg = Message(
-    id="m1",
-    content="Hello **world**",
-    author_id="u1",
-    channel_id="c1",
-    backend="discord",
+# Standard message
+MessageType.DEFAULT
+
+# System/notification messages
+MessageType.SYSTEM
+
+# Join/leave notifications
+MessageType.JOIN
+MessageType.LEAVE
+
+# Pin notifications
+MessageType.PIN
+```
+
+### Detecting Mentions
+
+```python
+# Check who is mentioned in a message
+mentioned_user_ids = message.get_mentioned_user_ids()
+mentioned_channel_ids = message.get_mentioned_channel_ids()
+
+# Check if specific user is mentioned
+if message.mentions_user("U123456"):
+    print("User U123456 was mentioned!")
+```
+
+### Response Convenience Methods
+
+Messages have methods that construct new Message instances for responses:
+
+| Method | Description |
+|--------|-------------|
+| `as_reply(content)` | Create a reply message |
+| `as_thread_reply(content)` | Create a reply in the same thread |
+| `as_forward(channel)` | Create a forwarded message |
+| `as_quote_reply(content)` | Create a reply that quotes the original |
+| `reply_context()` | Get context dict for custom handling |
+
+```python
+# Create a reply message
+reply = message.as_reply("Thanks!")
+print(reply.reply_to is message)  # True
+print(reply.message_type)  # MessageType.REPLY
+
+# Create a forward to another channel
+forward = message.as_forward(log_channel)
+print(forward.forwarded_from is message)  # True
+```
+
+See [Messaging](messaging.md#response-convenience-methods) for full documentation.
+```
+
+## Reaction
+
+The `Reaction` model represents emoji reactions on messages.
+
+```python
+from chatom import Emoji, Reaction
+
+# Create an emoji
+emoji = Emoji(
+    name="thumbsup",
+    unicode="👍",
+    custom=False,
 )
-formatted = msg.to_formatted()
 
-# Render for different backends
-print(formatted.render(Format.SLACK_MARKDOWN))  # For Slack
-print(formatted.render(Format.HTML))            # For Matrix/Email
-
-# Create a message from a FormattedMessage
-fm = MessageBuilder().bold("Alert").text(": Check this out!").build()
-slack_msg = Message.from_formatted(fm, backend="slack")
-print(slack_msg.content)  # "*Alert*: Check this out!"
-
-# Render a message directly for another backend
-discord_msg = Message(content="Hello *everyone*", backend="slack")
-print(discord_msg.render_for("discord"))  # Renders for Discord format
-```
-
-#### Backend-Specific Messages
-
-Each backend has its own message class with additional platform-specific attributes:
-
-```python
-# Slack
-from chatom.slack import SlackMessage
-slack_msg = SlackMessage.from_api_response(api_data)
-formatted = slack_msg.to_formatted()
-
-# Discord
-from chatom.discord import DiscordMessage
-discord_msg = DiscordMessage.from_api_response(api_data)
-formatted = discord_msg.to_formatted()
-
-# Symphony
-from chatom.symphony import SymphonyMessage
-symphony_msg = SymphonyMessage.from_api_response(api_data)
-formatted = symphony_msg.to_formatted()
-
-# Matrix
-from chatom.matrix import MatrixMessage
-matrix_msg = MatrixMessage.from_event(event_data)
-formatted = matrix_msg.to_formatted()
-
-# IRC
-from chatom.irc import IRCMessage
-irc_msg = IRCMessage.from_raw(":nick!user@host PRIVMSG #channel :Hello!")
-formatted = irc_msg.to_formatted()
-
-# Email
-from chatom.email import EmailMessage
-email_msg = EmailMessage.from_email_message(email.message.Message())
-formatted = email_msg.to_formatted()
-```
-
-## Attachments and Media
-
-### Attachment
-
-```python
-from chatom import Attachment
-
-attachment = Attachment(
-    id="a123",
-    filename="document.pdf",
-    url="https://example.com/document.pdf",
-    size=1024000,
-    content_type="application/pdf",
-)
-```
-
-### Embed
-
-Rich embeds for displaying formatted content:
-
-```python
-from chatom import Embed, EmbedField
-
-embed = Embed(
-    title="Article Title",
-    description="A brief description",
-    url="https://example.com/article",
-    color=0x5865F2,
-    author_name="John Doe",
-    author_url="https://example.com/john",
-    thumbnail_url="https://example.com/thumb.png",
-    image_url="https://example.com/image.png",
-    fields=[
-        EmbedField(name="Field 1", value="Value 1", inline=True),
-        EmbedField(name="Field 2", value="Value 2", inline=True),
-    ],
-    footer_text="Footer text",
-)
-```
-
-## Reactions and Emoji
-
-### Emoji
-
-```python
-from chatom import Emoji
-
-# Standard Unicode emoji
-emoji = Emoji(name="thumbsup", unicode="👍")
-
-# Custom emoji
-custom = Emoji(
-    id="123456",
-    name="custom_emoji",
-    animated=True,
-)
-```
-
-### Reaction
-
-```python
-from chatom import Emoji, Reaction, User
-
-emoji = Emoji(name="heart", unicode="❤️")
+# Create a reaction
 reaction = Reaction(
     emoji=emoji,
-    count=10,
-    users=[User(id="u1", name="Alice")],
-    me=False,  # Whether the current user reacted
+    count=5,
+    users=["U123", "U456", "U789"],
 )
 ```
 
-## Presence and Status
+### Emoji Properties
 
-### Presence
+| Property | Type | Description |
+|----------|------|-------------|
+| `name` | `str` | Emoji name (e.g., "thumbsup") |
+| `unicode` | `str` | Unicode character |
+| `custom` | `bool` | Whether custom emoji |
+| `id` | `str` | Custom emoji ID |
+
+## Organization
+
+The `Organization` model represents a workspace, guild, or pod.
 
 ```python
-from chatom import Presence, PresenceStatus
+from chatom import Organization
 
-presence = Presence(
-    status=PresenceStatus.ONLINE,
-    status_text="Working on chatom",
-    activity="Coding",
+org = Organization(
+    id="T123456",
+    name="My Company",
+    domain="mycompany.slack.com",
 )
-
-# Check availability
-presence.is_available  # True for ONLINE or IDLE
-presence.is_online     # True only for ONLINE
 ```
 
-**Status Values:**
+### Organization Properties
 
-| Status | Description |
-|--------|-------------|
-| `ONLINE` | User is online and active |
-| `IDLE` | User is online but idle |
-| `DND` | Do not disturb |
-| `OFFLINE` | User is offline |
-| `INVISIBLE` | User appears offline |
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | `str` | Unique identifier |
+| `name` | `str` | Organization name |
+| `domain` | `str` | Domain/URL |
+| `icon_url` | `str` | Organization icon |
+| `metadata` | `dict` | Platform-specific data |
 
-## Capabilities
+## Attachment
 
-Check what features a backend supports:
+The `Attachment` model represents file attachments.
 
 ```python
-from chatom import Capability, Capabilities
+from chatom import Attachment, AttachmentType
 
-caps = Capabilities(
-    capabilities={
-        Capability.THREADS,
-        Capability.EMOJI_REACTIONS,
-        Capability.FILE_ATTACHMENTS,
-    }
+attachment = Attachment(
+    id="F123",
+    filename="report.pdf",
+    url="https://example.com/files/report.pdf",
+    attachment_type=AttachmentType.FILE,
+    size=1024000,
+    mime_type="application/pdf",
 )
-
-# Check single capability
-caps.supports(Capability.THREADS)  # True
-
-# Check multiple capabilities
-caps.supports_all(Capability.THREADS, Capability.EMOJI_REACTIONS)  # True
-caps.supports_any(Capability.VOICE_CHAT, Capability.THREADS)  # True
 ```
 
-**Available Capabilities:**
+### Attachment Types
 
-| Capability | Description |
-|------------|-------------|
-| `THREADS` | Thread/reply support |
-| `EMOJI_REACTIONS` | Emoji reaction support |
-| `CUSTOM_EMOJI` | Custom emoji support |
-| `FILE_ATTACHMENTS` | File attachment support |
-| `EMBEDS` | Rich embed support |
-| `VOICE_CHAT` | Voice chat support |
-| `VIDEO_CHAT` | Video chat support |
-| `SCREEN_SHARE` | Screen sharing support |
-| `TYPING_INDICATORS` | Typing indicator support |
-| `READ_RECEIPTS` | Read receipt support |
-| `PRESENCE` | Presence/status support |
-| `DIRECT_MESSAGES` | Direct message support |
+| Type | Description |
+|------|-------------|
+| `AttachmentType.FILE` | Generic file |
+| `AttachmentType.IMAGE` | Image file |
+| `AttachmentType.VIDEO` | Video file |
+| `AttachmentType.AUDIO` | Audio file |
 
-### Predefined Capabilities
+## Embed
 
-chatom includes predefined capability sets for each backend:
+The `Embed` model represents rich embeds (cards, previews).
 
 ```python
-from chatom import (
-    DISCORD_CAPABILITIES,
-    SLACK_CAPABILITIES,
-    SYMPHONY_CAPABILITIES,
+from chatom import Embed, EmbedField, EmbedAuthor, EmbedFooter
+
+embed = Embed(
+    title="News Article",
+    description="This is the article summary...",
+    url="https://example.com/article",
+    color=0x3498db,
+    author=EmbedAuthor(name="John Doe"),
+    fields=[
+        EmbedField(name="Category", value="Technology", inline=True),
+        EmbedField(name="Date", value="2024-01-15", inline=True),
+    ],
+    footer=EmbedFooter(text="Published by Example News"),
 )
 ```
+
+## Model Conversion
+
+Convert between base models and backend-specific models:
+
+```python
+from chatom.base import promote, demote
+from chatom import User
+
+# Create a base user
+base_user = User(id="U123", name="Alice")
+
+# Promote to Slack-specific user
+from chatom.slack import SlackUser
+slack_user = promote(base_user, SlackUser)
+
+# Demote back to base user
+base_user_again = demote(slack_user)
+```
+
+## Next Steps
+
+- [Backends](backends.md) - Working with chat platforms
+- [Backend Configuration](backend-config.md) - Platform credentials
+- [Messaging](messaging.md) - Sending and receiving messages

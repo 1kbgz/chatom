@@ -1,225 +1,241 @@
 # Format System
 
-chatom provides a powerful format system for building rich text messages that can be rendered to multiple output formats.
+The format system provides a unified way to create rich text that renders correctly on each platform.
 
-## Output Formats
+## Overview
 
-The `Format` enum defines the available output formats:
+Each platform has its own markup syntax:
+- **Slack** uses `mrkdwn` (similar to Markdown with some differences)
+- **Discord** uses Discord-flavored Markdown
+- **Symphony** uses MessageML (XML-based)
+
+The format system lets you write once and render for any platform.
+
+## FormattedMessage
+
+The primary way to create formatted content:
 
 ```python
-from chatom import Format
+from chatom.format import FormattedMessage, Format
 
-# Available formats
-Format.PLAINTEXT          # Plain text with no formatting
-Format.MARKDOWN           # Standard Markdown
-Format.SLACK_MARKDOWN     # Slack's mrkdwn format
-Format.DISCORD_MARKDOWN   # Discord-flavored Markdown
-Format.HTML               # Standard HTML
-Format.SYMPHONY_MESSAGEML # Symphony's XML-based format
+msg = FormattedMessage()
+msg.bold("Important!")
+msg.text(" This is a message with ")
+msg.italic("formatting")
+msg.text(".")
+
+# Render for different platforms
+slack_content = msg.render(Format.SLACK_MARKDOWN)
+discord_content = msg.render(Format.DISCORD_MARKDOWN)
+symphony_content = msg.render(Format.SYMPHONY_MESSAGEML)
+
+# Or use the backend's format
+content = msg.render(backend.get_format())
 ```
 
-## Text Nodes
+## Available Formats
 
-Text nodes are the building blocks for formatted messages. Each node has a `render()` method that outputs the appropriate format.
+| Format | Constant | Used By |
+|--------|----------|---------|
+| Plain Text | `Format.PLAINTEXT` | Fallback |
+| Markdown | `Format.MARKDOWN` | Generic |
+| Slack mrkdwn | `Format.SLACK_MARKDOWN` | Slack |
+| Discord Markdown | `Format.DISCORD_MARKDOWN` | Discord |
+| Symphony MessageML | `Format.SYMPHONY_MESSAGEML` | Symphony |
+| HTML | `Format.HTML` | Web views |
 
-### Basic Text
+## Text Formatting
 
-```python
-from chatom import Text, Format
-
-text = Text(content="Hello, world!")
-print(text.render(Format.PLAINTEXT))  # "Hello, world!"
-print(text.render(Format.HTML))       # "Hello, world!" (escaped)
-```
-
-### Bold
-
-```python
-from chatom import Bold, Text, Format
-
-bold = Bold(child=Text(content="important"))
-print(bold.render(Format.MARKDOWN))       # "**important**"
-print(bold.render(Format.SLACK_MARKDOWN)) # "*important*"
-print(bold.render(Format.HTML))           # "<strong>important</strong>"
-```
-
-### Italic
+### Basic Styles
 
 ```python
-from chatom import Italic, Text, Format
+msg = FormattedMessage()
 
-italic = Italic(child=Text(content="emphasized"))
-print(italic.render(Format.MARKDOWN))       # "*emphasized*"
-print(italic.render(Format.SLACK_MARKDOWN)) # "_emphasized_"
-print(italic.render(Format.HTML))           # "<em>emphasized</em>"
-```
+# Bold
+msg.bold("Bold text")
 
-### Strikethrough
+# Italic
+msg.italic("Italic text")
 
-```python
-from chatom import Strikethrough, Text, Format
+# Strikethrough
+msg.strikethrough("Deleted text")
 
-strike = Strikethrough(child=Text(content="deleted"))
-print(strike.render(Format.MARKDOWN))       # "~~deleted~~"
-print(strike.render(Format.SLACK_MARKDOWN)) # "~deleted~"
-print(strike.render(Format.HTML))           # "<del>deleted</del>"
+# Underline (where supported)
+msg.underline("Underlined")
+
+# Combine styles
+msg.bold("Bold and ")
+msg.bold_italic("bold italic")
 ```
 
 ### Code
 
-Inline code:
-
 ```python
-from chatom import Code, Format
+msg = FormattedMessage()
 
-code = Code(content="print('hello')")
-print(code.render(Format.MARKDOWN))  # "`print('hello')`"
-print(code.render(Format.HTML))      # "<code>print('hello')</code>"
-```
+# Inline code
+msg.code("inline_code")
 
-Code blocks:
-
-```python
-from chatom import CodeBlock, Format
-
-block = CodeBlock(
-    content="def hello():\n    print('Hello!')",
-    language="python",
-)
-print(block.render(Format.MARKDOWN))
-# ```python
-# def hello():
-#     print('Hello!')
-# ```
+# Code block
+msg.code_block("""
+def hello():
+    print("Hello, World!")
+""", language="python")
 ```
 
 ### Links
 
 ```python
-from chatom import Link, Format
+msg = FormattedMessage()
 
-link = Link(url="https://example.com", text="Example")
-print(link.render(Format.MARKDOWN))  # "[Example](https://example.com)"
-print(link.render(Format.HTML))      # '<a href="https://example.com">Example</a>'
+# Simple link
+msg.link("https://example.com", "Click here")
+
+# Auto-link (URL as text)
+msg.link("https://example.com")
 ```
 
-### Quotes
-
-```python
-from chatom import Quote, Text, Format
-
-quote = Quote(child=Text(content="Famous quote here"))
-print(quote.render(Format.MARKDOWN))  # "> Famous quote here"
-print(quote.render(Format.HTML))      # "<blockquote>Famous quote here</blockquote>"
-```
+## Structure
 
 ### Headings
 
 ```python
-from chatom import Heading, Text, Format
+msg = FormattedMessage()
 
-h1 = Heading(level=1, child=Text(content="Title"))
-h2 = Heading(level=2, child=Text(content="Subtitle"))
-
-print(h1.render(Format.MARKDOWN))  # "# Title"
-print(h2.render(Format.MARKDOWN))  # "## Subtitle"
-print(h1.render(Format.HTML))      # "<h1>Title</h1>"
+msg.heading("Main Title", level=1)
+msg.heading("Section", level=2)
+msg.heading("Subsection", level=3)
 ```
 
-### Lists
-
-Unordered lists:
+### Paragraphs and Line Breaks
 
 ```python
-from chatom import UnorderedList, ListItem, Text, Format
+msg = FormattedMessage()
 
-ul = UnorderedList(items=[
-    ListItem(child=Text(content="First item")),
-    ListItem(child=Text(content="Second item")),
-    ListItem(child=Text(content="Third item")),
-])
-print(ul.render(Format.MARKDOWN))
-# - First item
-# - Second item
-# - Third item
+msg.paragraph("First paragraph.")
+msg.paragraph("Second paragraph.")
+
+# Or use explicit newlines
+msg.text("Line 1")
+msg.newline()
+msg.text("Line 2")
 ```
 
-Ordered lists:
+### Blockquotes
 
 ```python
-from chatom import OrderedList, ListItem, Text, Format
+msg = FormattedMessage()
 
-ol = OrderedList(items=[
-    ListItem(child=Text(content="Step one")),
-    ListItem(child=Text(content="Step two")),
-    ListItem(child=Text(content="Step three")),
-])
-print(ol.render(Format.MARKDOWN))
-# 1. Step one
-# 2. Step two
-# 3. Step three
+msg.quote("This is quoted text.")
+msg.quote("Multi-line quotes\nwork too.")
 ```
 
-### Paragraphs and Documents
+### Horizontal Rules
 
 ```python
-from chatom import Paragraph, Document, Text, Bold, Format
+msg = FormattedMessage()
 
-doc = Document(children=[
-    Paragraph(children=[
-        Text(content="First paragraph with "),
-        Bold(child=Text(content="bold")),
-        Text(content=" text."),
-    ]),
-    Paragraph(children=[
-        Text(content="Second paragraph."),
-    ]),
+msg.text("Above the line")
+msg.horizontal_rule()
+msg.text("Below the line")
+```
+
+## Lists
+
+### Unordered Lists
+
+```python
+msg = FormattedMessage()
+
+msg.unordered_list([
+    "First item",
+    "Second item",
+    "Third item",
 ])
+```
 
-print(doc.render(Format.MARKDOWN))
-print(doc.render(Format.HTML))
+### Ordered Lists
+
+```python
+msg = FormattedMessage()
+
+msg.ordered_list([
+    "Step one",
+    "Step two",
+    "Step three",
+])
+```
+
+### Nested Lists
+
+```python
+msg = FormattedMessage()
+
+msg.text("Features:")
+msg.unordered_list([
+    "Platform support",
+    "Rich formatting",
+    "Easy to use",
+])
 ```
 
 ## Tables
 
-Tables are a powerful feature for displaying structured data:
+Tables render appropriately for each platform:
 
 ```python
-from chatom import Table, TableRow, TableCell, Format
+from chatom.format import FormattedMessage, Table
 
-# Create manually
-headers = TableRow(cells=[
-    TableCell(content="Name"),
-    TableCell(content="Score"),
-])
-rows = [
-    TableRow(cells=[TableCell(content="Alice"), TableCell(content="100")]),
-    TableRow(cells=[TableCell(content="Bob"), TableCell(content="85")]),
-]
-table = Table(headers=headers, rows=rows)
+msg = FormattedMessage()
 
-# Or create from data
-data = [
-    ["Alice", "100"],
-    ["Bob", "85"],
-]
-table = Table.from_data(data, headers=["Name", "Score"])
+# Create a table
+table = Table.from_data(
+    headers=["Name", "Status", "Count"],
+    data=[
+        ["Server 1", "Online", "42"],
+        ["Server 2", "Offline", "0"],
+        ["Server 3", "Online", "128"],
+    ],
+    caption="Server Status",
+)
 
-# Render
-print(table.render(Format.MARKDOWN))
-# | Name | Score |
-# |---|---|
-# | Alice | 100 |
-# | Bob | 85 |
+msg.table(table)
+```
 
-print(table.render(Format.HTML))
-# <table>
-#   <thead><tr><th>Name</th><th>Score</th></tr></thead>
-#   <tbody>
-#     <tr><td>Alice</td><td>100</td></tr>
-#     <tr><td>Bob</td><td>85</td></tr>
-#   </tbody>
-# </table>
+### Table Alignment
+
+```python
+from chatom.format import Table, TableAlignment
+
+table = Table.from_data(
+    headers=["Left", "Center", "Right"],
+    data=[
+        ["text", "text", "123"],
+        ["more", "more", "456"],
+    ],
+    alignments=[
+        TableAlignment.LEFT,
+        TableAlignment.CENTER,
+        TableAlignment.RIGHT,
+    ],
+)
+```
+
+### Complex Tables
+
+```python
+from chatom.format import Table, TableRow, TableCell
+
+# Create with TableRow/TableCell for more control
+table = Table(
+    headers=TableRow.from_values(["Col A", "Col B"], is_header=True),
+    rows=[
+        TableRow.from_values(["Value 1", "Value 2"]),
+        TableRow(cells=[
+            TableCell(content="Spanning cell", colspan=2),
+        ]),
+    ],
+)
 ```
 
 ## Mentions
@@ -227,206 +243,144 @@ print(table.render(Format.HTML))
 ### User Mentions
 
 ```python
-from chatom import UserMention, Format
+from chatom.format import FormattedMessage
+from chatom import User
 
-mention = UserMention(user_id="123", display_name="Alice")
-print(mention.render(Format.PLAINTEXT))      # "@Alice"
-print(mention.render(Format.SLACK_MARKDOWN)) # "<@123>"
-print(mention.render(Format.DISCORD_MARKDOWN)) # "<@123>"
+msg = FormattedMessage()
+
+# Mention using User object (recommended)
+user = User(id="U123456", name="Alice")
+msg.mention(user)
+
+# Mention using ID only
+msg.user_mention("U123456")
 ```
 
 ### Channel Mentions
 
 ```python
-from chatom import ChannelMention, Format
+from chatom.format import FormattedMessage
+from chatom import Channel
 
-mention = ChannelMention(channel_id="456", channel_name="general")
-print(mention.render(Format.PLAINTEXT))      # "#general"
-print(mention.render(Format.SLACK_MARKDOWN)) # "<#456>"
+msg = FormattedMessage()
+
+# Mention using Channel object (recommended)
+channel = Channel(id="C123456", name="general")
+msg.channel_mention(channel)
 ```
 
-## FormattedMessage
+### Platform-Specific Mentions
 
-The `FormattedMessage` class wraps content nodes for easy rendering:
+Some platforms have special mentions:
 
 ```python
-from chatom import FormattedMessage, Paragraph, Text, Bold, Format
+# Slack
+from chatom.slack import mention_here, mention_channel_all, mention_everyone
 
-msg = FormattedMessage(
-    content=[
-        Paragraph(children=[
-            Text(content="Welcome to "),
-            Bold(child=Text(content="chatom")),
-            Text(content="!"),
-        ]),
-    ]
-)
+msg.text(mention_here())  # @here
+msg.text(mention_channel_all())  # @channel
+msg.text(mention_everyone())  # @everyone
 
-# Render to any format
-markdown = msg.render(Format.MARKDOWN)
-html = msg.render(Format.HTML)
-plaintext = msg.render(Format.PLAINTEXT)
+# Discord
+from chatom.discord import mention_everyone, mention_here, mention_role
+
+msg.text(mention_everyone())  # @everyone
+msg.text(mention_here())  # @here
+msg.text(mention_role("role_id"))  # @role
+```
+
+## Complete Example
+
+```python
+from chatom.format import FormattedMessage, Table, Format
+from chatom import User, Channel
+
+def create_status_report(users: list, channel: Channel) -> FormattedMessage:
+    msg = FormattedMessage()
+
+    # Header
+    msg.heading("📊 Daily Status Report", level=2)
+    msg.paragraph("Here's the summary for today:")
+    msg.newline()
+
+    # Status table
+    table = Table.from_data(
+        headers=["User", "Tasks", "Status"],
+        data=[
+            [u.name, str(u.metadata.get("tasks", 0)), "✅"]
+            for u in users
+        ],
+    )
+    msg.table(table)
+    msg.newline()
+
+    # Footer
+    msg.text("Posted to ")
+    msg.channel_mention(channel)
+    msg.text(" • ")
+    msg.italic("Updated hourly")
+
+    return msg
+
+# Use it
+report = create_status_report(users, channel)
+content = report.render(backend.get_format())
+await backend.send_message(channel_id=channel.id, content=content)
+```
+
+## Rendering for Specific Backends
+
+```python
+msg = FormattedMessage()
+msg.bold("Hello")
+
+# For Slack
+# Output: *Hello*
 slack = msg.render(Format.SLACK_MARKDOWN)
+
+# For Discord
+# Output: **Hello**
+discord = msg.render(Format.DISCORD_MARKDOWN)
+
+# For Symphony
+# Output: <b>Hello</b>
 symphony = msg.render(Format.SYMPHONY_MESSAGEML)
 
-# Render for a specific backend
-slack_output = msg.render_for("slack")
-discord_output = msg.render_for("discord")
+# Using backend
+content = msg.render(backend.get_format())
 ```
 
-## Message Conversion
+## Text Nodes (Advanced)
 
-Messages from any backend can be converted to and from `FormattedMessage`, enabling cross-platform message rendering.
-
-### Converting Messages to FormattedMessage
-
-All backend-specific message classes have a `to_formatted()` method:
+For complex formatting, use text nodes directly:
 
 ```python
-from chatom.slack import SlackMessage
-from chatom.discord import DiscordMessage
-from chatom.format import Format
-
-# Slack message
-slack_msg = SlackMessage(
-    ts="1234567890.123456",
-    channel="C12345",
-    text="Hello *bold* and _italic_",
-)
-formatted = slack_msg.to_formatted()
-
-# Now render for any other backend
-discord_output = formatted.render(Format.DISCORD_MARKDOWN)
-html_output = formatted.render(Format.HTML)
-symphony_output = formatted.render(Format.SYMPHONY_MESSAGEML)
-```
-
-### Creating Messages from FormattedMessage
-
-Use `from_formatted()` to create backend-specific messages:
-
-```python
-from chatom.format import MessageBuilder
-from chatom.slack import SlackMessage
-from chatom.discord import DiscordMessage
-from chatom.symphony import SymphonyMessage
-
-# Build a formatted message
-fm = (
-    MessageBuilder()
-    .bold("Alert")
-    .text(": Check out this ")
-    .link("link", "https://example.com")
-    .text("!")
-    .build()
+from chatom.format import (
+    Document, Paragraph, Bold, Italic, Code,
+    Link, UnorderedList, ListItem, text, bold, italic
 )
 
-# Create backend-specific messages
-slack_msg = SlackMessage.from_formatted(fm, channel="C12345")
-discord_msg = DiscordMessage.from_formatted(fm, channel_id="D12345")
-symphony_msg = SymphonyMessage.from_formatted(fm, stream_id="stream_xyz")
+# Create a document
+doc = Document(children=[
+    Paragraph(children=[
+        text("This is "),
+        bold("bold"),
+        text(" and "),
+        italic("italic"),
+        text("."),
+    ]),
+    UnorderedList(children=[
+        ListItem(children=[text("Item 1")]),
+        ListItem(children=[text("Item 2")]),
+    ]),
+])
 
-print(slack_msg.text)       # "*Alert*: Check out this <https://example.com|link>!"
-print(discord_msg.content)  # "**Alert**: Check out this [link](https://example.com)!"
-print(symphony_msg.message_ml)  # MessageML formatted
+# Render
+content = doc.render(Format.MARKDOWN)
 ```
 
-### Cross-Platform Message Conversion
+## Next Steps
 
-Convert a message from one platform to another:
-
-```python
-from chatom.slack import SlackMessage
-from chatom.discord import DiscordMessage
-
-# Incoming Slack message
-slack_msg = SlackMessage.from_api_response(slack_api_data)
-
-# Convert to FormattedMessage
-formatted = slack_msg.to_formatted()
-
-# Create Discord message
-discord_msg = DiscordMessage.from_formatted(
-    formatted,
-    channel_id="target_channel",
-)
-
-# The Discord message now has proper Discord formatting
-await discord_channel.send(discord_msg.content)
-```
-
-### Metadata Preservation
-
-When converting messages, metadata is preserved:
-
-```python
-from chatom.slack import SlackMessage
-
-slack_msg = SlackMessage(
-    ts="1234567890.123456",
-    channel="C12345",
-    user="U12345",
-    text="Hello!",
-    thread=Thread(id="1234567890.000000"),
-)
-
-formatted = slack_msg.to_formatted()
-
-# Metadata includes source information
-print(formatted.metadata["source_backend"])  # "slack"
-print(formatted.metadata["ts"])              # "1234567890.123456"
-print(formatted.metadata["author_id"])       # "U12345"
-print(formatted.metadata["thread_ts"])       # "1234567890.000000"
-```
-
-## MessageBuilder
-
-For a fluent API, use `MessageBuilder`:
-
-```python
-from chatom import MessageBuilder, Format
-
-msg = (
-    MessageBuilder()
-    .add_text("Hello, ")
-    .add_bold("world")
-    .add_text("!")
-    .build()
-)
-
-print(msg.render(Format.MARKDOWN))  # "Hello, **world**!"
-```
-
-## Utility Functions
-
-### render_message
-
-```python
-from chatom import render_message, FormattedMessage, Text, Format
-
-msg = FormattedMessage(content=[Text(content="Hello")])
-result = render_message(msg, Format.MARKDOWN)
-```
-
-### format_message
-
-For simple text escaping:
-
-```python
-from chatom import format_message, Format
-
-# Escape for HTML
-text = format_message("<script>alert('xss')</script>", Format.HTML)
-# "&lt;script&gt;alert('xss')&lt;/script&gt;"
-```
-
-## Format Comparison
-
-| Node | Plaintext | Markdown | Slack | Discord | HTML | Symphony |
-|------|-----------|----------|-------|---------|------|----------|
-| Bold | text | `**text**` | `*text*` | `**text**` | `<strong>` | `<b>` |
-| Italic | text | `*text*` | `_text_` | `*text*` | `<em>` | `<i>` |
-| Strike | text | `~~text~~` | `~text~` | `~~text~~` | `<del>` | `<s>` |
-| Code | text | `` `text` `` | `` `text` `` | `` `text` `` | `<code>` | `<code>` |
-| Link | url | `[t](url)` | `<url\|t>` | `[t](url)` | `<a>` | `<a>` |
-| Quote | text | `> text` | `> text` | `> text` | `<blockquote>` | `<quote>` |
+- [Mentions](mentions.md) - Detailed mention guide
+- [Messaging](messaging.md) - Sending formatted messages
+- [Examples](examples.md) - Complete examples

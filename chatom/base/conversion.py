@@ -372,7 +372,7 @@ def demote(instance: BaseModel) -> BaseModel:
         # Check parent classes
         for parent in instance_type.__mro__:
             if parent in _BASE_TYPE_MAP:
-                base_type = _BASE_TYPE_MAP[parent]
+                base_type = _BASE_TYPE_MAP[parent]  # type: ignore[index]
                 break
             if parent.__name__ in _TYPE_REGISTRY:
                 # It's a base type
@@ -382,6 +382,8 @@ def demote(instance: BaseModel) -> BaseModel:
             raise ConversionError(f"{instance_type.__name__} is not a registered backend type")
 
     # Get data and filter to base type fields only
+    # base_type is guaranteed to be non-None here due to the check above
+    assert base_type is not None
     data = instance.model_dump()
     base_fields = set(base_type.model_fields.keys())
     filtered_data = {k: v for k, v in data.items() if k in base_fields}

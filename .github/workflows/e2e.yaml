@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       variant:
-        description: "Run Full CI"
+        description: "Backend to test"
         required: false
         type: choice
-        default: "slack"
+        default: "combined"
         options:
           - combined
           - discord
@@ -36,10 +36,22 @@ jobs:
     - name: Install
       run: uv pip install -e .[develop]
 
-    - name: Run E2E Slack Tests
+    - name: Run E2E Tests
       env:
+        # Slack credentials
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
         SLACK_TEST_CHANNEL_NAME: ${{ secrets.SLACK_TEST_CHANNEL_NAME }}
         SLACK_TEST_USER_NAME: ${{ secrets.SLACK_TEST_USER_NAME }}
-      run: python -m chatom.tests.${{ github.event.inputs.variant || 'slack' }}_e2e
+        # Discord credentials
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        DISCORD_GUILD_NAME: ${{ secrets.DISCORD_GUILD_NAME }}
+        DISCORD_TEST_CHANNEL_NAME: ${{ secrets.DISCORD_TEST_CHANNEL_NAME }}
+        DISCORD_TEST_USER_NAME: ${{ secrets.DISCORD_TEST_USER_NAME }}
+        # Symphony credentials
+        SYMPHONY_HOST: ${{ secrets.SYMPHONY_HOST }}
+        SYMPHONY_BOT_USERNAME: ${{ secrets.SYMPHONY_BOT_USERNAME }}
+        SYMPHONY_BOT_PRIVATE_KEY_CONTENT: ${{ secrets.SYMPHONY_BOT_PRIVATE_KEY_CONTENT }}
+        SYMPHONY_TEST_ROOM_NAME: ${{ secrets.SYMPHONY_TEST_ROOM_NAME }}
+        SYMPHONY_TEST_USER_NAME: ${{ secrets.SYMPHONY_TEST_USER_NAME }}
+      run: python -m chatom.tests.${{ github.event.inputs.variant || 'combined' }}_e2e

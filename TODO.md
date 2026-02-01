@@ -6,6 +6,9 @@
 
 | Backend | Description | Key Considerations |
 |---------|-------------|-------------------|
+| **IRC** | Classic protocol, still widely used | Simple text-based, multiple networks, NickServ auth |
+| **Matrix** | Modern federated protocol | E2E encryption, bridges to other platforms, Element client |
+| **Email** | Universal communication | SMTP/IMAP, threading, attachments, HTML formatting |
 | **Microsoft Teams** | Dominant enterprise platform | Rich Graph API, extensive bot framework, SSO integration |
 | **Telegram** | 800M+ users, excellent bot API | MTProto protocol, inline bots, payments API |
 | **WhatsApp Business** | 2B+ users, growing business API | Cloud API, templates, media support |

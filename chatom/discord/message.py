@@ -264,6 +264,7 @@ class DiscordMessage(Message):
     def from_formatted(
         cls,
         formatted: "FormattedMessage",
+        backend: str = "",
         **kwargs: Any,
     ) -> "DiscordMessage":
         """Create a DiscordMessage from a FormattedMessage.
@@ -272,6 +273,7 @@ class DiscordMessage(Message):
 
         Args:
             formatted: The FormattedMessage to convert.
+            backend: Target backend (ignored, always uses discord format).
             **kwargs: Additional message attributes.
 
         Returns:
@@ -305,7 +307,7 @@ class DiscordMessage(Message):
         # Create author User object
         author = DiscordUser(
             id=author_data.get("id", ""),
-            username=author_data.get("username", ""),
+            handle=author_data.get("username", ""),
             name=author_data.get("global_name") or author_data.get("username", ""),
             is_bot=author_data.get("bot", False),
         )
@@ -318,7 +320,7 @@ class DiscordMessage(Message):
         mention_users = [
             DiscordUser(
                 id=m.get("id", ""),
-                username=m.get("username", ""),
+                handle=m.get("username", ""),
                 name=m.get("global_name") or m.get("username", ""),
             )
             for m in data.get("mentions", [])
@@ -329,12 +331,12 @@ class DiscordMessage(Message):
             content=data.get("content", ""),
             discord_type=DiscordMessageType(data.get("type", 0)),
             channel=channel,
-            guild_id=data.get("guild_id"),
+            guild=Organization(id=data.get("guild_id", "")) if data.get("guild_id") else None,
             author=author,
             is_bot=author.is_bot,
             member=data.get("member"),
             mention_everyone=data.get("mention_everyone", False),
-            mentions=mention_users,
+            tags=mention_users,
             mention_roles=data.get("mention_roles", []),
             mention_channels=[c.get("id", "") for c in data.get("mention_channels", [])],
             nonce=data.get("nonce"),

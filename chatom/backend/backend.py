@@ -78,6 +78,7 @@ class SyncHelper:
             with self._lock:
                 if self._loop is None or self._loop.is_closed():
                     self._loop = asyncio.new_event_loop()
+        assert self._loop is not None
         return self._loop
 
     def _run_async(self, coro: Any) -> Any:
@@ -207,6 +208,10 @@ class BackendBase(BaseModel):
     channels: ChannelRegistry = Field(
         default_factory=ChannelRegistry,
         description="Registry of cached channels.",
+    )
+    config: Optional[Any] = Field(
+        default=None,
+        description="Backend-specific configuration. Subclasses override with their config type.",
     )
 
     _sync: Optional[SyncHelper] = None
@@ -586,25 +591,6 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support organizations")
 
-    async def fetch_organization_by_name(
-        self,
-        name: str,
-    ) -> Optional[Organization]:
-        """Fetch an organization by name.
-
-        This is a convenience method for looking up organizations by name.
-
-        Args:
-            name: The organization name to search for (case-insensitive).
-
-        Returns:
-            The organization if found, None otherwise.
-
-        Raises:
-            NotImplementedError: If the backend doesn't support organizations.
-        """
-        raise NotImplementedError("This backend does not support organizations")
-
     async def list_organizations(self) -> List[Organization]:
         """List all organizations the bot has access to.
 
@@ -618,7 +604,10 @@ class BackendBase(BaseModel):
 
     async def fetch_channel_members(
         self,
-        channel_id: str,
+        identifier: Optional[Union[str, Channel]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> List[User]:
         """Fetch members of a channel.
 
@@ -626,8 +615,15 @@ class BackendBase(BaseModel):
         This is useful for authorization checks, mention validation, or
         building user interfaces.
 
+        This method accepts flexible input types for convenience:
+        - Pass a Channel object to use its ID
+        - Pass an ID string as the first positional argument
+        - Use keyword arguments for lookup by id or name
+
         Args:
-            channel_id: The channel ID to fetch members for.
+            identifier: A Channel object or channel ID string.
+            id: Channel ID (alternative to positional identifier).
+            name: Channel name to search for.
 
         Returns:
             List of users who are members of the channel.
@@ -636,7 +632,11 @@ class BackendBase(BaseModel):
             NotImplementedError: If the backend doesn't support member listing.
 
         Example:
+            >>> # All of these work:
             >>> members = await backend.fetch_channel_members("C123")
+            >>> members = await backend.fetch_channel_members(id="C123")
+            >>> members = await backend.fetch_channel_members(name="general")
+            >>> members = await backend.fetch_channel_members(channel)
             >>> for user in members:
             ...     print(user.name)
         """
@@ -644,7 +644,10 @@ class BackendBase(BaseModel):
 
     async def fetch_room_members(
         self,
-        room_id: str,
+        identifier: Optional[Union[str, Channel]] = None,
+        *,
+        id: Optional[str] = None,
+        name: Optional[str] = None,
     ) -> List[User]:
         """Fetch members of a room.
 
@@ -652,12 +655,14 @@ class BackendBase(BaseModel):
         fits your platform.
 
         Args:
-            room_id: The room ID to fetch members for.
+            identifier: A Channel object or room ID string.
+            id: Room ID (alternative to positional identifier).
+            name: Room name to search for.
 
         Returns:
             List of users who are members of the room.
         """
-        return await self.fetch_channel_members(room_id)
+        return await self.fetch_channel_members(identifier, id=id, name=name)
 
     async def resolve_message(self, message: Message) -> Message:
         """Resolve incomplete nested objects in a Message.
@@ -697,7 +702,8 @@ class BackendBase(BaseModel):
         """Helper to resolve a channel argument to an ID string.
 
         Handles string IDs, complete Channel objects, and incomplete
-        Channel objects that need resolution.
+        Channel objects that need resolution. For DM channels with users
+        but no ID, creates or retrieves the DM channel.
 
         Args:
             channel: A channel ID string or Channel object.
@@ -714,7 +720,14 @@ class BackendBase(BaseModel):
         if channel.is_complete:
             return channel.id
 
-        # Resolve incomplete channel
+        # Handle DM channels with users - create/get the DM
+        if channel.users and channel.is_dm:
+            dm_channel_id = await self.create_dm(channel.users)  # type: ignore[arg-type]
+            if dm_channel_id:
+                return dm_channel_id
+            raise ValueError(f"Failed to create DM channel with users: {[u.id for u in channel.users]}")
+
+        # Resolve incomplete channel by name or other identifiers
         resolved = await self.resolve_channel(channel)
         return resolved.id
 
@@ -839,7 +852,7 @@ class BackendBase(BaseModel):
         """
         from ..base.capabilities import Capability
 
-        if Capability.MESSAGE_SEARCH not in self.capabilities.capabilities:
+        if not self.capabilities or Capability.MESSAGE_SEARCH not in self.capabilities.capabilities:
             raise NotImplementedError(f"{self.__class__.__name__} does not support message search")
 
         # Default implementation - subclasses should override
@@ -1058,6 +1071,45 @@ class BackendBase(BaseModel):
     # Real-time message streaming
     # =========================================================================
 
+    async def listen(
+        self,
+        channel: Optional[Union[str, Channel]] = None,
+        skip_own: bool = True,
+    ) -> AsyncIterator[Message]:
+        """Listen for incoming messages in real-time.
+
+        This async generator yields Message objects as they arrive from
+        the chat platform. It abstracts away the platform-specific
+        details of real-time messaging (WebSockets, Socket Mode, datafeed, etc.).
+
+        This is an alias for stream_messages() with skip_history=True.
+
+        Args:
+            channel: Optional channel to filter messages to a specific
+                     channel (ID string or Channel object). If None, yields
+                     messages from all channels the bot has access to.
+            skip_own: If True (default), skip messages sent by the bot itself.
+
+        Yields:
+            Message: Each message as it arrives.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support streaming.
+            ConnectionError: If the real-time connection fails.
+
+        Example:
+            >>> async for message in backend.listen():
+            ...     print(f"Received: {message.content}")
+            ...     if "!ping" in message.content:
+            ...         await backend.reply_in_thread(message, "Pong!")
+        """
+        async for message in self.stream_messages(
+            channel=channel,
+            skip_own=skip_own,
+            skip_history=True,
+        ):
+            yield message
+
     async def stream_messages(
         self,
         channel: Optional[Union[str, Channel]] = None,
@@ -1103,7 +1155,160 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support message streaming")
         # This is needed for type checking, but won't be reached
-        yield  # type: ignore
+        yield
+
+    async def read_messages(
+        self,
+        channel: Union[str, Channel],
+        limit: int = 100,
+        before: Optional[str] = None,
+        after: Optional[str] = None,
+    ) -> AsyncIterator[Message]:
+        """Read message history from a channel as an async iterator.
+
+        This is a convenience async generator that yields messages from
+        a channel's history one at a time. It wraps fetch_messages for
+        easier iteration.
+
+        Args:
+            channel: The channel to read messages from (ID string or Channel object).
+            limit: Maximum number of messages to read.
+            before: Read messages before this message ID (for pagination).
+            after: Read messages after this message ID (for pagination).
+
+        Yields:
+            Message: Each message from the history.
+
+        Example:
+            >>> async for message in backend.read_messages("C123", limit=50):
+            ...     print(f"{message.author.name}: {message.content}")
+        """
+        messages = await self.fetch_messages(
+            channel=channel,
+            limit=limit,
+            before=before,
+            after=after,
+        )
+        for message in messages:
+            yield message
+
+    async def read_thread(
+        self,
+        channel: Union[str, Channel],
+        thread_id: str,
+        limit: int = 100,
+    ) -> AsyncIterator[Message]:
+        """Read messages from a thread.
+
+        This async generator yields messages from a thread/conversation
+        one at a time. Threads are platform-specific:
+        - Slack: message thread (thread_ts)
+        - Discord: thread channel
+        - Symphony: reply chain
+
+        Args:
+            channel: The parent channel containing the thread (ID string or Channel object).
+            thread_id: The thread identifier (message ID that started the thread).
+            limit: Maximum number of messages to read.
+
+        Yields:
+            Message: Each message from the thread.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support threads.
+
+        Example:
+            >>> async for message in backend.read_thread("C123", "1234567890.123456"):
+            ...     print(f"{message.author.name}: {message.content}")
+        """
+        raise NotImplementedError("This backend does not support reading threads")
+        yield
+
+    async def create_thread(
+        self,
+        channel: Union[str, Channel],
+        message_id: str,
+        name: str,
+        **kwargs: Any,
+    ) -> Channel:
+        """Create a thread from a message.
+
+        Creates a new thread attached to the specified message.
+        This is primarily used for Discord-style threads where a
+        thread is a separate channel derived from a message.
+
+        For Slack-style threads that are implicit (just replies to
+        a message), use reply_in_thread() instead.
+
+        Args:
+            channel: The channel containing the message (ID string or Channel object).
+            message_id: The ID of the message to create a thread from.
+            name: The name/title for the thread.
+            **kwargs: Additional platform-specific options:
+                - auto_archive_duration: Discord thread archive duration in minutes.
+                - type: Discord thread type (public, private, announcement).
+                - reason: Audit log reason.
+
+        Returns:
+            The created thread as a Channel object.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support thread creation.
+
+        Example:
+            >>> thread = await backend.create_thread(
+            ...     channel="C123",
+            ...     message_id="M456",
+            ...     name="Discussion Thread",
+            ... )
+            >>> await backend.send_message(thread.id, "First message in thread!")
+        """
+        raise NotImplementedError("This backend does not support thread creation")
+
+    async def reply_to_message(
+        self,
+        channel: Union[str, Channel],
+        message_id: str,
+        content: str,
+        **kwargs: Any,
+    ) -> Message:
+        """Reply to a specific message.
+
+        Sends a reply that references the original message. How this
+        is displayed depends on the platform:
+        - Slack: In thread (if thread support) or as inline reply
+        - Discord: As a reply with reference link
+        - Symphony: As a reply to the message
+
+        For thread-based replies, consider using reply_in_thread() instead
+        which handles the thread context automatically.
+
+        Args:
+            channel: The channel containing the message (ID string or Channel object).
+            message_id: The ID of the message to reply to.
+            content: The reply content.
+            **kwargs: Additional platform-specific options.
+
+        Returns:
+            The sent reply message.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support replies.
+
+        Example:
+            >>> reply = await backend.reply_to_message(
+            ...     channel="C123",
+            ...     message_id="M456",
+            ...     content="Thanks for your message!",
+            ... )
+        """
+        # Default implementation: try to use reply_in_thread with a reconstructed message
+        message = Message(
+            id=message_id,
+            content="",
+            channel=Channel(id=await self._resolve_channel_id(channel)) if isinstance(channel, Channel) else Channel(id=channel),
+        )
+        return await self.reply_in_thread(message, content, **kwargs)
 
     async def get_bot_info(self) -> Optional[User]:
         """Get information about the connected bot user.
@@ -1334,6 +1539,57 @@ class BackendBase(BaseModel):
         """
         return await self.create_dm(users)
 
+    async def send_dm(
+        self,
+        user: Union[str, User],
+        content: str,
+        **kwargs: Any,
+    ) -> Message:
+        """Send a direct message to a user.
+
+        This is a convenience method that creates a DM channel with the user
+        if needed, then sends the message. It simplifies the common pattern of:
+
+            dm_id = await backend.create_dm([user])
+            await backend.send_message(dm_id, content)
+
+        Args:
+            user: The user to send to (ID string or User object).
+            content: The message content.
+            **kwargs: Additional platform-specific options passed to send_message.
+
+        Returns:
+            The sent message.
+
+        Raises:
+            ValueError: If the DM channel could not be created.
+            NotImplementedError: If the backend doesn't support DM creation.
+
+        Example:
+            >>> # Send DM using user ID
+            >>> msg = await backend.send_dm("U123", "Hello!")
+            >>> # Send DM using User object
+            >>> msg = await backend.send_dm(user, "Hello!")
+            >>> # With additional options
+            >>> msg = await backend.send_dm(user, "Check this!", thread_id="T123")
+        """
+        # Normalize to list for create_dm
+        user_list = [user]
+
+        # Create or get existing DM channel
+        dm_channel_id = await self.create_dm(user_list)
+
+        if not dm_channel_id:
+            user_id = user.id if isinstance(user, User) else user
+            raise ValueError(f"Failed to create DM channel with user {user_id}")
+
+        # Send the message
+        return await self.send_message(
+            channel=dm_channel_id,
+            content=content,
+            **kwargs,
+        )
+
     async def create_channel(
         self,
         name: str,
@@ -1552,6 +1808,32 @@ class BackendBase(BaseModel):
         from ..base.mention import mention_channel_for_backend
 
         return mention_channel_for_backend(channel, self.__class__.name)
+
+    def channel_link(self, channel: Union[str, Channel]) -> str:
+        """Generate a clickable channel link/mention for this backend.
+
+        This is a convenience method that accepts either a channel ID string
+        or a Channel object and returns the appropriate platform-specific
+        channel reference.
+
+        Args:
+            channel: A channel ID string or Channel object.
+
+        Returns:
+            The formatted channel link/mention string.
+
+        Example:
+            >>> # From channel ID
+            >>> link = backend.channel_link("C123")
+            >>> # From Channel object
+            >>> link = backend.channel_link(channel)
+            >>> # Use in message
+            >>> await backend.send_message(ch, f"Join us in {backend.channel_link('general')}")
+        """
+        if isinstance(channel, str):
+            # Create a minimal Channel object with just the ID
+            channel = Channel(id=channel)
+        return self.mention_channel(channel)
 
     def mention_here(self) -> str:
         """Format an @here mention for this backend.

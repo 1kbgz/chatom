@@ -3,70 +3,79 @@
 ## Requirements
 
 - Python 3.10 or higher
-- pydantic >= 2.0
+- pip or uv package manager
 
-## Installing from PyPI
+## Basic Installation
+
+Install chatom with all backends:
 
 ```bash
 pip install chatom
 ```
 
-## Installing from Source
+Or with uv:
 
 ```bash
-git clone https://github.com/1kbgz/chatom.git
-cd chatom
-pip install -e .
+uv pip install chatom
+```
+
+## Platform-Specific Installation
+
+Install only the backends you need:
+
+```bash
+# Slack only
+pip install chatom[slack]
+
+# Discord only
+pip install chatom[discord]
+
+# Symphony only
+pip install chatom[symphony]
+
+# Multiple backends
+pip install chatom[slack,discord]
 ```
 
 ## Development Installation
 
-For development, install with the `develop` extras:
+For development with testing tools:
 
 ```bash
-pip install -e ".[develop]"
+pip install chatom[develop]
 ```
 
-This includes:
-- Testing tools (pytest, pytest-cov)
-- Linting tools (ruff, codespell)
-- Build tools (hatchling, build, wheel)
-- Documentation tools
+Or clone the repository:
 
-## Verifying Installation
+```bash
+git clone https://github.com/1kbgz/chatom.git
+cd chatom
+pip install -e .[develop]
+```
+
+## Verify Installation
 
 ```python
 import chatom
 print(chatom.__version__)
+
+# Check available backends
+from chatom.backend import list_backends
+print(list_backends())
 ```
 
 ## Dependencies
 
-chatom has minimal dependencies:
+Core dependencies:
+- `pydantic` - Data validation and models
+- `aiohttp` - Async HTTP client
 
-| Package | Purpose |
-|---------|---------|
-| `pydantic>=2` | Data validation and serialization |
-| `singledispatch` | Polymorphic function dispatch |
+Backend-specific dependencies are installed automatically:
+- **Slack**: `slack-sdk`
+- **Discord**: `discord.py`
+- **Symphony**: `symphony-bdk-python`
 
-## Optional Dependencies
+## Next Steps
 
-### CSP Integration
-
-For streaming event processing with CSP, install csp:
-
-```bash
-pip install csp
-```
-
-This enables the `chatom.csp` module for real-time message streaming:
-
-```python
-from chatom.csp import BackendAdapter, HAS_CSP
-
-if HAS_CSP:
-    # CSP integration available
-    from chatom.csp import message_reader, message_writer
-```
-
-See the [CSP Integration](csp-integration) guide for more details.
+- [Quickstart Guide](quickstart.md) - Build your first bot
+- [Backend Configuration](backend-config.md) - Set up your credentials

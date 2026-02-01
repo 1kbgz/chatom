@@ -253,7 +253,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
 MessageReaderPushAdapter = py_push_adapter_def(
     "MessageReaderPushAdapter",
     MessageReaderPushAdapterImpl,
-    ts[[Message]],
+    ts[List[Message]],
     backend=object,
     channels=set,
     skip_own=bool,
@@ -267,7 +267,7 @@ def message_reader(
     channels: Optional[Set[str]] = None,
     skip_own: bool = True,
     skip_history: bool = True,
-) -> ts[[Message]]:
+) -> ts[List[Message]]:
     """Create a CSP time series of messages from a chatom backend.
 
     This is a convenience function that wraps the MessageReaderPushAdapter.
@@ -437,8 +437,8 @@ def message_writer(
         ...     message_writer(backend, response)
     """
     with csp.state():
-        s_queue: Queue = None
-        s_thread: threading.Thread = None
+        s_queue: Optional[Queue] = None
+        s_thread: Optional[threading.Thread] = None
 
     with csp.start():
         s_queue = Queue(maxsize=0)

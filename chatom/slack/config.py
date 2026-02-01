@@ -37,15 +37,15 @@ class SlackConfig(BackendConfig):
 
     model_config = {"arbitrary_types_allowed": True}
 
-    bot_token: SecretStr = Field(
+    bot_token: Union[str, SecretStr] = Field(
         default=SecretStr(""),
         description="Slack Bot User OAuth Token (xoxb-...) or path to file.",
     )
-    app_token: SecretStr = Field(
+    app_token: Union[str, SecretStr] = Field(
         default=SecretStr(""),
         description="Slack App-Level Token (xapp-...) or path to file.",
     )
-    signing_secret: SecretStr = Field(
+    signing_secret: Union[str, SecretStr] = Field(
         default=SecretStr(""),
         description="Slack signing secret for request verification.",
     )
@@ -72,9 +72,12 @@ class SlackConfig(BackendConfig):
         """Validate app token - can be a token string or path to file."""
         if v is None or v == "":
             return SecretStr("")
+        # Extract string value from SecretStr
         if isinstance(v, SecretStr):
-            return v
+            v = v.get_secret_value()
         if isinstance(v, str):
+            if not v:  # Empty string
+                return SecretStr("")
             if v.startswith("xapp-"):
                 return SecretStr(v)
             elif Path(v).exists():
@@ -87,9 +90,12 @@ class SlackConfig(BackendConfig):
         """Validate bot token - can be a token string or path to file."""
         if v is None or v == "":
             return SecretStr("")
+        # Extract string value from SecretStr
         if isinstance(v, SecretStr):
-            return v
+            v = v.get_secret_value()
         if isinstance(v, str):
+            if not v:  # Empty string
+                return SecretStr("")
             if v.startswith("xoxb-"):
                 return SecretStr(v)
             elif Path(v).exists():
@@ -103,7 +109,7 @@ class SlackConfig(BackendConfig):
         Returns:
             The bot token string.
         """
-        return self.bot_token.get_secret_value()
+        return self.bot_token.get_secret_value() if isinstance(self.bot_token, SecretStr) else self.bot_token
 
     @property
     def app_token_str(self) -> str:
@@ -112,7 +118,7 @@ class SlackConfig(BackendConfig):
         Returns:
             The app token string.
         """
-        return self.app_token.get_secret_value()
+        return self.app_token.get_secret_value() if isinstance(self.app_token, SecretStr) else self.app_token
 
     @property
     def signing_secret_str(self) -> str:
@@ -121,7 +127,7 @@ class SlackConfig(BackendConfig):
         Returns:
             The signing secret string.
         """
-        return self.signing_secret.get_secret_value()
+        return self.signing_secret.get_secret_value() if isinstance(self.signing_secret, SecretStr) else self.signing_secret
 
     @property
     def has_socket_mode(self) -> bool:
@@ -132,4 +138,4 @@ class SlackConfig(BackendConfig):
         Returns:
             True if Socket Mode is configured, False otherwise.
         """
-        return self.socket_mode or bool(self.app_token.get_secret_value())
+        return self.socket_mode or bool(self.app_token.get_secret_value() if isinstance(self.app_token, SecretStr) else self.app_token)

@@ -3,7 +3,9 @@
 This module provides the base User class representing a chat platform user.
 """
 
-from typing import Optional
+from typing import Optional, Self
+
+from pydantic import model_validator
 
 from .base import Field, Identifiable
 
@@ -35,6 +37,7 @@ class User(Identifiable):
     Attributes:
         id: Platform-specific unique identifier.
         name: Display name of the user.
+        display_name: Display name (alias, can differ from name).
         handle: Username or handle (e.g., @username).
         email: Email address of the user, if available.
         avatar_url: URL to the user's avatar image.
@@ -42,6 +45,10 @@ class User(Identifiable):
         app_id: App ID associated with the bot (for bot users).
     """
 
+    display_name: str = Field(
+        default="",
+        description="Display name (can differ from name).",
+    )
     handle: str = Field(
         default="",
         description="Username or handle (e.g., @username).",
@@ -63,14 +70,22 @@ class User(Identifiable):
         description="App ID associated with the bot (for bot users).",
     )
 
+    @model_validator(mode="after")
+    def _set_display_name(self) -> Self:
+        """Set display_name from name/handle if not explicitly set."""
+        if not self.__dict__.get("display_name"):
+            # Use object.__setattr__ to bypass pydantic validation
+            object.__setattr__(self, "display_name", self.name or self.handle or self.id)
+        return self
+
     @property
-    def display_name(self) -> str:
+    def best_display_name(self) -> str:
         """Get the best available display name for the user.
 
         Returns:
-            str: The name, handle, or id (in order of preference).
+            str: The display_name, name, handle, or id (in order of preference).
         """
-        return self.name or self.handle or self.id
+        return self.display_name or self.name or self.handle or self.id
 
     @property
     def mention_name(self) -> str:

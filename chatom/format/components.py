@@ -168,12 +168,13 @@ class Button(BaseModel):
 
         return button
 
-    def _render_symphony(self) -> str:
+    def _render_symphony(self) -> Dict[str, Any]:
         """Render for Symphony MessageML."""
         # Symphony uses <button> tags in MessageML
         name = self.action_id or f"button_{id(self)}"
         style_class = f'class="{self.style.value}"' if self.style != ButtonStyle.PRIMARY else ""
-        return f'<button name="{name}" {style_class}>{self.label}</button>'
+        messageml = f'<button name="{name}" {style_class}>{self.label}</button>'
+        return {"type": "button", "messageml": messageml, "name": name}
 
     def _render_generic(self) -> Dict[str, Any]:
         """Render generic dict representation."""
@@ -305,7 +306,7 @@ class SelectMenu(BaseModel):
             "disabled": self.disabled,
         }
 
-    def _render_symphony(self) -> str:
+    def _render_symphony(self) -> Dict[str, Any]:
         """Render for Symphony MessageML."""
         options_ml = []
         for opt in self.options:
@@ -313,7 +314,8 @@ class SelectMenu(BaseModel):
             options_ml.append(f'<option value="{opt.value}"{selected}>{opt.label}</option>')
 
         options_str = "\n".join(options_ml)
-        return f'<select name="{self.action_id}">\n{options_str}\n</select>'
+        messageml = f'<select name="{self.action_id}">\n{options_str}\n</select>'
+        return {"type": "select", "messageml": messageml, "action_id": self.action_id}
 
     def _render_generic(self) -> Dict[str, Any]:
         """Render generic dict representation."""
@@ -367,15 +369,16 @@ class ActionRow(BaseModel):
             "components": components,
         }
 
-    def _render_symphony(self) -> str:
+    def _render_symphony(self) -> Dict[str, Any]:
         """Render for Symphony MessageML."""
         parts = []
         for comp in self.components:
             if isinstance(comp, Button):
-                parts.append(comp._render_symphony())
+                parts.append(comp._render_symphony()["messageml"])
             elif isinstance(comp, SelectMenu):
-                parts.append(comp._render_symphony())
-        return " ".join(parts)
+                parts.append(comp._render_symphony()["messageml"])
+        messageml = " ".join(parts)
+        return {"type": "action_row", "messageml": messageml}
 
     def _render_generic(self) -> Dict[str, Any]:
         """Render generic dict representation."""
@@ -551,12 +554,13 @@ class TextInput(BaseModel):
             "components": [component],
         }
 
-    def _render_symphony(self) -> str:
+    def _render_symphony(self) -> Dict[str, Any]:
         """Render for Symphony MessageML."""
         input_type = "textarea" if self.style == TextInputStyle.PARAGRAPH else "text-field"
         required = ' required="true"' if self.required else ""
         placeholder = f' placeholder="{self.placeholder}"' if self.placeholder else ""
-        return f'<{input_type} name="{self.action_id}"{required}{placeholder}>{self.default_value}</{input_type}>'
+        messageml = f'<{input_type} name="{self.action_id}"{required}{placeholder}>{self.default_value}</{input_type}>'
+        return {"type": "text_input", "messageml": messageml, "action_id": self.action_id}
 
     def _render_generic(self) -> Dict[str, Any]:
         """Render generic dict representation."""
@@ -633,15 +637,16 @@ class Modal(BaseModel):
             "components": components,
         }
 
-    def _render_symphony(self) -> str:
+    def _render_symphony(self) -> Dict[str, Any]:
         """Render for Symphony form."""
-        inputs_ml = [inp._render_symphony() for inp in self.inputs]
+        inputs_ml = [inp._render_symphony()["messageml"] for inp in self.inputs]
         inputs_str = "\n".join(inputs_ml)
-        return f"""<form id="{self.callback_id}">
+        messageml = f"""<form id="{self.callback_id}">
 <h3>{self.title}</h3>
 {inputs_str}
 <button name="submit" type="action">{self.submit_label}</button>
 </form>"""
+        return {"type": "modal", "messageml": messageml, "callback_id": self.callback_id}
 
     def _render_generic(self) -> Dict[str, Any]:
         """Render generic dict representation."""
@@ -702,7 +707,7 @@ class ComponentContainer(BaseModel):
         """Render all rows to platform-specific format."""
         if format == Format.SYMPHONY_MESSAGEML:
             # Symphony uses inline MessageML
-            parts = [row._render_symphony() for row in self.rows]
+            parts = [row._render_symphony()["messageml"] for row in self.rows]
             return [{"messageml": "\n".join(parts)}]
         else:
             return [row.render(format) for row in self.rows]

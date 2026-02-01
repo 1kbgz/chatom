@@ -219,7 +219,7 @@ class MockSymphonyBackend(BackendBase):
         if isinstance(identifier, SymphonyUser):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -239,7 +239,6 @@ class MockSymphonyBackend(BackendBase):
                     name=data["display_name"],
                     handle=data["username"],
                     email=data["email"],
-                    user_id=data["id"],
                 )
                 self.users.add(user)
                 return user
@@ -281,7 +280,7 @@ class MockSymphonyBackend(BackendBase):
         if isinstance(identifier, SymphonyChannel):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -299,7 +298,6 @@ class MockSymphonyBackend(BackendBase):
                 channel = SymphonyChannel(
                     id=id,
                     name=data["name"],
-                    stream_id=id,
                 )
                 self.channels.add(channel)
                 return channel
@@ -315,7 +313,7 @@ class MockSymphonyBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
@@ -323,7 +321,7 @@ class MockSymphonyBackend(BackendBase):
         """Fetch messages from a mock stream.
 
         Args:
-            channel_id: The stream ID.
+            channel: The channel to fetch from (ID string or Channel object).
             limit: Maximum number of messages.
             before: Fetch messages before this timestamp (ms).
             after: Fetch messages after this timestamp (ms).
@@ -331,6 +329,7 @@ class MockSymphonyBackend(BackendBase):
         Returns:
             List of messages.
         """
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         if channel_id not in self.mock_messages:
             return []
 
@@ -356,9 +355,9 @@ class MockSymphonyBackend(BackendBase):
             message = SymphonyMessage(
                 id=raw["message_id"],
                 content=raw["content"],
-                timestamp=raw["timestamp"],
-                user_id=str(raw["user_id"]),
-                channel_id=channel_id,
+                created_at=raw["timestamp"],
+                author=SymphonyUser(id=str(raw["user_id"])),
+                channel=SymphonyChannel(id=channel_id),
             )
             messages.append(message)
 
@@ -366,20 +365,23 @@ class MockSymphonyBackend(BackendBase):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> Message:
         """Send a mock message.
 
         Args:
-            channel_id: The stream ID.
+            channel: The channel to send to (stream ID string or Channel object).
             content: The message content (MessageML).
             **kwargs: Additional options (data, attachments).
 
         Returns:
             The sent message.
         """
+        # Resolve channel ID
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
+
         message_id = str(uuid.uuid4())
         timestamp = datetime.now(timezone.utc)
 
@@ -410,9 +412,9 @@ class MockSymphonyBackend(BackendBase):
         return SymphonyMessage(
             id=message_id,
             content=content,
-            timestamp=timestamp,
-            user_id=str(self._mock_bot_user_id),
-            channel_id=channel_id,
+            created_at=timestamp,
+            author=SymphonyUser(id=str(self._mock_bot_user_id)),
+            channel=SymphonyChannel(id=channel_id),
         )
 
     async def edit_message(
@@ -463,9 +465,9 @@ class MockSymphonyBackend(BackendBase):
         return SymphonyMessage(
             id=message_id,
             content=content,
-            timestamp=timestamp,
-            user_id=str(self._mock_bot_user_id),
-            channel_id=channel_id,
+            created_at=timestamp,
+            author=SymphonyUser(id=str(self._mock_bot_user_id)),
+            channel=SymphonyChannel(id=channel_id),
         )
 
     async def delete_message(
@@ -548,14 +550,23 @@ class MockSymphonyBackend(BackendBase):
             id=message_id,
             content=message.content,
             formatted_content=forwarded_content,
-            timestamp=timestamp,
-            user_id=str(self._mock_bot_user_id),
-            channel_id=dest_channel_id,
+            created_at=timestamp,
+            author=SymphonyUser(id=str(self._mock_bot_user_id)),
+            channel=SymphonyChannel(id=dest_channel_id),
             message_type=MessageType.FORWARD,
         )
         forwarded_msg.forwarded_from = message
 
-        self.sent_messages.append(forwarded_msg)
+        # Track sent message as dict (consistent with send_message)
+        sent = {
+            "message_id": message_id,
+            "stream_id": dest_channel_id,
+            "content": message.content,
+            "formatted_content": forwarded_content,
+            "timestamp": timestamp,
+            "forwarded_from": message.id if hasattr(message, "id") else None,
+        }
+        self.sent_messages.append(sent)
 
         if dest_channel_id not in self.mock_messages:
             self.mock_messages[dest_channel_id] = []
@@ -610,19 +621,21 @@ class MockSymphonyBackend(BackendBase):
         # Update bot's presence
         self.mock_presence[str(self._mock_bot_user_id)] = mapped_status
 
-    async def get_presence(self, user_id: str) -> Optional[Presence]:
+    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
         """Get mock presence for a user.
 
         Args:
-            user_id: The user ID.
+            user: The user to get presence for (ID string or User object).
 
         Returns:
             The user's presence.
         """
+        user_id = user.id if isinstance(user, User) else str(user)
         symphony_status = self.mock_presence.get(user_id, SymphonyPresenceStatus.OFFLINE)
 
         # Map Symphony status to base PresenceStatus
         from ..base import PresenceStatus
+        from .user import SymphonyUser
 
         status_map = {
             SymphonyPresenceStatus.AVAILABLE: PresenceStatus.ONLINE,
@@ -637,8 +650,9 @@ class MockSymphonyBackend(BackendBase):
         }
         base_status = status_map.get(symphony_status, PresenceStatus.UNKNOWN)
 
+        user = SymphonyUser(id=user_id)
         return SymphonyPresence(
-            user_id=user_id,
+            user=user,
             status=base_status,
             symphony_status=symphony_status,
         )
@@ -699,34 +713,35 @@ class MockSymphonyBackend(BackendBase):
             return channel.name or channel.stream_id or channel.id
         return channel.name or channel.id
 
-    async def create_dm(self, user_ids: List[str]) -> Optional[str]:
+    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create a mock DM/IM.
 
         Args:
-            user_ids: List of user IDs.
+            users: List of users to include (ID strings or User objects).
 
         Returns:
             The stream ID.
         """
-        # Convert to ints for tracking (Symphony uses int IDs)
+        # Extract user IDs and convert to ints for tracking (Symphony uses int IDs)
+        user_ids = [u.id if isinstance(u, User) else str(u) for u in users]
         int_ids = [int(uid) for uid in user_ids]
         self.created_ims.append(int_ids)
         stream_id = f"im_{uuid.uuid4()}"
-        self.add_mock_stream(stream_id, f"IM with {len(user_ids)} users", "IM")
+        self.add_mock_stream(stream_id, f"IM with {len(users)} users", "IM")
         return stream_id
 
-    async def create_im(self, user_ids: List[str]) -> Optional[str]:
+    async def create_im(self, users: List[Union[str, User]]) -> Optional[str]:
         """Create a mock IM.
 
         This is an alias for create_dm.
 
         Args:
-            user_ids: List of user IDs.
+            users: List of users to include (ID strings or User objects).
 
         Returns:
             The stream ID.
         """
-        return await self.create_dm(user_ids)
+        return await self.create_dm(users)
 
     async def create_channel(
         self,

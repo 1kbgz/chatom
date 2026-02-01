@@ -7,7 +7,7 @@ for use in tests without requiring actual Slack API credentials.
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional, Union
 
-from ..base import MessageType, PresenceStatus, Thread
+from ..base import Avatar, Channel, Message, MessageType, PresenceStatus, Thread, User
 from .backend import SlackBackend
 from .channel import SlackChannel
 from .message import SlackMessage
@@ -56,6 +56,8 @@ class MockSlackBackend(SlackBackend):
         self._removed_reactions: List[tuple] = []
         self._reactions: Dict[tuple, List[str]] = {}
         self._presence_changes: List[Dict[str, Any]] = []
+        self._created_dms: List[List[str]] = []
+        self._dm_counter: int = 0
         self._message_counter: int = 0
         self._current_presence: str = "auto"
         self._current_status_text: str = ""
@@ -92,7 +94,7 @@ class MockSlackBackend(SlackBackend):
             name=name,
             handle=handle or name.lower().replace(" ", ""),
             display_name=display_name or name,
-            avatar_url=avatar_url,
+            avatar=Avatar(url=avatar_url) if avatar_url else None,
             is_bot=is_bot,
         )
         self._mock_users[user.id] = user
@@ -161,10 +163,9 @@ class MockSlackBackend(SlackBackend):
         message = SlackMessage(
             id=message_id,
             content=content,
-            channel_id=channel_id,
-            author_id=user_id,
-            timestamp=timestamp or datetime.now(),
-            ts=message_id,
+            channel=SlackChannel(id=channel_id),
+            author=SlackUser(id=user_id),
+            created_at=timestamp or datetime.now(),
         )
         if channel_id not in self._mock_messages:
             self._mock_messages[channel_id] = []
@@ -188,11 +189,15 @@ class MockSlackBackend(SlackBackend):
         Returns:
             The created presence.
         """
+        from .user import SlackUser
+
         # Map base status to Slack status
         slack_status = SlackPresenceStatus.from_base(status)
+        user = SlackUser(id=user_id)
         presence = SlackPresence(
-            user_id=user_id,
-            status=slack_status,
+            user=user,
+            status=status,
+            slack_presence=slack_status,
             status_text=status_text,
         )
         self._mock_presence[user_id] = presence
@@ -236,6 +241,15 @@ class MockSlackBackend(SlackBackend):
         return self._presence_changes
 
     @property
+    def created_dms(self) -> List[List[str]]:
+        """Get all DMs created through this backend.
+
+        Returns:
+            List of user ID lists for each created DM.
+        """
+        return self._created_dms
+
+    @property
     def mock_users(self) -> Dict[str, SlackUser]:
         """Get all mock users.
 
@@ -256,6 +270,8 @@ class MockSlackBackend(SlackBackend):
         self._removed_reactions.clear()
         self._reactions.clear()
         self._presence_changes.clear()
+        self._created_dms.clear()
+        self._dm_counter = 0
         self._message_counter = 0
         self.users.clear()
         self.channels.clear()
@@ -314,7 +330,7 @@ class MockSlackBackend(SlackBackend):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, SlackUser]] = None,
+        identifier: Optional[Union[str, User]] = None,
         *,
         id: Optional[str] = None,
         name: Optional[str] = None,
@@ -324,7 +340,7 @@ class MockSlackBackend(SlackBackend):
         """Fetch a mock user by ID or other attributes.
 
         Args:
-            identifier: A SlackUser object or user ID string.
+            identifier: A User object or user ID string.
             id: User ID.
             name: Display name to search for.
             email: Email address to search for.
@@ -337,7 +353,7 @@ class MockSlackBackend(SlackBackend):
         if isinstance(identifier, SlackUser):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -367,7 +383,7 @@ class MockSlackBackend(SlackBackend):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, SlackChannel]] = None,
+        identifier: Optional[Union[str, Channel]] = None,
         *,
         id: Optional[str] = None,
         name: Optional[str] = None,
@@ -375,7 +391,7 @@ class MockSlackBackend(SlackBackend):
         """Fetch a mock channel by ID or name.
 
         Args:
-            identifier: A SlackChannel object or channel ID string.
+            identifier: A Channel object or channel ID string.
             id: Channel ID.
             name: Channel name to search for.
 
@@ -386,7 +402,7 @@ class MockSlackBackend(SlackBackend):
         if isinstance(identifier, SlackChannel):
             return identifier
         if hasattr(identifier, "id") and identifier is not None:
-            id = identifier.id
+            id = str(identifier.id)
 
         # Resolve identifier to id
         if identifier and not id:
@@ -409,15 +425,15 @@ class MockSlackBackend(SlackBackend):
 
     async def fetch_messages(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         limit: int = 100,
         before: Optional[str] = None,
         after: Optional[str] = None,
-    ) -> List[SlackMessage]:
+    ) -> List[Message]:
         """Fetch mock messages from a channel.
 
         Args:
-            channel_id: The channel to fetch from.
+            channel: The channel to fetch from (ID string or Channel object).
             limit: Maximum number of messages.
             before: Fetch messages before this timestamp.
             after: Fetch messages after this timestamp.
@@ -425,13 +441,14 @@ class MockSlackBackend(SlackBackend):
         Returns:
             List of messages.
         """
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         messages = self._mock_messages.get(channel_id, [])
 
         # Filter by before/after
         if after:
-            messages = [m for m in messages if m.ts > after]
+            messages = [m for m in messages if m.ts and m.ts > after]
         if before:
-            messages = [m for m in messages if m.ts < before]
+            messages = [m for m in messages if m.ts and m.ts < before]
 
         # Sort by timestamp and limit
         messages = sorted(messages, key=lambda m: m.ts)
@@ -439,20 +456,23 @@ class MockSlackBackend(SlackBackend):
 
     async def send_message(
         self,
-        channel_id: str,
+        channel: Union[str, Channel],
         content: str,
         **kwargs: Any,
     ) -> SlackMessage:
         """Send a mock message.
 
         Args:
-            channel_id: The channel to send to.
+            channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional options.
 
         Returns:
             The sent message.
         """
+        # Resolve channel ID
+        channel_id = channel.id if isinstance(channel, Channel) else str(channel)
+
         self._message_counter += 1
         ts = f"{datetime.now().timestamp():.6f}"
 
@@ -461,7 +481,7 @@ class MockSlackBackend(SlackBackend):
             content=content,
             channel=SlackChannel(id=channel_id),
             created_at=datetime.now(),
-            thread=Thread(id=kwargs.get("thread_ts")) if kwargs.get("thread_ts") else None,
+            thread=Thread(id=str(kwargs.get("thread_ts"))) if kwargs.get("thread_ts") else None,
         )
 
         self._sent_messages.append(message)
@@ -474,15 +494,15 @@ class MockSlackBackend(SlackBackend):
 
     async def edit_message(
         self,
-        message: Union[str, SlackMessage],
+        message: Union[str, Message],
         content: str,
-        channel: Optional[Union[str, SlackChannel]] = None,
+        channel: Optional[Union[str, Channel]] = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Edit a mock message.
 
         Args:
-            message: The message to edit (ts string or SlackMessage object).
+            message: The message to edit (ts string or Message object).
             content: The new content.
             channel: The channel containing the message (required if message is a string).
             **kwargs: Additional options.
@@ -491,12 +511,12 @@ class MockSlackBackend(SlackBackend):
             The edited message.
         """
         # Resolve message and channel IDs
-        if isinstance(message, SlackMessage):
+        if isinstance(message, Message):
             message_id = message.id
-            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
         else:
             message_id = message
-            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
 
         messages = self._mock_messages.get(channel_id, [])
         for i, msg in enumerate(messages):
@@ -515,22 +535,22 @@ class MockSlackBackend(SlackBackend):
 
     async def delete_message(
         self,
-        message: Union[str, SlackMessage],
-        channel: Optional[Union[str, SlackChannel]] = None,
+        message: Union[str, Message],
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Delete a mock message.
 
         Args:
-            message: The message to delete (ts string or SlackMessage object).
+            message: The message to delete (ts string or Message object).
             channel: The channel containing the message (required if message is a string).
         """
         # Resolve message and channel IDs
-        if isinstance(message, SlackMessage):
+        if isinstance(message, Message):
             message_id = message.id
-            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
         else:
             message_id = message
-            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
 
         self._deleted_messages.append((channel_id, message_id))
 
@@ -539,8 +559,8 @@ class MockSlackBackend(SlackBackend):
 
     async def forward_message(
         self,
-        message: Union[str, SlackMessage],
-        to_channel: Union[str, SlackChannel],
+        message: Message,
+        to_channel: Union[str, Channel],
         *,
         include_attribution: bool = True,
         prefix: Optional[str] = None,
@@ -559,10 +579,10 @@ class MockSlackBackend(SlackBackend):
             The forwarded message in the destination channel.
         """
         if isinstance(message, str):
-            raise ValueError("forward_message requires a SlackMessage object, not just a message ID.")
+            raise ValueError("forward_message requires a Message object, not just a message ID.")
 
         # Resolve destination channel ID
-        if isinstance(to_channel, SlackChannel):
+        if isinstance(to_channel, Channel):
             dest_channel_id = to_channel.id
         else:
             dest_channel_id = to_channel
@@ -618,15 +638,16 @@ class MockSlackBackend(SlackBackend):
             self._current_status_text = status_text
         self._presence_changes.append({"status": status, "status_text": status_text})
 
-    async def get_presence(self, user_id: str) -> Optional[SlackPresence]:
+    async def get_presence(self, user: Union[str, User]) -> Optional[SlackPresence]:
         """Get mock presence for a user.
 
         Args:
-            user_id: The user ID.
+            user: The user ID string or User object.
 
         Returns:
             The user's presence.
         """
+        user_id = user.id if isinstance(user, User) else user
         if user_id in self._mock_presence:
             return self._mock_presence[user_id]
 
@@ -638,24 +659,24 @@ class MockSlackBackend(SlackBackend):
 
     async def add_reaction(
         self,
-        message: Union[str, SlackMessage],
+        message: Union[str, Message],
         emoji: str,
-        channel: Optional[Union[str, SlackChannel]] = None,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Add a mock reaction.
 
         Args:
-            message: The message to react to (ts string or SlackMessage object).
+            message: The message to react to (ts string or Message object).
             emoji: The emoji name.
             channel: The channel containing the message (required if message is a string).
         """
         # Resolve message and channel IDs
-        if isinstance(message, SlackMessage):
+        if isinstance(message, Message):
             message_id = message.id
-            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
         else:
             message_id = message
-            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
 
         key = (channel_id, message_id)
         if key not in self._reactions:
@@ -668,27 +689,65 @@ class MockSlackBackend(SlackBackend):
 
     async def remove_reaction(
         self,
-        message: Union[str, SlackMessage],
+        message: Union[str, Message],
         emoji: str,
-        channel: Optional[Union[str, SlackChannel]] = None,
+        channel: Optional[Union[str, Channel]] = None,
     ) -> None:
         """Remove a mock reaction.
 
         Args:
-            message: The message to remove reaction from (ts string or SlackMessage object).
+            message: The message to remove reaction from (ts string or Message object).
             emoji: The emoji name.
             channel: The channel containing the message (required if message is a string).
         """
         # Resolve message and channel IDs
-        if isinstance(message, SlackMessage):
+        if isinstance(message, Message):
             message_id = message.id
-            channel_id = message.channel_id if message.channel_id else (channel.id if isinstance(channel, SlackChannel) else channel or "")
+            channel_id = message.channel.id if message.channel else (channel.id if isinstance(channel, Channel) else channel or "")
         else:
             message_id = message
-            channel_id = channel.id if isinstance(channel, SlackChannel) else (channel or "")
+            channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
 
         key = (channel_id, message_id)
         emoji = emoji.strip(":")
         if key in self._reactions and emoji in self._reactions[key]:
             self._reactions[key].remove(emoji)
         self._removed_reactions.append((channel_id, message_id, emoji))
+
+    async def create_dm(
+        self,
+        users: List[Union[str, User]],
+    ) -> Optional[str]:
+        """Create a mock DM channel with the specified users.
+
+        Args:
+            users: List of users to include in the DM (ID strings or User objects).
+
+        Returns:
+            The DM channel ID.
+        """
+        # Extract user IDs
+        user_ids = []
+        for user in users:
+            if isinstance(user, User):
+                user_ids.append(user.id)
+            else:
+                user_ids.append(str(user))
+
+        # Track the created DM
+        self._created_dms.append(user_ids)
+
+        # Generate a DM channel ID
+        self._dm_counter += 1
+        dm_channel_id = f"D{self._dm_counter:010d}"
+
+        # Create the DM channel in mock channels
+        dm_channel = SlackChannel(
+            id=dm_channel_id,
+            name=f"dm-{'-'.join(user_ids)}",
+            is_im=True,
+        )
+        self._mock_channels[dm_channel_id] = dm_channel
+        self.channels.add(dm_channel)
+
+        return dm_channel_id

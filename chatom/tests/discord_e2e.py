@@ -41,6 +41,7 @@ import traceback
 from datetime import datetime
 from typing import Optional
 
+from chatom.base import Channel
 from chatom.discord import (
     DiscordBackend,
     DiscordConfig,
@@ -100,8 +101,8 @@ class DiscordE2ETest:
         # - Server Members Intent (for member lookups)
         # - Message Content Intent (for reading message content)
         config = DiscordConfig(
-            bot_token=self.bot_token,
-            intents=["guilds", "guild_messages"],  # Basic intents only
+            token=self.bot_token,  # type: ignore[arg-type]
+            intents=["guilds", "guild_messages"],  # type: ignore[arg-type]  # Basic intents only
         )
 
         self.backend = DiscordBackend(config=config)
@@ -129,8 +130,8 @@ class DiscordE2ETest:
         self.section("Resolving Guild")
 
         try:
-            # Use the backend's fetch_organization_by_name method
-            guild = await self.backend.fetch_organization_by_name(self.guild_name)
+            # Use the backend's fetch_organization method with name parameter
+            guild = await self.backend.fetch_organization(name=self.guild_name)
 
             if guild:
                 self.guild_id = guild.id
@@ -235,7 +236,7 @@ class DiscordE2ETest:
             msg = FormattedMessage().add_text(f"🧪 [E2E Test] Plain message sent at {timestamp}")
             content = msg.render(Format.DISCORD_MARKDOWN)
 
-            result = await self.backend.send_message(self.channel_id, content)
+            result = await self.backend.send_message(self.channel_id, content)  # type: ignore[arg-type]
             self.log(f"Sent plain message at {timestamp}")
 
             if result:
@@ -269,7 +270,7 @@ class DiscordE2ETest:
             content = msg.render(Format.DISCORD_MARKDOWN)
             print(f"  Rendered content:\n{content[:200]}...")
 
-            result = await self.backend.send_message(self.channel_id, content)
+            result = await self.backend.send_message(self.channel_id, content)  # type: ignore[arg-type]
             self.log("Sent formatted message with bold, italic, code")
 
             return result
@@ -311,7 +312,7 @@ class DiscordE2ETest:
         self.section("Test: Fetch Channel")
 
         try:
-            channel = await self.backend.fetch_channel(self.channel_id)
+            channel = await self.backend.fetch_channel(self.channel_id)  # type: ignore[arg-type]
             if channel:
                 self.log(f"Fetched channel: {channel.name}")
                 print(f"  Channel ID: {channel.id}")
@@ -361,7 +362,7 @@ class DiscordE2ETest:
                 .add_text(f"  Channel: {channel_mention}\n")
                 .add_text("  (Not sending @here/@everyone to avoid spam)")
             )
-            await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))
+            await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
             self.log("Sent message with user and channel mentions")
 
         except Exception as e:
@@ -374,7 +375,7 @@ class DiscordE2ETest:
 
         if not message_id:
             # Send a message to react to
-            result = await self.backend.send_message(self.channel_id, "🧪 [E2E Test] React to this message! Bot will add reactions...")
+            result = await self.backend.send_message(self.channel_id, "🧪 [E2E Test] React to this message! Bot will add reactions...")  # type: ignore[arg-type]
             message_id = result.id if result else None
 
         if not message_id:
@@ -385,7 +386,7 @@ class DiscordE2ETest:
             # Add reactions (Discord uses unicode emoji)
             reactions = ["👍", "👎", "🎉", "❤️"]
             for emoji in reactions:
-                await self.backend.add_reaction(message_id, emoji, channel=self.channel_id)
+                await self.backend.add_reaction(message_id, emoji, channel=self.channel_id)  # type: ignore[arg-type]
                 print(f"  Added reaction: {emoji}")
                 await asyncio.sleep(0.5)  # Rate limit
 
@@ -393,11 +394,48 @@ class DiscordE2ETest:
 
             # Wait a moment then remove one
             await asyncio.sleep(2)
-            await self.backend.remove_reaction(message_id, "👎", channel=self.channel_id)
+            await self.backend.remove_reaction(message_id, "👎", channel=self.channel_id)  # type: ignore[arg-type]
             self.log("Removed 👎 reaction")
 
         except Exception as e:
             self.log(f"Failed to test reactions: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_threads(self):
+        """Test thread creation and replies."""
+        self.section("Test: Threads")
+
+        try:
+            # Send a message that will be the thread parent
+            result = await self.backend.send_message(
+                self.channel_id,  # type: ignore[arg-type]
+                "🧪 [E2E Test] Thread parent message - replies will be in thread",
+            )
+
+            if result:
+                print(f"  Parent message ID: {result.id}")
+
+                # Get the discord channel and message to create a thread
+                discord_channel = await self.backend._client.fetch_channel(int(self.channel_id))  # type: ignore[arg-type]
+                discord_message = await discord_channel.fetch_message(int(result.id))
+
+                # Create a thread from the message
+                thread = await discord_message.create_thread(
+                    name="E2E Test Thread",
+                    auto_archive_duration=60,  # 1 hour
+                )
+                print(f"  Created thread: {thread.name} ({thread.id})")
+
+                # Send messages in the thread
+                await thread.send("🧪 [E2E Test] This is the first reply in the thread!")
+                await thread.send("🧪 [E2E Test] Second reply in thread")
+                self.log("Created thread and sent replies")
+
+            else:
+                self.log("Failed to send thread parent message", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test threads: {e}", success=False)
             traceback.print_exc()
 
     async def test_rich_content(self):
@@ -422,7 +460,7 @@ class DiscordE2ETest:
             msg.content.append(table)
 
             content = msg.render(Format.DISCORD_MARKDOWN)
-            await self.backend.send_message(self.channel_id, content)
+            await self.backend.send_message(self.channel_id, content)  # type: ignore[arg-type]
             self.log("Sent rich content with table")
 
         except Exception as e:
@@ -434,7 +472,7 @@ class DiscordE2ETest:
         self.section("Test: Fetch Message History")
 
         try:
-            messages = await self.backend.fetch_messages(self.channel_id, limit=10)
+            messages = await self.backend.fetch_messages(self.channel_id, limit=10)  # type: ignore[arg-type]
             self.log(f"Fetched {len(messages)} messages from history")
 
             print("\n  Recent messages:")
@@ -497,50 +535,280 @@ class DiscordE2ETest:
             traceback.print_exc()
 
     async def test_dm_creation(self):
-        """Test DM creation."""
-        self.section("Test: DM Creation")
+        """Test DM creation using Channel.dm_to() convenience method."""
+        self.section("Test: DM Creation (using Channel.dm_to)")
 
         try:
-            # Try to get a user ID - if we don't have one from lookup,
-            # we can try to create a DM with an arbitrary user or skip
+            # Try to get a user - if we don't have one from lookup,
+            # we can try to get one from message history
+            test_user = None
             test_user_id = self.user_id
 
+            # If we have a user_id, fetch the full user object
+            if test_user_id:
+                test_user = await self.backend.fetch_user(test_user_id)
+
             # If no user_id from lookup, try getting one from message history
-            if not test_user_id:
-                print("  No user_id from lookup, trying to get from message history...")
+            if not test_user:
+                print("  No user from lookup, trying to get from message history...")
                 try:
-                    messages = await self.backend.fetch_messages(self.channel_id, limit=20)
+                    messages = await self.backend.fetch_messages(self.channel_id, limit=20)  # type: ignore[arg-type]
+                    bot_info = await self.backend.get_bot_info()
                     for msg in messages:
-                        author_id = getattr(msg, "author_id", None) or getattr(msg, "user_id", None)
-                        # Skip bot's own messages
-                        bot_info = await self.backend.get_bot_info()
-                        if author_id and (not bot_info or author_id != bot_info.id):
-                            test_user_id = author_id
-                            print(f"    Found user ID from message history: {test_user_id}")
+                        if msg.author and (not bot_info or msg.author.id != bot_info.id):
+                            test_user = msg.author
+                            print(f"    Found user from message history: {test_user.display_name}")
                             break
                 except Exception as e:
                     print(f"    Failed to get user from history: {e}")
 
-            if test_user_id:
-                print(f"  Creating DM with user {test_user_id}...")
-                dm_channel_id = await self.backend.create_dm(test_user_id)
-                if dm_channel_id:
-                    self.log(f"Created DM channel: {dm_channel_id}")
+            if test_user:
+                # Method 1: Use Channel.dm_to() convenience method
+                print(f"\n  Method 1: Using Channel.dm_to({test_user.display_name})...")
+                dm_channel = Channel.dm_to(test_user)
+                print(f"    Created incomplete DM channel: {dm_channel}")
+                print(f"    Channel type: {dm_channel.channel_type}")
+                print(f"    Users: {[u.display_name for u in dm_channel.users]}")
+                print(f"    Is incomplete: {dm_channel.is_incomplete}")
 
-                    # Send a test message to the DM
-                    msg = (
-                        FormattedMessage().add_text("🧪 [E2E Test] DM creation test message\n").add_text(f"Created at: {datetime.now().isoformat()}")
-                    )
-                    await self.backend.send_message(dm_channel_id, msg.render(Format.DISCORD_MARKDOWN))
-                    self.log("Sent message to DM")
+                # Send message to incomplete channel - backend will resolve it
+                msg = (
+                    FormattedMessage()
+                    .add_text("🧪 [E2E Test] DM via Channel.dm_to() convenience\n")
+                    .add_text(f"Created at: {datetime.now().isoformat()}")
+                )
+                result = await self.backend.send_message(dm_channel, msg.render(Format.DISCORD_MARKDOWN))
+                self.log(f"Sent DM using Channel.dm_to() - resolved to: {result.channel.id if result else 'N/A'}")
+
+                # Method 2: Use create_dm directly with user ID (legacy approach)
+                print(f"\n  Method 2: Using create_dm({test_user.id}) directly...")
+                dm_channel_id = await self.backend.create_dm(test_user.id)
+                if dm_channel_id:
+                    self.log(f"Created DM channel via create_dm(): {dm_channel_id}")
                 else:
-                    self.log("DM creation returned no channel ID", success=False)
+                    self.log("create_dm() returned no channel ID", success=False)
+
             else:
-                print("  Skipping DM test - no user ID available")
+                print("  Skipping DM test - no user available")
                 print("  (Enable Server Members Intent to allow user lookup by name)")
 
         except Exception as e:
             self.log(f"Failed to test DM creation: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_dm_reply_convenience(self):
+        """Test as_dm_to_author() convenience method."""
+        self.section("Test: as_dm_to_author() Convenience")
+
+        try:
+            # Get a recent message from the test channel to use as source
+            messages = await self.backend.fetch_messages(self.channel_id, limit=20)  # type: ignore[arg-type]
+            bot_info = await self.backend.get_bot_info()
+
+            # Find a message from a non-bot user
+            source_message = None
+            for msg in messages:
+                if msg.author and (not bot_info or msg.author.id != bot_info.id):
+                    source_message = msg
+                    break
+
+            if source_message:
+                print(f"  Found message from {source_message.author.display_name}")
+                print(f"  Original content: {source_message.content[:50]}...")
+
+                # Use as_dm_to_author() to create a DM response
+                dm_message = source_message.as_dm_to_author(
+                    f"🧪 [E2E Test] DM reply via as_dm_to_author()\n"
+                    f"This is a response to your message in #{self.channel_name}.\n"
+                    f"Created at: {datetime.now().isoformat()}"
+                )
+
+                print(f"  DM message channel type: {dm_message.channel.channel_type}")
+                print(f"  DM message channel users: {[u.display_name for u in dm_message.channel.users]}")
+                print(f"  DM message is incomplete: {dm_message.channel.is_incomplete}")
+
+                # Send the DM message - backend will resolve the channel
+                _result = await self.backend.send_message(dm_message.channel, dm_message.content)  # type: ignore[arg-type]
+                self.log("Sent DM using as_dm_to_author() convenience")
+
+            else:
+                print("  No non-bot message found to test with")
+                self.log("as_dm_to_author test skipped - no source message", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test as_dm_to_author: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_replies(self):
+        """Test message replies using as_reply() convenience method."""
+        self.section("Test: Message Replies (as_reply)")
+
+        try:
+            # Send a message that will receive a reply
+            msg = FormattedMessage().add_text("🧪 [E2E Test] Original message - will receive a reply")
+            result = await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
+
+            if result:
+                print(f"  Original message ID: {result.id}")
+
+                # Use as_reply() convenience method
+                reply_msg = result.as_reply("🧪 [E2E Test] This is a reply using as_reply() convenience!")
+                print(f"  Reply message thread: {reply_msg.thread}")
+
+                # For Discord, we need to use the reference kwarg for replies
+                reply_result = await self.backend.send_message(
+                    self.channel_id,  # type: ignore[arg-type]
+                    reply_msg.content,
+                    reference={"message_id": int(result.id)},
+                )
+                if reply_result:
+                    self.log("Sent reply using as_reply() convenience")
+                    print(f"  Reply ID: {reply_result.id}")
+                else:
+                    self.log("as_reply() failed", success=False)
+            else:
+                self.log("Failed to send original message for reply test", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test replies: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_forwarding(self):
+        """Test message forwarding using forward_message()."""
+        self.section("Test: Message Forwarding")
+
+        try:
+            # Get a recent message to forward
+            messages = await self.backend.fetch_messages(self.channel_id, limit=10)  # type: ignore[arg-type]
+
+            if messages:
+                source_message = messages[0]
+                print(f"  Source message: {(source_message.content or '')[:50]}...")
+
+                # Forward the message to the same channel (for testing)
+                forwarded = await self.backend.forward_message(
+                    source_message,
+                    self.channel_id,  # type: ignore[arg-type]
+                    include_attribution=True,
+                    prefix="📤 ",
+                )
+                if forwarded:
+                    self.log("Forwarded message with attribution")
+                    print(f"  Forwarded message ID: {forwarded.id}")
+            else:
+                self.log("No messages found to forward", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test forwarding: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_group_dm(self):
+        """Test multi-person group DM using Channel.group_dm_to()."""
+        self.section("Test: Group DM (Multi-Person)")
+
+        try:
+            # Get the test user
+            test_user = None
+            if self.user_id:
+                test_user = await self.backend.fetch_user(self.user_id)
+
+            if test_user:
+                # Demonstrate Channel.group_dm_to() API
+                print("  Channel.group_dm_to() requires 2+ users")
+                print("  Example: group_dm = Channel.group_dm_to([user1, user2])")
+
+                # For actual group DM, we need 2+ users - try to find another user from history
+                messages = await self.backend.fetch_messages(self.channel_id, limit=50)  # type: ignore[arg-type]
+                bot_info = await self.backend.get_bot_info()
+                other_users = []
+                seen_ids = {self.user_id}
+                if bot_info:
+                    seen_ids.add(bot_info.id)
+
+                for msg in messages:
+                    if msg.author and msg.author.id not in seen_ids:
+                        other_users.append(msg.author)
+                        seen_ids.add(msg.author.id)
+                        if len(other_users) >= 1:
+                            break
+
+                if other_users:
+                    # Create group DM with test_user and other_user
+                    group_users = [test_user] + other_users
+                    print(f"  Creating group DM with {len(group_users)} users:")
+                    for u in group_users:
+                        print(f"    - {u.display_name} ({u.id})")
+
+                    group_dm = Channel.group_dm_to(group_users)
+                    print(f"  Group DM channel type: {group_dm.channel_type}")
+                    print(f"  Is incomplete: {group_dm.is_incomplete}")
+
+                    # Note: Discord group DMs require users to be friends or have shared server
+                    # This may fail due to Discord's restrictions
+                    try:
+                        msg = (
+                            FormattedMessage()
+                            .add_text("🧪 [E2E Test] Group DM via Channel.group_dm_to()\n")
+                            .add_text(f"Created at: {datetime.now().isoformat()}")
+                        )
+                        _result = await self.backend.send_message(group_dm, msg.render(Format.DISCORD_MARKDOWN))
+                        self.log("Sent group DM using Channel.group_dm_to()")
+                    except Exception as e:
+                        print(f"  Group DM send failed (Discord restriction): {e}")
+                        self.log("Group DM API demonstrated (Discord may restrict group DM creation)")
+                else:
+                    print("  No other users found for group DM test")
+                    self.log("Group DM API demonstrated (need 2+ real users to send)")
+            else:
+                print("  Skipping group DM test - no user available")
+                self.log("Group DM test skipped - no user", success=False)
+
+        except Exception as e:
+            self.log(f"Failed to test group DM: {e}", success=False)
+            traceback.print_exc()
+
+    async def test_file_attachment(self):
+        """Test sending a file attachment."""
+        self.section("Test: File Attachment")
+
+        try:
+            import os as temp_os
+            import tempfile
+
+            import discord
+
+            # Create a temporary text file
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
+                f.write("This is a test file created by the chatom E2E test suite.\n")
+                f.write(f"Created at: {datetime.now().isoformat()}\n")
+                f.write("This file can be safely deleted.\n")
+                temp_file_path = f.name
+
+            print(f"  Created temp file: {temp_file_path}")
+
+            try:
+                # Create a discord.File object
+                discord_file = discord.File(temp_file_path, filename="e2e_test_file.txt")
+
+                # Send message with file attachment
+                result = await self.backend.send_message(
+                    self.channel_id,  # type: ignore[arg-type]
+                    "🧪 [E2E Test] File attachment test",
+                    file=discord_file,
+                )
+
+                if result:
+                    self.log("Sent file attachment successfully")
+                    print(f"  Message ID: {result.id}")
+                else:
+                    self.log("File attachment send failed", success=False)
+
+            finally:
+                # Clean up temp file
+                temp_os.unlink(temp_file_path)
+
+        except Exception as e:
+            self.log(f"Failed to test file attachment: {e}", success=False)
             traceback.print_exc()
 
     async def test_inbound_messages(self, bot_user_id: str, bot_name: str):
@@ -584,7 +852,7 @@ class DiscordE2ETest:
                 .add_bold("30 seconds")
                 .add_text(" to respond...")
             )
-            await self.backend.send_message(self.channel_id, prompt_msg.render(Format.DISCORD_MARKDOWN))
+            await self.backend.send_message(self.channel_id, prompt_msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
             print("\n  ⏳ Waiting for you to send a message mentioning the bot...")
             print(f"     Mention the bot like: @{bot_name} hello test")
 
@@ -624,7 +892,7 @@ class DiscordE2ETest:
                     .add_text("\n\nI heard you say: ")
                     .add_italic((received_message.content or "")[:100])
                 )
-                await self.backend.send_message(self.channel_id, ack_msg.render(Format.DISCORD_MARKDOWN))
+                await self.backend.send_message(self.channel_id, ack_msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
             else:
                 self.log("Message received but was None", success=False)
 
@@ -677,12 +945,12 @@ class DiscordE2ETest:
                 return False
 
             # Lookup channel and user by name
-            self.channel_id = await self.lookup_channel_by_name(self.channel_name)
+            self.channel_id = await self.lookup_channel_by_name(self.channel_name)  # type: ignore[arg-type]
             if not self.channel_id:
                 print(f"\n❌ Cannot continue without channel. Make sure '{self.channel_name}' exists.")
                 return False
 
-            self.user_id = await self.lookup_user_by_name(self.user_name)
+            self.user_id = await self.lookup_user_by_name(self.user_name)  # type: ignore[arg-type]
             if not self.user_id:
                 print(f"\n⚠️  User '{self.user_name}' not found. Some tests may be skipped.")
 
@@ -698,6 +966,9 @@ class DiscordE2ETest:
             # Test reactions
             await self.test_reactions(message_id)
 
+            # Test threads
+            await self.test_threads()
+
             # Test rich content
             await self.test_rich_content()
 
@@ -707,8 +978,23 @@ class DiscordE2ETest:
             # Test presence
             await self.test_presence(user)
 
-            # Test DM creation
+            # Test DM creation (with Channel.dm_to convenience)
             await self.test_dm_creation()
+
+            # Test as_dm_to_author convenience
+            await self.test_dm_reply_convenience()
+
+            # Test replies
+            await self.test_replies()
+
+            # Test forwarding
+            await self.test_forwarding()
+
+            # Test group DM
+            await self.test_group_dm()
+
+            # Test file attachment
+            await self.test_file_attachment()
 
             # Test inbound messages
             bot_info = await self.backend.get_bot_info()

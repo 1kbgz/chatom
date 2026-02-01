@@ -5,9 +5,9 @@ This module provides the Symphony-specific Message class.
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from chatom.base import Field, Message, User
+from chatom.base import Field, Message
 
 from .channel import SymphonyChannel
 from .user import SymphonyUser
@@ -152,17 +152,17 @@ class SymphonyMessage(Message):
         """Check if this message contains user mentions."""
         return len(self.mentions) > 0
 
-    def mentions_user(self, user_or_id: Union[str, User]) -> bool:
+    def mentions_user(self, user_id: str) -> bool:
         """Check if this message mentions a specific user.
 
         Args:
-            user_or_id: The user ID (as string) or User object to check for.
+            user_id: The user ID to check for.
 
         Returns:
             True if the user is mentioned in this message.
         """
-        # Extract user_id from User object or use as-is
-        user_id_str = user_or_id.id if isinstance(user_or_id, User) else str(user_or_id)
+        # Extract user_id
+        user_id_str = str(user_id)
         user_id_int = int(user_id_str) if user_id_str.isdigit() else None
 
         # Check mentions (User objects from base class)
@@ -350,6 +350,7 @@ class SymphonyMessage(Message):
     def from_formatted(
         cls,
         formatted: "FormattedMessage",
+        backend: str = "",
         **kwargs: Any,
     ) -> "SymphonyMessage":
         """Create a SymphonyMessage from a FormattedMessage.
@@ -358,6 +359,7 @@ class SymphonyMessage(Message):
 
         Args:
             formatted: The FormattedMessage to convert.
+            backend: Target backend (ignored, always uses symphony format).
             **kwargs: Additional message attributes.
 
         Returns:

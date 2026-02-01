@@ -20,7 +20,11 @@ __all__ = (
     "mention_user_for_backend",
     "mention_channel_for_backend",
     "parse_mentions",
+    "parse_channel_mentions",
+    "extract_mention_ids",
+    "extract_channel_ids",
     "MentionMatch",
+    "ChannelMentionMatch",
 )
 
 
@@ -113,23 +117,6 @@ def mention_user_for_backend(user: User, backend: "BACKEND") -> str:
             return f'<mention email="{user.email}"/>'
         return f"@{user.display_name}"
 
-    elif backend_lower == "matrix":
-        if hasattr(user, "user_id") and user.user_id:
-            return user.user_id
-        if user.handle:
-            homeserver = getattr(user, "homeserver", "matrix.org")
-            return f"@{user.handle}:{homeserver}"
-        return user.display_name
-
-    elif backend_lower == "irc":
-        return getattr(user, "nick", None) or user.handle or user.name
-
-    elif backend_lower == "email":
-        if user.email:
-            name = getattr(user, "full_name", None) or user.name or user.email
-            return f"<a href='mailto:{user.email}'>{name}</a>"
-        return getattr(user, "full_name", None) or user.name
-
     else:
         # Fallback to display name
         return user.display_name
@@ -189,10 +176,6 @@ _MENTION_PATTERNS = {
     "slack": re.compile(r"<@([A-Z0-9]+)>"),
     # Symphony: <mention uid="123456789"/> or <mention email="user@example.com"/>
     "symphony": re.compile(r'<mention\s+(?:uid="([^"]+)"|email="([^"]+)")\s*/>'),
-    # Matrix: @user:homeserver.org (exclude trailing punctuation)
-    "matrix": re.compile(r"(@[^:]+:[^\s,!?]+)"),
-    # IRC: No standard mention format, but some use nickname references
-    "irc": re.compile(r"(?:^|\s)([A-Za-z_][A-Za-z0-9_\[\]\\`^{}\-]*)[:,]"),
 }
 
 
@@ -273,3 +256,97 @@ def extract_mention_ids(content: str, backend: str) -> List[str]:
         ['U123', 'U456']
     """
     return [m.user_id for m in parse_mentions(content, backend)]
+
+
+class ChannelMentionMatch(NamedTuple):
+    """Result of parsing a channel mention from content.
+
+    Attributes:
+        channel_id: The extracted channel ID.
+        start: Start position in the original string.
+        end: End position in the original string.
+        raw: The raw mention string as it appeared.
+    """
+
+    channel_id: str
+    start: int
+    end: int
+    raw: str
+
+
+# Backend-specific channel mention patterns
+_CHANNEL_MENTION_PATTERNS = {
+    # Discord: <#123456789>
+    "discord": re.compile(r"<#(\d+)>"),
+    # Slack: <#C123ABC456> or <#C123ABC456|channel-name>
+    "slack": re.compile(r"<#([A-Z0-9]+)(?:\|[^>]*)?>"),
+}
+
+
+def parse_channel_mentions(content: str, backend: str) -> List[ChannelMentionMatch]:
+    """Parse channel mentions from message content.
+
+    Extracts channel mentions from a message based on the backend's
+    mention format. Returns a list of ChannelMentionMatch objects containing
+    the channel IDs and positions of mentions in the content.
+
+    Args:
+        content: The message content to parse.
+        backend: The backend platform identifier.
+
+    Returns:
+        List[ChannelMentionMatch]: List of channel mention matches found.
+
+    Example:
+        >>> # Parse Slack channel mentions
+        >>> mentions = parse_channel_mentions("Join <#C123>!", "slack")
+        >>> mentions[0].channel_id
+        'C123'
+
+        >>> # Parse Discord channel mentions
+        >>> mentions = parse_channel_mentions("Check <#987654321>", "discord")
+        >>> mentions[0].channel_id
+        '987654321'
+    """
+    backend_lower = backend.lower() if isinstance(backend, str) else backend.lower()
+
+    pattern = _CHANNEL_MENTION_PATTERNS.get(backend_lower)
+    if pattern is None:
+        # Unknown backend, return empty list
+        return []
+
+    matches: List[ChannelMentionMatch] = []
+
+    for match in pattern.finditer(content):
+        channel_id = match.group(1)
+        matches.append(
+            ChannelMentionMatch(
+                channel_id=channel_id,
+                start=match.start(),
+                end=match.end(),
+                raw=match.group(0),
+            )
+        )
+
+    return matches
+
+
+def extract_channel_ids(content: str, backend: str) -> List[str]:
+    """Extract just the channel IDs from mentions in content.
+
+    This is a convenience wrapper around parse_channel_mentions that returns
+    only the channel IDs as strings.
+
+    Args:
+        content: The message content to parse.
+        backend: The backend platform identifier.
+
+    Returns:
+        List[str]: List of channel IDs mentioned in the content.
+
+    Example:
+        >>> ids = extract_channel_ids("Join <#C123> and <#C456>!", "slack")
+        >>> ids
+        ['C123', 'C456']
+    """
+    return [m.channel_id for m in parse_channel_mentions(content, backend)]

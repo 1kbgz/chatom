@@ -23,7 +23,6 @@ class SlackUser(User):
         tz_offset: The user's timezone offset in seconds.
         title: The user's job title.
         phone: The user's phone number.
-        skype: The user's Skype name.
         status_text: The user's current status text.
         status_emoji: The user's current status emoji.
     """
@@ -71,10 +70,6 @@ class SlackUser(User):
     phone: str = Field(
         default="",
         description="The user's phone number.",
-    )
-    skype: str = Field(
-        default="",
-        description="The user's Skype name.",
     )
     status_text: str = Field(
         default="",

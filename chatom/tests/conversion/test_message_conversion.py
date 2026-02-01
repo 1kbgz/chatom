@@ -155,7 +155,7 @@ class TestNewBaseMessageAttributes:
         from chatom.base import User
 
         users = [User(id="u1"), User(id="u2"), User(id="u3")]
-        msg = Message(id="m1", mentions=users)
+        msg = Message(id="m1", tags=users)
         # mention_ids should be populated from mentions (once we convert it)
         # For now, test mentions directly
         assert len(msg.mentions) == 3

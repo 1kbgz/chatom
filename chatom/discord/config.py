@@ -4,7 +4,7 @@ This module provides configuration classes for the Discord backend.
 """
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from pydantic import Field, SecretStr, field_validator
 
@@ -35,7 +35,7 @@ class DiscordConfig(BackendConfig):
         >>> backend = DiscordBackend(config=config)
     """
 
-    bot_token: SecretStr = Field(
+    token: Union[str, SecretStr] = Field(
         default=SecretStr(""),
         description="Discord bot token from Developer Portal (can be a file path).",
     )
@@ -64,7 +64,7 @@ class DiscordConfig(BackendConfig):
         description="Total number of shards.",
     )
 
-    @field_validator("bot_token", mode="before")
+    @field_validator("token", mode="before")
     @classmethod
     def validate_token(cls, v):
         """Validate and load bot token, supporting file paths."""
@@ -75,9 +75,14 @@ class DiscordConfig(BackendConfig):
         if isinstance(v, SecretStr):
             v = v.get_secret_value()
 
-        # Check if it's a file path
-        if Path(v).exists():
-            v = Path(v).read_text().strip()
+        # Check for empty string after extracting from SecretStr
+        if not v:
+            return SecretStr("")
+
+        # Check if it's a file path (but not a directory or special path)
+        path = Path(v)
+        if path.exists() and path.is_file():
+            v = path.read_text().strip()
 
         # Accept any non-empty token (don't validate length for flexibility in testing)
         if v:
@@ -92,7 +97,7 @@ class DiscordConfig(BackendConfig):
         Returns:
             The bot token string.
         """
-        return self.bot_token.get_secret_value()
+        return self.token.get_secret_value() if isinstance(self.token, SecretStr) else self.token
 
     @property
     def has_token(self) -> bool:
@@ -101,4 +106,4 @@ class DiscordConfig(BackendConfig):
         Returns:
             True if a bot token is set.
         """
-        return bool(self.bot_token.get_secret_value())
+        return bool(self.token.get_secret_value() if isinstance(self.token, SecretStr) else self.token)

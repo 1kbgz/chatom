@@ -1,513 +1,484 @@
-# Messaging Guide
+# Messaging
 
-This guide covers reading and writing messages across different backends,
-including parsing incoming messages and formatting outgoing messages.
+This guide covers all aspects of sending, receiving, and managing messages.
+
+## Sending Messages
+
+### Basic Message
+
+```python
+message = await backend.send_message(
+    channel_id="C123456",
+    content="Hello, world!",
+)
+
+print(f"Sent: {message.id}")
+```
+
+### Formatted Message
+
+```python
+from chatom.format import FormattedMessage
+
+msg = FormattedMessage()
+msg.bold("Important:")
+msg.text(" Please read this.")
+
+content = msg.render(backend.get_format())
+message = await backend.send_message(
+    channel_id=channel.id,
+    content=content,
+)
+```
+
+### Send to Channel by Name
+
+```python
+# Look up channel first
+channel = await backend.fetch_channel(name="general")
+
+# Then send
+message = await backend.send_message(
+    channel_id=channel.id,
+    content="Hello!",
+)
+```
 
 ## Reading Messages
 
-### Fetching Message History
-
-All backends support fetching historical messages from channels:
+### Message History
 
 ```python
-from chatom.slack import SlackBackend, SlackConfig
-
-backend = SlackBackend(config=SlackConfig(bot_token="xoxb-..."))
-await backend.connect()
-
-# Fetch the last 50 messages
-messages = await backend.fetch_messages("C123456", limit=50)
-
-for message in messages:
-    print(f"[{message.timestamp}] {message.author.name}: {message.content}")
+# Read last 50 messages
+async for message in backend.read_messages(channel_id="C123456", limit=50):
+    author = message.author.name if message.author else "Unknown"
+    print(f"{author}: {message.content}")
 ```
 
-### Message Properties
-
-Each message has standard properties:
+### With Pagination
 
 ```python
-message.id           # Unique message identifier
-message.content      # Raw message content/text
-message.timestamp    # When the message was sent (datetime)
-message.user_id      # ID of the user who sent it
-message.channel_id   # ID of the channel/room
-message.author       # User object (if available)
-message.channel      # Channel object (if available)
-message.reactions    # List of reactions
-message.attachments  # List of attachments
-message.embeds       # List of embeds (Discord, Slack)
-message.thread_id    # Thread ID (if in a thread)
-message.reply_to     # Message this replies to
-```
+# Read in batches
+messages = []
+async for message in backend.read_messages(channel_id="C123456", limit=100):
+    messages.append(message)
 
-### Pagination
+    # Process in batches of 20
+    if len(messages) >= 20:
+        process_batch(messages)
+        messages = []
 
-For large channels, use pagination to fetch older messages:
-
-```python
-# Fetch initial messages
-messages = await backend.fetch_messages("C123456", limit=100)
-
-# Fetch older messages (before the oldest message we have)
+# Process remaining
 if messages:
-    older = await backend.fetch_messages(
-        "C123456",
-        limit=100,
-        before=messages[0].id  # ID of oldest message
-    )
-
-# Fetch newer messages (after a specific message)
-newer = await backend.fetch_messages(
-    "C123456",
-    limit=100,
-    after=some_message_id
-)
+    process_batch(messages)
 ```
 
-### Backend-Specific Notes
-
-| Backend | History Support | Pagination | Notes |
-|---------|-----------------|------------|-------|
-| Discord | ✅ | By message ID | Limit 1-100 per request |
-| Slack | ✅ | By timestamp | Uses `conversations.history` API |
-| Symphony | ✅ | By message ID | Uses stream ID |
-| Matrix | ✅ | By event token | Uses sync tokens |
-| Email | ✅ | By date/ID | Via IMAP |
-| IRC | ❌ | N/A | No history without a bouncer |
-
----
-
-## Writing Messages
-
-### Basic Message Sending
+### Since a Specific Time
 
 ```python
-# Send a simple text message
-await backend.send_message("channel_id", "Hello, world!")
+from datetime import datetime, timedelta
 
-# Sync version
-backend.sync.send_message("channel_id", "Hello, world!")
-```
+# Read messages from last hour
+since = datetime.now() - timedelta(hours=1)
 
-### Message Return Value
-
-`send_message` returns the sent message:
-
-```python
-sent = await backend.send_message("C123456", "Hello!")
-print(f"Message sent with ID: {sent.id}")
-print(f"Sent at: {sent.timestamp}")
-```
-
-### Editing Messages
-
-```python
-# Edit an existing message
-edited = await backend.edit_message(
+async for message in backend.read_messages(
     channel_id="C123456",
-    message_id="msg_id",
-    content="Updated content",
+    after=since,
+    limit=100,
+):
+    print(message.content)
+```
+
+## Threads
+
+### Create a Thread
+
+```python
+# Send parent message
+parent = await backend.send_message(
+    channel_id="C123456",
+    content="📋 Discussion Topic: New Feature",
+)
+
+# Reply in thread
+reply = await backend.reply_to_message(
+    channel_id="C123456",
+    message_id=parent.id,
+    content="I think we should...",
 )
 ```
 
-### Deleting Messages
+### Multiple Replies
 
 ```python
-# Delete a message
+# Send several replies
+for i, point in enumerate(discussion_points):
+    await backend.reply_to_message(
+        channel_id="C123456",
+        message_id=parent.id,
+        content=f"{i+1}. {point}",
+    )
+```
+
+### Read Thread Messages
+
+```python
+# Read all messages in a thread
+async for message in backend.read_thread(
+    channel=channel,
+    thread=parent_message,
+    limit=50,
+):
+    print(f"{message.author.name}: {message.content}")
+```
+
+## Direct Messages
+
+### Create DM Channel
+
+```python
+# Find user
+user = await backend.fetch_user(name="Alice")
+
+# Create/open DM channel
+dm_channel_id = await backend.create_dm([user.id])
+
+# Send message
+await backend.send_message(
+    channel=dm_channel_id,
+    content="Hello! This is a private message.",
+)
+```
+
+### Convenience Method
+
+```python
+# Send DM directly
+message = await backend.send_dm(
+    user=user,
+    content="Quick question for you!",
+)
+```
+
+## Reactions
+
+### Add Reaction
+
+```python
+await backend.add_reaction(
+    channel_id="C123456",
+    message_id="M789",
+    emoji="thumbsup",  # emoji name without colons
+)
+```
+
+### Multiple Reactions
+
+```python
+emojis = ["thumbsup", "rocket", "heart"]
+
+for emoji in emojis:
+    await backend.add_reaction(
+        channel_id="C123456",
+        message_id="M789",
+        emoji=emoji,
+    )
+```
+
+### Remove Reaction
+
+```python
+await backend.remove_reaction(
+    channel_id="C123456",
+    message_id="M789",
+    emoji="thumbsup",
+)
+```
+
+### Unicode Emojis (Discord)
+
+```python
+# Discord accepts unicode directly
+await backend.add_reaction(
+    channel_id="C123456",
+    message_id="M789",
+    emoji="👍",
+)
+```
+
+## Editing Messages
+
+```python
+# Send initial message
+message = await backend.send_message(
+    channel_id="C123456",
+    content="Processing...",
+)
+
+# Do some work...
+await asyncio.sleep(2)
+
+# Update the message
+await backend.edit_message(
+    channel_id="C123456",
+    message_id=message.id,
+    content="Processing... Done! ✅",
+)
+```
+
+## Deleting Messages
+
+```python
 await backend.delete_message(
     channel_id="C123456",
-    message_id="msg_id",
+    message_id="M789",
 )
 ```
 
----
-
-## Formatting Messages
-
-### Using the Format System
-
-chatom provides a rich text formatting system that renders to platform-specific formats:
+## Forwarding Messages
 
 ```python
-from chatom import (
-    Format,
-    FormattedMessage,
-    Paragraph,
-    Text,
-    Bold,
-    Italic,
-    Strikethrough,
-    Code,
-    CodeBlock,
-    Link,
+# Forward a message to another channel
+await backend.forward_message(
+    message=original_message,
+    target_channel_id="C789",
 )
-
-# Build a formatted message
-msg = FormattedMessage(
-    content=[
-        Paragraph(children=[
-            Text(content="Hello, "),
-            Bold(child=Text(content="world")),
-            Text(content="! This is "),
-            Italic(child=Text(content="important")),
-            Text(content="."),
-        ]),
-    ]
-)
-
-# Render for different platforms
-plaintext = msg.render(Format.PLAINTEXT)    # "Hello, world! This is important.\n"
-markdown = msg.render(Format.MARKDOWN)       # "Hello, **world**! This is *important*.\n"
-slack = msg.render(Format.SLACK_MARKDOWN)   # "Hello, *world*! This is _important_.\n"
-discord = msg.render(Format.DISCORD_MARKDOWN)
-html = msg.render(Format.HTML)              # "<p>Hello, <strong>world</strong>!..."
-symphony = msg.render(Format.SYMPHONY_MESSAGEML)
-
-# Send with appropriate format
-await backend.send_message("channel_id", msg.render(backend.format))
 ```
 
-### Using Backend's Format
+## Listening for Messages
 
-Each backend has a preferred format. Use it automatically:
+### Real-time Events
 
 ```python
-from chatom.slack import SlackBackend
+async for message in backend.listen():
+    print(f"New message: {message.content}")
 
-backend = SlackBackend(...)
-
-# backend.format is Format.SLACK_MARKDOWN
-content = msg.render(backend.format)
-await backend.send_message("C123456", content)
+    # Respond to mentions
+    if message.mentions_user(backend.bot_user_id):
+        await backend.reply_to_message(
+            channel_id=message.channel_id,
+            message_id=message.id,
+            content="You mentioned me!",
+        )
 ```
 
-### Available Formats
-
-| Format | Backend | Example Bold | Example Italic |
-|--------|---------|--------------|----------------|
-| `PLAINTEXT` | All | `word` | `word` |
-| `MARKDOWN` | General | `**word**` | `*word*` |
-| `SLACK_MARKDOWN` | Slack | `*word*` | `_word_` |
-| `DISCORD_MARKDOWN` | Discord | `**word**` | `*word*` |
-| `HTML` | Email, Web | `<strong>word</strong>` | `<em>word</em>` |
-| `SYMPHONY_MESSAGEML` | Symphony | `<b>word</b>` | `<i>word</i>` |
-
-### Text Formatting Elements
-
-#### Bold, Italic, Strikethrough
-
-```python
-from chatom import Bold, Italic, Strikethrough, Text, Format
-
-bold = Bold(child=Text(content="important"))
-italic = Italic(child=Text(content="emphasized"))
-strike = Strikethrough(child=Text(content="deleted"))
-
-# Combine them
-combined = Bold(child=Italic(child=Text(content="both")))
-print(combined.render(Format.MARKDOWN))  # "***both***"
-```
-
-#### Code
-
-```python
-from chatom import Code, CodeBlock, Format
-
-# Inline code
-inline = Code(content="print('hello')")
-print(inline.render(Format.MARKDOWN))  # "`print('hello')`"
-
-# Code block with syntax highlighting
-block = CodeBlock(
-    content="def hello():\n    return 'Hello!'",
-    language="python",
-)
-print(block.render(Format.MARKDOWN))
-# ```python
-# def hello():
-#     return 'Hello!'
-# ```
-```
-
-#### Links
-
-```python
-from chatom import Link, Format
-
-link = Link(url="https://example.com", text="Click here")
-print(link.render(Format.MARKDOWN))       # "[Click here](https://example.com)"
-print(link.render(Format.SLACK_MARKDOWN)) # "<https://example.com|Click here>"
-print(link.render(Format.HTML))           # '<a href="https://example.com">Click here</a>'
-```
-
-#### Lists
-
-```python
-from chatom import UnorderedList, OrderedList, ListItem, Text, Format
-
-# Unordered list
-ul = UnorderedList(items=[
-    ListItem(content=Text(content="First item")),
-    ListItem(content=Text(content="Second item")),
-])
-print(ul.render(Format.MARKDOWN))
-# - First item
-# - Second item
-
-# Ordered list
-ol = OrderedList(items=[
-    ListItem(content=Text(content="Step one")),
-    ListItem(content=Text(content="Step two")),
-])
-print(ol.render(Format.MARKDOWN))
-# 1. Step one
-# 2. Step two
-```
-
-#### Blockquotes
-
-```python
-from chatom import Blockquote, Text, Format
-
-quote = Blockquote(child=Text(content="This is a quote"))
-print(quote.render(Format.MARKDOWN))       # "> This is a quote"
-print(quote.render(Format.SLACK_MARKDOWN)) # "> This is a quote"
-print(quote.render(Format.HTML))           # "<blockquote>This is a quote</blockquote>"
-```
-
-### Tables
-
-```python
-from chatom import Table, Format
-
-# Create from data
-data = [
-    ["Alice", "100", "Gold"],
-    ["Bob", "85", "Silver"],
-    ["Carol", "70", "Bronze"],
-]
-table = Table.from_data(data, headers=["Name", "Score", "Medal"])
-
-print(table.render(Format.MARKDOWN))
-# | Name | Score | Medal |
-# |------|-------|-------|
-# | Alice | 100 | Gold |
-# | Bob | 85 | Silver |
-# | Carol | 70 | Bronze |
-
-print(table.render(Format.PLAINTEXT))
-# Name    Score   Medal
-# Alice   100     Gold
-# Bob     85      Silver
-# Carol   70      Bronze
-```
-
----
-
-## Platform-Specific Formatting
-
-### Discord
-
-Discord uses a Markdown variant:
-
-```python
-from chatom import Format
-
-msg = FormattedMessage(content=[...])
-content = msg.render(Format.DISCORD_MARKDOWN)
-
-# Discord-specific: spoiler tags
-spoiler_text = "||This is a spoiler||"
-
-# Discord-specific: timestamps
-timestamp = f"<t:{int(datetime.now().timestamp())}:R>"  # Relative time
-```
-
-### Slack
-
-Slack uses mrkdwn format:
-
-```python
-from chatom import Format
-
-content = msg.render(Format.SLACK_MARKDOWN)
-
-# Slack-specific: emoji shortcodes
-emoji = ":wave: :rocket:"
-
-# Slack-specific: date formatting
-date_str = f"<!date^{timestamp}^{{date_short}} at {{time}}|fallback>"
-```
-
-### Symphony
-
-Symphony uses MessageML (XML-based):
-
-```python
-from chatom import Format
-
-content = msg.render(Format.SYMPHONY_MESSAGEML)
-# Result: <messageML><p>Hello <b>world</b>!</p></messageML>
-
-# Symphony-specific: structured elements
-form = """
-<messageML>
-    <form id="my-form">
-        <text-field name="input" placeholder="Enter text"/>
-        <button name="submit" type="action">Submit</button>
-    </form>
-</messageML>
-"""
-```
-
-### Email (HTML)
-
-Email typically uses HTML:
-
-```python
-from chatom import Format
-
-content = msg.render(Format.HTML)
-
-# Full HTML email with styling
-html_email = f"""
-<html>
-<body style="font-family: Arial, sans-serif;">
-    {content}
-    <hr>
-    <p style="color: gray; font-size: 12px;">
-        Sent via My Bot
-    </p>
-</body>
-</html>
-"""
-```
-
----
-
-## Parsing Incoming Messages
-
-### Extracting Content
-
-```python
-# Get the raw content
-content = message.content
-
-# Check for specific patterns
-if "help" in content.lower():
-    await send_help_message(channel_id)
-
-# Use regex for more complex patterns
-import re
-match = re.search(r'remind me in (\d+) minutes? to (.+)', content)
-if match:
-    minutes = int(match.group(1))
-    task = match.group(2)
-```
-
-### Parsing Mentions in Messages
-
-See the [Mentions Guide](mentions.md) for detailed information on parsing
-mentions in incoming messages.
-
-```python
-from chatom import parse_mentions, MentionMatch
-
-# Parse all mentions in a message
-mentions = parse_mentions(message.content, backend.name)
-
-for mention in mentions:
-    if mention.type == "user":
-        user = await backend.fetch_user(mention.id)
-        print(f"Mentioned user: {user.name}")
-    elif mention.type == "channel":
-        channel = await backend.fetch_channel(mention.id)
-        print(f"Mentioned channel: {channel.name}")
-```
-
-### Handling Attachments
-
-```python
-for attachment in message.attachments:
-    print(f"Attachment: {attachment.filename}")
-    print(f"Type: {attachment.content_type}")
-    print(f"Size: {attachment.size} bytes")
-    print(f"URL: {attachment.url}")
-```
-
-### Handling Reactions
-
-```python
-for reaction in message.reactions:
-    print(f"Emoji: {reaction.emoji.name}")
-    print(f"Count: {reaction.count}")
-```
-
----
-
-## Complete Example: Echo Bot
-
-A complete example that reads messages and responds with formatted replies:
+### With Timeout
 
 ```python
 import asyncio
-from chatom import FormattedMessage, Paragraph, Bold, Italic, Text, Format
-from chatom.slack import SlackBackend, SlackConfig
 
-async def run_echo_bot():
-    config = SlackConfig(bot_token="xoxb-your-token")
-    backend = SlackBackend(config=config)
-
-    await backend.connect()
-    print("Echo bot connected!")
-
-    # In a real bot, you'd use event handlers
-    # This is a simplified polling example
-
-    channel_id = "C123456"
-    last_message_id = None
-
-    while True:
-        # Fetch new messages
-        messages = await backend.fetch_messages(
-            channel_id,
-            limit=10,
-            after=last_message_id,
-        )
-
-        for message in messages:
-            last_message_id = message.id
-
-            # Skip our own messages
-            if message.author and message.author.is_bot:
-                continue
-
-            # Echo the message with formatting
-            response = FormattedMessage(
-                content=[
-                    Paragraph(children=[
-                        Text(content="You said: "),
-                        Italic(child=Text(content=message.content or "")),
-                    ]),
-                ]
-            )
-
-            # Send in Slack format
-            await backend.send_message(
-                channel_id,
-                response.render(Format.SLACK_MARKDOWN),
-            )
-
-        await asyncio.sleep(2)  # Poll every 2 seconds
-
-asyncio.run(run_echo_bot())
+async def listen_with_timeout(backend, timeout=60):
+    try:
+        async with asyncio.timeout(timeout):
+            async for message in backend.listen():
+                yield message
+    except asyncio.TimeoutError:
+        print("Listener timed out")
 ```
 
----
+## Message Objects
+
+### Properties
+
+```python
+message = await backend.send_message(channel_id, content)
+
+# Basic info
+message.id          # Unique identifier
+message.content     # Text content
+message.created_at  # When sent
+message.edited_at   # When last edited (if any)
+
+# Author
+message.author      # User object
+message.author_id   # User ID string
+
+# Channel
+message.channel     # Channel object
+message.channel_id  # Channel ID string
+
+# Threading
+message.thread_id   # Parent thread ID
+message.reply_to_id # Message being replied to
+
+# Rich content
+message.reactions   # List of Reaction objects
+message.attachments # List of Attachment objects
+message.embeds      # List of Embed objects
+```
+
+### Detecting Mentions
+
+```python
+# Get all mentioned user IDs
+user_ids = message.get_mentioned_user_ids()
+
+# Get all mentioned channel IDs
+channel_ids = message.get_mentioned_channel_ids()
+
+# Check if specific user is mentioned
+if message.mentions_user("U123456"):
+    print("User was mentioned!")
+```
+
+### Response Convenience Methods
+
+Messages have convenience methods that construct new Message instances. This makes it easy to create replies, forwards, or quotes:
+
+#### `as_reply(content, **kwargs)`
+
+Create a new message as a reply to this message:
+
+```python
+async for message in backend.listen():
+    if "help" in message.content.lower():
+        # Create a reply message
+        reply = message.as_reply("I can help with that!")
+        # reply.reply_to is message
+        # reply.message_type is MessageType.REPLY
+```
+
+#### `as_thread_reply(content, **kwargs)`
+
+Create a reply within the existing thread (or create one if not in a thread):
+
+```python
+# If message is in a thread, new message is in that thread
+# Otherwise, a new thread is created from this message
+reply = message.as_thread_reply("Following up on this...")
+# reply.thread is set appropriately
+```
+
+#### `as_forward(target_channel, **kwargs)`
+
+Create a forwarded message to another channel with attribution:
+
+```python
+# Forward to moderation channel
+forward = message.as_forward(mod_channel)
+# forward.forwarded_from is message
+# forward.message_type is MessageType.FORWARD
+# forward.content includes "[Forwarded from Alice in #general]\nOriginal content..."
+```
+
+#### `as_quote_reply(content, **kwargs)`
+
+Create a reply that quotes the original message:
+
+```python
+quote = message.as_quote_reply("I agree with this!")
+# quote.content is "> Original message\n\nI agree with this!"
+```
+
+#### `reply_context()`
+
+Get context information for custom reply handling:
+
+```python
+ctx = message.reply_context()
+# Returns: {
+#   "channel": Channel(...),
+#   "message": Message(...),
+#   "thread": Thread(...) or None,
+#   "author": User(...),
+# }
+
+# Use for custom logic
+new_msg = Message(
+    channel=ctx["channel"],
+    content=f"Replying to {ctx['message'].author_name}",
+    reply_to=ctx["message"],
+)
+```
+
+### Complete Response Bot Example
+
+```python
+async for message in backend.listen():
+    content = message.content.lower()
+
+    if "!help" in content:
+        # Create a reply
+        reply = message.as_reply("Available commands: !help, !forward")
+        # ... send via your preferred method
+
+    elif "!forward" in content:
+        # Forward to log channel
+        forward = message.as_forward(log_channel)
+        # forward.forwarded_from is message
+
+    elif "!quote" in content:
+        # Quote and respond
+        quote = message.as_quote_reply("Acknowledged! ✅")
+```
+```
+
+## Error Handling
+
+```python
+try:
+    message = await backend.send_message(
+        channel_id="C123456",
+        content="Hello!",
+    )
+except Exception as e:
+    print(f"Failed to send message: {e}")
+```
+
+## Complete Example: Notification Bot
+
+```python
+import asyncio
+from chatom.slack import SlackBackend, SlackConfig
+from chatom.format import FormattedMessage, Table
+
+async def daily_report():
+    config = SlackConfig(bot_token="xoxb-your-token")
+    backend = SlackBackend(config=config)
+    await backend.connect()
+
+    try:
+        # Get channel
+        channel = await backend.fetch_channel(name="reports")
+
+        # Create formatted report
+        msg = FormattedMessage()
+        msg.heading("📊 Daily Report", level=2)
+        msg.paragraph(f"Report generated at {datetime.now()}")
+
+        # Add table
+        table = Table.from_data(
+            headers=["Metric", "Value", "Change"],
+            data=[
+                ["Users", "1,234", "+5%"],
+                ["Revenue", "$45,678", "+12%"],
+                ["Errors", "23", "-8%"],
+            ],
+        )
+        msg.table(table)
+
+        # Send report
+        content = msg.render(backend.get_format())
+        report_msg = await backend.send_message(
+            channel_id=channel.id,
+            content=content,
+        )
+
+        # Add reaction to indicate success
+        await backend.add_reaction(
+            channel_id=channel.id,
+            message_id=report_msg.id,
+            emoji="white_check_mark",
+        )
+
+    finally:
+        await backend.disconnect()
+
+asyncio.run(daily_report())
+```
 
 ## Next Steps
 
-- Learn about [User and Channel Mentions](mentions.md)
-- Explore [Attachments and Embeds](advanced-features.md#attachments)
-- See backend-specific examples in [Backend Examples](backend-examples.md)
+- [Format System](format-system.md) - Rich text formatting
+- [Mentions](mentions.md) - User and channel mentions
+- [Examples](examples.md) - Complete example applications

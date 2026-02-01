@@ -8,7 +8,7 @@ and writing messages.
 import logging
 import threading
 from queue import Queue
-from typing import Optional, Set
+from typing import List, Optional, Set
 
 import csp
 from csp import ts
@@ -68,7 +68,7 @@ class BackendAdapter:
         channels: Optional[Set[str]] = None,
         skip_own: bool = True,
         skip_history: bool = True,
-    ) -> ts[[Message]]:
+    ) -> ts[List[Message]]:
         """Subscribe to messages from the backend.
 
         Args:
@@ -98,8 +98,8 @@ class BackendAdapter:
     def _write_message(self, msg: ts[Message]):
         """Internal node for writing messages."""
         with csp.state():
-            s_queue: Queue = None
-            s_thread: threading.Thread = None
+            s_queue: Optional[Queue] = None
+            s_thread: Optional[threading.Thread] = None
 
         with csp.start():
             s_queue = Queue(maxsize=0)
@@ -141,8 +141,8 @@ class BackendAdapter:
     def _set_presence(self, presence: ts[str], timeout: float = 5.0):
         """Internal node for setting presence using a background thread."""
         with csp.state():
-            s_queue: Queue = None
-            s_thread: threading.Thread = None
+            s_queue: Optional[Queue] = None
+            s_thread: Optional[threading.Thread] = None
 
         with csp.start():
             s_queue = Queue(maxsize=0)
