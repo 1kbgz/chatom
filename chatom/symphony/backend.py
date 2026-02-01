@@ -5,6 +5,7 @@ This module provides the Symphony backend using the Symphony BDK
 """
 
 import asyncio
+import logging
 from datetime import datetime, timezone
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
 
@@ -28,6 +29,8 @@ from .mention import mention_user as _mention_user
 from .message import SymphonyMessage
 from .presence import SymphonyPresence, SymphonyPresenceStatus
 from .user import SymphonyUser
+
+log = logging.getLogger(__name__)
 
 # Try to import symphony-bdk
 try:
@@ -383,9 +386,12 @@ class SymphonyBackend(BackendBase):
         if id:
             cached = self.channels.get_by_id(id)
             if cached:
+                log.debug(f"fetch_channel: returning cached channel for id={id}")
                 return cached
 
+        log.info(f"fetch_channel: _bdk is {'set' if self._bdk else 'None'}, id={id}, name={name}")
         if self._bdk is None:
+            log.warning("fetch_channel: _bdk is None, cannot search for channel")
             return None
 
         # If we have an ID, fetch directly
@@ -398,12 +404,15 @@ class SymphonyBackend(BackendBase):
                 from symphony.bdk.gen.pod_model.v2_room_search_criteria import V2RoomSearchCriteria
 
                 stream_service = self._bdk.streams()
+                log.info(f"Searching for room by name: {name}")
                 results = await stream_service.search_rooms(V2RoomSearchCriteria(query=name), limit=10)
+                log.info(f"Room search results: {results.count if results else 0} rooms found")
                 if results and results.rooms:
                     # Find exact match first
                     for room in results.rooms:
                         room_attrs = room.room_attributes
                         room_info = room.room_system_info
+                        log.debug(f"Checking room: {room_attrs.name if room_attrs else 'no attrs'}")
                         if room_attrs and room_info and room_attrs.name == name:
                             return await self._fetch_channel_by_id(room_info.id)
                     # If no exact match, use first result
@@ -412,7 +421,7 @@ class SymphonyBackend(BackendBase):
                         if room.room_system_info:
                             return await self._fetch_channel_by_id(room.room_system_info.id)
             except Exception:
-                pass
+                log.exception(f"Error searching for room by name: {name}")
 
         return None
 
