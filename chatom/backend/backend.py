@@ -17,6 +17,7 @@ from typing import (
     Optional,
     TypeVar,
     Union,
+    cast,
 )
 
 from pydantic import Field
@@ -722,7 +723,7 @@ class BackendBase(BaseModel):
 
         # Handle DM channels with users - create/get the DM
         if channel.users and channel.is_dm:
-            dm_channel_id = await self.create_dm(channel.users)  # type: ignore[arg-type]
+            dm_channel_id = await self.create_dm(cast(List[Union[str, User]], channel.users))
             if dm_channel_id:
                 return dm_channel_id
             raise ValueError(f"Failed to create DM channel with users: {[u.id for u in channel.users]}")

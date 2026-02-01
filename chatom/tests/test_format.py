@@ -370,7 +370,7 @@ class TestFormattedMessage:
         # The FormattedMessage.render() should fall back to str()
         msg = FormattedMessage(content=[Text(content="normal")])
         # Force a non-renderable item into content (bypass type checking)
-        msg.content.append("plain string")  # type: ignore
+        msg.content.append("plain string")
         result = msg.render(Format.PLAINTEXT)
         assert "normal" in result
         assert "plain string" in result
@@ -509,7 +509,7 @@ class TestFormattedMessage:
     def test_formatted_message_mention_string_fallback(self):
         """Test mention method with string fallback."""
         msg = FormattedMessage()
-        msg.mention("U12345")  # type: ignore
+        msg.mention("U12345")
         result = msg.render(Format.SLACK_MARKDOWN)
         assert "<@U12345>" in result
 
@@ -526,7 +526,7 @@ class TestFormattedMessage:
     def test_formatted_message_channel_mention_string_fallback(self):
         """Test channel_mention method with string fallback."""
         msg = FormattedMessage()
-        msg.channel_mention("C12345")  # type: ignore
+        msg.channel_mention("C12345")
         result = msg.render(Format.SLACK_MARKDOWN)
         assert "<#C12345>" in result
 

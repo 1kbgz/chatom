@@ -76,19 +76,19 @@ async def test_slack_threads() -> bool:
     await asyncio.sleep(0.5)
 
     # Method 2: Reply using the as_reply() convenience method
-    reply2 = await backend.send_message(**parent.as_reply("Reply #2 using parent.as_reply() convenience method!"))  # type: ignore[arg-type]
+    reply2 = await backend.send_message(**parent.as_reply("Reply #2 using parent.as_reply() convenience method!"))
     print(f"✅ Sent second reply using as_reply(): {reply2.id}")
 
     await asyncio.sleep(0.5)
 
     # Method 3: Continue the thread using as_thread_reply()
-    reply3 = await backend.send_message(**reply2.as_thread_reply("Reply #3 using as_thread_reply() to continue the thread."))  # type: ignore[arg-type]
+    reply3 = await backend.send_message(**reply2.as_thread_reply("Reply #3 using as_thread_reply() to continue the thread."))
     print(f"✅ Sent third reply using as_thread_reply(): {reply3.id}")
 
     await asyncio.sleep(0.5)
 
     # Method 4: Quote reply using as_quote_reply()
-    reply4 = await backend.send_message(**parent.as_quote_reply("✅ Thread complete! This is a quoted reply."))  # type: ignore[arg-type]
+    reply4 = await backend.send_message(**parent.as_quote_reply("✅ Thread complete! This is a quoted reply."))
     print(f"✅ Sent quoted reply using as_quote_reply(): {reply4.id}")
 
     # Read thread messages
@@ -210,7 +210,7 @@ async def test_symphony_threads() -> bool:
 
         config_kwargs["bot_private_key_content"] = SecretStr(private_key_content)
 
-    config = SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+    config = SymphonyConfig(**config_kwargs)
     backend = SymphonyBackend(config=config)
 
     await backend.connect()

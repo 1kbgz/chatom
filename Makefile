@@ -53,6 +53,13 @@ check-manifest:  ## check python sdist manifest with check-manifest
 
 types: ## run type checking with ty
 	ty check --python `which python`
+	@count=$$(grep -r "# type: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
+	if [ $$count -ge 15 ]; then \
+		echo "Error: Found $$count type: ignore comments (max 14 allowed)"; \
+		exit 1; \
+	else \
+		echo "Type ignore count: $$count (limit: 14)"; \
+	fi
 
 checks: check-manifest types
 

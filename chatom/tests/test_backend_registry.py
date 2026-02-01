@@ -49,16 +49,16 @@ class TestBackendBase:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -79,16 +79,16 @@ class TestBackendBase:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -111,16 +111,16 @@ class TestSyncHelper:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
-                return User(id=id, name=f"User {id}")  # type: ignore[arg-type]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
+                return User(id=id, name=f"User {id}")
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
-                return Channel(id=id, name=f"Channel {id}")  # type: ignore[arg-type]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
+                return Channel(id=id, name=f"Channel {id}")
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -140,16 +140,16 @@ class TestSyncHelper:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -170,16 +170,16 @@ class TestSyncHelper:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -201,20 +201,20 @@ class TestSyncHelper:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(  # type: ignore[override]
+            async def fetch_user(
                 self, id: Optional[str] = None, name: Optional[str] = None, email: Optional[str] = None, handle: Optional[str] = None
             ):
                 if id:
                     return User(id=id, name=f"User {id}")
                 return None
 
-            async def fetch_channel(self, id: Optional[str] = None, name: Optional[str] = None):  # type: ignore[override]
+            async def fetch_channel(self, id: Optional[str] = None, name: Optional[str] = None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend = TestBackend()
@@ -242,16 +242,16 @@ class TestBackendRegistry:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         # Should be able to get the backend
@@ -272,16 +272,16 @@ class TestBackendRegistry:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         retrieved = BackendRegistry.get("my_custom_backend")
@@ -306,16 +306,16 @@ class TestBackendRegistry:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         format_val = BackendRegistry.get_format("format_test")
@@ -342,16 +342,16 @@ class TestBackendRegistry:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         instance1 = BackendRegistry.get_instance("instance_test")
@@ -376,16 +376,16 @@ class TestConvenienceFunctions:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         backend_class = get_backend("convenience_test")
@@ -405,16 +405,16 @@ class TestConvenienceFunctions:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="1", content=content)
 
         format_val = get_backend_format("format_convenience")
@@ -607,16 +607,16 @@ class TestFetchMessages:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return None
 
         backend = MockBackend()
@@ -664,20 +664,20 @@ class TestFetchMessages:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 # Return some test messages
                 return [
                     Message(id="1", content="First message"),
                     Message(id="2", content="Second message"),
                 ]
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="new", content=content)
 
         backend = CustomBackend()
@@ -699,18 +699,18 @@ class TestFetchMessages:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 # Return up to 'limit' messages
                 all_messages = [Message(id=str(i), content=f"Message {i}") for i in range(10)]
                 return all_messages[:limit]
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="new", content=content)
 
         backend = LimitTestBackend()
@@ -736,13 +736,13 @@ class TestFetchMessages:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 messages = [Message(id=str(i), content=f"Message {i}") for i in range(1, 11)]
                 if after:
                     messages = [m for m in messages if int(m.id) > int(after)]
@@ -750,7 +750,7 @@ class TestFetchMessages:
                     messages = [m for m in messages if int(m.id) < int(before)]
                 return messages[:limit]
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="new", content=content)
 
         backend = PaginationTestBackend()
@@ -822,19 +822,19 @@ class TestPresenceMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return None
 
-            async def get_presence(self, user_id):  # type: ignore[override]
+            async def get_presence(self, user_id):
                 return None
 
         backend = MockBackend()
@@ -854,16 +854,16 @@ class TestPresenceMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return None
 
             async def set_presence(self, status, status_text=None, **kwargs):
@@ -945,19 +945,19 @@ class TestPresenceMethods:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
-                return User(id=id, name=f"User {id}")  # type: ignore[arg-type]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
+                return User(id=id, name=f"User {id}")
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="new", content=content)
 
-            async def get_presence(self, user_id: str):  # type: ignore[override]
+            async def get_presence(self, user_id: str):
                 return Presence(
                     status=PresenceStatus.ONLINE,
                     status_text="Working",
@@ -988,19 +988,19 @@ class TestPresenceMethods:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="new", content=content)
 
-            async def get_presence(self, user_id: str):  # type: ignore[override]
+            async def get_presence(self, user_id: str):
                 status_map = {
                     "online": PresenceStatus.ONLINE,
                     "away": PresenceStatus.IDLE,
@@ -1058,16 +1058,16 @@ class TestReplyInThread:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 thread_id = kwargs.get("thread_id") or ""
                 self.last_thread_id = thread_id
                 return Message(id="reply", content=content, thread=Thread(id=thread_id) if thread_id else None)
@@ -1094,16 +1094,16 @@ class TestReplyInThread:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 thread_id = kwargs.get("thread_id") or ""
                 self.last_thread_id = thread_id
                 return Message(id="reply", content=content, thread=Thread(id=thread_id) if thread_id else None)
@@ -1129,16 +1129,16 @@ class TestReplyInThread:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="reply", content=content)
 
         backend = ThreadBackend()
@@ -1164,16 +1164,16 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
         backend = BasicBackend()
@@ -1202,19 +1202,19 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
-            async def send_action(self, target: str, action: str):  # type: ignore[override]
+            async def send_action(self, target: str, action: str):
                 self.action_sent = True
 
         backend = ActionBackend()
@@ -1235,19 +1235,19 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
-            async def send_notice(self, target: str, text: str):  # type: ignore[override]
+            async def send_notice(self, target: str, text: str):
                 self.notice_sent = True
 
         backend = NoticeBackend()
@@ -1268,22 +1268,22 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
-            async def join_channel(self, channel_id: str, **kwargs):  # type: ignore[override]
+            async def join_channel(self, channel_id: str, **kwargs):
                 self.joined_channel = channel_id
 
-            async def join_room(self, room_id: str, **kwargs):  # type: ignore[override]
+            async def join_room(self, room_id: str, **kwargs):
                 return await self.join_channel(room_id, **kwargs)
 
         backend = RoomBackend()
@@ -1304,22 +1304,22 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
-            async def leave_channel(self, channel_id: str, **kwargs):  # type: ignore[override]
+            async def leave_channel(self, channel_id: str, **kwargs):
                 self.left_channel = channel_id
 
-            async def leave_room(self, room_id: str, **kwargs):  # type: ignore[override]
+            async def leave_room(self, room_id: str, **kwargs):
                 return await self.leave_channel(room_id, **kwargs)
 
         backend = LeaveBackend()
@@ -1340,23 +1340,23 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
-            async def create_dm(self, user_ids: list):  # type: ignore[override]
+            async def create_dm(self, user_ids: list):
                 self.dm_user_ids = user_ids
                 return "dm_channel_123"
 
-            async def create_im(self, user_ids: list):  # type: ignore[override]
+            async def create_im(self, user_ids: list):
                 return await self.create_dm(user_ids)
 
         backend = DMBackend()
@@ -1378,23 +1378,23 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 return None
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
-            async def create_channel(self, name: str, **kwargs):  # type: ignore[override]
+            async def create_channel(self, name: str, **kwargs):
                 self.created_name = name
                 return "new_channel_123"
 
-            async def create_room(self, name: str, **kwargs):  # type: ignore[override]
+            async def create_room(self, name: str, **kwargs):
                 return await self.create_channel(name, **kwargs)
 
         backend = CreateBackend()
@@ -1415,20 +1415,20 @@ class TestSyncHelperMethods:
             async def disconnect(self):
                 pass
 
-            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):  # type: ignore[override]
+            async def fetch_user(self, identifier=None, *, id=None, name=None, email=None, handle=None):
                 return None
 
-            async def fetch_channel(self, identifier=None, *, id=None, name=None):  # type: ignore[override]
+            async def fetch_channel(self, identifier=None, *, id=None, name=None):
                 channel_id = identifier or id
-                return Channel(id=channel_id, name="test-channel")  # type: ignore[arg-type]
+                return Channel(id=channel_id, name="test-channel")
 
-            async def fetch_room(self, id: str):  # type: ignore[override]
+            async def fetch_room(self, id: str):
                 return await self.fetch_channel(id)
 
-            async def fetch_messages(self, channel, limit=100, before=None, after=None):  # type: ignore[override]
+            async def fetch_messages(self, channel, limit=100, before=None, after=None):
                 return []
 
-            async def send_message(self, channel, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel, content, **kwargs):
                 return Message(id="msg", content=content)
 
         backend = FetchBackend()

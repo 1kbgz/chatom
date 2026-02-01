@@ -73,7 +73,7 @@ def symphony_config():
     if os.environ.get("SYMPHONY_KEY_MANAGER_HOST"):
         config_kwargs["key_manager_host"] = os.environ["SYMPHONY_KEY_MANAGER_HOST"]
 
-    return SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+    return SymphonyConfig(**config_kwargs)
 
 
 @pytest.fixture

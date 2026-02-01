@@ -5,7 +5,7 @@ for looking up users and channels.
 """
 
 from abc import abstractmethod
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Any, Dict, Generic, List, Optional, TypeVar, cast
 
 from pydantic import Field
 
@@ -56,9 +56,9 @@ class Registry(BaseModel, Generic[T]):
             entity: The entity to add.
         """
         if hasattr(entity, "id") and entity.id:
-            self._cache_by_id[entity.id] = entity  # type: ignore[index]
+            self._cache_by_id[cast(str, entity.id)] = entity
         if hasattr(entity, "name") and entity.name:
-            self._cache_by_name[entity.name] = entity  # type: ignore[index]
+            self._cache_by_name[cast(str, entity.name)] = entity
 
     def get_by_id(self, id: str) -> Optional[T]:
         """Get an entity by ID from cache.

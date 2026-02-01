@@ -226,7 +226,7 @@ async def send_formatted_symphony() -> bool:
 
         config_kwargs["bot_private_key_content"] = SecretStr(private_key_content)
 
-    config = SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+    config = SymphonyConfig(**config_kwargs)
     backend = SymphonyBackend(config=config)
 
     await backend.connect()

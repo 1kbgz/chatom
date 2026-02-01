@@ -203,7 +203,7 @@ class CombinedE2ETest:
         if self.symphony_user_lookup_url:
             config_kwargs["user_lookup_url"] = self.symphony_user_lookup_url
 
-        config = SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+        config = SymphonyConfig(**config_kwargs)
 
         self.symphony_backend = SymphonyBackend(config=config)
         print(f"  Host: {self.symphony_host}")
@@ -245,8 +245,8 @@ class CombinedE2ETest:
         self.section("Setting Up Slack Backend")
 
         config = SlackConfig(
-            bot_token=self.slack_bot_token,  # type: ignore[arg-type]
-            app_token=self.slack_app_token,  # type: ignore[arg-type]
+            bot_token=self.slack_bot_token,
+            app_token=self.slack_app_token,
         )
 
         self.slack_backend = SlackBackend(config=config)
@@ -304,7 +304,7 @@ class CombinedE2ETest:
                 .add_text(" to respond...")
             )
             await self.symphony_backend.send_message(
-                self.symphony_stream_id,  # type: ignore[arg-type]
+                self.symphony_stream_id,
                 prompt_msg.render(Format.SYMPHONY_MESSAGEML),
             )
             print("\n  ⏳ Waiting for Symphony message...")
@@ -372,7 +372,7 @@ class CombinedE2ETest:
                             .add_text(f"{plain_text}")
                         )
                     await self.slack_backend.send_message(
-                        self.slack_channel_id,  # type: ignore[arg-type]
+                        self.slack_channel_id,
                         forward_msg.render(Format.SLACK_MARKDOWN),
                     )
                     self.log("Forwarded Symphony message to Slack")
@@ -414,7 +414,7 @@ class CombinedE2ETest:
                 .add_text(" to respond...")
             )
             await self.slack_backend.send_message(
-                self.slack_channel_id,  # type: ignore[arg-type]
+                self.slack_channel_id,
                 prompt_msg.render(Format.SLACK_MARKDOWN),
             )
             print("\n  ⏳ Waiting for Slack message...")
@@ -484,7 +484,7 @@ class CombinedE2ETest:
                             .add_text(f"{text}")
                         )
                     await self.symphony_backend.send_message(
-                        self.symphony_stream_id,  # type: ignore[arg-type]
+                        self.symphony_stream_id,
                         forward_msg.render(Format.SYMPHONY_MESSAGEML),
                     )
                     self.log("Forwarded Slack message to Symphony")

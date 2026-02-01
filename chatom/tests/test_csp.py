@@ -593,7 +593,7 @@ class TestEdgeCases:
                 raise RuntimeError("Connection failed")
 
         backend = FailingBackend()
-        impl = MessageReaderPushAdapterImpl(backend, channels={"failing_channel"})  # type: ignore[arg-type]
+        impl = MessageReaderPushAdapterImpl(backend, channels={"failing_channel"})
 
         # Should not raise, should log warning and use channel as ID
         await impl._resolve_channels(backend)

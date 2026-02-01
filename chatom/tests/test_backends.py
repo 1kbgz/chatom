@@ -112,13 +112,13 @@ class TestDiscordBackend:
 
         activity = DiscordActivity(
             name="VS Code",
-            activity_type=DiscordActivityType.PLAYING,  # type: ignore[arg-type]
-            state="Editing code",  # type: ignore[arg-type]
+            activity_type=DiscordActivityType.PLAYING,
+            state="Editing code",
         )
         presence = DiscordPresence(
             status=PresenceStatus.ONLINE,
             activity=activity,
-            desktop_status="online",  # type: ignore[arg-type]
+            desktop_status="online",
         )
         assert presence.activity.name == "VS Code"
         assert presence.desktop_status == "online"

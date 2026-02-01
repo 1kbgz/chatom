@@ -186,7 +186,7 @@ class SymphonyE2ETest:
         if self.user_lookup_url:
             config_kwargs["user_lookup_url"] = self.user_lookup_url
 
-        config = SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+        config = SymphonyConfig(**config_kwargs)
 
         self.backend = SymphonyBackend(config=config)
         print("Created SymphonyBackend with config")
@@ -296,7 +296,7 @@ class SymphonyE2ETest:
             msg = FormattedMessage().add_text(f"🧪 [E2E Test] Plain message sent at {timestamp}")
             content = msg.render(Format.SYMPHONY_MESSAGEML)
 
-            result = await self.backend.send_message(self.stream_id, content)  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.stream_id, content)
             self.log(f"Sent plain message at {timestamp}")
 
             if result:
@@ -327,7 +327,7 @@ class SymphonyE2ETest:
             )
             content = msg.render(Format.SYMPHONY_MESSAGEML)
 
-            result = await self.backend.send_message(self.stream_id, content)  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.stream_id, content)
             self.log("Sent MessageML formatted message")
 
             return result
@@ -355,7 +355,7 @@ class SymphonyE2ETest:
             content = msg.render(Format.SYMPHONY_MESSAGEML)
             print(f"  Rendered content:\n{content[:300]}...")
 
-            result = await self.backend.send_message(self.stream_id, content)  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.stream_id, content)
             self.log("Sent formatted message via Format system")
 
             return result
@@ -391,7 +391,7 @@ class SymphonyE2ETest:
 
         try:
             # User mention by UID
-            uid_mention = mention_user_by_uid(self.user_id)  # type: ignore[arg-type]
+            uid_mention = mention_user_by_uid(self.user_id)
             print(f"  User mention by UID: {uid_mention}")
 
             # If we have user object, use the backend method
@@ -413,7 +413,7 @@ class SymphonyE2ETest:
             )
             content = msg.render(Format.SYMPHONY_MESSAGEML)
 
-            await self.backend.send_message(self.stream_id, content)  # type: ignore[arg-type]
+            await self.backend.send_message(self.stream_id, content)
             self.log("Sent message with user mention")
 
         except Exception as e:
@@ -443,7 +443,7 @@ class SymphonyE2ETest:
             )
             content = msg.render(Format.SYMPHONY_MESSAGEML)
 
-            await self.backend.send_message(self.stream_id, content)  # type: ignore[arg-type]
+            await self.backend.send_message(self.stream_id, content)
             self.log("Sent message with hashtag and cashtag")
 
         except Exception as e:
@@ -471,7 +471,7 @@ class SymphonyE2ETest:
             msg.content.append(table)
 
             content = msg.render(Format.SYMPHONY_MESSAGEML)
-            await self.backend.send_message(self.stream_id, content)  # type: ignore[arg-type]
+            await self.backend.send_message(self.stream_id, content)
             self.log("Sent rich content with table")
 
         except Exception as e:
@@ -484,7 +484,7 @@ class SymphonyE2ETest:
         if not message_id:
             # Send a message to react to
             msg = FormattedMessage().add_text("🧪 [E2E Test] React to this message! Bot will add reactions...")
-            result = await self.backend.send_message(self.stream_id, msg.render(Format.SYMPHONY_MESSAGEML))  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.stream_id, msg.render(Format.SYMPHONY_MESSAGEML))
             message_id = result.id if result else None
 
         if not message_id:
@@ -495,7 +495,7 @@ class SymphonyE2ETest:
             # Add reactions (Symphony uses emoji shortcodes like :thumbsup:)
             reactions = [":thumbsup:", ":thumbsdown:", ":tada:", ":heart:"]
             for emoji in reactions:
-                await self.backend.add_reaction(message_id, emoji, channel=self.stream_id)  # type: ignore[arg-type]
+                await self.backend.add_reaction(message_id, emoji, channel=self.stream_id)
                 print(f"  Added reaction: {emoji}")
                 await asyncio.sleep(0.5)  # Rate limit
 
@@ -503,7 +503,7 @@ class SymphonyE2ETest:
 
             # Wait a moment then remove one
             await asyncio.sleep(2)
-            await self.backend.remove_reaction(message_id, ":thumbsdown:", channel=self.stream_id)  # type: ignore[arg-type]
+            await self.backend.remove_reaction(message_id, ":thumbsdown:", channel=self.stream_id)
             self.log("Removed :thumbsdown: reaction")
 
         except Exception as e:
@@ -515,7 +515,7 @@ class SymphonyE2ETest:
         self.section("Test: Fetch Message History")
 
         try:
-            messages = await self.backend.fetch_messages(self.stream_id, limit=10)  # type: ignore[arg-type]
+            messages = await self.backend.fetch_messages(self.stream_id, limit=10)
             self.log(f"Fetched {len(messages)} messages from history")
 
             print("\n  Recent messages:")
@@ -613,7 +613,7 @@ class SymphonyE2ETest:
         # Test 2: Use create_im directly (legacy approach)
         try:
             print(f"\n  Method 2: Using create_im([{self.user_id}]) directly...")
-            im_id = await self.backend.create_im([self.user_id])  # type: ignore[arg-type]
+            im_id = await self.backend.create_im([self.user_id])
             if im_id:
                 self.log(f"Created DM with user {self.user_id}")
                 print(f"  DM Stream ID: {im_id}")
@@ -681,7 +681,7 @@ class SymphonyE2ETest:
 
         try:
             # Get a recent message from the test stream to use as source
-            messages = await self.backend.fetch_messages(self.stream_id, limit=20)  # type: ignore[arg-type]
+            messages = await self.backend.fetch_messages(self.stream_id, limit=20)
 
             # Get bot info to skip bot messages
             bot_user_id = None
@@ -716,7 +716,7 @@ class SymphonyE2ETest:
                 # Send the DM message - backend will resolve the channel
                 # Note: Symphony uses MessageML format
                 content = FormattedMessage().add_text(dm_message.content).render(Format.SYMPHONY_MESSAGEML)
-                _result = await self.backend.send_message(dm_message.channel, content)  # type: ignore[arg-type]
+                _result = await self.backend.send_message(dm_message.channel, content)
                 self.log("Sent DM using as_dm_to_author() convenience")
 
             else:
@@ -741,7 +741,7 @@ class SymphonyE2ETest:
             # Send a message that will receive a reply
             original_text = "🧪 [E2E Test] Original message - will receive a reply"
             msg = FormattedMessage().add_text(original_text)
-            result = await self.backend.send_message(self.stream_id, msg.render(Format.SYMPHONY_MESSAGEML))  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.stream_id, msg.render(Format.SYMPHONY_MESSAGEML))
 
             if result:
                 print(f"  Original message ID: {result.id}")
@@ -771,7 +771,7 @@ class SymphonyE2ETest:
                     f"<p>{reply_msg.content}</p>"
                     "</messageML>"
                 )
-                reply_result = await self.backend.send_message(self.stream_id, reply_content)  # type: ignore[arg-type]
+                reply_result = await self.backend.send_message(self.stream_id, reply_content)
                 if reply_result:
                     self.log("Sent reply with Symphony-style card format")
                     print(f"  Reply ID: {reply_result.id}")
@@ -798,7 +798,7 @@ class SymphonyE2ETest:
             # First, send a fresh message that we'll forward
             source_content = "🧪 [E2E Test] This is the source message to be forwarded"
             source_msg_result = await self.backend.send_message(
-                self.stream_id,  # type: ignore[arg-type]
+                self.stream_id,
                 FormattedMessage().add_text(source_content).render(Format.SYMPHONY_MESSAGEML),
             )
 
@@ -814,8 +814,8 @@ class SymphonyE2ETest:
             from chatom.symphony import SymphonyChannel, SymphonyMessage, SymphonyUser
 
             source_channel = SymphonyChannel(
-                id=self.stream_id,  # type: ignore[arg-type]
-                name=self.room_name,  # type: ignore[arg-type]
+                id=self.stream_id,
+                name=self.room_name,
             )
 
             # Use bot's own info as the author (since bot sent the source message)
@@ -840,7 +840,7 @@ class SymphonyE2ETest:
             # Forward the message with attribution
             forwarded = await self.backend.forward_message(
                 source_message,
-                self.stream_id,  # type: ignore[arg-type]
+                self.stream_id,
                 include_attribution=True,
                 prefix="📤 ",
             )
@@ -866,7 +866,7 @@ class SymphonyE2ETest:
                 print("  Example: group_dm = Channel.group_dm_to([user1, user2])")
 
                 # For actual group DM/MIM, we need 2+ users - try to find another user from history
-                messages = await self.backend.fetch_messages(self.stream_id, limit=50)  # type: ignore[arg-type]
+                messages = await self.backend.fetch_messages(self.stream_id, limit=50)
 
                 # Get bot info to exclude
                 bot_user_id = None
@@ -940,7 +940,7 @@ class SymphonyE2ETest:
                 with open(temp_file_path, "rb") as file_obj:
                     msg = FormattedMessage().add_text("🧪 [E2E Test] File attachment test")
                     result = await self.backend.send_message(
-                        self.stream_id,  # type: ignore[arg-type]
+                        self.stream_id,
                         msg.render(Format.SYMPHONY_MESSAGEML),
                         attachments=[file_obj],
                     )
@@ -989,7 +989,7 @@ class SymphonyE2ETest:
                 .add_bold("30 seconds")
                 .add_text(" to respond...")
             )
-            prompt_result = await self.backend.send_message(self.stream_id, prompt_msg.render(Format.SYMPHONY_MESSAGEML))  # type: ignore[arg-type]
+            prompt_result = await self.backend.send_message(self.stream_id, prompt_msg.render(Format.SYMPHONY_MESSAGEML))
             print(f"  Prompt message ID: {prompt_result}")
             print("\n  ⏳ Waiting for you to send a message mentioning the bot...")
             print(f"     Mention the bot like: @{bot_display_name} hello test")
@@ -1007,7 +1007,7 @@ class SymphonyE2ETest:
             except asyncio.TimeoutError:
                 self.log("Timeout waiting for inbound message (30s)", success=False)
                 timeout_msg = FormattedMessage().add_text("⏰ ").add_bold("[E2E Test] Timeout").add_text(" - No message received within 30 seconds.")
-                await self.backend.send_message(self.stream_id, timeout_msg.render(Format.SYMPHONY_MESSAGEML))  # type: ignore[arg-type]
+                await self.backend.send_message(self.stream_id, timeout_msg.render(Format.SYMPHONY_MESSAGEML))
                 return
 
             if received_message:
@@ -1100,7 +1100,7 @@ class SymphonyE2ETest:
                 .add_text("Plain text extraction: ")
                 .add_italic(extracted_text)
             )
-            await self.backend.send_message(self.stream_id, confirm_msg.render(Format.SYMPHONY_MESSAGEML))  # type: ignore[arg-type]
+            await self.backend.send_message(self.stream_id, confirm_msg.render(Format.SYMPHONY_MESSAGEML))
 
         except Exception as e:
             self.log(f"Failed to process with format system: {e}", success=False)

@@ -153,6 +153,7 @@ unresolved-import = "ignore"
 [tool.ty.src]
 exclude = [
     "chatom/tests/**/*",
+    "chatom/examples/**/*",
 ]
 
 [tool.yardang]

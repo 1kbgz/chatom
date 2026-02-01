@@ -90,17 +90,17 @@ async def listen_slack(timeout: int) -> bool:
                 # Demo: Use convenience methods to respond to commands
                 if content.startswith("!help"):
                     # Reply in thread using as_reply()
-                    await backend.send_message(**message.as_reply("Available commands: !help, !ping, !dm, !quote"))  # type: ignore[arg-type]
+                    await backend.send_message(**message.as_reply("Available commands: !help, !ping, !dm, !quote"))
                     print("   → Sent help reply in thread")
 
                 elif content.startswith("!ping"):
                     # Reply with quote using as_quote_reply()
-                    await backend.send_message(**message.as_quote_reply("🏓 Pong!"))  # type: ignore[arg-type]
+                    await backend.send_message(**message.as_quote_reply("🏓 Pong!"))
                     print("   → Sent quoted pong reply")
 
                 elif content.startswith("!dm") and message.author:
                     # DM the author using as_dm_to_author()
-                    await backend.send_dm(**message.as_dm_to_author("👋 You asked me to DM you!"))  # type: ignore[arg-type]
+                    await backend.send_dm(**message.as_dm_to_author("👋 You asked me to DM you!"))
                     print(f"   → Sent DM to {author}")
 
         except asyncio.CancelledError:
@@ -146,7 +146,7 @@ async def listen_symphony(timeout: int) -> bool:
 
         config_kwargs["bot_private_key_content"] = SecretStr(private_key_content)
 
-    config = SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+    config = SymphonyConfig(**config_kwargs)
     backend = SymphonyBackend(config=config)
 
     await backend.connect()

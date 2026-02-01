@@ -722,16 +722,16 @@ class TestRoomChannelAliases:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(self, id):  # type: ignore[override]
+            async def fetch_user(self, id):
                 return None
 
-            async def fetch_channel(self, id):  # type: ignore[override]
+            async def fetch_channel(self, id):
                 return None
 
-            async def fetch_messages(self, channel_id, **kwargs):  # type: ignore[override]
+            async def fetch_messages(self, channel_id, **kwargs):
                 return []
 
-            async def send_message(self, channel_id, content, **kwargs):  # type: ignore[override]
+            async def send_message(self, channel_id, content, **kwargs):
                 raise NotImplementedError()
 
         backend = MinimalBackend()

@@ -69,7 +69,7 @@ async def send_slack_dm() -> bool:
     print(f"✅ Created/opened DM channel: {dm_channel_id}")
 
     sent = await backend.send_message(
-        channel=dm_channel_id,  # type: ignore[arg-type]
+        channel=dm_channel_id,
         content="Hello! This is a direct message sent via chatom. 👋",
     )
     print(f"✅ Sent DM: {sent.id}")
@@ -134,7 +134,7 @@ async def send_discord_dm() -> bool:
     print(f"✅ Created/opened DM channel: {dm_channel_id}")
 
     sent = await backend.send_message(
-        channel=dm_channel_id,  # type: ignore[arg-type]
+        channel=dm_channel_id,
         content="Hello! This is a direct message from chatom. 👋",
     )
     print(f"✅ Sent DM: {sent.id}")
@@ -172,7 +172,7 @@ async def send_symphony_dm() -> bool:
 
         config_kwargs["bot_private_key_content"] = SecretStr(private_key_content)
 
-    config = SymphonyConfig(**config_kwargs)  # type: ignore[arg-type]
+    config = SymphonyConfig(**config_kwargs)
     backend = SymphonyBackend(config=config)
 
     await backend.connect()
@@ -193,7 +193,7 @@ async def send_symphony_dm() -> bool:
     print(f"✅ Created/opened IM: {im_channel_id}")
 
     sent = await backend.send_message(
-        channel=im_channel_id,  # type: ignore[arg-type]
+        channel=im_channel_id,
         content="Hello! This is a direct message from chatom.",
     )
     print(f"✅ Sent IM: {sent.id}")

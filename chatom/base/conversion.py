@@ -18,7 +18,7 @@ Example usage:
     >>> base_user = demote(discord_user)
 """
 
-from typing import Any, Dict, List, Optional, Type, TypeVar
+from typing import Any, Dict, List, Optional, Type, TypeVar, cast
 
 from pydantic import ValidationError
 
@@ -372,7 +372,7 @@ def demote(instance: BaseModel) -> BaseModel:
         # Check parent classes
         for parent in instance_type.__mro__:
             if parent in _BASE_TYPE_MAP:
-                base_type = _BASE_TYPE_MAP[parent]  # type: ignore[index]
+                base_type = _BASE_TYPE_MAP[cast(Type[BaseModel], parent)]
                 break
             if parent.__name__ in _TYPE_REGISTRY:
                 # It's a base type

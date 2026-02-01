@@ -101,8 +101,8 @@ class DiscordE2ETest:
         # - Server Members Intent (for member lookups)
         # - Message Content Intent (for reading message content)
         config = DiscordConfig(
-            token=self.bot_token,  # type: ignore[arg-type]
-            intents=["guilds", "guild_messages"],  # type: ignore[arg-type]  # Basic intents only
+            token=self.bot_token,
+            intents=["guilds", "guild_messages"],  # Basic intents only
         )
 
         self.backend = DiscordBackend(config=config)
@@ -236,7 +236,7 @@ class DiscordE2ETest:
             msg = FormattedMessage().add_text(f"🧪 [E2E Test] Plain message sent at {timestamp}")
             content = msg.render(Format.DISCORD_MARKDOWN)
 
-            result = await self.backend.send_message(self.channel_id, content)  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.channel_id, content)
             self.log(f"Sent plain message at {timestamp}")
 
             if result:
@@ -270,7 +270,7 @@ class DiscordE2ETest:
             content = msg.render(Format.DISCORD_MARKDOWN)
             print(f"  Rendered content:\n{content[:200]}...")
 
-            result = await self.backend.send_message(self.channel_id, content)  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.channel_id, content)
             self.log("Sent formatted message with bold, italic, code")
 
             return result
@@ -312,7 +312,7 @@ class DiscordE2ETest:
         self.section("Test: Fetch Channel")
 
         try:
-            channel = await self.backend.fetch_channel(self.channel_id)  # type: ignore[arg-type]
+            channel = await self.backend.fetch_channel(self.channel_id)
             if channel:
                 self.log(f"Fetched channel: {channel.name}")
                 print(f"  Channel ID: {channel.id}")
@@ -362,7 +362,7 @@ class DiscordE2ETest:
                 .add_text(f"  Channel: {channel_mention}\n")
                 .add_text("  (Not sending @here/@everyone to avoid spam)")
             )
-            await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
+            await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))
             self.log("Sent message with user and channel mentions")
 
         except Exception as e:
@@ -375,7 +375,7 @@ class DiscordE2ETest:
 
         if not message_id:
             # Send a message to react to
-            result = await self.backend.send_message(self.channel_id, "🧪 [E2E Test] React to this message! Bot will add reactions...")  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.channel_id, "🧪 [E2E Test] React to this message! Bot will add reactions...")
             message_id = result.id if result else None
 
         if not message_id:
@@ -386,7 +386,7 @@ class DiscordE2ETest:
             # Add reactions (Discord uses unicode emoji)
             reactions = ["👍", "👎", "🎉", "❤️"]
             for emoji in reactions:
-                await self.backend.add_reaction(message_id, emoji, channel=self.channel_id)  # type: ignore[arg-type]
+                await self.backend.add_reaction(message_id, emoji, channel=self.channel_id)
                 print(f"  Added reaction: {emoji}")
                 await asyncio.sleep(0.5)  # Rate limit
 
@@ -394,7 +394,7 @@ class DiscordE2ETest:
 
             # Wait a moment then remove one
             await asyncio.sleep(2)
-            await self.backend.remove_reaction(message_id, "👎", channel=self.channel_id)  # type: ignore[arg-type]
+            await self.backend.remove_reaction(message_id, "👎", channel=self.channel_id)
             self.log("Removed 👎 reaction")
 
         except Exception as e:
@@ -408,7 +408,7 @@ class DiscordE2ETest:
         try:
             # Send a message that will be the thread parent
             result = await self.backend.send_message(
-                self.channel_id,  # type: ignore[arg-type]
+                self.channel_id,
                 "🧪 [E2E Test] Thread parent message - replies will be in thread",
             )
 
@@ -416,7 +416,7 @@ class DiscordE2ETest:
                 print(f"  Parent message ID: {result.id}")
 
                 # Get the discord channel and message to create a thread
-                discord_channel = await self.backend._client.fetch_channel(int(self.channel_id))  # type: ignore[arg-type]
+                discord_channel = await self.backend._client.fetch_channel(int(self.channel_id))
                 discord_message = await discord_channel.fetch_message(int(result.id))
 
                 # Create a thread from the message
@@ -460,7 +460,7 @@ class DiscordE2ETest:
             msg.content.append(table)
 
             content = msg.render(Format.DISCORD_MARKDOWN)
-            await self.backend.send_message(self.channel_id, content)  # type: ignore[arg-type]
+            await self.backend.send_message(self.channel_id, content)
             self.log("Sent rich content with table")
 
         except Exception as e:
@@ -472,7 +472,7 @@ class DiscordE2ETest:
         self.section("Test: Fetch Message History")
 
         try:
-            messages = await self.backend.fetch_messages(self.channel_id, limit=10)  # type: ignore[arg-type]
+            messages = await self.backend.fetch_messages(self.channel_id, limit=10)
             self.log(f"Fetched {len(messages)} messages from history")
 
             print("\n  Recent messages:")
@@ -552,7 +552,7 @@ class DiscordE2ETest:
             if not test_user:
                 print("  No user from lookup, trying to get from message history...")
                 try:
-                    messages = await self.backend.fetch_messages(self.channel_id, limit=20)  # type: ignore[arg-type]
+                    messages = await self.backend.fetch_messages(self.channel_id, limit=20)
                     bot_info = await self.backend.get_bot_info()
                     for msg in messages:
                         if msg.author and (not bot_info or msg.author.id != bot_info.id):
@@ -602,7 +602,7 @@ class DiscordE2ETest:
 
         try:
             # Get a recent message from the test channel to use as source
-            messages = await self.backend.fetch_messages(self.channel_id, limit=20)  # type: ignore[arg-type]
+            messages = await self.backend.fetch_messages(self.channel_id, limit=20)
             bot_info = await self.backend.get_bot_info()
 
             # Find a message from a non-bot user
@@ -628,7 +628,7 @@ class DiscordE2ETest:
                 print(f"  DM message is incomplete: {dm_message.channel.is_incomplete}")
 
                 # Send the DM message - backend will resolve the channel
-                _result = await self.backend.send_message(dm_message.channel, dm_message.content)  # type: ignore[arg-type]
+                _result = await self.backend.send_message(dm_message.channel, dm_message.content)
                 self.log("Sent DM using as_dm_to_author() convenience")
 
             else:
@@ -646,7 +646,7 @@ class DiscordE2ETest:
         try:
             # Send a message that will receive a reply
             msg = FormattedMessage().add_text("🧪 [E2E Test] Original message - will receive a reply")
-            result = await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
+            result = await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))
 
             if result:
                 print(f"  Original message ID: {result.id}")
@@ -657,7 +657,7 @@ class DiscordE2ETest:
 
                 # For Discord, we need to use the reference kwarg for replies
                 reply_result = await self.backend.send_message(
-                    self.channel_id,  # type: ignore[arg-type]
+                    self.channel_id,
                     reply_msg.content,
                     reference={"message_id": int(result.id)},
                 )
@@ -679,7 +679,7 @@ class DiscordE2ETest:
 
         try:
             # Get a recent message to forward
-            messages = await self.backend.fetch_messages(self.channel_id, limit=10)  # type: ignore[arg-type]
+            messages = await self.backend.fetch_messages(self.channel_id, limit=10)
 
             if messages:
                 source_message = messages[0]
@@ -688,7 +688,7 @@ class DiscordE2ETest:
                 # Forward the message to the same channel (for testing)
                 forwarded = await self.backend.forward_message(
                     source_message,
-                    self.channel_id,  # type: ignore[arg-type]
+                    self.channel_id,
                     include_attribution=True,
                     prefix="📤 ",
                 )
@@ -718,7 +718,7 @@ class DiscordE2ETest:
                 print("  Example: group_dm = Channel.group_dm_to([user1, user2])")
 
                 # For actual group DM, we need 2+ users - try to find another user from history
-                messages = await self.backend.fetch_messages(self.channel_id, limit=50)  # type: ignore[arg-type]
+                messages = await self.backend.fetch_messages(self.channel_id, limit=50)
                 bot_info = await self.backend.get_bot_info()
                 other_users = []
                 seen_ids = {self.user_id}
@@ -792,7 +792,7 @@ class DiscordE2ETest:
 
                 # Send message with file attachment
                 result = await self.backend.send_message(
-                    self.channel_id,  # type: ignore[arg-type]
+                    self.channel_id,
                     "🧪 [E2E Test] File attachment test",
                     file=discord_file,
                 )
@@ -852,7 +852,7 @@ class DiscordE2ETest:
                 .add_bold("30 seconds")
                 .add_text(" to respond...")
             )
-            await self.backend.send_message(self.channel_id, prompt_msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
+            await self.backend.send_message(self.channel_id, prompt_msg.render(Format.DISCORD_MARKDOWN))
             print("\n  ⏳ Waiting for you to send a message mentioning the bot...")
             print(f"     Mention the bot like: @{bot_name} hello test")
 
@@ -892,7 +892,7 @@ class DiscordE2ETest:
                     .add_text("\n\nI heard you say: ")
                     .add_italic((received_message.content or "")[:100])
                 )
-                await self.backend.send_message(self.channel_id, ack_msg.render(Format.DISCORD_MARKDOWN))  # type: ignore[arg-type]
+                await self.backend.send_message(self.channel_id, ack_msg.render(Format.DISCORD_MARKDOWN))
             else:
                 self.log("Message received but was None", success=False)
 
@@ -945,12 +945,12 @@ class DiscordE2ETest:
                 return False
 
             # Lookup channel and user by name
-            self.channel_id = await self.lookup_channel_by_name(self.channel_name)  # type: ignore[arg-type]
+            self.channel_id = await self.lookup_channel_by_name(self.channel_name)
             if not self.channel_id:
                 print(f"\n❌ Cannot continue without channel. Make sure '{self.channel_name}' exists.")
                 return False
 
-            self.user_id = await self.lookup_user_by_name(self.user_name)  # type: ignore[arg-type]
+            self.user_id = await self.lookup_user_by_name(self.user_name)
             if not self.user_id:
                 print(f"\n⚠️  User '{self.user_name}' not found. Some tests may be skipped.")
 
