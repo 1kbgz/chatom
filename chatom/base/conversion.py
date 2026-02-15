@@ -205,7 +205,7 @@ def validate_for_backend(
     _ensure_types_registered()
 
     # Get the backend type
-    base_type = type(instance)
+    base_type: Type[BaseModel] = type(instance)
 
     # Walk up the inheritance chain to find the base type
     while base_type.__name__ not in _TYPE_REGISTRY:
@@ -305,7 +305,7 @@ def promote(
     _ensure_types_registered()
 
     # Get the backend type
-    base_type = type(instance)
+    base_type: Type[BaseModel] = type(instance)
 
     # If the instance is already a backend type, get its base type
     registered_base = _BASE_TYPE_MAP.get(base_type)
