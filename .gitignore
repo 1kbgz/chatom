@@ -141,14 +141,12 @@ js/node_modules
 js/test-results
 js/playwright-report
 js/*.tgz
-chatom/extension
 
 # Jupyter
 .ipynb_checkpoints
 .autoversion
 Untitled*.ipynb
-!chatom/extension/chatom.json
-!chatom/extension/install.json
+chatom/extension
 chatom/nbextension
 chatom/labextension
 
@@ -158,6 +156,12 @@ chatom/labextension
 # Rust
 target
 
+<<<<<<< before updating
 # Auth
 .env.sh
 *.pem
+=======
+# Hydra
+outputs/
+multirun/
+>>>>>>> after updating

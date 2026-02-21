@@ -46,11 +46,16 @@ format: fix
 ################
 # Other Checks #
 ################
+<<<<<<< before updating
 .PHONY: check-manifest types checks check
+=======
+.PHONY: check-dist check-types checks check
+>>>>>>> after updating
 
-check-manifest:  ## check python sdist manifest with check-manifest
-	check-manifest -v
+check-dist:  ## check python sdist and wheel with check-dist
+	check-dist -v
 
+<<<<<<< before updating
 types: ## run type checking with ty
 	ty check --python `which python`
 	@count=$$(grep -r "# type: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
@@ -62,6 +67,12 @@ types: ## run type checking with ty
 	fi
 
 checks: check-manifest types
+=======
+check-types:  ## check python types with ty
+	ty check --python $$(which python)
+
+checks: check-dist
+>>>>>>> after updating
 
 # Alias
 check: checks
