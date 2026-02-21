@@ -5,9 +5,9 @@ This module provides the Symphony-specific Message class.
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
-from chatom.base import Field, Message
+from chatom.base import Field, Message, User
 
 from .channel import SymphonyChannel
 from .user import SymphonyUser
@@ -152,17 +152,20 @@ class SymphonyMessage(Message):
         """Check if this message contains user mentions."""
         return len(self.mentions) > 0
 
-    def mentions_user(self, user_id: str) -> bool:
+    def mentions_user(self, user_id: Union[str, User]) -> bool:
         """Check if this message mentions a specific user.
 
         Args:
-            user_id: The user ID to check for.
+            user_id: The user ID to check for (string or User object).
 
         Returns:
             True if the user is mentioned in this message.
         """
-        # Extract user_id
-        user_id_str = str(user_id)
+        # Extract user_id string from User object if provided
+        if isinstance(user_id, User):
+            user_id_str = str(user_id.id)
+        else:
+            user_id_str = str(user_id)
         user_id_int = int(user_id_str) if user_id_str.isdigit() else None
 
         # Check mentions (User objects from base class)
