@@ -46,13 +46,13 @@ format: fix
 ################
 # Other Checks #
 ################
-.PHONY: check-manifest types checks check
+.PHONY: check-dist check-types checks check
 
-check-manifest:  ## check python sdist manifest with check-manifest
-	check-manifest -v
+check-dist:  ## check python sdist and wheel with check-dist
+	check-dist -v
 
-types: ## run type checking with ty
-	ty check --python `which python`
+check-types: ## check python types with ty
+	ty check --python $$(which python)
 	@count=$$(grep -r "# type: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
 	if [ $$count -ge 15 ]; then \
 		echo "Error: Found $$count type: ignore comments (max 14 allowed)"; \
@@ -61,7 +61,7 @@ types: ## run type checking with ty
 		echo "Type ignore count: $$count (limit: 14)"; \
 	fi
 
-checks: check-manifest types
+checks: check-dist check-types
 
 # Alias
 check: checks
