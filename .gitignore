@@ -156,12 +156,10 @@ chatom/labextension
 # Rust
 target
 
-<<<<<<< before updating
-# Auth
-.env.sh
-*.pem
-=======
 # Hydra
 outputs/
 multirun/
->>>>>>> after updating
+
+# Auth
+.env.sh
+*.pem
