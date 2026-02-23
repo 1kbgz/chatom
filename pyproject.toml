@@ -101,6 +101,7 @@ omit = [
     "chatom/examples/",
     "chatom/tests/*_e2e.py",
 ]
+
 [tool.coverage.report]
 exclude_also = [
     "raise NotImplementedError",
