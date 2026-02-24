@@ -1,0 +1,852 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Installation" href="docs/src/installation.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>v</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="#"><div class="brand"> <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  <span class="sidebar-brand-text"> <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/base-models.html">Base Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/backend-config.html">Backend Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/messaging.html">Messaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/mentions.html">Mentions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/reactions-threads.html">Reactions and Threads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/format-system.html">Format System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/advanced-features.html">Advanced Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/conversion.html">Type Conversion System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/csp-integration.html">CSP Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/integration-testing.html">Integration Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/src/api.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/index.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <div class="toctree-wrapper compound">
+</div>
+<a class="logo-light" href="https://github.com/1kbgz/chatom#gh-light-mode-only">
+  <img src="https://github.com/1kbgz/chatom/raw/main/docs/img/logo-light.png?raw=true#gh-light-mode-only" alt="chatom" width="150"></a>
+</a>
+<a class="logo-dark" href="https://github.com/1kbgz/chatom#gh-dark-mode-only">
+  <img src="https://github.com/1kbgz/chatom/raw/main/docs/img/logo-dark.png?raw=true#gh-dark-mode-only" alt="chatom" width="150"></a>
+</a>
+<h1>chatom</h1>
+<p>Framework-agnostic chat application models and utilities</p>
+<p><a class="reference external" href="https://github.com/1kbgz/chatom/actions/workflows/build.yaml"><img alt="Build Status" src="https://github.com/1kbgz/chatom/actions/workflows/build.yaml/badge.svg?branch=main&amp;event=push" /></a>
+<a class="reference external" href="https://codecov.io/gh/1kbgz/chatom"><img alt="codecov" src="https://codecov.io/gh/1kbgz/chatom/branch/main/graph/badge.svg" /></a>
+<a class="reference external" href="https://github.com/1kbgz/chatom"><img alt="License" src="https://img.shields.io/github/license/1kbgz/chatom" /></a>
+<a class="reference external" href="https://pypi.python.org/pypi/chatom"><img alt="PyPI" src="https://img.shields.io/pypi/v/chatom.svg" /></a></p>
+<section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">chatom</span></code> provides a unified, framework-agnostic representation of chat applications. It offers:</p>
+<ul class="simple">
+<li><p><strong>Base models</strong> for users, channels, messages, attachments, embeds, reactions, and more</p></li>
+<li><p><strong>Backend-specific implementations</strong> for Discord, Slack, and Symphony</p></li>
+<li><p><strong>Rich text formatting</strong> with nodes for bold, italic, code, tables, lists, and more</p></li>
+<li><p><strong>Format converters</strong> to render messages as plaintext, markdown, HTML, Slack mrkdwn, Discord markdown, or Symphony MessageML</p></li>
+</ul>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>chatom
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h1>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h1>
+<section id="basic-models">
+<h2>Basic Models<a class="headerlink" href="#basic-models" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">Message</span><span class="p">,</span> <span class="n">Emoji</span><span class="p">,</span> <span class="n">Reaction</span>
+
+<span class="c1"># Create a user</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;u123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create a channel</span>
+<span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c456&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="s2">&quot;General discussion&quot;</span><span class="p">)</span>
+
+<span class="c1"># Create a message with reactions</span>
+<span class="n">emoji</span> <span class="o">=</span> <span class="n">Emoji</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;thumbsup&quot;</span><span class="p">,</span> <span class="n">unicode</span><span class="o">=</span><span class="s2">&quot;👍&quot;</span><span class="p">)</span>
+<span class="n">reaction</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">(</span><span class="n">emoji</span><span class="o">=</span><span class="n">emoji</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">message</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;m789&quot;</span><span class="p">,</span>
+    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello, world!&quot;</span><span class="p">,</span>
+    <span class="n">author</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+    <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+    <span class="n">reactions</span><span class="o">=</span><span class="p">[</span><span class="n">reaction</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rich-text-formatting">
+<h2>Rich Text Formatting<a class="headerlink" href="#rich-text-formatting" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Format</span><span class="p">,</span>
+    <span class="n">Text</span><span class="p">,</span>
+    <span class="n">Bold</span><span class="p">,</span>
+    <span class="n">Italic</span><span class="p">,</span>
+    <span class="n">Paragraph</span><span class="p">,</span>
+    <span class="n">Span</span><span class="p">,</span>
+    <span class="n">Table</span><span class="p">,</span>
+    <span class="n">FormattedMessage</span><span class="p">,</span>
+    <span class="n">MessageBuilder</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Build a formatted message using nodes</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">(</span>
+    <span class="n">content</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">Paragraph</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Welcome to &quot;</span><span class="p">),</span>
+            <span class="n">Bold</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;chatom&quot;</span><span class="p">)),</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;!&quot;</span><span class="p">),</span>
+        <span class="p">]),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Render to different formats</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">))</span>      <span class="c1"># &quot;Welcome to **chatom**!\n&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">))</span>          <span class="c1"># &quot;&lt;p&gt;Welcome to &lt;strong&gt;chatom&lt;/strong&gt;!&lt;/p&gt;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">))</span> <span class="c1"># &quot;Welcome to *chatom*!\n&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="tables">
+<h2>Tables<a class="headerlink" href="#tables" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">Format</span>
+
+<span class="c1"># Create a table from data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;100&quot;</span><span class="p">,</span> <span class="s2">&quot;Gold&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="s2">&quot;85&quot;</span><span class="p">,</span> <span class="s2">&quot;Silver&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Carol&quot;</span><span class="p">,</span> <span class="s2">&quot;70&quot;</span><span class="p">,</span> <span class="s2">&quot;Bronze&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">table</span> <span class="o">=</span> <span class="n">Table</span><span class="o">.</span><span class="n">from_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Score&quot;</span><span class="p">,</span> <span class="s2">&quot;Rank&quot;</span><span class="p">])</span>
+
+<span class="c1"># Render as markdown</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">))</span>
+<span class="c1"># | Name | Score | Rank |</span>
+<span class="c1"># |---|---|---|</span>
+<span class="c1"># | Alice | 100 | Gold |</span>
+<span class="c1"># | Bob | 85 | Silver |</span>
+<span class="c1"># | Carol | 70 | Bronze |</span>
+
+<span class="c1"># Render as HTML</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">))</span>
+<span class="c1"># &lt;table&gt;&lt;thead&gt;...&lt;/thead&gt;&lt;tbody&gt;...&lt;/tbody&gt;&lt;/table&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="backend-specific-models">
+<h2>Backend-Specific Models<a class="headerlink" href="#backend-specific-models" title="Link to this heading">¶</a></h2>
+<p>Each backend provides specialized models with platform-specific fields:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discord</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DiscordUser</span><span class="p">,</span>
+    <span class="n">DiscordChannel</span><span class="p">,</span>
+    <span class="n">DiscordChannelType</span><span class="p">,</span>
+    <span class="n">DiscordPresence</span><span class="p">,</span>
+    <span class="n">mention_user</span><span class="p">,</span>
+    <span class="n">mention_channel</span><span class="p">,</span>
+    <span class="n">mention_role</span><span class="p">,</span>
+    <span class="n">mention_everyone</span><span class="p">,</span>
+    <span class="n">mention_here</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">DiscordUser</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123456789&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
+    <span class="n">discriminator</span><span class="o">=</span><span class="s2">&quot;1234&quot;</span><span class="p">,</span>
+    <span class="n">is_bot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>  <span class="c1"># &quot;&lt;@123456789&gt;&quot;</span>
+
+<span class="n">channel</span> <span class="o">=</span> <span class="n">DiscordChannel</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;987654321&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span>
+    <span class="n">channel_type</span><span class="o">=</span><span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_TEXT</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>  <span class="c1"># &quot;&lt;#987654321&gt;&quot;</span>
+
+<span class="c1"># Slack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SlackUser</span><span class="p">,</span>
+    <span class="n">SlackChannel</span><span class="p">,</span>
+    <span class="n">SlackPresence</span><span class="p">,</span>
+    <span class="n">mention_user</span><span class="p">,</span>
+    <span class="n">mention_channel</span><span class="p">,</span>
+    <span class="n">mention_user_group</span><span class="p">,</span>
+    <span class="n">mention_here</span><span class="p">,</span>
+    <span class="n">mention_channel_all</span><span class="p">,</span>
+    <span class="n">mention_everyone</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">SlackUser</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123456&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>
+    <span class="n">real_name</span><span class="o">=</span><span class="s2">&quot;Alice Smith&quot;</span><span class="p">,</span>
+    <span class="n">team_id</span><span class="o">=</span><span class="s2">&quot;T123&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>  <span class="c1"># &quot;&lt;@U123456&gt;&quot;</span>
+
+<span class="c1"># Symphony</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.symphony</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">SymphonyUser</span><span class="p">,</span>
+    <span class="n">SymphonyChannel</span><span class="p">,</span>
+    <span class="n">SymphonyStreamType</span><span class="p">,</span>
+    <span class="n">mention_user</span><span class="p">,</span>
+    <span class="n">format_hashtag</span><span class="p">,</span>
+    <span class="n">format_cashtag</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="mi">12345</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>  <span class="c1"># &#39;&lt;mention uid=&quot;12345&quot;/&gt;&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_hashtag</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">))</span>  <span class="c1"># &#39;&lt;hash tag=&quot;python&quot;/&gt;&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">format_cashtag</span><span class="p">(</span><span class="s2">&quot;AAPL&quot;</span><span class="p">))</span>  <span class="c1"># &#39;&lt;cash tag=&quot;AAPL&quot;/&gt;&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="polymorphic-mentions">
+<h2>Polymorphic Mentions<a class="headerlink" href="#polymorphic-mentions" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">mention_user</span></code> and <code class="docutils literal notranslate"><span class="pre">mention_channel</span></code> functions use <code class="docutils literal notranslate"><span class="pre">singledispatch</span></code> to automatically route to the correct backend implementation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">mention_user</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordUser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackUser</span>
+
+<span class="n">discord_user</span> <span class="o">=</span> <span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
+<span class="n">slack_user</span> <span class="o">=</span> <span class="n">SlackUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">discord_user</span><span class="p">))</span>  <span class="c1"># &quot;&lt;@123&gt;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">slack_user</span><span class="p">))</span>    <span class="c1"># &quot;&lt;@U123&gt;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="backend-agnostic-mentions">
+<h2>Backend-Agnostic Mentions<a class="headerlink" href="#backend-agnostic-mentions" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">mention_user_for_backend</span></code> and <code class="docutils literal notranslate"><span class="pre">mention_channel_for_backend</span></code> when you have a base User or Channel object and want to format it for a specific backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">mention_user_for_backend</span><span class="p">,</span> <span class="n">mention_channel_for_backend</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">)</span>
+<span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C456&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
+
+<span class="c1"># Mention for different backends</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">))</span>   <span class="c1"># &quot;&lt;@123&gt;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">))</span>     <span class="c1"># &quot;&lt;@123&gt;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;symphony&quot;</span><span class="p">))</span>  <span class="c1"># &#39;&lt;mention uid=&quot;123&quot;/&gt;&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">))</span>  <span class="c1"># &quot;&lt;#C456&gt;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">))</span>    <span class="c1"># &quot;&lt;#C456&gt;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="rendering-messages-for-a-backend">
+<h2>Rendering Messages for a Backend<a class="headerlink" href="#rendering-messages-for-a-backend" title="Link to this heading">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">render_for</span></code> to render a formatted message using the appropriate format for a backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span><span class="p">,</span> <span class="n">Paragraph</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Bold</span><span class="p">,</span> <span class="n">get_format_for_backend</span>
+
+<span class="n">msg</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">(</span>
+    <span class="n">content</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">Paragraph</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello, &quot;</span><span class="p">),</span>
+            <span class="n">Bold</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">)),</span>
+            <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;!&quot;</span><span class="p">),</span>
+        <span class="p">]),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># Render for different backends</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">))</span>     <span class="c1"># &quot;Hello, *world*!\n&quot; (Slack mrkdwn)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;discord&quot;</span><span class="p">))</span>   <span class="c1"># &quot;Hello, **world**!\n&quot; (Discord markdown)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;symphony&quot;</span><span class="p">))</span>  <span class="c1"># &quot;&lt;p&gt;Hello, &lt;b&gt;world&lt;/b&gt;!&lt;/p&gt;&quot; (MessageML)</span>
+
+<span class="c1"># Get the format for a backend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">BACKEND_FORMAT_MAP</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">BACKEND_FORMAT_MAP</span><span class="p">[</span><span class="s2">&quot;slack&quot;</span><span class="p">])</span>  <span class="c1"># Format.SLACK_MARKDOWN</span>
+</pre></div>
+</div>
+</section>
+<section id="type-conversion">
+<h2>Type Conversion<a class="headerlink" href="#type-conversion" title="Link to this heading">¶</a></h2>
+<p>Convert between base types and backend-specific types with validation:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">User</span><span class="p">,</span>
+    <span class="n">promote</span><span class="p">,</span>
+    <span class="n">demote</span><span class="p">,</span>
+    <span class="n">can_promote</span><span class="p">,</span>
+    <span class="n">validate_for_backend</span><span class="p">,</span>
+    <span class="n">DISCORD</span><span class="p">,</span>
+    <span class="n">SLACK</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordUser</span>
+
+<span class="c1"># Create a base user</span>
+<span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check if it can be promoted</span>
+<span class="k">if</span> <span class="n">can_promote</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">DISCORD</span><span class="p">):</span>
+    <span class="c1"># Promote to DiscordUser with extra fields</span>
+    <span class="n">discord_user</span> <span class="o">=</span> <span class="n">promote</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">DISCORD</span><span class="p">,</span> <span class="n">discriminator</span><span class="o">=</span><span class="s2">&quot;1234&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">discord_user</span><span class="o">.</span><span class="n">discriminator</span><span class="p">)</span>  <span class="c1"># &quot;1234&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">discord_user</span><span class="p">))</span>  <span class="c1"># &lt;class &#39;chatom.discord.user.DiscordUser&#39;&gt;</span>
+
+<span class="c1"># Demote back to base User</span>
+<span class="n">base_user</span> <span class="o">=</span> <span class="n">demote</span><span class="p">(</span><span class="n">discord_user</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">base_user</span><span class="p">))</span>  <span class="c1"># &lt;class &#39;chatom.base.user.User&#39;&gt;</span>
+
+<span class="c1"># Cross-backend conversion: Discord -&gt; Slack</span>
+<span class="n">slack_user</span> <span class="o">=</span> <span class="n">promote</span><span class="p">(</span><span class="n">demote</span><span class="p">(</span><span class="n">discord_user</span><span class="p">),</span> <span class="n">SLACK</span><span class="p">,</span> <span class="n">team_id</span><span class="o">=</span><span class="s2">&quot;T123&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">slack_user</span><span class="o">.</span><span class="n">team_id</span><span class="p">)</span>  <span class="c1"># &quot;T123&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="backend-capabilities">
+<h2>Backend Capabilities<a class="headerlink" href="#backend-capabilities" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Capability</span><span class="p">,</span>
+    <span class="n">DISCORD_CAPABILITIES</span><span class="p">,</span>
+    <span class="n">SLACK_CAPABILITIES</span><span class="p">,</span>
+    <span class="n">SYMPHONY_CAPABILITIES</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Check what a backend supports</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">DISCORD_CAPABILITIES</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">THREADS</span><span class="p">))</span>        <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">DISCORD_CAPABILITIES</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">VOICE_CHAT</span><span class="p">))</span>     <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">DISCORD_CAPABILITIES</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">EMOJI_REACTIONS</span><span class="p">))</span> <span class="c1"># True</span>
+</pre></div>
+</div>
+</section>
+<section id="presence-and-status">
+<h2>Presence and Status<a class="headerlink" href="#presence-and-status" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Presence</span><span class="p">,</span> <span class="n">PresenceStatus</span>
+
+<span class="n">presence</span> <span class="o">=</span> <span class="n">Presence</span><span class="p">(</span>
+    <span class="n">status</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span>
+    <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;Working on chatom&quot;</span><span class="p">,</span>
+    <span class="n">activity</span><span class="o">=</span><span class="s2">&quot;Coding&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">presence</span><span class="o">.</span><span class="n">is_available</span><span class="p">)</span>  <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">presence</span><span class="o">.</span><span class="n">is_online</span><span class="p">)</span>     <span class="c1"># True</span>
+</pre></div>
+</div>
+</section>
+<section id="connections-and-registries">
+<h2>Connections and Registries<a class="headerlink" href="#connections-and-registries" title="Link to this heading">¶</a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Connection</span></code> base class provides a foundation for backend connections, along with <code class="docutils literal notranslate"><span class="pre">UserRegistry</span></code> and <code class="docutils literal notranslate"><span class="pre">ChannelRegistry</span></code> for managing and looking up users and channels:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">UserRegistry</span><span class="p">,</span> <span class="n">ChannelRegistry</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">Channel</span><span class="p">,</span> <span class="ne">LookupError</span>
+
+<span class="c1"># Create registries for managing users and channels</span>
+<span class="n">users</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;u1&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">),</span>
+    <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;u2&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Bob&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;bob@example.com&quot;</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="s2">&quot;bob&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">user_registry</span> <span class="o">=</span> <span class="n">UserRegistry</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="n">users</span><span class="p">)</span>
+
+<span class="c1"># Look up users by different fields</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">id_to_user</span><span class="p">(</span><span class="s2">&quot;u1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>         <span class="c1"># &quot;Alice&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">email_to_user</span><span class="p">(</span><span class="s2">&quot;bob@example.com&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># &quot;Bob&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">name_to_user</span><span class="p">(</span><span class="s2">&quot;Alice&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>      <span class="c1"># &quot;u1&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">handle_to_user</span><span class="p">(</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">email</span><span class="p">)</span> <span class="c1"># &quot;alice@example.com&quot;</span>
+
+<span class="c1"># Reverse lookups</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">user_to_id</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>          <span class="c1"># &quot;u1&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">user_to_email</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>       <span class="c1"># &quot;alice@example.com&quot;</span>
+
+<span class="c1"># Generic lookup - searches all fields</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>            <span class="c1"># &quot;u1&quot; (matches handle)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">&quot;bob@example.com&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># &quot;u2&quot; (matches email)</span>
+
+<span class="c1"># Check if a user exists</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="s2">&quot;u1&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>    <span class="c1"># True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_registry</span><span class="o">.</span><span class="n">get_user</span><span class="p">(</span><span class="s2">&quot;unknown&quot;</span><span class="p">))</span>           <span class="c1"># None (no exception)</span>
+
+<span class="c1"># Same pattern for channels</span>
+<span class="n">channels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c1&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="n">topic</span><span class="o">=</span><span class="s2">&quot;General discussion&quot;</span><span class="p">),</span>
+    <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;c2&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">channel_registry</span> <span class="o">=</span> <span class="n">ChannelRegistry</span><span class="p">(</span><span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">channel_registry</span><span class="o">.</span><span class="n">id_to_channel</span><span class="p">(</span><span class="s2">&quot;c1&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>   <span class="c1"># &quot;general&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">channel_registry</span><span class="o">.</span><span class="n">name_to_channel</span><span class="p">(</span><span class="s2">&quot;random&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="c1"># &quot;c2&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">channel_registry</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="s2">&quot;general&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">topic</span><span class="p">)</span>    <span class="c1"># &quot;General discussion&quot;</span>
+</pre></div>
+</div>
+<p>Subclass <code class="docutils literal notranslate"><span class="pre">Connection</span></code> to implement backend-specific connection logic:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Connection</span><span class="p">,</span> <span class="n">UserRegistry</span><span class="p">,</span> <span class="n">ChannelRegistry</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBackendConnection</span><span class="p">(</span><span class="n">Connection</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom connection implementation.&quot;&quot;&quot;</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Establish connection to your backend</span>
+        <span class="k">pass</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Clean up connection</span>
+        <span class="k">pass</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">UserRegistry</span><span class="p">:</span>
+        <span class="c1"># Fetch and return users from the backend</span>
+        <span class="n">users</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_users_from_api</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">UserRegistry</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="n">users</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ChannelRegistry</span><span class="p">:</span>
+        <span class="c1"># Fetch and return channels from the backend</span>
+        <span class="n">channels</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_channels_from_api</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ChannelRegistry</span><span class="p">(</span><span class="n">channels</span><span class="o">=</span><span class="n">channels</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="supported-backends">
+<h1>Supported Backends<a class="headerlink" href="#supported-backends" title="Link to this heading">¶</a></h1>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>User Model</p></th>
+<th class="head"><p>Channel Model</p></th>
+<th class="head"><p>Mention Support</p></th>
+<th class="head"><p>Presence</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DiscordUser</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DiscordChannel</span></code></p></td>
+<td><p>✅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DiscordPresence</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SlackUser</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SlackChannel</span></code></p></td>
+<td><p>✅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SlackPresence</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SymphonyUser</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SymphonyChannel</span></code></p></td>
+<td><p>✅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">SymphonyPresence</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="output-formats">
+<h1>Output Formats<a class="headerlink" href="#output-formats" title="Link to this heading">¶</a></h1>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Format</p></th>
+<th class="head"><p>Enum Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Plaintext</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Format.PLAINTEXT</span></code></p></td>
+<td><p>Plain text with no formatting</p></td>
+</tr>
+<tr class="row-odd"><td><p>Markdown</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Format.MARKDOWN</span></code></p></td>
+<td><p>Standard Markdown</p></td>
+</tr>
+<tr class="row-even"><td><p>Slack mrkdwn</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Format.SLACK_MARKDOWN</span></code></p></td>
+<td><p>Slack’s mrkdwn format</p></td>
+</tr>
+<tr class="row-odd"><td><p>Discord Markdown</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Format.DISCORD_MARKDOWN</span></code></p></td>
+<td><p>Discord-flavored Markdown</p></td>
+</tr>
+<tr class="row-even"><td><p>HTML</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Format.HTML</span></code></p></td>
+<td><p>Standard HTML</p></td>
+</tr>
+<tr class="row-odd"><td><p>Symphony MessageML</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Format.SYMPHONY_MESSAGEML</span></code></p></td>
+<td><p>Symphony’s XML-based format</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="text-node-types">
+<h1>Text Node Types<a class="headerlink" href="#text-node-types" title="Link to this heading">¶</a></h1>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Node</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example Output (Markdown)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Text</span></code></p></td>
+<td><p>Plain text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Hello</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Bold</span></code></p></td>
+<td><p>Bold text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">**Hello**</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Italic</span></code></p></td>
+<td><p>Italic text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">*Hello*</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Strikethrough</span></code></p></td>
+<td><p>Strikethrough</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">~~Hello~~</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Underline</span></code></p></td>
+<td><p>Underlined text</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;u&gt;Hello&lt;/u&gt;</span></code> (HTML only)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Code</span></code></p></td>
+<td><p>Inline code</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">`code`</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code></p></td>
+<td><p>Code block</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">```python\ncode\n```</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Link</span></code></p></td>
+<td><p>Hyperlink</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">[text](url)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Quote</span></code></p></td>
+<td><p>Block quote</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">quoted</span> <span class="pre">text</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Heading</span></code></p></td>
+<td><p>Heading (h1-h6)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">Heading</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Paragraph</span></code></p></td>
+<td><p>Paragraph</p></td>
+<td><p>Content with newline</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UnorderedList</span></code></p></td>
+<td><p>Bullet list</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">-</span> <span class="pre">item</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">OrderedList</span></code></p></td>
+<td><p>Numbered list</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">1.</span> <span class="pre">item</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Table</span></code></p></td>
+<td><p>Data table</p></td>
+<td><p>Markdown/HTML table</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">UserMention</span></code></p></td>
+<td><p>User mention</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&#64;user</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;&#64;id&gt;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ChannelMention</span></code></p></td>
+<td><p>Channel mention</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">#channel</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="development">
+<h1>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/1kbgz/chatom.git
+<span class="nb">cd</span><span class="w"> </span>chatom
+
+<span class="c1"># Install development dependencies</span>
+make<span class="w"> </span>develop
+
+<span class="c1"># Run tests</span>
+make<span class="w"> </span><span class="nb">test</span>
+
+<span class="c1"># Run linting</span>
+make<span class="w"> </span>lint
+</pre></div>
+</div>
+</section>
+<section id="license">
+<h1>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h1>
+<p>Apache License 2.0 - see <a class="reference download internal" download="" href="_downloads/9879d6db96fd29134fc802214163b95a/LICENSE"><span class="xref download myst">LICENSE</span></a> for details.</p>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="docs/src/installation.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Installation</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script src="_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>

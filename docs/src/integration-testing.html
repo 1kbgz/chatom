@@ -1,0 +1,1043 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="API Reference" href="api.html"><link rel="prev" title="Examples" href="examples.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Integration Testing - v</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand"> <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text"> <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base-models.html">Base Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backend-config.html">Backend Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messaging.html">Messaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mentions.html">Mentions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reactions-threads.html">Reactions and Threads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-system.html">Format System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced-features.html">Advanced Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">Type Conversion System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="csp-integration.html">CSP Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Integration Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/docs/src/integration-testing.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section class="tex2jax_ignore mathjax_ignore" id="integration-testing">
+<h1>Integration Testing<a class="headerlink" href="#integration-testing" title="Link to this heading">¶</a></h1>
+<p>This guide explains how to run end-to-end integration tests for each backend.
+These tests verify that your credentials and permissions are set up correctly
+and that all backend functionality works as expected.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<p>Integration tests are located in <code class="docutils literal notranslate"><span class="pre">chatom/tests/integration/</span></code> and are designed
+to be run as standalone scripts. They require:</p>
+<ol class="arabic simple">
+<li><p>Real credentials for the target platform</p></li>
+<li><p>A test channel/room where the bot can send messages</p></li>
+<li><p>Human interaction to verify the bot’s behavior</p></li>
+</ol>
+<p>Each test will:</p>
+<ul class="simple">
+<li><p>Connect to the platform</p></li>
+<li><p>Test all available functionality</p></li>
+<li><p>Send messages to the test channel</p></li>
+<li><p>Report which tests passed/failed</p></li>
+</ul>
+</section>
+<section id="running-tests">
+<h2>Running Tests<a class="headerlink" href="#running-tests" title="Link to this heading">¶</a></h2>
+<p>Tests are run as standalone Python scripts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.&lt;backend&gt;
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.discord
+python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.slack
+python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.symphony
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="discord-integration-test">
+<h2>Discord Integration Test<a class="headerlink" href="#discord-integration-test" title="Link to this heading">¶</a></h2>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Create a Discord Application</strong> at <a class="reference external" href="https://discord.com/developers/applications">Discord Developer Portal</a></p></li>
+<li><p><strong>Create a Bot</strong> under the application</p></li>
+<li><p><strong>Copy the Bot Token</strong></p></li>
+<li><p><strong>Enable Required Intents</strong>:</p>
+<ul class="simple">
+<li><p>Presence Intent (optional, for presence tests)</p></li>
+<li><p>Server Members Intent (optional, for member tests)</p></li>
+<li><p>Message Content Intent (required for reading message content)</p></li>
+</ul>
+</li>
+<li><p><strong>Invite the bot</strong> to your test server with appropriate permissions</p></li>
+</ol>
+</section>
+<section id="required-scopes-and-permissions">
+<h3>Required Scopes and Permissions<a class="headerlink" href="#required-scopes-and-permissions" title="Link to this heading">¶</a></h3>
+<p>When creating the invite URL, include:</p>
+<p><strong>Scopes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">applications.commands</span></code> (if using slash commands)</p></li>
+</ul>
+<p><strong>Bot Permissions:</strong></p>
+<ul class="simple">
+<li><p>Send Messages</p></li>
+<li><p>Read Message History</p></li>
+<li><p>Add Reactions</p></li>
+<li><p>Manage Messages (for reaction removal)</p></li>
+<li><p>Create Public Threads (for thread tests)</p></li>
+</ul>
+</section>
+<section id="environment-variables">
+<h3>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">DISCORD_BOT_TOKEN</span><span class="o">=</span><span class="s2">&quot;your-bot-token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DISCORD_TEST_CHANNEL_ID</span><span class="o">=</span><span class="s2">&quot;123456789012345678&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DISCORD_TEST_USER_ID</span><span class="o">=</span><span class="s2">&quot;987654321098765432&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DISCORD_TEST_GUILD_ID</span><span class="o">=</span><span class="s2">&quot;111222333444555666&quot;</span><span class="w">  </span><span class="c1"># Optional</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DISCORD_BOT_TOKEN</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Bot token from Developer Portal</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DISCORD_TEST_CHANNEL_ID</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Text channel ID for tests</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">DISCORD_TEST_USER_ID</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Your user ID for mention tests</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">DISCORD_TEST_GUILD_ID</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Guild ID for guild-specific tests</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="getting-ids">
+<h3>Getting IDs<a class="headerlink" href="#getting-ids" title="Link to this heading">¶</a></h3>
+<p>Enable Developer Mode in Discord (User Settings → Advanced → Developer Mode),
+then right-click on channels/users/servers to copy their IDs.</p>
+</section>
+<section id="run">
+<h3>Run<a class="headerlink" href="#run" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.discord
+</pre></div>
+</div>
+</section>
+<section id="what-s-tested">
+<h3>What’s Tested<a class="headerlink" href="#what-s-tested" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Test Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Connection</p></td>
+<td><p>Connect to Discord gateway</p></td>
+</tr>
+<tr class="row-odd"><td><p>Plain Messages</p></td>
+<td><p>Send simple text messages</p></td>
+</tr>
+<tr class="row-even"><td><p>Formatted Messages</p></td>
+<td><p>Bold, italic, code blocks</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fetch User</p></td>
+<td><p>Look up user by ID</p></td>
+</tr>
+<tr class="row-even"><td><p>Fetch Channel</p></td>
+<td><p>Look up channel by ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mentions</p></td>
+<td><p>User and channel mentions</p></td>
+</tr>
+<tr class="row-even"><td><p>Reactions</p></td>
+<td><p>Add and remove emoji reactions</p></td>
+</tr>
+<tr class="row-odd"><td><p>Threads</p></td>
+<td><p>Create threads and reply</p></td>
+</tr>
+<tr class="row-even"><td><p>Rich Content</p></td>
+<td><p>Tables rendered in Discord markdown</p></td>
+</tr>
+<tr class="row-odd"><td><p>Message History</p></td>
+<td><p>Fetch recent messages</p></td>
+</tr>
+<tr class="row-even"><td><p>Presence</p></td>
+<td><p>Set bot status</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="slack-integration-test">
+<h2>Slack Integration Test<a class="headerlink" href="#slack-integration-test" title="Link to this heading">¶</a></h2>
+<section id="id1">
+<h3>Prerequisites<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Create a Slack App</strong> at <a class="reference external" href="https://api.slack.com/apps">Slack API</a></p></li>
+<li><p><strong>Install to Workspace</strong></p></li>
+<li><p><strong>Copy the Bot Token</strong> (starts with <code class="docutils literal notranslate"><span class="pre">xoxb-</span></code>)</p></li>
+<li><p><strong>Add Required Scopes</strong></p></li>
+</ol>
+</section>
+<section id="required-oauth-scopes">
+<h3>Required OAuth Scopes<a class="headerlink" href="#required-oauth-scopes" title="Link to this heading">¶</a></h3>
+<p>Add these under <strong>OAuth &amp; Permissions</strong>:</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Scope</p></th>
+<th class="head"><p>Purpose</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">chat:write</span></code></p></td>
+<td><p>Send messages</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">channels:read</span></code></p></td>
+<td><p>Read channel info</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">channels:history</span></code></p></td>
+<td><p>Read message history (public channels)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">groups:history</span></code></p></td>
+<td><p>Read message history (private channels)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">users:read</span></code></p></td>
+<td><p>Read user info</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reactions:write</span></code></p></td>
+<td><p>Add reactions</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reactions:read</span></code></p></td>
+<td><p>Read reactions</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">im:write</span></code></p></td>
+<td><p>Create DMs</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">users.profile:write</span></code></p></td>
+<td><p>Set status (optional, requires user token)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">connections:write</span></code></p></td>
+<td><p>Socket Mode (optional, for inbound messages)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id2">
+<h3>Environment Variables<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SLACK_BOT_TOKEN</span><span class="o">=</span><span class="s2">&quot;xoxb-your-bot-token&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SLACK_TEST_CHANNEL_NAME</span><span class="o">=</span><span class="s2">&quot;test-channel&quot;</span><span class="w">  </span><span class="c1"># Channel name without #</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SLACK_TEST_USER_NAME</span><span class="o">=</span><span class="s2">&quot;john.doe&quot;</span><span class="w">  </span><span class="c1"># Username without @</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SLACK_APP_TOKEN</span><span class="o">=</span><span class="s2">&quot;xapp-your-app-token&quot;</span><span class="w">  </span><span class="c1"># Optional, for Socket Mode</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SLACK_BOT_TOKEN</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Bot OAuth token (xoxb-…)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SLACK_TEST_CHANNEL_NAME</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Channel name for tests (without #)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SLACK_TEST_USER_NAME</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Username for mention tests (without &#64;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SLACK_APP_TOKEN</span></code></p></td>
+<td><p>No</p></td>
+<td><p>App token for Socket Mode (enables inbound message test)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="finding-channel-user-names">
+<h3>Finding Channel/User Names<a class="headerlink" href="#finding-channel-user-names" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Channel Name</strong>: The channel name as shown in Slack (without the #)</p></li>
+<li><p><strong>User Name</strong>: The username or display name as shown in user profiles</p></li>
+</ul>
+</section>
+<section id="id3">
+<h3>Run<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.slack
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>What’s Tested<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Test Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Connection</p></td>
+<td><p>Connect and authenticate</p></td>
+</tr>
+<tr class="row-odd"><td><p>Channel/User Lookup</p></td>
+<td><p>Look up by name to get IDs</p></td>
+</tr>
+<tr class="row-even"><td><p>Plain Messages</p></td>
+<td><p>Send simple text messages</p></td>
+</tr>
+<tr class="row-odd"><td><p>Formatted Messages</p></td>
+<td><p>mrkdwn formatting (bold, italic, code)</p></td>
+</tr>
+<tr class="row-even"><td><p>Fetch User</p></td>
+<td><p>Look up user by ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Fetch Channel</p></td>
+<td><p>Look up channel by ID</p></td>
+</tr>
+<tr class="row-even"><td><p>Mentions</p></td>
+<td><p>User, channel, &#64;here, &#64;channel, &#64;everyone</p></td>
+</tr>
+<tr class="row-odd"><td><p>Reactions</p></td>
+<td><p>Add and remove emoji reactions</p></td>
+</tr>
+<tr class="row-even"><td><p>Threads</p></td>
+<td><p>Create threads and reply</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rich Content</p></td>
+<td><p>Tables in mrkdwn format</p></td>
+</tr>
+<tr class="row-even"><td><p>Message History</p></td>
+<td><p>Fetch recent messages</p></td>
+</tr>
+<tr class="row-odd"><td><p>Presence</p></td>
+<td><p>Get user status</p></td>
+</tr>
+<tr class="row-even"><td><p>DM Creation</p></td>
+<td><p>Create direct messages</p></td>
+</tr>
+<tr class="row-odd"><td><p>Inbound Messages</p></td>
+<td><p>Receive and parse bot mentions (requires Socket Mode)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="symphony-integration-test">
+<h2>Symphony Integration Test<a class="headerlink" href="#symphony-integration-test" title="Link to this heading">¶</a></h2>
+<section id="id5">
+<h3>Prerequisites<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Symphony Bot Account</strong> configured by your Symphony administrator</p></li>
+<li><p><strong>RSA Key Pair</strong> for authentication</p></li>
+<li><p><strong>Bot Service Account</strong> with appropriate entitlements</p></li>
+</ol>
+</section>
+<section id="required-entitlements">
+<h3>Required Entitlements<a class="headerlink" href="#required-entitlements" title="Link to this heading">¶</a></h3>
+<p>Your bot needs:</p>
+<ul class="simple">
+<li><p>Send messages to streams</p></li>
+<li><p>Read messages from streams</p></li>
+<li><p>Look up users</p></li>
+<li><p>Set presence</p></li>
+</ul>
+</section>
+<section id="id6">
+<h3>Environment Variables<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_HOST</span><span class="o">=</span><span class="s2">&quot;mycompany.symphony.com&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_BOT_USERNAME</span><span class="o">=</span><span class="s2">&quot;my-bot&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_BOT_PRIVATE_KEY_PATH</span><span class="o">=</span><span class="s2">&quot;/path/to/private-key.pem&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_TEST_ROOM_NAME</span><span class="o">=</span><span class="s2">&quot;E2E Test Room&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_TEST_USER_NAME</span><span class="o">=</span><span class="s2">&quot;jsmith&quot;</span>
+</pre></div>
+</div>
+<p>Or use key content directly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_BOT_PRIVATE_KEY_CONTENT</span><span class="o">=</span><span class="s2">&quot;-----BEGIN RSA PRIVATE KEY-----</span>
+<span class="s2">...</span>
+<span class="s2">-----END RSA PRIVATE KEY-----&quot;</span>
+</pre></div>
+</div>
+<p>Or use a combined certificate (key+cert in one PEM file):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_BOT_COMBINED_CERT_PATH</span><span class="o">=</span><span class="s2">&quot;/path/to/combined.pem&quot;</span>
+<span class="c1"># or</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SYMPHONY_BOT_COMBINED_CERT_CONTENT</span><span class="o">=</span><span class="s2">&quot;-----BEGIN RSA PRIVATE KEY-----</span>
+<span class="s2">...</span>
+<span class="s2">-----END RSA PRIVATE KEY-----</span>
+<span class="s2">-----BEGIN CERTIFICATE-----</span>
+<span class="s2">...</span>
+<span class="s2">-----END CERTIFICATE-----&quot;</span>
+</pre></div>
+</div>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Required</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_HOST</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Pod hostname</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_BOT_USERNAME</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Bot service account name</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_BOT_PRIVATE_KEY_PATH</span></code></p></td>
+<td><p>Yes*</p></td>
+<td><p>Path to RSA private key</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_BOT_PRIVATE_KEY_CONTENT</span></code></p></td>
+<td><p>Yes*</p></td>
+<td><p>RSA key content (alternative)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_BOT_COMBINED_CERT_PATH</span></code></p></td>
+<td><p>Yes*</p></td>
+<td><p>Path to combined cert file (key+cert in PEM)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_BOT_COMBINED_CERT_CONTENT</span></code></p></td>
+<td><p>Yes*</p></td>
+<td><p>Combined cert content (key+cert in PEM)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_TEST_ROOM_NAME</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Room name for tests (looked up automatically)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_TEST_USER_NAME</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Username for mention tests (looked up automatically)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_AGENT_HOST</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Separate agent hostname</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_SESSION_AUTH_HOST</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Separate session auth hostname</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">SYMPHONY_KEY_MANAGER_HOST</span></code></p></td>
+<td><p>No</p></td>
+<td><p>Separate key manager hostname</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>*One of private key (<code class="docutils literal notranslate"><span class="pre">_PATH</span></code> or <code class="docutils literal notranslate"><span class="pre">_CONTENT</span></code>) or combined cert (<code class="docutils literal notranslate"><span class="pre">_PATH</span></code> or <code class="docutils literal notranslate"><span class="pre">_CONTENT</span></code>) is required.</p>
+</section>
+<section id="getting-room-name">
+<h3>Getting Room Name<a class="headerlink" href="#getting-room-name" title="Link to this heading">¶</a></h3>
+<p>In Symphony, the room name is the display name shown in the room header.
+The test will automatically look up the room by name to get its stream ID.</p>
+</section>
+<section id="id7">
+<h3>Run<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.symphony
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h3>What’s Tested<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Test Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Connection</p></td>
+<td><p>Authenticate with RSA key or combined cert</p></td>
+</tr>
+<tr class="row-odd"><td><p>Room Lookup</p></td>
+<td><p>Search room by name to get stream ID</p></td>
+</tr>
+<tr class="row-even"><td><p>User Lookup</p></td>
+<td><p>Search user by username to get user ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Plain Messages</p></td>
+<td><p>Send MessageML messages</p></td>
+</tr>
+<tr class="row-even"><td><p>MessageML Formatting</p></td>
+<td><p>Native Symphony formatting</p></td>
+</tr>
+<tr class="row-odd"><td><p>Format System</p></td>
+<td><p>Convert FormattedMessage to MessageML</p></td>
+</tr>
+<tr class="row-even"><td><p>Fetch User</p></td>
+<td><p>Look up user by ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mentions</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;mention</span> <span class="pre">uid=&quot;...&quot;/&gt;</span></code> tags</p></td>
+</tr>
+<tr class="row-even"><td><p>Hashtags</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;hash</span> <span class="pre">tag=&quot;...&quot;/&gt;</span></code> tags</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cashtags</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">&lt;cash</span> <span class="pre">tag=&quot;...&quot;/&gt;</span></code> (stock tickers)</p></td>
+</tr>
+<tr class="row-even"><td><p>Rich Content</p></td>
+<td><p>Tables in MessageML</p></td>
+</tr>
+<tr class="row-odd"><td><p>Message History</p></td>
+<td><p>Fetch and parse PresentationML</p></td>
+</tr>
+<tr class="row-even"><td><p>Presence</p></td>
+<td><p>Get/set presence status</p></td>
+</tr>
+<tr class="row-odd"><td><p>DM/IM Creation</p></td>
+<td><p>Create 1:1 DMs and multi-party IMs</p></td>
+</tr>
+<tr class="row-even"><td><p>Room Creation</p></td>
+<td><p>Create private rooms</p></td>
+</tr>
+<tr class="row-odd"><td><p>Inbound Messages</p></td>
+<td><p>Receive messages via datafeed, detect bot mentions</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading">¶</a></h3>
+<section id="module-not-found-errors">
+<h4>“Module not found” errors<a class="headerlink" href="#module-not-found-errors" title="Link to this heading">¶</a></h4>
+<p>Ensure chatom is installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+<span class="c1"># or</span>
+uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="authentication-failures">
+<h4>Authentication failures<a class="headerlink" href="#authentication-failures" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>Verify your credentials are correct</p></li>
+<li><p>Check that tokens haven’t expired</p></li>
+<li><p>Ensure the bot has been invited/added to the test channel</p></li>
+</ul>
+</section>
+<section id="permission-errors">
+<h4>Permission errors<a class="headerlink" href="#permission-errors" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>Verify the bot has required permissions/scopes</p></li>
+<li><p>Check that the bot has access to the test channel</p></li>
+<li><p>Review the platform’s permission documentation</p></li>
+</ul>
+</section>
+<section id="rate-limiting">
+<h4>Rate limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>The tests include delays between operations</p></li>
+<li><p>If you see rate limit errors, wait and try again</p></li>
+<li><p>Consider using a less busy test channel</p></li>
+</ul>
+</section>
+</section>
+<section id="debug-mode">
+<h3>Debug Mode<a class="headerlink" href="#debug-mode" title="Link to this heading">¶</a></h3>
+<p>Add verbose output by setting:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CHATOM_DEBUG</span><span class="o">=</span><span class="m">1</span>
+python<span class="w"> </span>-m<span class="w"> </span>chatom.tests.integration.e2e.slack
+</pre></div>
+</div>
+</section>
+<section id="reporting-issues">
+<h3>Reporting Issues<a class="headerlink" href="#reporting-issues" title="Link to this heading">¶</a></h3>
+<p>If a test fails unexpectedly:</p>
+<ol class="arabic simple">
+<li><p>Check the error message for details</p></li>
+<li><p>Verify environment variables are set correctly</p></li>
+<li><p>Ensure the backend library is installed (e.g., <code class="docutils literal notranslate"><span class="pre">discord.py</span></code>, <code class="docutils literal notranslate"><span class="pre">slack_sdk</span></code>)</p></li>
+<li><p>Check platform-specific documentation for changes</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="writing-custom-integration-tests">
+<h2>Writing Custom Integration Tests<a class="headerlink" href="#writing-custom-integration-tests" title="Link to this heading">¶</a></h2>
+<p>You can use the existing tests as templates for your own integration tests.
+Key patterns:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackBackend</span><span class="p">,</span> <span class="n">SlackConfig</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">my_custom_test</span><span class="p">():</span>
+    <span class="c1"># Read config from environment</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">SlackConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;SLACK_BOT_TOKEN&quot;</span><span class="p">])</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">SlackBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c1"># Connect</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Your test code here</span>
+        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="s2">&quot;Test message&quot;</span><span class="p">)</span>
+        <span class="n">messages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+            <span class="n">formatted</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">to_formatted</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">formatted</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">PLAINTEXT</span><span class="p">))</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="c1"># Always disconnect</span>
+        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">my_custom_test</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="feature-comparison">
+<h2>Feature Comparison<a class="headerlink" href="#feature-comparison" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Discord</p></th>
+<th class="head"><p>Slack</p></th>
+<th class="head"><p>Symphony</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Messages</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Formatting</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Reactions</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>Threads</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>Mentions</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>History</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Presence</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Attachments</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Real-time</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Legend:</strong></p>
+<ul class="simple">
+<li><p>✅ Fully supported</p></li>
+<li><p>⚠️ Limited support</p></li>
+<li><p>❌ Not supported</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="api.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">API Reference</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="examples.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Examples</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Integration Testing</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#running-tests">Running Tests</a></li>
+<li><a class="reference internal" href="#discord-integration-test">Discord Integration Test</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#required-scopes-and-permissions">Required Scopes and Permissions</a></li>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li><a class="reference internal" href="#getting-ids">Getting IDs</a></li>
+<li><a class="reference internal" href="#run">Run</a></li>
+<li><a class="reference internal" href="#what-s-tested">What’s Tested</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#slack-integration-test">Slack Integration Test</a><ul>
+<li><a class="reference internal" href="#id1">Prerequisites</a></li>
+<li><a class="reference internal" href="#required-oauth-scopes">Required OAuth Scopes</a></li>
+<li><a class="reference internal" href="#id2">Environment Variables</a></li>
+<li><a class="reference internal" href="#finding-channel-user-names">Finding Channel/User Names</a></li>
+<li><a class="reference internal" href="#id3">Run</a></li>
+<li><a class="reference internal" href="#id4">What’s Tested</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#symphony-integration-test">Symphony Integration Test</a><ul>
+<li><a class="reference internal" href="#id5">Prerequisites</a></li>
+<li><a class="reference internal" href="#required-entitlements">Required Entitlements</a></li>
+<li><a class="reference internal" href="#id6">Environment Variables</a></li>
+<li><a class="reference internal" href="#getting-room-name">Getting Room Name</a></li>
+<li><a class="reference internal" href="#id7">Run</a></li>
+<li><a class="reference internal" href="#id8">What’s Tested</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li><a class="reference internal" href="#common-issues">Common Issues</a><ul>
+<li><a class="reference internal" href="#module-not-found-errors">“Module not found” errors</a></li>
+<li><a class="reference internal" href="#authentication-failures">Authentication failures</a></li>
+<li><a class="reference internal" href="#permission-errors">Permission errors</a></li>
+<li><a class="reference internal" href="#rate-limiting">Rate limiting</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#debug-mode">Debug Mode</a></li>
+<li><a class="reference internal" href="#reporting-issues">Reporting Issues</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#writing-custom-integration-tests">Writing Custom Integration Tests</a></li>
+<li><a class="reference internal" href="#feature-comparison">Feature Comparison</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>

@@ -1,0 +1,1302 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="Type Conversion System" href="conversion.html"><link rel="prev" title="Format System" href="format-system.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Advanced Features - v</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand"> <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text"> <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="base-models.html">Base Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">Backends</a></li>
+<li class="toctree-l1"><a class="reference internal" href="backend-config.html">Backend Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="messaging.html">Messaging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mentions.html">Mentions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reactions-threads.html">Reactions and Threads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="format-system.html">Format System</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Advanced Features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conversion.html">Type Conversion System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="csp-integration.html">CSP Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="integration-testing.html">Integration Testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/docs/src/advanced-features.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section class="tex2jax_ignore mathjax_ignore" id="advanced-features">
+<h1>Advanced Features<a class="headerlink" href="#advanced-features" title="Link to this heading">¶</a></h1>
+<p>This guide covers advanced chatom features including reactions, attachments,
+embeds, threads, and presence management.</p>
+<section id="reactions">
+<h2>Reactions<a class="headerlink" href="#reactions" title="Link to this heading">¶</a></h2>
+<p>Reactions are emoji responses to messages. Support varies by platform.</p>
+<section id="adding-reactions">
+<h3>Adding Reactions<a class="headerlink" href="#adding-reactions" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add a Unicode emoji reaction</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span>
+    <span class="n">message_id</span><span class="o">=</span><span class="s2">&quot;msg_id&quot;</span><span class="p">,</span>
+    <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;👍&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Add a custom emoji (Discord, Slack)</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span>
+    <span class="n">message_id</span><span class="o">=</span><span class="s2">&quot;msg_id&quot;</span><span class="p">,</span>
+    <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;custom_emoji_name&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="removing-reactions">
+<h3>Removing Reactions<a class="headerlink" href="#removing-reactions" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span>
+    <span class="n">message_id</span><span class="o">=</span><span class="s2">&quot;msg_id&quot;</span><span class="p">,</span>
+    <span class="n">emoji</span><span class="o">=</span><span class="s2">&quot;👍&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reading-reactions-from-messages">
+<h3>Reading Reactions from Messages<a class="headerlink" href="#reading-reactions-from-messages" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">messages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="n">channel_id</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Emoji: </span><span class="si">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">emoji</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unicode: </span><span class="si">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">emoji</span><span class="o">.</span><span class="n">unicode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Count: </span><span class="si">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Custom: </span><span class="si">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">emoji</span><span class="o">.</span><span class="n">is_custom</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reaction-models">
+<h3>Reaction Models<a class="headerlink" href="#reaction-models" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Emoji</span><span class="p">,</span> <span class="n">Reaction</span>
+
+<span class="c1"># Create an emoji</span>
+<span class="n">emoji</span> <span class="o">=</span> <span class="n">Emoji</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;thumbsup&quot;</span><span class="p">,</span>
+    <span class="n">unicode</span><span class="o">=</span><span class="s2">&quot;👍&quot;</span><span class="p">,</span>
+    <span class="n">is_custom</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Create a reaction</span>
+<span class="n">reaction</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">(</span>
+    <span class="n">emoji</span><span class="o">=</span><span class="n">emoji</span><span class="p">,</span>
+    <span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">me</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># Did the current user react?</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="platform-support">
+<h3>Platform Support<a class="headerlink" href="#platform-support" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Unicode</p></th>
+<th class="head"><p>Custom</p></th>
+<th class="head"><p>Add</p></th>
+<th class="head"><p>Remove</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="reaction-events">
+<h3>Reaction Events<a class="headerlink" href="#reaction-events" title="Link to this heading">¶</a></h3>
+<p>Handle reaction events (backend-specific):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example event handler pattern</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_reaction_add</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2"> added </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Message: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">message_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel: </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Reaction event model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReactionEvent</span><span class="p">,</span> <span class="n">ReactionEventType</span>
+
+<span class="n">event</span> <span class="o">=</span> <span class="n">ReactionEvent</span><span class="p">(</span>
+    <span class="nb">type</span><span class="o">=</span><span class="n">ReactionEventType</span><span class="o">.</span><span class="n">ADD</span><span class="p">,</span>  <span class="c1"># or REMOVE</span>
+    <span class="n">message_id</span><span class="o">=</span><span class="s2">&quot;msg_123&quot;</span><span class="p">,</span>
+    <span class="n">channel_id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span>
+    <span class="n">user_id</span><span class="o">=</span><span class="s2">&quot;U789&quot;</span><span class="p">,</span>
+    <span class="n">emoji</span><span class="o">=</span><span class="n">Emoji</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;thumbsup&quot;</span><span class="p">,</span> <span class="n">unicode</span><span class="o">=</span><span class="s2">&quot;👍&quot;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="attachments">
+<h2>Attachments<a class="headerlink" href="#attachments" title="Link to this heading">¶</a></h2>
+<p>Attachments are files sent with messages.</p>
+<section id="attachment-model">
+<h3>Attachment Model<a class="headerlink" href="#attachment-model" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Attachment</span><span class="p">,</span> <span class="n">AttachmentType</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">Image</span>
+
+<span class="c1"># Generic attachment</span>
+<span class="n">attachment</span> <span class="o">=</span> <span class="n">Attachment</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;att_123&quot;</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;document.pdf&quot;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/files/document.pdf&quot;</span><span class="p">,</span>
+    <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/pdf&quot;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">1024000</span><span class="p">,</span>  <span class="c1"># bytes</span>
+    <span class="n">attachment_type</span><span class="o">=</span><span class="n">AttachmentType</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># File attachment (with additional metadata)</span>
+<span class="n">file</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;file_123&quot;</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;report.xlsx&quot;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/files/report.xlsx&quot;</span><span class="p">,</span>
+    <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet&quot;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">512000</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Image attachment</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;img_123&quot;</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;photo.png&quot;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/images/photo.png&quot;</span><span class="p">,</span>
+    <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;image/png&quot;</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="mi">256000</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span>
+    <span class="n">thumbnail_url</span><span class="o">=</span><span class="s2">&quot;https://example.com/images/photo_thumb.png&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reading-attachments-from-messages">
+<h3>Reading Attachments from Messages<a class="headerlink" href="#reading-attachments-from-messages" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">messages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="n">channel_id</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">attachment</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filename: </span><span class="si">{</span><span class="n">attachment</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type: </span><span class="si">{</span><span class="n">attachment</span><span class="o">.</span><span class="n">content_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Size: </span><span class="si">{</span><span class="n">attachment</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> bytes&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;URL: </span><span class="si">{</span><span class="n">attachment</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check attachment type</span>
+        <span class="k">if</span> <span class="n">attachment</span><span class="o">.</span><span class="n">attachment_type</span> <span class="o">==</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">IMAGE</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dimensions: </span><span class="si">{</span><span class="n">attachment</span><span class="o">.</span><span class="n">width</span><span class="si">}</span><span class="s2">x</span><span class="si">{</span><span class="n">attachment</span><span class="o">.</span><span class="n">height</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="attachment-types">
+<h3>Attachment Types<a class="headerlink" href="#attachment-types" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">AttachmentType</span>
+
+<span class="n">AttachmentType</span><span class="o">.</span><span class="n">FILE</span>      <span class="c1"># Generic file</span>
+<span class="n">AttachmentType</span><span class="o">.</span><span class="n">IMAGE</span>     <span class="c1"># Image (png, jpg, gif, etc.)</span>
+<span class="n">AttachmentType</span><span class="o">.</span><span class="n">VIDEO</span>     <span class="c1"># Video file</span>
+<span class="n">AttachmentType</span><span class="o">.</span><span class="n">AUDIO</span>     <span class="c1"># Audio file</span>
+<span class="n">AttachmentType</span><span class="o">.</span><span class="n">ARCHIVE</span>   <span class="c1"># Zip, tar, etc.</span>
+<span class="n">AttachmentType</span><span class="o">.</span><span class="n">DOCUMENT</span>  <span class="c1"># PDF, Word, etc.</span>
+</pre></div>
+</div>
+</section>
+<section id="sending-attachments">
+<h3>Sending Attachments<a class="headerlink" href="#sending-attachments" title="Link to this heading">¶</a></h3>
+<p>Attachment sending is backend-specific:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discord</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="p">,</span>
+    <span class="s2">&quot;Check out this file!&quot;</span><span class="p">,</span>
+    <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;/path/to/file.pdf&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># Slack</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="p">,</span>
+    <span class="s2">&quot;Here&#39;s the document&quot;</span><span class="p">,</span>
+    <span class="n">files</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;file&quot;</span><span class="p">:</span> <span class="s2">&quot;/path/to/file.pdf&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Report&quot;</span><span class="p">}],</span>
+<span class="p">)</span>
+
+<span class="c1"># Symphony</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">stream_id</span><span class="p">,</span>
+    <span class="s2">&quot;&lt;messageML&gt;See attachment&lt;/messageML&gt;&quot;</span><span class="p">,</span>
+    <span class="n">attachments</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;/path/to/file.pdf&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Platform Support<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Upload</p></th>
+<th class="head"><p>Download URL</p></th>
+<th class="head"><p>Max Size</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>25MB (100MB Nitro)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>Workspace dependent</p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>100MB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="embeds">
+<h2>Embeds<a class="headerlink" href="#embeds" title="Link to this heading">¶</a></h2>
+<p>Embeds are rich content blocks (cards) attached to messages.</p>
+<section id="embed-model">
+<h3>Embed Model<a class="headerlink" href="#embed-model" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Embed</span><span class="p">,</span> <span class="n">EmbedAuthor</span><span class="p">,</span> <span class="n">EmbedField</span><span class="p">,</span> <span class="n">EmbedFooter</span><span class="p">,</span> <span class="n">EmbedMedia</span>
+
+<span class="c1"># Create a rich embed</span>
+<span class="n">embed</span> <span class="o">=</span> <span class="n">Embed</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Project Update&quot;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Here&#39;s the latest status on our project.&quot;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/project&quot;</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#3498db&quot;</span><span class="p">,</span>  <span class="c1"># Hex color</span>
+    <span class="n">timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">),</span>
+    <span class="n">author</span><span class="o">=</span><span class="n">EmbedAuthor</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>
+        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/alice&quot;</span><span class="p">,</span>
+        <span class="n">icon_url</span><span class="o">=</span><span class="s2">&quot;https://example.com/alice/avatar.png&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">thumbnail</span><span class="o">=</span><span class="n">EmbedMedia</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/project/logo.png&quot;</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">image</span><span class="o">=</span><span class="n">EmbedMedia</span><span class="p">(</span>
+        <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/project/banner.png&quot;</span><span class="p">,</span>
+        <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+        <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">fields</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Status&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;In Progress&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Priority&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;High&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Due Date&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;2024-12-31&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+        <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Long description here...&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="n">footer</span><span class="o">=</span><span class="n">EmbedFooter</span><span class="p">(</span>
+        <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Posted by Project Bot&quot;</span><span class="p">,</span>
+        <span class="n">icon_url</span><span class="o">=</span><span class="s2">&quot;https://example.com/bot/icon.png&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="embed-components">
+<h3>Embed Components<a class="headerlink" href="#embed-components" title="Link to this heading">¶</a></h3>
+<section id="embedauthor">
+<h4>EmbedAuthor<a class="headerlink" href="#embedauthor" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">author</span> <span class="o">=</span> <span class="n">EmbedAuthor</span><span class="p">(</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Author Name&quot;</span><span class="p">,</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/author&quot;</span><span class="p">,</span>      <span class="c1"># Optional link</span>
+    <span class="n">icon_url</span><span class="o">=</span><span class="s2">&quot;https://example.com/icon.png&quot;</span><span class="p">,</span>  <span class="c1"># Optional icon</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="embedfield">
+<h4>EmbedField<a class="headerlink" href="#embedfield" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inline fields (displayed side by side)</span>
+<span class="n">field1</span> <span class="o">=</span> <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Column 1&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Value 1&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">field2</span> <span class="o">=</span> <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Column 2&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Value 2&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Full-width field</span>
+<span class="n">field3</span> <span class="o">=</span> <span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Full Width&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;This spans the full width&quot;</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="embedmedia">
+<h4>EmbedMedia<a class="headerlink" href="#embedmedia" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Thumbnail (small, shown on right)</span>
+<span class="n">thumbnail</span> <span class="o">=</span> <span class="n">EmbedMedia</span><span class="p">(</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/thumb.png&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Main image (large, shown at bottom)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">EmbedMedia</span><span class="p">(</span>
+    <span class="n">url</span><span class="o">=</span><span class="s2">&quot;https://example.com/image.png&quot;</span><span class="p">,</span>
+    <span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span>
+    <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="embedfooter">
+<h4>EmbedFooter<a class="headerlink" href="#embedfooter" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">footer</span> <span class="o">=</span> <span class="n">EmbedFooter</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Footer text here&quot;</span><span class="p">,</span>
+    <span class="n">icon_url</span><span class="o">=</span><span class="s2">&quot;https://example.com/footer-icon.png&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="reading-embeds-from-messages">
+<h3>Reading Embeds from Messages<a class="headerlink" href="#reading-embeds-from-messages" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">embed</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">embeds</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Title: </span><span class="si">{</span><span class="n">embed</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Description: </span><span class="si">{</span><span class="n">embed</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;URL: </span><span class="si">{</span><span class="n">embed</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">embed</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Author: </span><span class="si">{</span><span class="n">embed</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">embed</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sending-embeds">
+<h3>Sending Embeds<a class="headerlink" href="#sending-embeds" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discord - supports rich embeds</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="p">,</span>
+    <span class="s2">&quot;Check this out!&quot;</span><span class="p">,</span>
+    <span class="n">embeds</span><span class="o">=</span><span class="p">[</span><span class="n">embed</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()],</span>  <span class="c1"># Convert to dict for API</span>
+<span class="p">)</span>
+
+<span class="c1"># Slack - uses &quot;attachments&quot; format</span>
+<span class="n">slack_attachment</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;fallback&quot;</span><span class="p">:</span> <span class="n">embed</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+    <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">embed</span><span class="o">.</span><span class="n">color</span><span class="p">,</span>
+    <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">embed</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+    <span class="s2">&quot;title_link&quot;</span><span class="p">:</span> <span class="n">embed</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+    <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">embed</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+    <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">inline</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">embed</span><span class="o">.</span><span class="n">fields</span>
+    <span class="p">],</span>
+<span class="p">}</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="p">,</span>
+    <span class="s2">&quot;Check this out!&quot;</span><span class="p">,</span>
+    <span class="n">attachments</span><span class="o">=</span><span class="p">[</span><span class="n">slack_attachment</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Platform Support<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Rich Embeds</p></th>
+<th class="head"><p>Link Previews</p></th>
+<th class="head"><p>Custom Colors</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p>✅ Full</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p>✅ (attachments)</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p>✅ (cards)</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="threads">
+<h2>Threads<a class="headerlink" href="#threads" title="Link to this heading">¶</a></h2>
+<p>Threads are sub-conversations attached to a message.</p>
+<section id="thread-model">
+<h3>Thread Model<a class="headerlink" href="#thread-model" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Thread</span><span class="p">,</span> <span class="n">Message</span><span class="p">,</span> <span class="n">Channel</span>
+
+<span class="n">parent_msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;msg_456&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Original message&quot;</span><span class="p">)</span>
+<span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
+
+<span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;thread_123&quot;</span><span class="p">,</span>
+    <span class="n">parent_message</span><span class="o">=</span><span class="n">parent_msg</span><span class="p">,</span>
+    <span class="n">parent_channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Discussion about feature X&quot;</span><span class="p">,</span>
+    <span class="n">message_count</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sending-messages-to-threads">
+<h3>Sending Messages to Threads<a class="headerlink" href="#sending-messages-to-threads" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Reply in a thread</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;This is a thread reply&quot;</span><span class="p">,</span>
+    <span class="n">thread</span><span class="o">=</span><span class="n">thread</span><span class="p">,</span>  <span class="c1"># or parent message</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="fetching-thread-messages">
+<h3>Fetching Thread Messages<a class="headerlink" href="#fetching-thread-messages" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch messages from a thread</span>
+<span class="n">thread_messages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span>
+    <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+    <span class="n">thread</span><span class="o">=</span><span class="n">thread</span><span class="p">,</span>
+    <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-a-thread">
+<h3>Creating a Thread<a class="headerlink" href="#creating-a-thread" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start a new thread from a message (Discord)</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Let&#39;s discuss this further&quot;</span><span class="p">,</span>
+    <span class="n">thread</span><span class="o">=</span><span class="n">parent_msg</span><span class="p">,</span>  <span class="c1"># Reply to start thread</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="platform-specific-thread-behavior">
+<h3>Platform-Specific Thread Behavior<a class="headerlink" href="#platform-specific-thread-behavior" title="Link to this heading">¶</a></h3>
+<section id="discord">
+<h4>Discord<a class="headerlink" href="#discord" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discord threads are first-class channels</span>
+<span class="c1"># Thread ID is the channel ID of the thread</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">thread_id</span><span class="p">,</span>  <span class="c1"># Use thread ID as channel</span>
+    <span class="s2">&quot;Reply in Discord thread&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="slack">
+<h4>Slack<a class="headerlink" href="#slack" title="Link to this heading">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Slack threads use thread_ts (parent message timestamp)</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+    <span class="n">channel_id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span>
+    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Reply in Slack thread&quot;</span><span class="p">,</span>
+    <span class="n">thread_ts</span><span class="o">=</span><span class="s2">&quot;1234567890.123456&quot;</span><span class="p">,</span>  <span class="c1"># Parent message ts</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id3">
+<h3>Platform Support<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Native Threads</p></th>
+<th class="head"><p>Reply-to</p></th>
+<th class="head"><p>Thread Names</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="presence">
+<h2>Presence<a class="headerlink" href="#presence" title="Link to this heading">¶</a></h2>
+<p>Presence indicates a user’s online status and activity.</p>
+<section id="presence-model">
+<h3>Presence Model<a class="headerlink" href="#presence-model" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Presence</span><span class="p">,</span> <span class="n">PresenceStatus</span><span class="p">,</span> <span class="n">Activity</span><span class="p">,</span> <span class="n">ActivityType</span>
+
+<span class="c1"># Basic presence</span>
+<span class="n">presence</span> <span class="o">=</span> <span class="n">Presence</span><span class="p">(</span>
+    <span class="n">user_id</span><span class="o">=</span><span class="s2">&quot;U123456&quot;</span><span class="p">,</span>
+    <span class="n">status</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span>
+    <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;Working on chatom&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># With activity</span>
+<span class="n">presence</span> <span class="o">=</span> <span class="n">Presence</span><span class="p">(</span>
+    <span class="n">user_id</span><span class="o">=</span><span class="s2">&quot;U123456&quot;</span><span class="p">,</span>
+    <span class="n">status</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span>
+    <span class="n">activity</span><span class="o">=</span><span class="n">Activity</span><span class="p">(</span>
+        <span class="nb">type</span><span class="o">=</span><span class="n">ActivityType</span><span class="o">.</span><span class="n">PLAYING</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Visual Studio Code&quot;</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="presence-status-values">
+<h3>Presence Status Values<a class="headerlink" href="#presence-status-values" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">PresenceStatus</span>
+
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span>      <span class="c1"># Available, active</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">IDLE</span>        <span class="c1"># Away, inactive</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">DND</span>         <span class="c1"># Do Not Disturb</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span>     <span class="c1"># Not connected</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">INVISIBLE</span>   <span class="c1"># Hidden (appears offline)</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">AWAY</span>        <span class="c1"># Explicitly away</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">BUSY</span>        <span class="c1"># Busy (Symphony)</span>
+<span class="n">PresenceStatus</span><span class="o">.</span><span class="n">UNKNOWN</span>     <span class="c1"># Status not available</span>
+</pre></div>
+</div>
+</section>
+<section id="getting-user-presence">
+<h3>Getting User Presence<a class="headerlink" href="#getting-user-presence" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get a user&#39;s presence</span>
+<span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="s2">&quot;U123456&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">presence</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status: </span><span class="si">{</span><span class="n">presence</span><span class="o">.</span><span class="n">status</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Status text: </span><span class="si">{</span><span class="n">presence</span><span class="o">.</span><span class="n">status_text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">presence</span><span class="o">.</span><span class="n">activity</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Activity: </span><span class="si">{</span><span class="n">presence</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">presence</span><span class="o">.</span><span class="n">activity</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Check convenience properties</span>
+    <span class="k">if</span> <span class="n">presence</span><span class="o">.</span><span class="n">is_online</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User is online!&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">presence</span><span class="o">.</span><span class="n">is_idle</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User is idle&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">presence</span><span class="o">.</span><span class="n">is_offline</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User is offline&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-your-presence">
+<h3>Setting Your Presence<a class="headerlink" href="#setting-your-presence" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set simple status</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span>
+    <span class="n">status</span><span class="o">=</span><span class="s2">&quot;online&quot;</span><span class="p">,</span>
+    <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;Available for questions&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Platform-specific options</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span>
+    <span class="n">status</span><span class="o">=</span><span class="s2">&quot;dnd&quot;</span><span class="p">,</span>
+    <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;In a meeting&quot;</span><span class="p">,</span>
+    <span class="n">status_emoji</span><span class="o">=</span><span class="s2">&quot;:calendar:&quot;</span><span class="p">,</span>  <span class="c1"># Slack</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="platform-specific-status-values">
+<h3>Platform-Specific Status Values<a class="headerlink" href="#platform-specific-status-values" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Online</p></th>
+<th class="head"><p>Away/Idle</p></th>
+<th class="head"><p>DND</p></th>
+<th class="head"><p>Invisible</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">online</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">idle</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">dnd</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">invisible</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">auto</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">away</span></code></p></td>
+<td><p>N/A</p></td>
+<td><p>N/A</p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AVAILABLE</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">AWAY</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">BUSY</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">OFF_WORK</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="presence-heartbeat">
+<h3>Presence Heartbeat<a class="headerlink" href="#presence-heartbeat" title="Link to this heading">¶</a></h3>
+<p>For long-running bots, use the presence heartbeat:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start automatic presence updates</span>
+<span class="n">backend</span><span class="o">.</span><span class="n">start_presence_heartbeat</span><span class="p">(</span>
+    <span class="n">interval_seconds</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span>  <span class="c1"># Update every 60 seconds</span>
+    <span class="n">status</span><span class="o">=</span><span class="s2">&quot;online&quot;</span><span class="p">,</span>
+    <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;Bot is running&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># ... bot runs ...</span>
+
+<span class="c1"># Stop when done</span>
+<span class="n">backend</span><span class="o">.</span><span class="n">stop_presence_heartbeat</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="activity-types">
+<h3>Activity Types<a class="headerlink" href="#activity-types" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">ActivityType</span>
+
+<span class="n">ActivityType</span><span class="o">.</span><span class="n">PLAYING</span>     <span class="c1"># Playing a game</span>
+<span class="n">ActivityType</span><span class="o">.</span><span class="n">STREAMING</span>   <span class="c1"># Streaming content</span>
+<span class="n">ActivityType</span><span class="o">.</span><span class="n">LISTENING</span>   <span class="c1"># Listening to music</span>
+<span class="n">ActivityType</span><span class="o">.</span><span class="n">WATCHING</span>    <span class="c1"># Watching something</span>
+<span class="n">ActivityType</span><span class="o">.</span><span class="n">CUSTOM</span>      <span class="c1"># Custom status</span>
+<span class="n">ActivityType</span><span class="o">.</span><span class="n">COMPETING</span>   <span class="c1"># Competing in something</span>
+</pre></div>
+</div>
+</section>
+<section id="setting-activity-discord">
+<h3>Setting Activity (Discord)<a class="headerlink" href="#setting-activity-discord" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Discord supports rich activity</span>
+<span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span>
+    <span class="n">status</span><span class="o">=</span><span class="s2">&quot;online&quot;</span><span class="p">,</span>
+    <span class="n">activity_type</span><span class="o">=</span><span class="s2">&quot;playing&quot;</span><span class="p">,</span>
+    <span class="n">activity_name</span><span class="o">=</span><span class="s2">&quot;with the chatom API&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>Platform Support<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Backend</p></th>
+<th class="head"><p>Get</p></th>
+<th class="head"><p>Set</p></th>
+<th class="head"><p>Status Text</p></th>
+<th class="head"><p>Activity</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Discord</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Slack</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>Symphony</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="user-and-channel-lookup">
+<h2>User and Channel Lookup<a class="headerlink" href="#user-and-channel-lookup" title="Link to this heading">¶</a></h2>
+<section id="fetching-users">
+<h3>Fetching Users<a class="headerlink" href="#fetching-users" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch by ID</span>
+<span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="s2">&quot;U123456&quot;</span><span class="p">)</span>
+
+<span class="c1"># Lookup with flexible criteria</span>
+<span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">lookup_user</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123456&quot;</span><span class="p">,</span>        <span class="c1"># By ID</span>
+    <span class="c1"># or</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span>        <span class="c1"># By name</span>
+    <span class="c1"># or</span>
+    <span class="n">email</span><span class="o">=</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">,</span>  <span class="c1"># By email</span>
+    <span class="c1"># or</span>
+    <span class="n">handle</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">,</span>      <span class="c1"># By username/handle</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="fetching-channels">
+<h3>Fetching Channels<a class="headerlink" href="#fetching-channels" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Fetch by ID</span>
+<span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="s2">&quot;C123456&quot;</span><span class="p">)</span>
+
+<span class="c1"># Lookup with flexible criteria</span>
+<span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">lookup_channel</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">,</span>   <span class="c1"># By ID</span>
+    <span class="c1"># or</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="c1"># By name</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="user-caching">
+<h3>User Caching<a class="headerlink" href="#user-caching" title="Link to this heading">¶</a></h3>
+<p>Backends cache fetched users automatically:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># First call fetches from API</span>
+<span class="n">user1</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="s2">&quot;U123&quot;</span><span class="p">)</span>
+
+<span class="c1"># Second call returns cached copy</span>
+<span class="n">user2</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="s2">&quot;U123&quot;</span><span class="p">)</span>
+
+<span class="c1"># Access the cache directly</span>
+<span class="n">cached</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">&quot;U123&quot;</span><span class="p">)</span>
+<span class="n">all_users</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">users</span><span class="p">)</span>
+
+<span class="c1"># Clear cache if needed</span>
+<span class="n">backend</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="channel-caching">
+<h3>Channel Caching<a class="headerlink" href="#channel-caching" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Channels are also cached</span>
+<span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+
+<span class="c1"># Access cache</span>
+<span class="n">cached</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="n">by_name</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
+<span class="n">all_channels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="complete-example-feature-rich-bot">
+<h2>Complete Example: Feature-Rich Bot<a class="headerlink" href="#complete-example-feature-rich-bot" title="Link to this heading">¶</a></h2>
+<p>A bot demonstrating multiple features:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Embed</span><span class="p">,</span> <span class="n">EmbedField</span><span class="p">,</span> <span class="n">EmbedFooter</span><span class="p">,</span>
+    <span class="n">Emoji</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">,</span>
+    <span class="n">PresenceStatus</span><span class="p">,</span>
+    <span class="n">parse_mentions</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackBackend</span><span class="p">,</span> <span class="n">SlackConfig</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">run_feature_bot</span><span class="p">():</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">SlackConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">&quot;xoxb-your-token&quot;</span><span class="p">)</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">SlackBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+    <span class="c1"># Set bot presence</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span>
+        <span class="n">status</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;Feature Bot Online&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Start presence heartbeat</span>
+    <span class="n">backend</span><span class="o">.</span><span class="n">start_presence_heartbeat</span><span class="p">(</span>
+        <span class="n">interval_seconds</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+        <span class="n">status_text</span><span class="o">=</span><span class="s2">&quot;Feature Bot Running&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">channel_id</span> <span class="o">=</span> <span class="s2">&quot;C123456&quot;</span>
+
+    <span class="c1"># Fetch recent messages</span>
+    <span class="n">messages</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="n">channel_id</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># Check for commands</span>
+        <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;!status&quot;</span><span class="p">):</span>
+            <span class="c1"># Show user presence</span>
+            <span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mentions</span><span class="p">:</span>
+                <span class="n">user_id</span> <span class="o">=</span> <span class="n">mentions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span>
+                <span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">presence</span><span class="p">:</span>
+                    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                        <span class="n">channel_id</span><span class="p">,</span>
+                        <span class="sa">f</span><span class="s2">&quot;User status: </span><span class="si">{</span><span class="n">presence</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">content</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;!info&quot;</span><span class="p">):</span>
+            <span class="c1"># Send a rich embed (Slack attachment)</span>
+            <span class="n">attachment</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;fallback&quot;</span><span class="p">:</span> <span class="s2">&quot;Bot Information&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;#36a64f&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Feature Bot Info&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;I&#39;m a demonstration bot for chatom features.&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fields&quot;</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Version&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Uptime&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;2 hours&quot;</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Commands&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="s2">&quot;!status, !info, !react&quot;</span><span class="p">,</span> <span class="s2">&quot;short&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="p">],</span>
+                <span class="s2">&quot;footer&quot;</span><span class="p">:</span> <span class="s2">&quot;chatom Feature Bot&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ts&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()),</span>
+            <span class="p">}</span>
+            <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">&quot;Here&#39;s my info:&quot;</span><span class="p">,</span>
+                <span class="n">attachments</span><span class="o">=</span><span class="p">[</span><span class="n">attachment</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">content</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;!react&quot;</span><span class="p">):</span>
+            <span class="c1"># Add a reaction to the command message</span>
+            <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span>
+                <span class="n">channel_id</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                <span class="s2">&quot;thumbsup&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check for attachments</span>
+        <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">att</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                    <span class="n">channel_id</span><span class="p">,</span>
+                    <span class="sa">f</span><span class="s2">&quot;I see you uploaded: </span><span class="si">{</span><span class="n">att</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">att</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2"> bytes)&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
+    <span class="c1"># Cleanup</span>
+    <span class="n">backend</span><span class="o">.</span><span class="n">stop_presence_heartbeat</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">run_feature_bot</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="backend-examples.html"><span class="std std-doc">Backend Examples</span></a> for platform-specific code</p></li>
+<li><p>Learn about <a class="reference internal" href="messaging.html"><span class="std std-doc">Message Formatting</span></a></p></li>
+<li><p>Explore <a class="reference internal" href="mentions.html"><span class="std std-doc">Mentions</span></a> for tagging users</p></li>
+<li><p>Check the <a class="reference internal" href="api.html"><span class="std std-doc">API Reference</span></a> for complete details</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="conversion.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Type Conversion System</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="format-system.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Format System</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Advanced Features</a><ul>
+<li><a class="reference internal" href="#reactions">Reactions</a><ul>
+<li><a class="reference internal" href="#adding-reactions">Adding Reactions</a></li>
+<li><a class="reference internal" href="#removing-reactions">Removing Reactions</a></li>
+<li><a class="reference internal" href="#reading-reactions-from-messages">Reading Reactions from Messages</a></li>
+<li><a class="reference internal" href="#reaction-models">Reaction Models</a></li>
+<li><a class="reference internal" href="#platform-support">Platform Support</a></li>
+<li><a class="reference internal" href="#reaction-events">Reaction Events</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#attachments">Attachments</a><ul>
+<li><a class="reference internal" href="#attachment-model">Attachment Model</a></li>
+<li><a class="reference internal" href="#reading-attachments-from-messages">Reading Attachments from Messages</a></li>
+<li><a class="reference internal" href="#attachment-types">Attachment Types</a></li>
+<li><a class="reference internal" href="#sending-attachments">Sending Attachments</a></li>
+<li><a class="reference internal" href="#id1">Platform Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#embeds">Embeds</a><ul>
+<li><a class="reference internal" href="#embed-model">Embed Model</a></li>
+<li><a class="reference internal" href="#embed-components">Embed Components</a><ul>
+<li><a class="reference internal" href="#embedauthor">EmbedAuthor</a></li>
+<li><a class="reference internal" href="#embedfield">EmbedField</a></li>
+<li><a class="reference internal" href="#embedmedia">EmbedMedia</a></li>
+<li><a class="reference internal" href="#embedfooter">EmbedFooter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reading-embeds-from-messages">Reading Embeds from Messages</a></li>
+<li><a class="reference internal" href="#sending-embeds">Sending Embeds</a></li>
+<li><a class="reference internal" href="#id2">Platform Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#threads">Threads</a><ul>
+<li><a class="reference internal" href="#thread-model">Thread Model</a></li>
+<li><a class="reference internal" href="#sending-messages-to-threads">Sending Messages to Threads</a></li>
+<li><a class="reference internal" href="#fetching-thread-messages">Fetching Thread Messages</a></li>
+<li><a class="reference internal" href="#creating-a-thread">Creating a Thread</a></li>
+<li><a class="reference internal" href="#platform-specific-thread-behavior">Platform-Specific Thread Behavior</a><ul>
+<li><a class="reference internal" href="#discord">Discord</a></li>
+<li><a class="reference internal" href="#slack">Slack</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">Platform Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#presence">Presence</a><ul>
+<li><a class="reference internal" href="#presence-model">Presence Model</a></li>
+<li><a class="reference internal" href="#presence-status-values">Presence Status Values</a></li>
+<li><a class="reference internal" href="#getting-user-presence">Getting User Presence</a></li>
+<li><a class="reference internal" href="#setting-your-presence">Setting Your Presence</a></li>
+<li><a class="reference internal" href="#platform-specific-status-values">Platform-Specific Status Values</a></li>
+<li><a class="reference internal" href="#presence-heartbeat">Presence Heartbeat</a></li>
+<li><a class="reference internal" href="#activity-types">Activity Types</a></li>
+<li><a class="reference internal" href="#setting-activity-discord">Setting Activity (Discord)</a></li>
+<li><a class="reference internal" href="#id4">Platform Support</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#user-and-channel-lookup">User and Channel Lookup</a><ul>
+<li><a class="reference internal" href="#fetching-users">Fetching Users</a></li>
+<li><a class="reference internal" href="#fetching-channels">Fetching Channels</a></li>
+<li><a class="reference internal" href="#user-caching">User Caching</a></li>
+<li><a class="reference internal" href="#channel-caching">Channel Caching</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#complete-example-feature-rich-bot">Complete Example: Feature-Rich Bot</a></li>
+<li><a class="reference internal" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>
