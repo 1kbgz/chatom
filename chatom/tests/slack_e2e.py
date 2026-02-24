@@ -900,10 +900,10 @@ class SlackE2ETest:
             bot_user_id = None
             bot_name = "bot"
             try:
-                auth_response = await self.backend._async_client.auth_test()
-                if auth_response.get("ok"):
-                    bot_user_id = auth_response.get("user_id")
-                    bot_name = auth_response.get("user", "bot")
+                bot_info = await self.backend.get_bot_info()
+                if bot_info:
+                    bot_user_id = bot_info.id
+                    bot_name = bot_info.name or "bot"
                     print(f"\n  Bot info: {bot_name} ({bot_user_id})")
             except Exception:
                 pass
