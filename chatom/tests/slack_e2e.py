@@ -36,6 +36,7 @@ The inbound message test will ask you to send a message mentioning the bot.
 import asyncio
 import os
 import sys
+import tempfile
 import traceback
 from datetime import datetime
 from typing import Optional
@@ -670,9 +671,6 @@ class SlackE2ETest:
         self.section("Test: File Attachment")
 
         try:
-            import os as temp_os
-            import tempfile
-
             # Create a temporary text file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
                 f.write("This is a test file created by the chatom E2E test suite.\n")
@@ -701,7 +699,7 @@ class SlackE2ETest:
 
             finally:
                 # Clean up temp file
-                temp_os.unlink(temp_file_path)
+                os.unlink(temp_file_path)
 
         except Exception as e:
             self.log(f"Failed to test file attachment: {e}", success=False)

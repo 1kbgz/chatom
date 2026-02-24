@@ -1,6 +1,7 @@
 """Slack backend implementation for chatom."""
 
 import asyncio
+import re
 from datetime import datetime
 from logging import getLogger
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
@@ -1126,8 +1127,6 @@ class SlackBackend(BackendBase):
                             pass  # Lookup failed, continue with basic info
 
                         # Parse user mentions from text (<@U12345678> format) and resolve
-                        import re
-
                         mention_users = []
                         mention_pattern = re.compile(r"<@([UW][A-Z0-9]+)(?:\|[^>]+)?>")
                         for match in mention_pattern.finditer(text):
