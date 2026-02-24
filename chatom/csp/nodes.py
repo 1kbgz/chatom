@@ -5,6 +5,7 @@ messages using chatom backends.
 """
 
 import asyncio
+import contextlib
 import logging
 import threading
 from queue import Queue
@@ -138,12 +139,6 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         # Start processing queue in parallel with reading
         queue_task = asyncio.create_task(self._process_queue())
 
-        # Create a shutdown watcher task
-        async def shutdown_watcher():
-            await self._shutdown_event.wait()
-
-        shutdown_task = asyncio.create_task(shutdown_watcher())
-
         try:
             # If we have specific channels, stream each one
             if self._resolved_channel_ids:
@@ -151,41 +146,28 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
                 # TODO: Support multiple channels with asyncio.gather
                 for channel_id in self._resolved_channel_ids:
                     log.debug(f"Starting to stream messages from channel {channel_id}")
-                    async for message in thread_backend.stream_messages(
+                    stream = thread_backend.stream_messages(
                         channel_id=channel_id,
                         skip_own=self._skip_own,
                         skip_history=self._skip_history,
-                    ):
-                        log.debug(f"Received message: {message.id}")
-                        if not self._running or self._shutdown_event.is_set():
-                            log.debug("Stopping stream due to _running=False or shutdown_event")
-                            break
-                        self._message_queue.put(message)
+                    )
+                    await self._consume_stream(stream)
                     log.debug(f"Stream from channel {channel_id} ended")
                     if not self._running or self._shutdown_event.is_set():
                         break
             else:
                 # Stream all messages
                 log.debug("Starting to stream all messages")
-                async for message in thread_backend.stream_messages(
+                stream = thread_backend.stream_messages(
                     skip_own=self._skip_own,
                     skip_history=self._skip_history,
-                ):
-                    log.debug(f"Received message: {message.id}")
-                    if not self._running or self._shutdown_event.is_set():
-                        log.debug("Stopping stream due to _running=False or shutdown_event")
-                        break
-                    self._message_queue.put(message)
+                )
+                await self._consume_stream(stream)
                 log.debug("Stream all messages ended")
         finally:
             queue_task.cancel()
-            shutdown_task.cancel()
             try:
                 await queue_task
-            except asyncio.CancelledError:
-                pass
-            try:
-                await shutdown_task
             except asyncio.CancelledError:
                 pass
             # Disconnect the thread-local backend
@@ -193,6 +175,51 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
                 await thread_backend.disconnect()
             except Exception:
                 pass
+
+    async def _consume_stream(self, stream, timeout: float = 30.0):
+        """Consume an async stream with shutdown and timeout support.
+
+        Wraps stream consumption in a task and races against shutdown,
+        ensuring responsive shutdown even when messages are infrequent.
+
+        Args:
+            stream: An async iterable of messages.
+            timeout: Seconds to wait before logging a health check (default 30s).
+                     Set to None to disable timeout logging.
+        """
+
+        async def drain_to_queue():
+            async for message in stream:
+                if not self._running:
+                    break
+                log.debug(f"Received message: {message.id}")
+                self._message_queue.put(message)
+
+        consumer = asyncio.create_task(drain_to_queue())
+        shutdown = asyncio.create_task(self._shutdown_event.wait())
+
+        try:
+            while not consumer.done() and not shutdown.done():
+                done, _ = await asyncio.wait(
+                    [consumer, shutdown],
+                    return_when=asyncio.FIRST_COMPLETED,
+                    timeout=timeout,
+                )
+                if not done:
+                    log.debug(f"Stream idle for {timeout}s, still waiting...")
+        finally:
+            if not consumer.done():
+                consumer.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await consumer
+            if not shutdown.done():
+                shutdown.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await shutdown
+
+        # Propagate any exception from the consumer
+        if consumer.done() and not consumer.cancelled():
+            consumer.result()
 
     async def _resolve_channels(self, backend):
         """Resolve channel names to IDs.
