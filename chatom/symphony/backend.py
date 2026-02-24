@@ -23,7 +23,7 @@ from ..base import (
     User,
 )
 from ..format.variant import Format
-from .channel import SymphonyChannel
+from .channel import SymphonyChannel, SymphonyStreamType
 from .config import SymphonyConfig
 from .mention import mention_user as _mention_user
 from .message import SymphonyMessage
@@ -35,8 +35,15 @@ log = logging.getLogger(__name__)
 # Try to import symphony-bdk
 try:
     from symphony.bdk.core.config.model.bdk_config import BdkConfig
+    from symphony.bdk.core.service.datafeed.real_time_event_listener import RealTimeEventListener
     from symphony.bdk.core.service.presence.presence_service import PresenceStatus
     from symphony.bdk.core.symphony_bdk import SymphonyBdk
+    from symphony.bdk.gen.agent_model.v4_initiator import V4Initiator
+    from symphony.bdk.gen.agent_model.v4_message_sent import V4MessageSent
+    from symphony.bdk.gen.pod_model.user_id_list import UserIdList
+    from symphony.bdk.gen.pod_model.user_search_query import UserSearchQuery
+    from symphony.bdk.gen.pod_model.v2_room_search_criteria import V2RoomSearchCriteria
+    from symphony.bdk.gen.pod_model.v3_room_attributes import V3RoomAttributes
 
     HAS_SYMPHONY = True
 except ImportError:
@@ -260,8 +267,6 @@ class SymphonyBackend(BackendBase):
         # Search by display name
         if name:
             try:
-                from symphony.bdk.gen.pod_model.user_search_query import UserSearchQuery
-
                 user_service = self._bdk.users()
                 query = UserSearchQuery(query=name)
                 results = await user_service.search_users(query=query, local=True)
@@ -401,8 +406,6 @@ class SymphonyBackend(BackendBase):
         # Search by room name
         if name:
             try:
-                from symphony.bdk.gen.pod_model.v2_room_search_criteria import V2RoomSearchCriteria
-
                 stream_service = self._bdk.streams()
                 log.info(f"Searching for room by name: {name}")
                 results = await stream_service.search_rooms(V2RoomSearchCriteria(query=name), limit=10)
@@ -1015,8 +1018,7 @@ class SymphonyBackend(BackendBase):
 
         Args:
             users: List of users to include in the DM (ID strings or User objects).
-                   If one user, creates a 1:1 IM.
-                   If multiple users, uses admin endpoint for MIM.
+                   The calling bot is implicitly included in the conversation.
 
         Returns:
             The stream ID of the created DM.
@@ -1042,12 +1044,13 @@ class SymphonyBackend(BackendBase):
             # Convert string IDs to int for Symphony API
             int_user_ids = [int(uid) for uid in user_ids]
 
-            if len(int_user_ids) == 1:
-                # Single user - use create_im which takes a single user_id
-                stream = await stream_service.create_im(int_user_ids[0])
-            else:
-                # Multiple users - use admin endpoint for MIM
-                stream = await stream_service.create_im_admin(int_user_ids)
+            # Use the underlying v1/im/create API which supports both 1:1 IMs and MIMs
+            # The caller (bot) is implicitly included as a participant
+            # Note: create_im_admin requires admin privileges and excludes the caller
+            stream = await stream_service._streams_api.v1_im_create_post(
+                uid_list=UserIdList(value=int_user_ids),
+                session_token=await stream_service._auth_session.session_token,
+            )
 
             return stream.id
 
@@ -1090,8 +1093,6 @@ class SymphonyBackend(BackendBase):
             raise RuntimeError("Symphony not connected")
 
         try:
-            from symphony.bdk.gen.pod_model.v3_room_attributes import V3RoomAttributes
-
             stream_service = self._bdk.streams()
             read_only = kwargs.get("read_only", False)
 
@@ -1180,14 +1181,8 @@ class SymphonyBackend(BackendBase):
         if channel is not None:
             channel_id = await self._resolve_channel_id(channel)
 
-        try:
-            from symphony.bdk.core.service.datafeed.real_time_event_listener import (
-                RealTimeEventListener,
-            )
-            from symphony.bdk.gen.agent_model.v4_initiator import V4Initiator
-            from symphony.bdk.gen.agent_model.v4_message_sent import V4MessageSent
-        except ImportError as e:
-            raise RuntimeError(f"symphony-bdk-python required for streaming: {e}") from e
+        if not HAS_SYMPHONY:
+            raise RuntimeError("symphony-bdk-python required for streaming")
 
         # Get bot info for filtering
         bot_info = await self.get_bot_info()
@@ -1259,10 +1254,8 @@ class SymphonyBackend(BackendBase):
                 # Determine stream type from the stream object
                 stream_type_str = getattr(msg.stream, "stream_type", None) or "ROOM"
                 try:
-                    from .channel import SymphonyChannel, SymphonyStreamType
-
                     stream_type = SymphonyStreamType(stream_type_str)
-                except (ValueError, ImportError):
+                except ValueError:
                     stream_type = None
 
                 # Lookup channel to get full info (id AND name)

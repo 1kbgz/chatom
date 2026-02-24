@@ -3,6 +3,9 @@
 This module provides the Symphony-specific Message class.
 """
 
+import html
+import json
+import re
 from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
@@ -201,8 +204,6 @@ class SymphonyMessage(Message):
         Returns:
             List of user IDs (as integers) mentioned in the message.
         """
-        import json
-
         if not data:
             return []
 
@@ -237,9 +238,6 @@ class SymphonyMessage(Message):
         Returns:
             Plain text extracted from the content.
         """
-        import html
-        import re
-
         if not content:
             return ""
 
