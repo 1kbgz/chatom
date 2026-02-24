@@ -33,9 +33,10 @@ The test will:
 
 import asyncio
 import os
+import re
 import sys
 import traceback
-from typing import Optional
+from typing import List, Optional, Tuple, Union
 
 # Chatom imports
 from chatom.format import Format, FormattedMessage
@@ -117,9 +118,9 @@ class CombinedE2ETest:
     async def _find_slack_user_by_email(self, email: str) -> Optional[str]:
         """Find a Slack user ID by their email address."""
         try:
-            response = await self.slack_backend._async_client.users_lookupByEmail(email=email)
-            if response.get("ok"):
-                return response.get("user", {}).get("id")
+            user = await self.slack_backend.fetch_user(email=email)
+            if user:
+                return user.id
         except Exception:
             pass
         return None
@@ -133,6 +134,148 @@ class CombinedE2ETest:
         except Exception:
             pass
         return None
+
+    async def _parse_slack_mentions(self, text: str) -> List[Tuple[str, Union[str, Tuple[str, str]]]]:
+        """Parse Slack text and return segments with mentions resolved to Symphony.
+
+        Returns a list of tuples: ('text', 'content') or ('mention', (user_id, display_name))
+        """
+        segments = []
+        mention_pattern = re.compile(r"<@(U[A-Z0-9]+)>")
+        last_end = 0
+
+        for match in mention_pattern.finditer(text):
+            # Add text before this mention
+            if match.start() > last_end:
+                segments.append(("text", text[last_end : match.start()]))
+
+            slack_user_id = match.group(1)
+            display_name = "User"
+            symphony_user_id = None
+
+            try:
+                # Get user info from Slack using abstract API
+                slack_user = await self.slack_backend.fetch_user(slack_user_id)
+                if slack_user:
+                    display_name = slack_user.display_name or slack_user.name or "User"
+
+                    # Try to find the user in Symphony by email
+                    if slack_user.email:
+                        symphony_user_id = await self._find_symphony_user_by_email(slack_user.email)
+            except Exception:
+                pass
+
+            if symphony_user_id:
+                segments.append(("mention", (symphony_user_id, display_name)))
+            else:
+                segments.append(("text", f"@{display_name}"))
+
+            last_end = match.end()
+
+        # Add remaining text
+        if last_end < len(text):
+            segments.append(("text", text[last_end:]))
+
+        return segments if segments else [("text", text)]
+
+    async def _parse_symphony_mentions(self, text: str, mentions: list = None) -> List[Tuple[str, Union[str, Tuple[str, str]]]]:
+        """Parse Symphony text and return segments with mentions resolved to Slack.
+
+        Returns a list of tuples: ('text', 'content') or ('mention', (user_id, display_name))
+        """
+        # Build a map of display_name -> slack_user_id from structured mentions
+        mention_map = {}  # display_name -> slack_user_id
+
+        if mentions:
+            for mention in mentions:
+                # Handle User objects from chatom.base
+                user_id = None
+
+                # Get user ID - try various attribute names
+                if hasattr(mention, "id"):
+                    user_id = mention.id
+                elif hasattr(mention, "user_id"):
+                    user_id = mention.user_id
+                elif isinstance(mention, dict):
+                    user_id = mention.get("id") or mention.get("user_id")
+
+                if user_id:
+                    try:
+                        # Fetch full user details to get the real display name
+                        symphony_user = await self.symphony_backend.fetch_user(user_id)
+                        if symphony_user:
+                            # Get the display name from the fetched user
+                            display_name = symphony_user.display_name or symphony_user.name
+
+                            if display_name and symphony_user.email:
+                                slack_user_id = await self._find_slack_user_by_email(symphony_user.email)
+                                if slack_user_id:
+                                    mention_map[display_name] = slack_user_id
+                    except Exception:
+                        pass
+
+        # Search for known mentions from the map directly in the text
+        # This is more reliable than regex for names with commas, etc.
+        segments = []
+
+        if mention_map:
+            # Sort by length descending to match longer names first
+            sorted_names = sorted(mention_map.keys(), key=len, reverse=True)
+
+            # Find all mentions and their positions
+            mention_positions = []  # (start, end, display_name, slack_user_id)
+            for display_name in sorted_names:
+                search_text = f"@{display_name}"
+                idx = text.find(search_text)
+                if idx != -1:
+                    mention_positions.append((idx, idx + len(search_text), display_name, mention_map[display_name]))
+
+            # Sort by position
+            mention_positions.sort(key=lambda x: x[0])
+
+            # Build segments
+            last_end = 0
+            for start, end, display_name, slack_user_id in mention_positions:
+                # Skip if this overlaps with a previous mention
+                if start < last_end:
+                    continue
+
+                # Add text before this mention
+                if start > last_end:
+                    segments.append(("text", text[last_end:start]))
+
+                segments.append(("mention", (slack_user_id, display_name)))
+                last_end = end
+
+            # Add remaining text
+            if last_end < len(text):
+                segments.append(("text", text[last_end:]))
+
+        return segments if segments else [("text", text)]
+
+    def _build_message_with_segments(
+        self, segments: List[Tuple[str, Union[str, Tuple[str, str]]]], target_format: str = "symphony"
+    ) -> FormattedMessage:
+        """Build a FormattedMessage from parsed segments.
+
+        Args:
+            segments: List of ('text', content) or ('mention', (user_id, display_name)) tuples
+            target_format: 'symphony' or 'slack' - determines mention format
+        """
+        msg = FormattedMessage()
+
+        for seg_type, content in segments:
+            if seg_type == "text":
+                msg.add_text(content)
+            elif seg_type == "mention":
+                user_id, display_name = content
+                if target_format == "symphony":
+                    msg.add_mention(user_id, display_name)
+                else:
+                    # For Slack, use raw <@U...> format in text
+                    msg.add_text(f"<@{user_id}>")
+
+        return msg
 
     def log(self, message: str, success: bool = True):
         """Log a test result."""
@@ -354,23 +497,26 @@ class CombinedE2ETest:
                             if slack_user_id:
                                 print(f"     Found in Slack: {slack_user_id}")
 
+                    # Parse mentions in the message text and convert to Slack format
+                    mentions = getattr(received_message, "mentions", None)
+                    text_segments = await self._parse_symphony_mentions(plain_text, mentions)
+
                     # Forward to Slack with @mention if found
+                    forward_msg = FormattedMessage()
+                    forward_msg.add_text("📨 ")
+                    forward_msg.add_bold("Message forwarded from Symphony")
                     if slack_user_id:
-                        forward_msg = (
-                            FormattedMessage()
-                            .add_text("📨 ")
-                            .add_bold("Message forwarded from Symphony")
-                            .add_text(f"\n\n<@{slack_user_id}> said:\n")
-                            .add_text(f"{plain_text}")
-                        )
+                        forward_msg.add_text(f"\n\n<@{slack_user_id}> said:\n")
                     else:
-                        forward_msg = (
-                            FormattedMessage()
-                            .add_text("📨 ")
-                            .add_bold("Message forwarded from Symphony")
-                            .add_text(f"\n\n*{sender_name}* said:\n")
-                            .add_text(f"{plain_text}")
-                        )
+                        forward_msg.add_text(f"\n\n*{sender_name}* said:\n")
+
+                    # Add the message content with converted mentions
+                    for seg_type, content in text_segments:
+                        if seg_type == "text":
+                            forward_msg.add_text(content)
+                        elif seg_type == "mention":
+                            user_id, display_name = content
+                            forward_msg.add_text(f"<@{user_id}>")
                     await self.slack_backend.send_message(
                         self.slack_channel_id,
                         forward_msg.render(Format.SLACK_MARKDOWN),
@@ -452,37 +598,34 @@ class CombinedE2ETest:
                     # Try to find the sender in Symphony by email
                     symphony_user_id = None
                     if received_message.author_id:
-                        # Get sender's email from Slack
-                        try:
-                            user_info = await self.slack_backend._async_client.users_info(user=received_message.author_id)
-                            if user_info.get("ok"):
-                                sender_email = user_info.get("user", {}).get("profile", {}).get("email")
-                                if sender_email:
-                                    symphony_user_id = await self._find_symphony_user_by_email(sender_email)
-                                    if symphony_user_id:
-                                        print(f"     Found in Symphony: {symphony_user_id}")
-                        except Exception:
-                            pass
+                        # Get sender's email from Slack using abstract API
+                        sender_user = await self.slack_backend.fetch_user(received_message.author_id)
+                        if sender_user and sender_user.email:
+                            symphony_user_id = await self._find_symphony_user_by_email(sender_user.email)
+                            if symphony_user_id:
+                                print(f"     Found in Symphony: {symphony_user_id}")
+
+                    # Parse mentions in the message text and convert to Symphony format
+                    text_segments = await self._parse_slack_mentions(text)
 
                     # Forward to Symphony with @mention if found
+                    forward_msg = FormattedMessage()
+                    forward_msg.add_text("📨 ")
+                    forward_msg.add_bold("Message forwarded from Slack")
+                    forward_msg.add_text("\n\n")
                     if symphony_user_id:
-                        forward_msg = (
-                            FormattedMessage()
-                            .add_text("📨 ")
-                            .add_bold("Message forwarded from Slack")
-                            .add_text("\n\n")
-                            .add_mention(symphony_user_id, sender_name)
-                            .add_text(" said:\n")
-                            .add_text(f"{text}")
-                        )
+                        forward_msg.add_mention(symphony_user_id, sender_name)
                     else:
-                        forward_msg = (
-                            FormattedMessage()
-                            .add_text("📨 ")
-                            .add_bold("Message forwarded from Slack")
-                            .add_text(f"\n\n*{sender_name}* said:\n")
-                            .add_text(f"{text}")
-                        )
+                        forward_msg.add_text(f"*{sender_name}*")
+                    forward_msg.add_text(" said:\n")
+
+                    # Add the message content with converted mentions
+                    for seg_type, content in text_segments:
+                        if seg_type == "text":
+                            forward_msg.add_text(content)
+                        elif seg_type == "mention":
+                            user_id, display_name = content
+                            forward_msg.add_mention(user_id, display_name)
                     await self.symphony_backend.send_message(
                         self.symphony_stream_id,
                         forward_msg.render(Format.SYMPHONY_MESSAGEML),
