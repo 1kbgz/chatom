@@ -175,7 +175,6 @@ exclude = [
 
 [tool.yardang]
 pages = [
-    "docs/src/index.md",
     "docs/src/installation.md",
     "docs/src/quickstart.md",
     "docs/src/base-models.md",
@@ -192,3 +191,4 @@ pages = [
     "docs/src/integration-testing.md",
     "docs/src/api.md",
 ]
+use-autoapi = false
