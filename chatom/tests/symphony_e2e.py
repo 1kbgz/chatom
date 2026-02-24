@@ -49,6 +49,7 @@ The inbound message test will ask you to send a message mentioning the bot.
 import asyncio
 import os
 import sys
+import tempfile
 import traceback
 from datetime import datetime
 from typing import Optional
@@ -686,8 +687,8 @@ class SymphonyE2ETest:
             # Get bot info to skip bot messages
             bot_user_id = None
             try:
-                session = await self.backend._get_session_info()
-                bot_user_id = str(session.get("userId", ""))
+                bot_info = await self.backend.get_bot_info()
+                bot_user_id = str(bot_info.id) if bot_info else None
             except Exception:
                 pass
 
@@ -871,8 +872,8 @@ class SymphonyE2ETest:
                 # Get bot info to exclude
                 bot_user_id = None
                 try:
-                    session = await self.backend._get_session_info()
-                    bot_user_id = str(session.get("userId", ""))
+                    bot_info = await self.backend.get_bot_info()
+                    bot_user_id = str(bot_info.id) if bot_info else None
                 except Exception:
                     pass
 
@@ -923,9 +924,6 @@ class SymphonyE2ETest:
         self.section("Test: File Attachment")
 
         try:
-            import os as temp_os
-            import tempfile
-
             # Create a temporary text file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
                 f.write("This is a test file created by the chatom E2E test suite.\n")
@@ -953,7 +951,7 @@ class SymphonyE2ETest:
 
             finally:
                 # Clean up temp file
-                temp_os.unlink(temp_file_path)
+                os.unlink(temp_file_path)
 
         except Exception as e:
             self.log(f"Failed to test file attachment: {e}", success=False)
@@ -1193,8 +1191,6 @@ class SymphonyE2ETest:
 
         except Exception as e:
             print(f"\n❌ Test suite failed with error: {e}")
-            import traceback
-
             traceback.print_exc()
 
         finally:
