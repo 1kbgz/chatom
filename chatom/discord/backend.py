@@ -1365,7 +1365,7 @@ class DiscordBackend(BackendBase):
                 _log.debug("stream_messages on_message: Creating DiscordMessage and queueing...")
 
                 # Create DiscordUser objects for mentions
-                mention_users = [
+                mention_users: List[User] = [
                     DiscordUser(
                         id=str(u.id),
                         name=u.name,
