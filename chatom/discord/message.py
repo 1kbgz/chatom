@@ -6,7 +6,7 @@ This module provides the Discord-specific Message class.
 from enum import IntEnum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from chatom.base import Field, Message, Organization
+from chatom.base import Field, Message, Organization, User
 from chatom.discord.user import DiscordUser
 
 if TYPE_CHECKING:
@@ -317,7 +317,7 @@ class DiscordMessage(Message):
         channel = DiscordChannel(id=channel_id) if channel_id else None
 
         # Extract mention IDs and create User objects
-        mention_users = [
+        mention_users: List[User] = [
             DiscordUser(
                 id=m.get("id", ""),
                 handle=m.get("username", ""),
