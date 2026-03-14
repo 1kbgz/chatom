@@ -367,30 +367,34 @@ class SymphonyConfig(BackendConfig):
 
         # Pod configuration (only if explicitly set)
         if self.pod_host:
-            config["pod"] = {"host": self.pod_host}
+            pod_config: Dict[str, Any] = {"host": self.pod_host}
             if self.pod_port:
-                config["pod"]["port"] = self.pod_port
+                pod_config["port"] = self.pod_port
+            config["pod"] = pod_config
 
         # Agent configuration
         # Only set if explicitly specified; BDK defaults to main host if not set
         if self.agent_host:
-            config["agent"] = {"host": self.agent_host}
+            agent_config: Dict[str, Any] = {"host": self.agent_host}
             if self.agent_port:
-                config["agent"]["port"] = self.agent_port
+                agent_config["port"] = self.agent_port
+            config["agent"] = agent_config
 
         # Key manager configuration
         # Default to session_auth_host if not set (common deployment pattern where KM auth is separate)
         effective_km_host = self.key_manager_host or self.session_auth_host
         if effective_km_host:
-            config["keyManager"] = {"host": effective_km_host}
+            km_config: Dict[str, Any] = {"host": effective_km_host}
             if self.key_manager_port:
-                config["keyManager"]["port"] = self.key_manager_port
+                km_config["port"] = self.key_manager_port
+            config["keyManager"] = km_config
 
         # Session auth configuration (if separate)
         if self.session_auth_host:
-            config["sessionAuth"] = {"host": self.session_auth_host}
+            session_auth_config: Dict[str, Any] = {"host": self.session_auth_host}
             if self.session_auth_port:
-                config["sessionAuth"]["port"] = self.session_auth_port
+                session_auth_config["port"] = self.session_auth_port
+            config["sessionAuth"] = session_auth_config
 
         # App configuration
         if self.app_id:
