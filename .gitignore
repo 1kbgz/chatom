@@ -146,13 +146,11 @@ target
 outputs/
 multirun/
 
-<<<<<<< before updating
-# Auth
-.env.sh
-*.pem
-=======
 # AI
 ROADMAP.md
 AGENTS.md
 .github/hooks/sdlc.json
->>>>>>> after updating
+
+# Auth
+.env.sh
+*.pem
