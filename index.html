@@ -269,7 +269,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">chatom</span></code> provides a unified, framework-agnostic representation of chat applications. It offers:</p>
 <ul class="simple">
 <li><p><strong>Base models</strong> for users, channels, messages, attachments, embeds, reactions, and more</p></li>
-<li><p><strong>Backend-specific implementations</strong> for Discord, Slack, and Symphony</p></li>
+<li><p><strong>Backend-specific implementations</strong> for Discord, Slack, Symphony, and Telegram</p></li>
 <li><p><strong>Rich text formatting</strong> with nodes for bold, italic, code, tables, lists, and more</p></li>
 <li><p><strong>Format converters</strong> to render messages as plaintext, markdown, HTML, Slack mrkdwn, Discord markdown, or Symphony MessageML</p></li>
 </ul>
@@ -430,6 +430,22 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>  <span class="c1"># &#39;&lt;mention uid=&quot;12345&quot;/&gt;&#39;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">format_hashtag</span><span class="p">(</span><span class="s2">&quot;python&quot;</span><span class="p">))</span>  <span class="c1"># &#39;&lt;hash tag=&quot;python&quot;/&gt;&#39;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">format_cashtag</span><span class="p">(</span><span class="s2">&quot;AAPL&quot;</span><span class="p">))</span>  <span class="c1"># &#39;&lt;cash tag=&quot;AAPL&quot;/&gt;&#39;</span>
+
+<span class="c1"># Telegram</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.telegram</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TelegramUser</span><span class="p">,</span>
+    <span class="n">TelegramChannel</span><span class="p">,</span>
+    <span class="n">TelegramChatType</span><span class="p">,</span>
+    <span class="n">TelegramPresence</span><span class="p">,</span>
+    <span class="n">mention_user</span><span class="p">,</span>
+    <span class="n">mention_channel</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123456&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">))</span>  <span class="c1"># &quot;@alice&quot;</span>
+
+<span class="n">channel</span> <span class="o">=</span> <span class="n">TelegramChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;-1001234567890&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;General&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">))</span>  <span class="c1"># &quot;#General&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -439,12 +455,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">mention_user</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordUser</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackUser</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.telegram</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelegramUser</span>
 
 <span class="n">discord_user</span> <span class="o">=</span> <span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
 <span class="n">slack_user</span> <span class="o">=</span> <span class="n">SlackUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
+<span class="n">telegram_user</span> <span class="o">=</span> <span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;789&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s2">&quot;alice&quot;</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">discord_user</span><span class="p">))</span>  <span class="c1"># &quot;&lt;@123&gt;&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">slack_user</span><span class="p">))</span>    <span class="c1"># &quot;&lt;@U123&gt;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user</span><span class="p">(</span><span class="n">telegram_user</span><span class="p">))</span> <span class="c1"># &quot;@alice&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -460,6 +479,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">))</span>   <span class="c1"># &quot;&lt;@123&gt;&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">))</span>     <span class="c1"># &quot;&lt;@123&gt;&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;symphony&quot;</span><span class="p">))</span>  <span class="c1"># &#39;&lt;mention uid=&quot;123&quot;/&gt;&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;telegram&quot;</span><span class="p">))</span>  <span class="c1"># &quot;@Alice&quot;</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">))</span>  <span class="c1"># &quot;&lt;#C456&gt;&quot;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">))</span>    <span class="c1"># &quot;&lt;#C456&gt;&quot;</span>
@@ -485,6 +505,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">))</span>     <span class="c1"># &quot;Hello, *world*!\n&quot; (Slack mrkdwn)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;discord&quot;</span><span class="p">))</span>   <span class="c1"># &quot;Hello, **world**!\n&quot; (Discord markdown)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;symphony&quot;</span><span class="p">))</span>  <span class="c1"># &quot;&lt;p&gt;Hello, &lt;b&gt;world&lt;/b&gt;!&lt;/p&gt;&quot; (MessageML)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;telegram&quot;</span><span class="p">))</span>  <span class="c1"># &quot;Hello, &lt;b&gt;world&lt;/b&gt;!&quot; (HTML)</span>
 
 <span class="c1"># Get the format for a backend</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">BACKEND_FORMAT_MAP</span>
@@ -533,6 +554,7 @@
     <span class="n">DISCORD_CAPABILITIES</span><span class="p">,</span>
     <span class="n">SLACK_CAPABILITIES</span><span class="p">,</span>
     <span class="n">SYMPHONY_CAPABILITIES</span><span class="p">,</span>
+    <span class="n">TELEGRAM_CAPABILITIES</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># Check what a backend supports</span>
@@ -656,6 +678,12 @@
 <td><p><code class="docutils literal notranslate"><span class="pre">SymphonyChannel</span></code></p></td>
 <td><p>✅</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">SymphonyPresence</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Telegram</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TelegramUser</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TelegramChannel</span></code></p></td>
+<td><p>✅</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">TelegramPresence</span></code></p></td>
 </tr>
 </tbody>
 </table>

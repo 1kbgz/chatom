@@ -60,7 +60,7 @@ Framework-agnostic chat application models and utilities
 `chatom` provides a unified, framework-agnostic representation of chat applications. It offers:
 
 - **Base models** for users, channels, messages, attachments, embeds, reactions, and more
-- **Backend-specific implementations** for Discord, Slack, and Symphony
+- **Backend-specific implementations** for Discord, Slack, Symphony, and Telegram
 - **Rich text formatting** with nodes for bold, italic, code, tables, lists, and more
 - **Format converters** to render messages as plaintext, markdown, HTML, Slack mrkdwn, Discord markdown, or Symphony MessageML
 
@@ -222,6 +222,22 @@ user = SymphonyUser(id="123", name="alice", user_id=12345)
 print(mention_user(user))  # '<mention uid="12345"/>'
 print(format_hashtag("python"))  # '<hash tag="python"/>'
 print(format_cashtag("AAPL"))  # '<cash tag="AAPL"/>'
+
+# Telegram
+from chatom.telegram import (
+    TelegramUser,
+    TelegramChannel,
+    TelegramChatType,
+    TelegramPresence,
+    mention_user,
+    mention_channel,
+)
+
+user = TelegramUser(id="123456", name="Alice", username="alice")
+print(mention_user(user))  # "@alice"
+
+channel = TelegramChannel(id="-1001234567890", name="General")
+print(mention_channel(channel))  # "#General"
 ```
 
 ### Polymorphic Mentions
@@ -232,12 +248,15 @@ The `mention_user` and `mention_channel` functions use `singledispatch` to autom
 from chatom import mention_user
 from chatom.discord import DiscordUser
 from chatom.slack import SlackUser
+from chatom.telegram import TelegramUser
 
 discord_user = DiscordUser(id="123", name="alice")
 slack_user = SlackUser(id="U123", name="alice")
+telegram_user = TelegramUser(id="789", name="alice", username="alice")
 
 print(mention_user(discord_user))  # "<@123>"
 print(mention_user(slack_user))    # "<@U123>"
+print(mention_user(telegram_user)) # "@alice"
 ```
 
 ### Backend-Agnostic Mentions
@@ -254,6 +273,7 @@ channel = Channel(id="C456", name="general")
 print(mention_user_for_backend(user, "discord"))   # "<@123>"
 print(mention_user_for_backend(user, "slack"))     # "<@123>"
 print(mention_user_for_backend(user, "symphony"))  # '<mention uid="123"/>'
+print(mention_user_for_backend(user, "telegram"))  # "@Alice"
 
 print(mention_channel_for_backend(channel, "discord"))  # "<#C456>"
 print(mention_channel_for_backend(channel, "slack"))    # "<#C456>"
@@ -280,6 +300,7 @@ msg = FormattedMessage(
 print(msg.render_for("slack"))     # "Hello, *world*!\n" (Slack mrkdwn)
 print(msg.render_for("discord"))   # "Hello, **world**!\n" (Discord markdown)
 print(msg.render_for("symphony"))  # "<p>Hello, <b>world</b>!</p>" (MessageML)
+print(msg.render_for("telegram"))  # "Hello, <b>world</b>!" (HTML)
 
 # Get the format for a backend
 from chatom import BACKEND_FORMAT_MAP
@@ -329,6 +350,7 @@ from chatom import (
     DISCORD_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
+    TELEGRAM_CAPABILITIES,
 )
 
 # Check what a backend supports
@@ -430,6 +452,7 @@ class MyBackendConnection(Connection):
 | Discord  | `DiscordUser`  | `DiscordChannel`  | ✅              | `DiscordPresence`  |
 | Slack    | `SlackUser`    | `SlackChannel`    | ✅              | `SlackPresence`    |
 | Symphony | `SymphonyUser` | `SymphonyChannel` | ✅              | `SymphonyPresence` |
+| Telegram | `TelegramUser` | `TelegramChannel` | ✅              | `TelegramPresence` |
 
 ## Output Formats
 
