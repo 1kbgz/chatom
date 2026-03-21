@@ -62,9 +62,7 @@ class MockSlackBackend(SlackBackend):
         self._current_presence: str = "auto"
         self._current_status_text: str = ""
 
-    # =========================================================================
     # Mock data management
-    # =========================================================================
 
     def add_mock_user(
         self,
@@ -316,9 +314,7 @@ class MockSlackBackend(SlackBackend):
         self.users = type(self.users)()
         self.channels = type(self.channels)()
 
-    # =========================================================================
     # Backend method implementations
-    # =========================================================================
 
     async def connect(self) -> None:
         """Connect to the mock backend."""

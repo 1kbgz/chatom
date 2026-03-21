@@ -187,7 +187,7 @@ class TestMessageReaderPushAdapterImpl:
         assert impl._channels == set()
         assert impl._skip_own is True
         assert impl._skip_history is True
-        assert impl._running is False
+        assert impl._running_event.is_set() is False
 
     def test_init_with_channels(self, mock_backend):
         """Test initialization with channels."""
@@ -211,12 +211,12 @@ class TestMessageReaderPushAdapterImpl:
         mocker.patch.object(impl, "_run")
         impl.start(datetime.now(), datetime.now() + timedelta(hours=1))
 
-        assert impl._running is True
+        assert impl._running_event.is_set() is True
         assert impl._thread is not None
         # Thread may finish quickly since _run is mocked, so just verify it was created
 
         # Cleanup
-        impl._running = False
+        impl._running_event.clear()
         if impl._thread.is_alive():
             impl._thread.join(timeout=1.0)
 
@@ -230,7 +230,7 @@ class TestMessageReaderPushAdapterImpl:
         impl.start(datetime.now(), datetime.now() + timedelta(hours=1))
         impl.stop()
 
-        assert impl._running is False
+        assert impl._running_event.is_set() is False
 
 
 class TestChannelResolution:

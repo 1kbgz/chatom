@@ -58,7 +58,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         self._skip_own = skip_own
         self._skip_history = skip_history
         self._thread: Optional[threading.Thread] = None
-        self._running = False
+        self._running_event = threading.Event()  # Thread-safe running flag
         self._message_queue: Queue = Queue()
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._error: Optional[Exception] = None
@@ -68,7 +68,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         """Start the adapter."""
         log.debug(f"MessageReaderPushAdapter.start() called, starttime={starttime}, endtime={endtime}")
         self._thread = threading.Thread(target=self._run, daemon=True)
-        self._running = True
+        self._running_event.set()
         self._thread.start()
         log.debug("MessageReaderPushAdapter thread started")
         # Push an initial empty tick to signal to CSP that this adapter is active
@@ -78,12 +78,15 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
     def stop(self):
         """Stop the adapter."""
         log.debug("MessageReaderPushAdapter.stop() called")
-        if self._running:
-            self._running = False
+        if self._running_event.is_set():
+            self._running_event.clear()
             self._message_queue.put(None)
+            # Capture local refs to avoid TOCTOU race with _async_run_with_setup's finally
+            shutdown_event = self._shutdown_event
+            loop = self._loop
             # Signal shutdown via the event rather than stopping the loop
-            if self._shutdown_event and self._loop:
-                self._loop.call_soon_threadsafe(self._shutdown_event.set)
+            if shutdown_event and loop:
+                loop.call_soon_threadsafe(shutdown_event.set)
             if self._thread:
                 self._thread.join(timeout=2.0)  # Shorter timeout for faster Ctrl+C response
 
@@ -103,7 +106,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         except Exception as e:
             log.exception(f"Error in message reader: {e}")
             self._error = e
-            self._running = False
+            self._running_event.clear()
         finally:
             self._message_queue.put(None)
         log.debug("MessageReaderPushAdapter._run() thread function finished")
@@ -153,7 +156,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
                     )
                     await self._consume_stream(stream)
                     log.debug(f"Stream from channel {channel_id} ended")
-                    if not self._running or self._shutdown_event.is_set():
+                    if not self._running_event.is_set() or self._shutdown_event.is_set():
                         break
             else:
                 # Stream all messages
@@ -190,7 +193,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
 
         async def drain_to_queue():
             async for message in stream:
-                if not self._running:
+                if not self._running_event.is_set():
                     break
                 log.debug(f"Received message: {message.id}")
                 self._message_queue.put(message)
@@ -259,7 +262,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
 
     async def _process_queue(self):
         """Process messages from the queue and push to CSP."""
-        while self._running:
+        while self._running_event.is_set():
             try:
                 await asyncio.sleep(0.01)
                 messages: List[Message] = []
@@ -479,7 +482,10 @@ def message_writer(
     with csp.stop():
         if s_thread:
             s_queue.put(None)
-            s_queue.join()
+            # Use threading.Thread to join queue with timeout to avoid potential deadlock
+            joiner = threading.Thread(target=s_queue.join, daemon=True)
+            joiner.start()
+            joiner.join(timeout=5.0)
             s_thread.join(timeout=5.0)
 
     if csp.ticked(messages):
