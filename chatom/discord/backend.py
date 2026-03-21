@@ -1166,9 +1166,7 @@ class DiscordBackend(BackendBase):
 
         return None
 
-    # =========================================================================
     # Organization/Guild methods
-    # =========================================================================
 
     async def fetch_organization(
         self,

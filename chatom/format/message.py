@@ -295,9 +295,7 @@ class FormattedMessage(BaseModel):
         """
         return self.append(Raw(content=content))
 
-    # =========================================================================
     # Interactive Component Methods
-    # =========================================================================
 
     def add_button(
         self,

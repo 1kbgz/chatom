@@ -102,9 +102,7 @@ class MockBackendMixin:
         """Initialize mock data stores. Call after super().__init__()."""
         self._data = MockDataStore()
 
-    # =========================================================================
     # Mock data management
-    # =========================================================================
 
     def add_mock_user_data(
         self,
@@ -272,9 +270,7 @@ class MockBackendMixin:
         """Get all presence updates made through this backend."""
         return self._data.presence_updates
 
-    # =========================================================================
     # Common mock backend operations
-    # =========================================================================
 
     async def _mock_connect(self) -> None:
         """Mock connect implementation."""

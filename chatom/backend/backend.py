@@ -241,9 +241,7 @@ class BackendBase(BaseModel):
         """
         return self.__class__.format
 
-    # =========================================================================
     # Connection methods
-    # =========================================================================
 
     @abstractmethod
     async def connect(self) -> None:
@@ -267,9 +265,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("Subclass must implement disconnect()")
 
-    # =========================================================================
     # User lookup methods
-    # =========================================================================
 
     async def lookup_user(
         self,
@@ -348,9 +344,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("Subclass must implement fetch_user()")
 
-    # =========================================================================
     # Channel lookup methods
-    # =========================================================================
 
     async def lookup_channel(
         self,
@@ -462,9 +456,7 @@ class BackendBase(BaseModel):
         """
         return await self.fetch_channel(identifier, id=id, name=name)
 
-    # =========================================================================
     # Resolution methods for incomplete objects
-    # =========================================================================
 
     async def resolve_user(self, user: User) -> User:
         """Resolve an incomplete user to a complete one.
@@ -564,9 +556,7 @@ class BackendBase(BaseModel):
         """
         return await self.resolve_channel(room)
 
-    # =========================================================================
     # Organization lookup methods
-    # =========================================================================
 
     async def fetch_organization(
         self,
@@ -695,9 +685,7 @@ class BackendBase(BaseModel):
 
         return message
 
-    # =========================================================================
     # Message methods
-    # =========================================================================
 
     async def _resolve_channel_id(self, channel: Union[str, Channel]) -> str:
         """Helper to resolve a channel argument to an ID string.
@@ -1068,9 +1056,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support message forwarding")
 
-    # =========================================================================
     # Real-time message streaming
-    # =========================================================================
 
     async def listen(
         self,
@@ -1330,9 +1316,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support get_bot_info")
 
-    # =========================================================================
     # Presence methods
-    # =========================================================================
 
     async def set_presence(
         self,
@@ -1438,9 +1422,7 @@ class BackendBase(BaseModel):
         """
         return self._presence_heartbeat_running
 
-    # =========================================================================
     # Reaction methods
-    # =========================================================================
 
     async def add_reaction(
         self,
@@ -1490,9 +1472,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support reactions")
 
-    # =========================================================================
     # Channel/Room management methods
-    # =========================================================================
 
     async def create_dm(
         self,
@@ -1725,9 +1705,7 @@ class BackendBase(BaseModel):
         """
         return await self.leave_channel(room, **kwargs)
 
-    # =========================================================================
     # Extended messaging methods
-    # =========================================================================
 
     async def send_action(
         self,
@@ -1780,9 +1758,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support notice messages")
 
-    # =========================================================================
     # Mention methods
-    # =========================================================================
 
     def mention_user(self, user: User) -> str:
         """Format a user mention for this backend.
