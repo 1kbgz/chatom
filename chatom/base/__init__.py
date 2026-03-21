@@ -18,6 +18,7 @@ from .capabilities import (
     DISCORD_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
+    TELEGRAM_CAPABILITIES,
     BackendCapabilities,
     Capability,
 )
@@ -116,6 +117,7 @@ __all__ = (
     "DISCORD_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
+    "TELEGRAM_CAPABILITIES",
     # Conversion utilities
     "BackendNotFoundError",
     "ConversionError",

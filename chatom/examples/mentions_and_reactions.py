@@ -122,7 +122,7 @@ async def test_slack_mentions_reactions() -> bool:
     mentioned_ids = test_msg.get_mentioned_user_ids()
     print(f"✅ Detected mentions in test message: {mentioned_ids}")
 
-    if test_msg.mentions_user(user.id):
+    if test_msg.mentions_user(user):
         print(f"✅ Confirmed user {user.id} is mentioned")
 
     await backend.disconnect()

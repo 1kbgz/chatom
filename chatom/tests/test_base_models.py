@@ -444,12 +444,12 @@ class TestMessage:
         """Test mentions_user method."""
         user = User(id="U123", name="Alice")
         msg1 = Message(id="m1", content="Test", tags=[user])
-        assert msg1.mentions_user("U123") is True
-        assert msg1.mentions_user("U999") is False
+        assert msg1.mentions_user(User(id="U123")) is True
+        assert msg1.mentions_user(User(id="U999")) is False
 
         # Also test via content parsing
         msg2 = Message(id="m2", content="Hey <@U456>!", backend="slack")
-        assert msg2.mentions_user("U456") is True
+        assert msg2.mentions_user(User(id="U456")) is True
 
 
 class TestAttachment:

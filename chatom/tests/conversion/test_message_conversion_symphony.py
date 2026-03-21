@@ -194,12 +194,13 @@ class TestSymphonyMentionsUser:
             id="m1",
             tags=[SymphonyUser(id="12345"), SymphonyUser(id="67890")],
         )
-        assert msg.mentions_user("12345") is True
-        assert msg.mentions_user("99999") is False
+        assert msg.mentions_user(SymphonyUser(id="12345")) is True
+        assert msg.mentions_user(SymphonyUser(id="99999")) is False
 
     def test_mentions_user_in_entity_data(self):
         """Test mentions_user finds user in entity_data."""
         from chatom.symphony import SymphonyMessage
+        from chatom.symphony.user import SymphonyUser
 
         msg = SymphonyMessage(
             id="m1",
@@ -210,8 +211,8 @@ class TestSymphonyMentionsUser:
                 }
             },
         )
-        assert msg.mentions_user("12345") is True
-        assert msg.mentions_user("99999") is False
+        assert msg.mentions_user(SymphonyUser(id="12345")) is True
+        assert msg.mentions_user(SymphonyUser(id="99999")) is False
 
     def test_mentions_user_in_data_field(self):
         """Test mentions_user extracts from data field when entity_data is empty."""
@@ -231,8 +232,8 @@ class TestSymphonyMentionsUser:
             id="m1",
             data=data,
         )
-        assert msg.mentions_user("12345") is True
-        assert msg.mentions_user("99999") is False
+        assert msg.mentions_user(SymphonyUser(id="12345")) is True
+        assert msg.mentions_user(SymphonyUser(id="99999")) is False
 
     def test_mentions_user_with_non_numeric_id(self):
         """Test mentions_user handles non-numeric user IDs gracefully."""
@@ -243,16 +244,17 @@ class TestSymphonyMentionsUser:
             id="m1",
             tags=[SymphonyUser(id="abc-user")],
         )
-        assert msg.mentions_user("abc-user") is True
+        assert msg.mentions_user(SymphonyUser(id="abc-user")) is True
         # Non-numeric can't match int mentions list
-        assert msg.mentions_user("xyz") is False
+        assert msg.mentions_user(SymphonyUser(id="xyz")) is False
 
     def test_mentions_user_no_mentions(self):
         """Test mentions_user returns False when no mentions exist."""
         from chatom.symphony import SymphonyMessage
+        from chatom.symphony.user import SymphonyUser
 
         msg = SymphonyMessage(id="m1")
-        assert msg.mentions_user("12345") is False
+        assert msg.mentions_user(SymphonyUser(id="12345")) is False
 
 
 class TestSymphonyExtractMentionsFromData:

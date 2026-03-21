@@ -73,6 +73,7 @@ develop = [
 discord = "chatom.discord.backend:DiscordBackend"
 slack = "chatom.slack.backend:SlackBackend"
 symphony = "chatom.symphony.backend:SymphonyBackend"
+telegram = "chatom.telegram.backend:TelegramBackend"
 
 [project.urls]
 Repository = "https://github.com/1kbgz/chatom"

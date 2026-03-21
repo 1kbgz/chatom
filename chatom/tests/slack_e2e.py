@@ -42,7 +42,7 @@ from datetime import datetime
 from typing import Optional
 
 # Chatom imports
-from chatom.base import Channel
+from chatom.base import Channel, User
 from chatom.format import Format, FormattedMessage, Table
 from chatom.slack import SlackBackend, SlackConfig, mention_channel_all, mention_everyone, mention_here
 
@@ -781,7 +781,7 @@ class SlackE2ETest:
                 print(f"     Text: {(received_message.content or '')[:200]}...")
 
                 # Check if the bot was mentioned using backend method
-                if received_message.mentions_user(bot_user_id):
+                if received_message.mentions_user(User(id=bot_user_id)):
                     self.log("Bot mention detected in message")
                 else:
                     print(f"     (Bot mention <@{bot_user_id}> not found in message, but message was received)")

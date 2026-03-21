@@ -259,24 +259,26 @@ class TestSlackMessageProperties:
     def test_mentions_user_in_content(self):
         """Test mentions_user finds mention in content field."""
         from chatom.slack import SlackMessage
+        from chatom.slack.user import SlackUser
 
         msg = SlackMessage(
             id="1234567890.000001",
             content="Hello <@U12345678>!",
         )
-        assert msg.mentions_user("U12345678") is True
-        assert msg.mentions_user("U99999999") is False
+        assert msg.mentions_user(SlackUser(id="U12345678")) is True
+        assert msg.mentions_user(SlackUser(id="U99999999")) is False
 
     def test_mentions_user_in_text(self):
         """Test mentions_user finds mention in text field."""
         from chatom.slack import SlackMessage
+        from chatom.slack.user import SlackUser
 
         msg = SlackMessage(
             id="1234567890.000001",
             text="Hi <@U12345678>, please review",
         )
-        assert msg.mentions_user("U12345678") is True
-        assert msg.mentions_user("U99999999") is False
+        assert msg.mentions_user(SlackUser(id="U12345678")) is True
+        assert msg.mentions_user(SlackUser(id="U99999999")) is False
 
     def test_mentions_user_in_mentions_list(self):
         """Test mentions_user finds user in mentions list."""
@@ -287,12 +289,13 @@ class TestSlackMessageProperties:
             id="1234567890.000001",
             tags=[SlackUser(id="U12345678"), SlackUser(id="U87654321")],
         )
-        assert msg.mentions_user("U12345678") is True
-        assert msg.mentions_user("U99999999") is False
+        assert msg.mentions_user(SlackUser(id="U12345678")) is True
+        assert msg.mentions_user(SlackUser(id="U99999999")) is False
 
     def test_mentions_user_false_when_empty(self):
         """Test mentions_user returns False when no mentions."""
         from chatom.slack import SlackMessage
+        from chatom.slack.user import SlackUser
 
         msg = SlackMessage(id="m1", content="Hello world!")
-        assert msg.mentions_user("U12345678") is False
+        assert msg.mentions_user(SlackUser(id="U12345678")) is False

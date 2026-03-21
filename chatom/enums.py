@@ -9,7 +9,7 @@ DISCORD = "discord"
 SLACK = "slack"
 SYMPHONY = "symphony"
 # TEAMS = "teams"
-# TELEGRAM = "telegram"
+TELEGRAM = "telegram"
 # WHATSAPP = "whatsapp"
 # ZULIP = "zulip"
 
@@ -23,7 +23,7 @@ BACKEND = Union[
     Literal["slack"],
     Literal["symphony"],
     # Literal[TEAMS],
-    # Literal[TELEGRAM],
+    Literal["telegram"],
     # Literal[WHATSAPP],
     # Literal[ZULIP],
     str,
@@ -38,7 +38,7 @@ ALL_BACKENDS = [
     SLACK,
     SYMPHONY,
     # TEAMS,
-    # TELEGRAM,
+    TELEGRAM,
     # WHATSAPP,
     # ZULIP,
 ]
@@ -54,7 +54,7 @@ __all__ = (
     "SLACK",
     "SYMPHONY",
     # "TEAMS",
-    # "TELEGRAM",
+    "TELEGRAM",
     # "WHATSAPP",
     # "ZULIP",
 )

@@ -14,6 +14,7 @@ __all__ = (
     "DISCORD_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
+    "TELEGRAM_CAPABILITIES",
 )
 
 
@@ -291,4 +292,29 @@ SYMPHONY_CAPABILITIES = BackendCapabilities(
     ),
     max_message_length=40000,
     max_attachment_size=25 * 1024 * 1024,
+)
+
+TELEGRAM_CAPABILITIES = BackendCapabilities(
+    capabilities=frozenset(
+        {
+            Capability.PLAINTEXT,
+            Capability.MARKDOWN,
+            Capability.HTML,
+            Capability.CODE_BLOCKS,
+            Capability.IMAGES,
+            Capability.FILES,
+            Capability.VIDEOS,
+            Capability.AUDIO,
+            Capability.EMOJI_REACTIONS,
+            Capability.REPLIES,
+            Capability.USER_MENTIONS,
+            Capability.EDITING,
+            Capability.DELETING,
+            Capability.PINNING,
+            Capability.FORWARDING,
+        }
+    ),
+    max_message_length=4096,
+    max_attachment_size=50 * 1024 * 1024,  # 50 MB
+    max_attachments=10,
 )

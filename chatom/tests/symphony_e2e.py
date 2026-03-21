@@ -54,7 +54,7 @@ import traceback
 from datetime import datetime
 from typing import Optional
 
-from chatom.base import Channel
+from chatom.base import Channel, User
 from chatom.format import Format, FormattedMessage, Table
 from chatom.symphony import SymphonyBackend, SymphonyConfig, format_cashtag, format_hashtag, mention_user_by_uid
 
@@ -1018,7 +1018,7 @@ class SymphonyE2ETest:
 
                 # Check if bot is mentioned using the backend's method
                 has_bot_mention = (
-                    received_message.mentions_user(bot_user_id)
+                    received_message.mentions_user(User(id=bot_user_id))
                     if hasattr(received_message, "mentions_user")
                     else received_message.is_message_to_user(bot_info)
                 )
