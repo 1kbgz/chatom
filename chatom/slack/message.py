@@ -6,7 +6,7 @@ This module provides the Slack-specific Message class.
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from chatom.base import Field, Message, Organization, Thread
+from chatom.base import Field, Message, Organization, Thread, User
 
 from .user import SlackUser
 
@@ -198,17 +198,18 @@ class SlackMessage(Message):
         """Check if this message has attached files."""
         return len(self.files) > 0
 
-    def mentions_user(self, user_id: str) -> bool:
+    def mentions_user(self, user: User) -> bool:
         """Check if this message mentions a specific user.
 
         Slack mentions are in the format <@USER_ID> in the message text.
 
         Args:
-            user_id: The user ID to check for (e.g., 'U12345678').
+            user: The User to check for.
 
         Returns:
             True if the user is mentioned, False otherwise.
         """
+        user_id = str(user.id)
         mention_format = f"<@{user_id}>"
 
         # Check content field
@@ -220,8 +221,8 @@ class SlackMessage(Message):
             return True
 
         # Check mentions list (User objects) if populated
-        for user in self.mentions:
-            if user.id == user_id:
+        for m in self.mentions:
+            if str(m.id) == user_id:
                 return True
 
         return False

@@ -32,6 +32,7 @@ from .base import (
     DISCORD_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
+    TELEGRAM_CAPABILITIES,
     # Presence
     Activity,
     ActivityType,
@@ -100,6 +101,7 @@ from .enums import (
     DISCORD,
     SLACK,
     SYMPHONY,
+    TELEGRAM,
 )
 from .format import (
     BACKEND_FORMAT_MAP,
@@ -177,6 +179,7 @@ __all__ = (
     "DISCORD",
     "SLACK",
     "SYMPHONY",
+    "TELEGRAM",
     "ALL_BACKENDS",
     # Base classes
     "BaseModel",
@@ -218,6 +221,7 @@ __all__ = (
     "DISCORD_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
+    "TELEGRAM_CAPABILITIES",
     # Conversion utilities
     "BackendNotFoundError",
     "ConversionError",

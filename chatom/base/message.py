@@ -389,25 +389,26 @@ class Message(Identifiable):
             return []
         return extract_channel_ids(self.content, self.backend)
 
-    def mentions_user(self, user_id: str) -> bool:
+    def mentions_user(self, user: User) -> bool:
         """Check if a specific user is mentioned in this message.
 
         Checks both the parsed mentions list and parses the content
-        to find mentions of the given user ID.
+        to find mentions of the given user.
 
         Args:
-            user_id: The user ID to check for.
+            user: The User to check for.
 
         Returns:
             bool: True if the user is mentioned.
 
         Example:
-            >>> if message.mentions_user(bot_user_id):
+            >>> if message.mentions_user(bot_user):
             ...     await handle_bot_mention(message)
         """
+        user_id = str(user.id)
         # Check pre-parsed mentions first
-        for user in self.mentions:
-            if user.id == user_id:
+        for m in self.mentions:
+            if str(m.id) == user_id:
                 return True
         # Also check content
         return user_id in self.get_mentioned_user_ids()

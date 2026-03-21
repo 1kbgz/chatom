@@ -55,6 +55,7 @@ BACKEND_FORMAT_MAP = {
     "discord": Format.DISCORD_MARKDOWN,
     "slack": Format.SLACK_MARKDOWN,
     "symphony": Format.SYMPHONY_MESSAGEML,
+    "telegram": Format.HTML,
 }
 
 
