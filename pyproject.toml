@@ -41,6 +41,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+agent = [
+    "pydantic-ai>=0.4",
+]
 develop = [
     "build",
     "bump-my-version",
@@ -61,6 +64,7 @@ develop = [
     # integrations
     "csp",
     "discord.py",
+    "pydantic-ai>=0.4",
     "python-telegram-bot",
     "slack-sdk",
     "symphony-bdk-python",
