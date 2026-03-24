@@ -1,0 +1,11 @@
+defaults:
+  - _self_
+
+server:
+  transport: stdio
+  host: 127.0.0.1
+  port: 8080
+  read_only: false
+  auth_token_env: null
+
+backends: {}

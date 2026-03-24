@@ -1,0 +1,7 @@
+# @package _global_
+backends:
+  telegram:
+    _target_: chatom.telegram.TelegramBackend
+    config:
+      _target_: chatom.telegram.config.TelegramConfig
+      bot_token: ${oc.env:TELEGRAM_BOT_TOKEN}
