@@ -1,0 +1,8 @@
+# @package _global_
+backends:
+  symphony:
+    _target_: chatom.symphony.SymphonyBackend
+    config:
+      _target_: chatom.symphony.config.SymphonyConfig
+      bot_private_key_path: /isilon/data01/credentials/ccrt-bot/ccrt-bot-dev-key.pem
+      bot_certificate_path: /isilon/data01/credentials/ccrt-bot/ccrt-bot-dev-crt.pem

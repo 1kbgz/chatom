@@ -1,0 +1,7 @@
+# @package _global_
+backends:
+  symphony:
+    _target_: chatom.symphony.SymphonyBackend
+    config:
+      _target_: chatom.symphony.config.SymphonyConfig
+      bot_private_key_content: ${oc.env:SYMPHONY_BOT_KEY}
