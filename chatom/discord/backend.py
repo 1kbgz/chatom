@@ -45,11 +45,11 @@ try:
     HAS_DISCORD = True
 except ImportError:
     HAS_DISCORD = False
-    discord = None  # type: ignore[assignment]
-    DiscordStatus = None  # type: ignore[assignment]
-    Game = None  # type: ignore[assignment]
-    Activity = None  # type: ignore[assignment]
-    ActivityType = None  # type: ignore[assignment]
+    discord = None  # ty: ignore[invalid-assignment]
+    DiscordStatus = None  # ty: ignore[invalid-assignment]
+    Game = None  # ty: ignore[invalid-assignment]
+    Activity = None  # ty: ignore[invalid-assignment]
+    ActivityType = None  # ty: ignore[invalid-assignment]
 
 
 def _status_to_discord(status: str) -> Any:

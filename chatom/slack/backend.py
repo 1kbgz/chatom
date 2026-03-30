@@ -1169,7 +1169,7 @@ class SlackBackend(BackendBase):
             app_token=self.config.app_token_str,
             web_client=self._async_client,
         )
-        socket_client.socket_mode_request_listeners.append(handle_message)  # type: ignore[arg-type]
+        socket_client.socket_mode_request_listeners.append(handle_message)  # ty: ignore[invalid-argument-type]
 
         # Start Socket Mode in background
         socket_task = asyncio.create_task(socket_client.connect())
