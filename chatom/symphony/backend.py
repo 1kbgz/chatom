@@ -48,9 +48,9 @@ try:
     HAS_SYMPHONY = True
 except ImportError:
     HAS_SYMPHONY = False
-    SymphonyBdk = None  # type: ignore[assignment]
-    BdkConfig = None  # type: ignore[assignment]
-    PresenceStatus = None  # type: ignore[assignment]
+    SymphonyBdk = None  # ty: ignore[invalid-assignment]
+    BdkConfig = None  # ty: ignore[invalid-assignment]
+    PresenceStatus = None  # ty: ignore[invalid-assignment]
 
 __all__ = ("SymphonyBackend",)
 

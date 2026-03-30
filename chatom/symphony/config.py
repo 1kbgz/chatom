@@ -433,7 +433,7 @@ class SymphonyConfig(BackendConfig):
                 original_config_init(config_self, *args, **kwargs)
                 config_self.verify_ssl = False
 
-            Configuration.__init__ = patched_config_init  # type: ignore[method-assign]
+            Configuration.__init__ = patched_config_init  # ty: ignore[invalid-assignment]
             log.debug("SSL verification has been disabled via monkey patch")
         except ImportError as e:
             log.warning(f"Could not patch SSL verification: {e}")

@@ -53,7 +53,7 @@ check-dist:  ## check python sdist and wheel with check-dist
 
 check-types: ## check python types with ty
 	ty check --python $$(which python)
-	@count=$$(grep -r "# type: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
+	@count=$$(grep -r "# ty: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
 	if [ $$count -ge 15 ]; then \
 		echo "Error: Found $$count type: ignore comments (max 14 allowed)"; \
 		exit 1; \
