@@ -137,7 +137,7 @@ class BackendCapabilities(BaseModel):
     """
 
     capabilities: FrozenSet[Capability] = Field(
-        default_factory=frozenset,
+        default_factory=lambda: frozenset(),
         description="Set of supported capabilities.",
     )
     max_message_length: int = Field(
