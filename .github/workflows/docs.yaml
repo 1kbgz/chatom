@@ -17,10 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: actions-ext/python/setup@main
-<<<<<<< before updating
-      - run: uv pip install .
-      - run: uv pip install yardang
-=======
 
       - name: Download dist from build
         uses: actions/download-artifact@v7
@@ -45,7 +41,6 @@ jobs:
           uv pip install yardang
         if: github.event_name == 'workflow_dispatch'
 
->>>>>>> after updating
       - run: yardang build
 
       - uses: peaceiris/actions-gh-pages@v4
