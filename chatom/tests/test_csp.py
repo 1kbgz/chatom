@@ -33,13 +33,15 @@ class MockBackendConfig:
 # Class-level storage for tracking messages across all MockBackendForCSP instances
 # This is needed because CSP nodes create new backend instances per thread
 _mock_sent_messages: List[Message] = []
+_mock_sent_kwargs: List[dict] = []
 _mock_presence_updates: List[str] = []
 
 
 def reset_mock_tracking():
     """Reset class-level message tracking."""
-    global _mock_sent_messages, _mock_presence_updates
+    global _mock_sent_messages, _mock_sent_kwargs, _mock_presence_updates
     _mock_sent_messages = []
+    _mock_sent_kwargs = []
     _mock_presence_updates = []
 
 
@@ -85,6 +87,7 @@ class MockBackendForCSP:
             author=User(id=self._bot_user_id),
         )
         _mock_sent_messages.append(msg)
+        _mock_sent_kwargs.append(kwargs)
         return msg
 
     async def set_presence(self, status: str):
@@ -356,6 +359,77 @@ class TestSendMessagesThread:
         thread.join(timeout=2.0)
 
         assert len(mock_backend.sent_messages) == 5
+
+    def test_send_message_with_attachments(self, mock_backend):
+        """Test that attachments are forwarded as kwargs to send_message."""
+        from chatom.base.attachment import Attachment
+
+        queue = Queue()
+        thread = threading.Thread(
+            target=_send_messages_thread,
+            args=(queue, mock_backend),
+            daemon=True,
+        )
+        thread.start()
+
+        att = Attachment(filename="report.pdf", url="https://example.com/report.pdf")
+        msg = Message(
+            channel=Channel(id="C123"),
+            content="Here's the report",
+            attachments=[att],
+        )
+        queue.put(msg)
+        queue.put(None)
+        queue.join()
+        thread.join(timeout=2.0)
+
+        assert len(mock_backend.sent_messages) == 1
+        assert _mock_sent_kwargs[0]["attachments"] == [att]
+
+    def test_send_message_with_embeds(self, mock_backend):
+        """Test that embeds are forwarded as kwargs to send_message."""
+        from chatom.base.embed import Embed
+
+        queue = Queue()
+        thread = threading.Thread(
+            target=_send_messages_thread,
+            args=(queue, mock_backend),
+            daemon=True,
+        )
+        thread.start()
+
+        embed = Embed(title="Status", description="All good")
+        msg = Message(
+            channel=Channel(id="C123"),
+            content="Status update",
+            embeds=[embed],
+        )
+        queue.put(msg)
+        queue.put(None)
+        queue.join()
+        thread.join(timeout=2.0)
+
+        assert len(mock_backend.sent_messages) == 1
+        assert _mock_sent_kwargs[0]["embeds"] == [embed]
+
+    def test_send_message_without_attachments_no_kwargs(self, mock_backend):
+        """Test that no extra kwargs are passed when there are no attachments."""
+        queue = Queue()
+        thread = threading.Thread(
+            target=_send_messages_thread,
+            args=(queue, mock_backend),
+            daemon=True,
+        )
+        thread.start()
+
+        msg = Message(channel=Channel(id="C123"), content="Plain message")
+        queue.put(msg)
+        queue.put(None)
+        queue.join()
+        thread.join(timeout=2.0)
+
+        assert len(mock_backend.sent_messages) == 1
+        assert _mock_sent_kwargs[0] == {}
 
 
 class TestCSPGraphExecution:

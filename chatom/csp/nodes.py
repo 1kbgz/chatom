@@ -361,9 +361,15 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
 
                 log.debug(f"Sending message to channel_id={msg.channel_id}")
                 try:
+                    kwargs = {}
+                    if msg.attachments:
+                        kwargs["attachments"] = msg.attachments
+                    if msg.embeds:
+                        kwargs["embeds"] = msg.embeds
                     await thread_backend.send_message(
                         channel=msg.channel_id,
                         content=msg.content,
+                        **kwargs,
                     )
                     log.debug("Message sent successfully")
                 except Exception:

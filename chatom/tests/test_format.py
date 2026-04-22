@@ -15,6 +15,7 @@ from chatom.format import (
     # Variant/Format
     Format,
     FormattedAttachment,
+    FormattedEmbed,
     FormattedImage,
     # Message formatting
     FormattedMessage,
@@ -2479,3 +2480,268 @@ class TestActionRowGeneric:
         row = ActionRow(components=[menu])
         result = row.render(Format.SYMPHONY_MESSAGEML)
         assert "<select" in result["messageml"]
+
+
+# -------------------------------------------------------------------------
+# Phase 1: Embed / FormattedEmbed tests
+# -------------------------------------------------------------------------
+
+
+class TestFormattedEmbed:
+    """Tests for the FormattedEmbed content node."""
+
+    def _make_embed(self):
+        from chatom.base.embed import Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
+
+        return Embed(
+            title="Bot Status",
+            description="All systems operational.",
+            url="https://example.com/status",
+            color=0x00FF00,
+            author=EmbedAuthor(name="Chatom", url="https://chatom.dev"),
+            footer=EmbedFooter(text="Last updated"),
+            image=EmbedMedia(url="https://example.com/img.png"),
+            fields=[
+                EmbedField(name="Uptime", value="3d 12h", inline=True),
+                EmbedField(name="Commands", value="567", inline=True),
+            ],
+        )
+
+    # -- text fallback rendering --
+
+    def test_render_markdown(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        rendered = fe.render(Format.MARKDOWN)
+        assert "**Bot Status**" in rendered or "**[Bot Status]" in rendered
+        assert "**Uptime**: 3d 12h" in rendered
+        assert "**Commands**: 567" in rendered
+        assert "Last updated" in rendered
+
+    def test_render_slack(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        rendered = fe.render(Format.SLACK_MARKDOWN)
+        assert "*Uptime*: 3d 12h" in rendered
+        assert "_Last updated_" in rendered
+
+    def test_render_html(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        rendered = fe.render(Format.HTML)
+        assert "<b>" in rendered
+        assert "Bot Status" in rendered
+
+    def test_render_symphony(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        rendered = fe.render(Format.SYMPHONY_MESSAGEML)
+        assert "<b>" in rendered
+
+    def test_render_plaintext(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        rendered = fe.render(Format.PLAINTEXT)
+        assert "Uptime: 3d 12h" in rendered
+
+    # -- structured payloads --
+
+    def test_to_discord_dict(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        d = fe.to_discord_dict()
+        assert d["title"] == "Bot Status"
+        assert d["description"] == "All systems operational."
+        assert d["url"] == "https://example.com/status"
+        assert d["color"] == 0x00FF00
+        assert d["author"]["name"] == "Chatom"
+        assert d["footer"]["text"] == "Last updated"
+        assert d["image"]["url"] == "https://example.com/img.png"
+        assert len(d["fields"]) == 2
+        assert d["fields"][0] == {"name": "Uptime", "value": "3d 12h", "inline": True}
+
+    def test_to_slack_attachment(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        att = fe.to_slack_attachment()
+        assert att["color"] == "#00ff00"
+        assert "blocks" in att
+        blocks = att["blocks"]
+        # Should have author context, title section, description, fields, image, footer
+        types = [b["type"] for b in blocks]
+        assert "section" in types
+        assert "context" in types
+
+    def test_to_symphony_messageml(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        ml = fe.to_symphony_messageml()
+        assert "<card" in ml
+        assert "<header>" in ml
+        assert "Bot Status" in ml
+        assert "<table>" in ml
+        assert "Uptime" in ml
+        assert "</card>" in ml
+
+    def test_to_telegram_html(self):
+        fe = FormattedEmbed(embed=self._make_embed())
+        html = fe.to_telegram_html()
+        assert "<b>" in html
+        assert "Bot Status" in html
+
+    # -- from_embed factory --
+
+    def test_from_embed(self):
+        from chatom.base.embed import Embed
+
+        e = Embed(title="Test")
+        fe = FormattedEmbed.from_embed(e)
+        assert fe.embed.title == "Test"
+
+
+class TestFormattedMessageEmbeds:
+    """Tests for embed integration in FormattedMessage."""
+
+    def _make_embed(self):
+        from chatom.base.embed import Embed, EmbedField
+
+        return Embed(
+            title="Status",
+            color=0x00FF00,
+            fields=[EmbedField(name="Uptime", value="3d", inline=True)],
+        )
+
+    def test_add_embed_with_existing_embed(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        assert len(msg.embeds) == 1
+        assert msg.embeds[0].embed.title == "Status"
+
+    def test_add_embed_with_kwargs(self):
+        msg = FormattedMessage()
+        msg.add_embed(title="Quick", description="desc", color=0xFF0000)
+        assert len(msg.embeds) == 1
+        assert msg.embeds[0].embed.title == "Quick"
+        assert msg.embeds[0].embed.description == "desc"
+
+    def test_add_embed_inline(self):
+        msg = FormattedMessage()
+        msg.add_text("Before: ")
+        msg.add_embed(self._make_embed(), inline=True)
+        assert len(msg.embeds) == 1
+        assert len(msg.content) == 2  # Text + FormattedEmbed
+        rendered = msg.render(Format.MARKDOWN)
+        assert "Uptime" in rendered
+
+    def test_add_embed_not_inline_by_default(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        assert len(msg.content) == 0
+        assert len(msg.embeds) == 1
+
+    def test_get_embeds_discord(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        embeds = msg.get_embeds(Format.DISCORD_MARKDOWN)
+        assert len(embeds) == 1
+        assert embeds[0]["title"] == "Status"
+
+    def test_get_embeds_slack(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        embeds = msg.get_embeds(Format.SLACK_MARKDOWN)
+        assert len(embeds) == 1
+        assert "blocks" in embeds[0]
+
+    def test_get_embeds_symphony(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        embeds = msg.get_embeds(Format.SYMPHONY_MESSAGEML)
+        assert len(embeds) == 1
+        assert "<card" in embeds[0]["messageml"]
+
+    def test_get_embeds_html(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        embeds = msg.get_embeds(Format.HTML)
+        assert len(embeds) == 1
+        assert "html" in embeds[0]
+
+    def test_get_embeds_for_backend(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        embeds = msg.get_embeds_for("discord")
+        assert len(embeds) == 1
+        assert embeds[0]["title"] == "Status"
+
+    def test_get_embeds_empty_for_plaintext(self):
+        msg = FormattedMessage()
+        msg.add_embed(self._make_embed())
+        embeds = msg.get_embeds(Format.PLAINTEXT)
+        assert embeds == []
+
+    def test_render_for_with_inline_embed(self):
+        msg = FormattedMessage()
+        msg.add_text("Status: ")
+        msg.add_embed(self._make_embed(), inline=True)
+        for backend in ("slack", "discord", "symphony"):
+            rendered = msg.render_for(backend)
+            assert "Uptime" in rendered
+
+    def test_multiple_embeds(self):
+        msg = FormattedMessage()
+        msg.add_embed(title="First", color=0xFF0000)
+        msg.add_embed(title="Second", color=0x00FF00)
+        assert len(msg.embeds) == 2
+        embeds = msg.get_embeds(Format.DISCORD_MARKDOWN)
+        assert embeds[0]["title"] == "First"
+        assert embeds[1]["title"] == "Second"
+
+
+class TestMessageBuilderEmbed:
+    """Tests for embed support in MessageBuilder."""
+
+    def test_builder_embed(self):
+        from chatom.base.embed import Embed, EmbedField
+
+        e = Embed(title="Built", fields=[EmbedField(name="K", value="V")])
+        msg = MessageBuilder().text("Hi ").embed(e).build()
+        assert len(msg.embeds) == 1
+        assert msg.embeds[0].embed.title == "Built"
+
+    def test_builder_embed_get_embeds(self):
+        from chatom.base.embed import Embed
+
+        e = Embed(title="T")
+        msg = MessageBuilder().embed(e).build()
+        embeds = msg.get_embeds(Format.DISCORD_MARKDOWN)
+        assert len(embeds) == 1
+        assert embeds[0]["title"] == "T"
+
+
+class TestMessageEmbedRoundTrip:
+    """Tests for Message <-> FormattedMessage embed round-trip."""
+
+    def test_to_formatted_includes_embeds(self):
+        from chatom.base import Embed, Message
+
+        e = Embed(title="Status")
+        msg = Message(content="Hi", embeds=[e], backend="discord")
+        fm = msg.to_formatted()
+        assert len(fm.embeds) == 1
+        assert fm.embeds[0].embed.title == "Status"
+
+    def test_from_formatted_includes_embeds(self):
+        from chatom.base import Message
+        from chatom.base.embed import Embed
+
+        fm = FormattedMessage()
+        fm.add_text("Hello")
+        fm.add_embed(Embed(title="Info"))
+        msg = Message.from_formatted(fm, backend="discord")
+        assert len(msg.embeds) == 1
+        assert msg.embeds[0].title == "Info"
+
+    def test_round_trip_preserves_embed(self):
+        from chatom.base import Embed, Message
+
+        e = Embed(title="RT", description="Round trip test")
+        e.add_field("K", "V", inline=True)
+        original = Message(content="Test", embeds=[e], backend="slack")
+        fm = original.to_formatted()
+        restored = Message.from_formatted(fm, backend="slack")
+        assert len(restored.embeds) == 1
+        assert restored.embeds[0].title == "RT"
+        assert restored.embeds[0].fields[0].name == "K"

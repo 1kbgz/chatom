@@ -428,7 +428,7 @@ class Message(Identifiable):
             >>> formatted.render(Format.SLACK_MARKDOWN)
             'Hello *world*'
         """
-        from chatom.format import FormattedAttachment, FormattedMessage
+        from chatom.format import FormattedAttachment, FormattedEmbed, FormattedMessage
 
         fm = FormattedMessage()
 
@@ -450,6 +450,10 @@ class Message(Identifiable):
                     size=att.size,
                 )
             )
+
+        # Add embeds
+        for embed in self.embeds:
+            fm.embeds.append(FormattedEmbed(embed=embed))
 
         # Add metadata
         fm.metadata["source_backend"] = self.backend
@@ -512,10 +516,14 @@ class Message(Identifiable):
             for att in formatted.attachments
         ]
 
+        # Extract embeds
+        embeds = [fe.embed for fe in formatted.embeds]
+
         return cls(
             content=content,
             backend=backend,
             attachments=attachments,
+            embeds=embeds,
             metadata=dict(formatted.metadata),
             **kwargs,
         )
