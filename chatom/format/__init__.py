@@ -17,6 +17,7 @@ from .components import (
     TextInput,
     TextInputStyle,
 )
+from .embed import FormattedEmbed
 from .message import (
     BACKEND_FORMAT_MAP,
     FormattedMessage,
@@ -115,6 +116,8 @@ __all__ = (
     # Attachment
     "FormattedAttachment",
     "FormattedImage",
+    # Embed
+    "FormattedEmbed",
     # Message
     "FormattedMessage",
     "MessageBuilder",

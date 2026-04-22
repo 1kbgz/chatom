@@ -394,11 +394,6 @@ def demote(instance: BaseModel) -> BaseModel:
         raise ConversionError(f"Failed to demote {instance_type.__name__} to {base_type.__name__}: {e}")
 
 
-# =============================================================================
-# Backend type registration
-# =============================================================================
-
-
 def _register_all_types() -> None:
     """Register all known backend types from the backend registry.
 

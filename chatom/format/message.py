@@ -12,6 +12,7 @@ from chatom.base import BaseModel
 
 from .attachment import FormattedAttachment, FormattedImage
 from .components import ActionRow, Button, ButtonStyle, ComponentContainer, SelectOption
+from .embed import FormattedEmbed
 from .table import Table
 from .text import (
     Bold,
@@ -37,6 +38,7 @@ from .variant import FORMAT, Format
 
 if TYPE_CHECKING:
     from chatom.base import Channel, User
+    from chatom.base.embed import Embed
 
 __all__ = (
     "FormattedMessage",
@@ -96,13 +98,17 @@ class FormattedMessage(BaseModel):
         metadata: Additional platform-specific metadata.
     """
 
-    content: List[Union[TextNode, Table, FormattedImage, FormattedAttachment]] = Field(
+    content: List[Union[TextNode, Table, FormattedImage, FormattedAttachment, FormattedEmbed]] = Field(
         default_factory=list,
         description="Content nodes.",
     )
     attachments: List[FormattedAttachment] = Field(
         default_factory=list,
         description="File attachments.",
+    )
+    embeds: List[FormattedEmbed] = Field(
+        default_factory=list,
+        description="Rich embeds (rendered natively on supported backends).",
     )
     components: Optional[ComponentContainer] = Field(
         default=None,
@@ -385,6 +391,81 @@ class FormattedMessage(BaseModel):
 
         return self.components.add_row()
 
+    def add_embed(
+        self,
+        embed: "Optional[Embed]" = None,
+        *,
+        title: str = "",
+        description: str = "",
+        color: Optional[int] = None,
+        url: str = "",
+        inline: bool = False,
+    ) -> "FormattedMessage":
+        """Add a rich embed to the message.
+
+        You can pass an existing ``Embed`` instance, or provide keyword
+        arguments to create one.
+
+        Args:
+            embed: An existing Embed to wrap.
+            title: Embed title (used when *embed* is None).
+            description: Embed description.
+            color: Sidebar colour as a hex integer.
+            url: URL the title links to.
+            inline: If True the embed is also appended to ``content``
+                so it appears inline in the text fallback.
+
+        Returns:
+            Self for method chaining.
+        """
+        if embed is None:
+            from chatom.base.embed import Embed as BaseEmbed
+
+            embed = BaseEmbed(title=title, description=description, color=color, url=url)
+        fe = FormattedEmbed(embed=embed)
+        self.embeds.append(fe)
+        if inline:
+            self.content.append(fe)
+        return self
+
+    def get_embeds(self, format: FORMAT = Format.MARKDOWN) -> List[Dict[str, Any]]:
+        """Get structured embed payloads for the specified format.
+
+        Returns a list of dicts suitable for passing to the backend API.
+        For formats/backends that do not support structured embeds the
+        list is empty — use ``render()`` for the text fallback.
+
+        Args:
+            format: The target output format.
+
+        Returns:
+            List of backend-specific embed dicts.
+        """
+        fmt = Format(format) if isinstance(format, str) else format
+        result: List[Dict[str, Any]] = []
+        for fe in self.embeds:
+            if fmt == Format.DISCORD_MARKDOWN:
+                result.append(fe.to_discord_dict())
+            elif fmt == Format.SLACK_MARKDOWN:
+                result.append(fe.to_slack_attachment())
+            elif fmt == Format.SYMPHONY_MESSAGEML:
+                result.append({"messageml": fe.to_symphony_messageml()})
+            elif fmt == Format.HTML:
+                result.append({"html": fe.to_telegram_html()})
+        return result
+
+    def get_embeds_for(self, backend: str) -> List[Dict[str, Any]]:
+        """Get structured embed payloads for a specific backend.
+
+        Args:
+            backend: Backend identifier (e.g. 'discord', 'slack').
+
+        Returns:
+            List of backend-specific embed dicts.
+        """
+        fmt = get_format_for_backend(backend)
+        return self.get_embeds(fmt)
+
     def get_components(self, format: FORMAT = Format.MARKDOWN) -> List[Dict[str, Any]]:
         """Get rendered components for the specified format.
 
@@ -415,8 +496,9 @@ class MessageBuilder:
     """
 
     def __init__(self):
-        self._content: List[Union[TextNode, Table, FormattedImage, FormattedAttachment]] = []
+        self._content: List[Union[TextNode, Table, FormattedImage, FormattedAttachment, FormattedEmbed]] = []
         self._attachments: List[FormattedAttachment] = []
+        self._embeds: List[FormattedEmbed] = []
         self._metadata: Dict[str, Any] = {}
 
     def text(self, content: str) -> "MessageBuilder":
@@ -522,6 +604,11 @@ class MessageBuilder:
         self._content.append(node)
         return self
 
+    def embed(self, embed: "Embed") -> "MessageBuilder":
+        """Add a rich embed."""
+        self._embeds.append(FormattedEmbed(embed=embed))
+        return self
+
     def metadata(self, key: str, value: Any) -> "MessageBuilder":
         """Add metadata."""
         self._metadata[key] = value
@@ -536,6 +623,7 @@ class MessageBuilder:
         return FormattedMessage(
             content=self._content.copy(),
             attachments=self._attachments.copy(),
+            embeds=self._embeds.copy(),
             metadata=self._metadata.copy(),
         )
 
