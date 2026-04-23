@@ -7,6 +7,7 @@ This module provides the Symphony backend using the Symphony BDK
 import asyncio
 import contextlib
 import logging
+import re
 from datetime import datetime, timezone
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
 
@@ -103,6 +104,7 @@ class SymphonyBackend(BackendBase):
     name: ClassVar[str] = "symphony"
     display_name: ClassVar[str] = "Symphony"
     format: ClassVar[Format] = Format.SYMPHONY_MESSAGEML
+    mention_pattern: ClassVar[Optional[re.Pattern]] = re.compile(r'<mention\s+uid="(\d+)"\s*/>')
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = SymphonyUser

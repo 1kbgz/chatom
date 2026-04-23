@@ -2736,11 +2736,6 @@ class TestMessageEmbedRoundTrip:
         assert restored.embeds[0].fields[0].name == "K"
 
 
-# -------------------------------------------------------------------------
-# Phase 3: Binary Upload / Enhanced Media Support tests
-# -------------------------------------------------------------------------
-
-
 class TestFormattedAttachmentBinaryData:
     """Tests for binary data support on FormattedAttachment."""
 

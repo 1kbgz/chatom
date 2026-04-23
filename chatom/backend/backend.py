@@ -15,6 +15,7 @@ from typing import (
     ClassVar,
     List,
     Optional,
+    Pattern,
     TypeVar,
     Union,
     cast,
@@ -192,6 +193,12 @@ class BackendBase(BaseModel):
     name: ClassVar[str] = ""
     display_name: ClassVar[str] = ""
     format: ClassVar[Format] = Format.MARKDOWN
+    # Regex for parsing user mentions out of raw incoming message text.
+    # Group 1 must capture the platform user ID. ``None`` means this
+    # backend does not embed user IDs inline (e.g. Telegram uses
+    # MessageEntity rather than inline markers), and mention translation
+    # should be skipped.
+    mention_pattern: ClassVar[Optional[Pattern[str]]] = None
 
     # Instance attributes
     capabilities: Optional[BackendCapabilities] = Field(

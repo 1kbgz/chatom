@@ -56,6 +56,7 @@ class SlackBackend(BackendBase):
     name: ClassVar[str] = "slack"
     display_name: ClassVar[str] = "Slack"
     format: ClassVar[Format] = Format.SLACK_MARKDOWN
+    mention_pattern: ClassVar[Optional[re.Pattern]] = re.compile(r"<@(U[A-Z0-9]+)>")
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = SlackUser

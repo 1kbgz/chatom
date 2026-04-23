@@ -95,6 +95,7 @@ from .base import (
     register_backend_type,
     validate_for_backend,
 )
+from .bridge import IdentityMapper, MessageBridge
 from .enums import (
     ALL_BACKENDS,
     BACKEND,
@@ -297,4 +298,7 @@ __all__ = (
     "format_message",
     "BACKEND_FORMAT_MAP",
     "get_format_for_backend",
+    # Bridge
+    "IdentityMapper",
+    "MessageBridge",
 )
