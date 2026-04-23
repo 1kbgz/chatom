@@ -38,17 +38,13 @@ class FormattedEmbed(BaseModel):
 
     embed: Embed = Field(default_factory=Embed, description="The underlying embed data.")
 
-    # ------------------------------------------------------------------
     # Convenience constructors
-    # ------------------------------------------------------------------
     @classmethod
     def from_embed(cls, embed: Embed) -> "FormattedEmbed":
         """Create a FormattedEmbed from an existing Embed instance."""
         return cls(embed=embed)
 
-    # ------------------------------------------------------------------
     # Text fallback rendering (for content list)
-    # ------------------------------------------------------------------
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         """Render the embed as a text fallback.
 
@@ -150,9 +146,7 @@ class FormattedEmbed(BaseModel):
             return f"_{footer.text}_"
         return footer.text
 
-    # ------------------------------------------------------------------
     # Structured per-backend payloads
-    # ------------------------------------------------------------------
     def to_discord_dict(self) -> Dict[str, Any]:
         """Convert to a Discord embed dict suitable for the API."""
         e = self.embed

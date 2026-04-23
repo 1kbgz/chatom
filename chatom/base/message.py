@@ -600,9 +600,7 @@ class Message(Identifiable):
         """
         return self.forwarded_from.id if self.forwarded_from else ""
 
-    # -------------------------------------------------------------------------
     # Response Convenience Methods
-    # -------------------------------------------------------------------------
     # These methods construct new Message instances based on this message.
     # They make it easy to create replies, forwards, or quotes.
 
