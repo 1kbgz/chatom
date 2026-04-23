@@ -551,6 +551,46 @@ class DiscordBackend(BackendBase):
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to send message: {e}") from e
 
+    async def upload_file(
+        self,
+        channel: Union[str, Channel],
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Upload a file to a Discord channel.
+
+        Uses ``discord.File`` to send binary data directly.
+        """
+        import io
+
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        channel_id = await self._resolve_channel_id(channel)
+
+        try:
+            discord_channel = await self._client.fetch_channel(int(channel_id))
+            if discord_channel is None:
+                raise RuntimeError(f"Channel {channel_id} not found")
+
+            file_obj = discord.File(fp=io.BytesIO(data), filename=filename)
+            msg = await discord_channel.send(content=content or None, file=file_obj)
+
+            return DiscordMessage(
+                id=str(msg.id),
+                content=msg.content or "",
+                created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                author=DiscordUser(id=str(msg.author.id)),
+                channel=DiscordChannel(id=str(msg.channel.id)),
+                guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
+            )
+        except (discord.NotFound, discord.HTTPException, ValueError) as e:
+            raise RuntimeError(f"Failed to upload file: {e}") from e
+
     async def edit_message(
         self,
         message: Union[str, Message],

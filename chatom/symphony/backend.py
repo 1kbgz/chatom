@@ -5,6 +5,7 @@ This module provides the Symphony backend using the Symphony BDK
 """
 
 import asyncio
+import contextlib
 import logging
 from datetime import datetime, timezone
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
@@ -624,6 +625,60 @@ class SymphonyBackend(BackendBase):
 
         except Exception as e:
             raise RuntimeError(f"Failed to send message: {e}") from e
+
+    async def upload_file(
+        self,
+        channel: Union[str, Channel],
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Upload a file to a Symphony stream.
+
+        Sends the file as an attachment via the Symphony BDK message API.
+        The binary data is written to a temporary file which is passed to
+        the BDK's attachment parameter.
+        """
+        import os
+        import tempfile
+
+        if self._bdk is None:
+            raise RuntimeError("Symphony not connected")
+
+        channel_id = await self._resolve_channel_id(channel)
+
+        # Symphony BDK expects file paths for attachments, so write to temp
+        fd, tmp_path = tempfile.mkstemp(suffix=f"_{filename}")
+        try:
+            os.write(fd, data)
+            os.close(fd)
+
+            message_service = self._bdk.messages()
+            body = content or title or filename
+            if not body.strip().startswith("<messageML>"):
+                body = f"<messageML>{body}</messageML>"
+
+            result = await message_service.send_message(
+                stream_id=channel_id,
+                message=body,
+                attachment=[tmp_path],
+            )
+
+            return SymphonyMessage(
+                id=result.message_id,
+                content=body,
+                created_at=datetime.fromtimestamp(result.timestamp / 1000, tz=timezone.utc),
+                author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
+                channel=SymphonyChannel(id=channel_id),
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to upload file: {e}") from e
+        finally:
+            with contextlib.suppress(OSError):
+                os.unlink(tmp_path)
 
     async def edit_message(
         self,

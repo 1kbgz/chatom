@@ -352,6 +352,41 @@ class TelegramBackend(BackendBase):
 
         return result
 
+    async def upload_file(
+        self,
+        channel: Union[str, Channel],
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Upload a file to a Telegram chat.
+
+        Uses ``send_photo`` for image MIME types and ``send_document``
+        for everything else.
+        """
+        import io
+
+        self._ensure_connected()
+
+        chat_id = await self._resolve_channel_id(channel)
+        buf = io.BytesIO(data)
+        buf.name = filename  # python-telegram-bot reads .name for the filename
+
+        send_kwargs: dict[str, Any] = {"chat_id": int(chat_id)}
+        if content:
+            send_kwargs["caption"] = content
+            send_kwargs["parse_mode"] = "HTML"
+
+        if content_type.startswith("image/"):
+            msg = await self._bot.send_photo(photo=buf, **send_kwargs)
+        else:
+            msg = await self._bot.send_document(document=buf, **send_kwargs)
+
+        return TelegramMessage.from_telegram_message(msg)
+
     async def edit_message(
         self,
         message: Union[str, Message],

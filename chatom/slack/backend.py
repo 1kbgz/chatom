@@ -558,6 +558,48 @@ class SlackBackend(BackendBase):
         msg_data["ts"] = response.get("ts", msg_data.get("ts", ""))
         return self._parse_slack_message(msg_data, channel_id)
 
+    async def upload_file(
+        self,
+        channel: Union[str, Channel],
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Upload a file to a Slack channel.
+
+        Uses the ``files_upload_v2`` API (Slack SDK >=3.19).
+        """
+        self._ensure_connected()
+
+        channel_id = await self._resolve_channel_id(channel)
+
+        upload_kwargs: dict[str, Any] = {
+            "channel": channel_id,
+            "content": data,
+            "filename": filename,
+        }
+        if title:
+            upload_kwargs["title"] = title
+        if content:
+            upload_kwargs["initial_comment"] = content
+
+        response = await self._async_client.files_upload_v2(**upload_kwargs)
+
+        if not response.get("ok"):
+            raise RuntimeError(f"Failed to upload file: {response.get('error')}")
+
+        # Return a minimal message — Slack file uploads don't always
+        # return a message payload in the same shape as chat.postMessage
+        return SlackMessage(
+            id=response.get("file", {}).get("id", ""),
+            content=content,
+            channel=SlackChannel(id=channel_id),
+            backend="slack",
+        )
+
     async def edit_message(
         self,
         message: Union[str, Message],
