@@ -921,6 +921,39 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support message editing")
 
+    async def upload_file(
+        self,
+        channel: Union[str, Channel],
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Upload a file with binary data to a channel.
+
+        Backends should override this to use their native file upload API
+        (e.g. Slack ``files.uploadV2``, Discord ``File``, Telegram
+        ``send_document`` / ``send_photo``, Symphony attachment API).
+
+        The default implementation falls back to ``send_message`` with
+        a text-only placeholder.
+
+        Args:
+            channel: The channel to upload to (ID string or Channel object).
+            data: Raw file bytes.
+            filename: Name of the file.
+            content_type: MIME type of the file.
+            title: Optional title for the upload.
+            content: Optional accompanying text message.
+            **kwargs: Additional platform-specific options.
+
+        Returns:
+            The sent message.
+        """
+        raise NotImplementedError("This backend does not support file uploads")
+
     async def delete_message(
         self,
         message: Union[str, Message],

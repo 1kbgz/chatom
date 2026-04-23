@@ -361,9 +361,19 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
 
                 log.debug(f"Sending message to channel_id={msg.channel_id}")
                 try:
+                    # Separate attachments with binary data from URL-only ones
+                    url_attachments = []
+                    upload_attachments = []
+                    for att in msg.attachments:
+                        if getattr(att, "has_data", False) and att.data is not None:
+                            upload_attachments.append(att)
+                        else:
+                            url_attachments.append(att)
+
+                    # Send the main message (text + url attachments + embeds)
                     kwargs = {}
-                    if msg.attachments:
-                        kwargs["attachments"] = msg.attachments
+                    if url_attachments:
+                        kwargs["attachments"] = url_attachments
                     if msg.embeds:
                         kwargs["embeds"] = msg.embeds
                     await thread_backend.send_message(
@@ -371,6 +381,21 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
                         content=msg.content,
                         **kwargs,
                     )
+
+                    # Upload any attachments with binary data
+                    for att in upload_attachments:
+                        try:
+                            await thread_backend.upload_file(
+                                channel=msg.channel_id,
+                                data=att.data,
+                                filename=att.filename or "file",
+                                content_type=getattr(att, "content_type", ""),
+                            )
+                        except NotImplementedError:
+                            log.warning(f"Backend {type(thread_backend).__name__} does not support file uploads, skipping {att.filename!r}")
+                        except Exception:
+                            log.exception(f"Failed uploading {att.filename!r}")
+
                     log.debug("Message sent successfully")
                 except Exception:
                     log.exception("Failed sending message")

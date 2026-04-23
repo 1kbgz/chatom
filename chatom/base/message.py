@@ -446,6 +446,7 @@ class Message(Identifiable):
                 FormattedAttachment(
                     filename=att.filename,
                     url=att.url,
+                    data=att.data,
                     content_type=att.content_type,
                     size=att.size,
                 )
@@ -510,6 +511,7 @@ class Message(Identifiable):
             Attachment(
                 filename=att.filename,
                 url=att.url,
+                data=att.data,
                 content_type=att.content_type,
                 size=att.size,
             )

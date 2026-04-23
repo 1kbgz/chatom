@@ -2734,3 +2734,207 @@ class TestMessageEmbedRoundTrip:
         assert len(restored.embeds) == 1
         assert restored.embeds[0].title == "RT"
         assert restored.embeds[0].fields[0].name == "K"
+
+
+# -------------------------------------------------------------------------
+# Phase 3: Binary Upload / Enhanced Media Support tests
+# -------------------------------------------------------------------------
+
+
+class TestFormattedAttachmentBinaryData:
+    """Tests for binary data support on FormattedAttachment."""
+
+    def test_has_data_false_by_default(self):
+        att = FormattedAttachment(filename="report.pdf", url="https://example.com/report.pdf")
+        assert att.has_data is False
+        assert att.data is None
+
+    def test_has_data_true_when_set(self):
+        att = FormattedAttachment(filename="report.pdf", data=b"PDF content here")
+        assert att.has_data is True
+        assert att.data == b"PDF content here"
+
+    def test_data_excluded_from_serialization(self):
+        att = FormattedAttachment(filename="f.txt", data=b"hello")
+        d = att.model_dump()
+        assert "data" not in d
+
+    def test_render_still_works_with_data(self):
+        att = FormattedAttachment(filename="f.txt", url="https://x.com/f.txt", data=b"hello")
+        assert "f.txt" in att.render(Format.MARKDOWN)
+
+    def test_render_url_only_when_no_data(self):
+        att = FormattedAttachment(filename="f.txt", url="https://x.com/f.txt")
+        rendered = att.render(Format.SLACK_MARKDOWN)
+        assert "https://x.com/f.txt" in rendered
+
+    def test_empty_bytes_still_has_data(self):
+        att = FormattedAttachment(filename="empty.bin", data=b"")
+        assert att.has_data is True
+
+
+class TestFormattedImageBinaryData:
+    """Tests for binary data support on FormattedImage."""
+
+    def test_has_data_false_by_default(self):
+        img = FormattedImage(url="https://example.com/img.png", alt_text="chart")
+        assert img.has_data is False
+        assert img.data is None
+
+    def test_has_data_true_when_set(self):
+        img = FormattedImage(data=b"\x89PNG\r\n", filename="chart.png", content_type="image/png")
+        assert img.has_data is True
+        assert img.filename == "chart.png"
+        assert img.content_type == "image/png"
+
+    def test_data_excluded_from_serialization(self):
+        img = FormattedImage(url="https://x.com/i.png", data=b"\x89PNG")
+        d = img.model_dump()
+        assert "data" not in d
+
+    def test_render_still_works_with_data(self):
+        img = FormattedImage(url="https://x.com/img.png", data=b"\x89PNG", alt_text="chart")
+        rendered = img.render(Format.MARKDOWN)
+        assert "![chart]" in rendered
+
+    def test_new_fields_filename_content_type(self):
+        img = FormattedImage(
+            filename="plot.jpg",
+            content_type="image/jpeg",
+            alt_text="plot",
+        )
+        assert img.filename == "plot.jpg"
+        assert img.content_type == "image/jpeg"
+
+
+class TestBaseAttachmentBinaryData:
+    """Tests for binary data on the base Attachment model."""
+
+    def test_has_data_false_by_default(self):
+        from chatom.base.attachment import Attachment
+
+        att = Attachment(filename="test.txt")
+        assert att.has_data is False
+        assert att.data is None
+
+    def test_has_data_true_when_set(self):
+        from chatom.base.attachment import Attachment
+
+        att = Attachment(filename="test.txt", data=b"content")
+        assert att.has_data is True
+        assert att.data == b"content"
+
+    def test_data_excluded_from_serialization(self):
+        from chatom.base.attachment import Attachment
+
+        att = Attachment(filename="test.txt", data=b"content")
+        d = att.model_dump()
+        assert "data" not in d
+
+
+class TestBinaryDataRoundTrip:
+    """Tests for binary data through Message <-> FormattedMessage conversion."""
+
+    def test_to_formatted_preserves_data(self):
+        from chatom.base import Message
+        from chatom.base.attachment import Attachment
+
+        att = Attachment(filename="report.pdf", url="", data=b"pdf bytes", content_type="application/pdf")
+        msg = Message(content="Here's the report", attachments=[att], backend="slack")
+        fm = msg.to_formatted()
+        assert len(fm.attachments) == 1
+        assert fm.attachments[0].data == b"pdf bytes"
+        assert fm.attachments[0].has_data is True
+
+    def test_from_formatted_preserves_data(self):
+        from chatom.base import Message
+
+        fm = FormattedMessage()
+        fm.add_text("Report attached")
+        fm.attachments.append(FormattedAttachment(filename="report.pdf", data=b"pdf bytes", content_type="application/pdf"))
+        msg = Message.from_formatted(fm, backend="discord")
+        assert len(msg.attachments) == 1
+        assert msg.attachments[0].data == b"pdf bytes"
+        assert msg.attachments[0].has_data is True
+
+    def test_round_trip_preserves_data(self):
+        from chatom.base import Message
+        from chatom.base.attachment import Attachment
+
+        att = Attachment(filename="img.png", data=b"\x89PNG\r\n", content_type="image/png")
+        original = Message(content="Image", attachments=[att], backend="discord")
+        fm = original.to_formatted()
+        restored = Message.from_formatted(fm, backend="discord")
+        assert restored.attachments[0].data == b"\x89PNG\r\n"
+
+    def test_url_only_attachment_no_data_in_round_trip(self):
+        from chatom.base import Message
+        from chatom.base.attachment import Attachment
+
+        att = Attachment(filename="file.txt", url="https://example.com/file.txt")
+        original = Message(content="Link", attachments=[att], backend="slack")
+        fm = original.to_formatted()
+        restored = Message.from_formatted(fm, backend="slack")
+        assert restored.attachments[0].data is None
+        assert restored.attachments[0].has_data is False
+
+
+class TestFormattedMessageWithBinaryAttachments:
+    """Tests for FormattedMessage methods with binary data."""
+
+    def test_add_image_url_only(self):
+        msg = FormattedMessage()
+        msg.add_image("https://example.com/img.png", alt_text="chart")
+        assert len(msg.content) == 1
+        assert msg.content[0].has_data is False
+
+    def test_content_with_binary_image(self):
+        img = FormattedImage(data=b"\x89PNG", filename="chart.png", content_type="image/png", alt_text="chart")
+        msg = FormattedMessage()
+        msg.content.append(img)
+        assert len(msg.content) == 1
+        assert msg.content[0].has_data is True
+
+    def test_attachment_with_binary_data(self):
+        msg = FormattedMessage()
+        msg.attachments.append(FormattedAttachment(filename="data.csv", data=b"a,b,c\n1,2,3", content_type="text/csv"))
+        assert len(msg.attachments) == 1
+        assert msg.attachments[0].has_data is True
+        assert msg.attachments[0].filename == "data.csv"
+
+
+class TestBackendBaseUploadFile:
+    """Tests for BackendBase.upload_file default behavior."""
+
+    def test_upload_file_raises_not_implemented(self):
+        import pytest
+
+        from chatom.backend import BackendBase
+
+        # Create a minimal concrete subclass
+        class MinimalBackend(BackendBase):
+            name: str = "minimal"
+
+            async def connect(self):
+                pass
+
+            async def disconnect(self):
+                pass
+
+            async def send_message(self, channel, content, **kwargs):
+                return None
+
+            async def fetch_user(self, **kwargs):
+                return None
+
+            async def fetch_channel(self, **kwargs):
+                return None
+
+            async def fetch_messages(self, channel, **kwargs):
+                return []
+
+        import asyncio
+
+        backend = MinimalBackend()
+        with pytest.raises(NotImplementedError):
+            asyncio.get_event_loop().run_until_complete(backend.upload_file("C123", b"data", filename="test.txt"))

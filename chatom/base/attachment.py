@@ -46,6 +46,7 @@ class Attachment(BaseModel):
         id: Platform-specific unique identifier.
         filename: Name of the file.
         url: URL to download the attachment.
+        data: Raw file bytes for direct upload.
         content_type: MIME type of the attachment.
         size: File size in bytes.
         attachment_type: Type of attachment.
@@ -63,6 +64,12 @@ class Attachment(BaseModel):
         default="",
         description="URL to download the attachment.",
     )
+    data: Optional[bytes] = Field(
+        default=None,
+        description="Raw file bytes for direct upload.",
+        exclude=True,
+        repr=False,
+    )
     content_type: str = Field(
         default="",
         description="MIME type of the attachment.",
@@ -75,6 +82,11 @@ class Attachment(BaseModel):
         default=AttachmentType.UNKNOWN,
         description="Type of attachment.",
     )
+
+    @property
+    def has_data(self) -> bool:
+        """Whether this attachment carries in-memory binary data."""
+        return self.data is not None
 
     @classmethod
     def from_content_type(cls, content_type: str) -> AttachmentType:
