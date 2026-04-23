@@ -2482,11 +2482,6 @@ class TestActionRowGeneric:
         assert "<select" in result["messageml"]
 
 
-# -------------------------------------------------------------------------
-# Phase 1: Embed / FormattedEmbed tests
-# -------------------------------------------------------------------------
-
-
 class TestFormattedEmbed:
     """Tests for the FormattedEmbed content node."""
 
@@ -2506,8 +2501,6 @@ class TestFormattedEmbed:
                 EmbedField(name="Commands", value="567", inline=True),
             ],
         )
-
-    # -- text fallback rendering --
 
     def test_render_markdown(self):
         fe = FormattedEmbed(embed=self._make_embed())
@@ -2538,8 +2531,6 @@ class TestFormattedEmbed:
         fe = FormattedEmbed(embed=self._make_embed())
         rendered = fe.render(Format.PLAINTEXT)
         assert "Uptime: 3d 12h" in rendered
-
-    # -- structured payloads --
 
     def test_to_discord_dict(self):
         fe = FormattedEmbed(embed=self._make_embed())
@@ -2580,8 +2571,6 @@ class TestFormattedEmbed:
         html = fe.to_telegram_html()
         assert "<b>" in html
         assert "Bot Status" in html
-
-    # -- from_embed factory --
 
     def test_from_embed(self):
         from chatom.base.embed import Embed

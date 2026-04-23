@@ -16,10 +16,6 @@ from chatom.base.capabilities import (
 )
 from chatom.mcp import build_mcp_server
 
-# ---------------------------------------------------------------------------
-# Minimal mock backend (same pattern as chatom/tests/test_agent.py)
-# ---------------------------------------------------------------------------
-
 
 class _MockBackend:
     """Bare-bones BackendBase stand-in for MCP server tests."""
@@ -133,11 +129,6 @@ class _MockBackend:
         self.reactions.append({"message_id": msg_id, "emoji": emoji, "channel": ch_id})
 
 
-# ---------------------------------------------------------------------------
-# Fixtures
-# ---------------------------------------------------------------------------
-
-
 @pytest.fixture
 def alice() -> User:
     return User(id="U1", name="Alice", display_name="Alice A")
@@ -175,11 +166,6 @@ def mock_backend(alice: User, general: Channel, sample_messages: List[Message]) 
         channels={"C1": general},
         messages={"C1": sample_messages},
     )
-
-
-# ---------------------------------------------------------------------------
-# Server builder tests
-# ---------------------------------------------------------------------------
 
 
 class TestBuildMcpServer:
@@ -228,11 +214,6 @@ class TestBuildMcpServer:
             assert "edit_message" not in tool_names
             assert "add_reaction" not in tool_names
             assert "read_channel_history" in tool_names
-
-
-# ---------------------------------------------------------------------------
-# MCP Client integration tests
-# ---------------------------------------------------------------------------
 
 
 class TestMcpClientIntegration:
