@@ -65,6 +65,9 @@ from .base import (
     File,
     Identifiable,
     Image,
+    # Interaction
+    Interaction,
+    InteractionType,
     LookupError,
     # Message
     Message,
@@ -159,6 +162,7 @@ from .format import (
     # Helper functions
     text,
 )
+from .handlers import InteractionHandler, InteractionRegistry
 
 __version__ = "0.1.2"
 
@@ -301,4 +305,9 @@ __all__ = (
     # Bridge
     "IdentityMapper",
     "MessageBridge",
+    # Interactions
+    "Interaction",
+    "InteractionType",
+    "InteractionHandler",
+    "InteractionRegistry",
 )

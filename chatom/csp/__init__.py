@@ -30,11 +30,13 @@ except ImportError:
 
 if HAS_CSP:
     from .adapter import BackendAdapter
+    from .interactions import interaction_reader
     from .nodes import message_reader, message_writer
 
     __all__ = (
         "BackendAdapter",
         "HAS_CSP",
+        "interaction_reader",
         "message_reader",
         "message_writer",
     )
@@ -50,5 +52,9 @@ else:
         raise ImportError("csp is not installed. Install with: pip install csp")
 
     def message_writer(*args, **kwargs):
+        """Placeholder when csp is not installed."""
+        raise ImportError("csp is not installed. Install with: pip install csp")
+
+    def interaction_reader(*args, **kwargs):
         """Placeholder when csp is not installed."""
         raise ImportError("csp is not installed. Install with: pip install csp")

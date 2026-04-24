@@ -16,6 +16,7 @@ from .components import (
     SelectOption,
     TextInput,
     TextInputStyle,
+    attach_components_for_backend,
 )
 from .embed import FormattedEmbed
 from .message import (
@@ -135,4 +136,5 @@ __all__ = (
     "TextInputStyle",
     "Modal",
     "ComponentContainer",
+    "attach_components_for_backend",
 )

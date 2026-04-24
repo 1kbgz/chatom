@@ -28,6 +28,7 @@ __all__ = (
     "TextInputStyle",
     "Modal",
     "ComponentContainer",
+    "attach_components_for_backend",
 )
 
 
@@ -766,3 +767,39 @@ class ComponentContainer(BaseModel):
         row = self.add_row()
         row.add_select(action_id, options, placeholder)
         return self
+
+
+def attach_components_for_backend(
+    kwargs: Dict[str, Any],
+    container: "ComponentContainer",
+    backend_format: "FORMAT",
+) -> Dict[str, Any]:
+    """Populate ``send_message`` keyword args for interactive components.
+
+    Writes the correct kwarg for the target backend format into ``kwargs``
+    in-place, rendering ``container`` exactly once. Returns ``kwargs`` for
+    chaining.
+
+    - ``SLACK_MARKDOWN``  -> ``blocks`` (Block Kit action blocks)
+    - ``DISCORD_MARKDOWN`` -> ``components`` (Discord component objects)
+    - ``SYMPHONY_MESSAGEML`` -> merged into ``content`` inline
+    - anything else -> ``components`` as a generic fallback
+    """
+    if container is None or not container.rows:
+        return kwargs
+
+    rendered = container.render(backend_format)
+
+    if backend_format == Format.SLACK_MARKDOWN:
+        existing = list(kwargs.get("blocks") or [])
+        kwargs["blocks"] = existing + rendered
+    elif backend_format == Format.DISCORD_MARKDOWN:
+        existing = list(kwargs.get("components") or [])
+        kwargs["components"] = existing + rendered
+    elif backend_format == Format.SYMPHONY_MESSAGEML:
+        inline = "\n".join(r.get("messageml", "") for r in rendered if r)
+        if inline:
+            kwargs["content"] = (kwargs.get("content", "") or "") + "\n" + inline
+    else:
+        kwargs.setdefault("components", rendered)
+    return kwargs

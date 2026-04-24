@@ -28,6 +28,7 @@ from ..base import (
     BaseModel,
     Channel,
     ChannelRegistry,
+    Interaction,
     Message,
     Organization,
     Presence,
@@ -1183,6 +1184,38 @@ class BackendBase(BaseModel):
         raise NotImplementedError("This backend does not support message streaming")
         # This is needed for type checking, but won't be reached
         yield
+
+    async def stream_interactions(
+        self,
+        channel: Optional[Union[str, Channel]] = None,
+    ) -> AsyncIterator[Interaction]:
+        """Stream incoming component interactions in real-time.
+
+        Yields :class:`~chatom.base.Interaction` objects each time a user
+        clicks a button, picks from a select menu, or submits a modal
+        that was sent via this backend.
+
+        Backends that don't natively support interactive components, or
+        where interaction streaming hasn't been implemented yet, should
+        leave this as ``NotImplementedError``.
+
+        Args:
+            channel: Optional channel filter.
+
+        Yields:
+            Interaction: Each component interaction as it arrives.
+
+        Raises:
+            NotImplementedError: If the backend doesn't support
+                interaction streaming.
+
+        Example:
+            >>> async for event in backend.stream_interactions():
+            ...     if event.action_id == "confirm":
+            ...         await handle_confirm(event)
+        """
+        raise NotImplementedError("This backend does not support interaction streaming")
+        yield  # pragma: no cover
 
     async def read_messages(
         self,
