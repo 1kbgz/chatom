@@ -677,6 +677,56 @@ class Message(Identifiable):
             **kwargs,
         )
 
+    async def reply(
+        self,
+        content: str,
+        backend: Any,
+        *,
+        in_thread: bool = True,
+        **kwargs: Any,
+    ) -> "Message":
+        """Reply to this message, threading by default when supported.
+
+        Convenience wrapper around ``backend.send_message`` that removes
+        the per-backend branching needed to "reply in the same thread as
+        the user's message".
+
+        - When ``in_thread`` is True (default), passes ``thread=self`` so
+          the backend posts into this message's thread (starting one if
+          needed, where the platform supports it).
+        - When ``in_thread`` is False, passes ``reply_to=self`` so the
+          backend references this message without forcing a thread.
+
+        Backends that lack the corresponding concept (e.g. Symphony has
+        no threads) silently treat both as a plain top-level send.
+
+        Args:
+            content: The reply content.
+            backend: The backend to send through.
+            in_thread: If True (default), reply in the thread. If False,
+                use a plain reply reference.
+            **kwargs: Additional options forwarded to ``send_message``.
+
+        Returns:
+            The sent reply Message.
+
+        Example:
+            >>> reply = await message.reply("thanks!", backend=slack)
+            >>> reply = await message.reply("ack", backend=slack, in_thread=False)
+        """
+        channel: Any = self.channel if self.channel else self.channel_id
+        if not channel:
+            raise ValueError("Cannot reply: message has no channel information")
+
+        send_kwargs = dict(kwargs)
+        if in_thread:
+            # Prefer existing thread; otherwise this message is the root.
+            send_kwargs["thread"] = self.thread or self
+        else:
+            send_kwargs["reply_to"] = self
+
+        return await backend.send_message(channel=channel, content=content, **send_kwargs)
+
     def as_dm_to_author(self, content: str, **kwargs: Any) -> "Message":
         """Create a new message as a DM to this message's author.
 

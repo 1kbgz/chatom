@@ -469,6 +469,14 @@ class MockSlackBackend(SlackBackend):
         # Resolve channel ID
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
 
+        # Translate standardized thread/reply_to kwargs to thread_ts
+        if "thread_ts" not in kwargs:
+            thread_ts = self._extract_thread_id(kwargs.pop("thread", None)) or self._extract_reply_to_id(kwargs.pop("reply_to", None))
+            if thread_ts is None and "thread_id" in kwargs:
+                thread_ts = kwargs.pop("thread_id")
+            if thread_ts is not None:
+                kwargs["thread_ts"] = thread_ts
+
         self._message_counter += 1
         ts = f"{datetime.now().timestamp():.6f}"
 

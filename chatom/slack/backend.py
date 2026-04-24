@@ -529,9 +529,13 @@ class SlackBackend(BackendBase):
         Args:
             channel: The channel to send to (ID string or Channel object).
             content: The message content.
-            **kwargs: Additional options. Accepts both:
-                      - thread_id (chatom standard) - translated to thread_ts
-                      - thread_ts (Slack native)
+            **kwargs: Additional options. Accepts:
+                      - ``thread`` (standardized) - ``str | Thread | Message``,
+                        translated to ``thread_ts``.
+                      - ``reply_to`` (standardized) - ``str | Message``, also
+                        translated to ``thread_ts`` since Slack has no
+                        dedicated reply primitive.
+                      - ``thread_id`` / ``thread_ts`` (legacy) — still honored.
                       Plus: blocks, attachments, unfurl_links, etc.
 
         Returns:
@@ -542,9 +546,18 @@ class SlackBackend(BackendBase):
         # Resolve channel ID
         channel_id = await self._resolve_channel_id(channel)
 
-        # Translate thread_id to thread_ts for Slack API
-        if "thread_id" in kwargs and "thread_ts" not in kwargs:
-            kwargs["thread_ts"] = kwargs.pop("thread_id")
+        # Translate standardized thread/reply_to kwargs to thread_ts
+        if "thread_ts" not in kwargs:
+            thread_ts = self._extract_thread_id(kwargs.pop("thread", None)) or self._extract_reply_to_id(kwargs.pop("reply_to", None))
+            if thread_ts is None and "thread_id" in kwargs:
+                thread_ts = kwargs.pop("thread_id")
+            if thread_ts is not None:
+                kwargs["thread_ts"] = thread_ts
+        else:
+            # thread_ts wins, drop higher-level kwargs
+            kwargs.pop("thread", None)
+            kwargs.pop("reply_to", None)
+            kwargs.pop("thread_id", None)
 
         response = await self._async_client.chat_postMessage(
             channel=channel_id,

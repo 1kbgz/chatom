@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import PrivateAttr
 
 from ..base import Avatar, Channel, Message, MessageType, Organization, Presence, PresenceStatus, User
+from ..base.thread import Thread
 from .backend import DiscordBackend
 from .channel import DiscordChannel, DiscordChannelType
 from .message import DiscordMessage
@@ -476,6 +477,13 @@ class MockDiscordBackend(DiscordBackend):
         # Resolve channel ID
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
 
+        # Normalize standardized kwargs (matches production backend)
+        thread_id = self._extract_thread_id(kwargs.pop("thread", None))
+        reply_to_id = self._extract_reply_to_id(kwargs.pop("reply_to", None))
+        # In Discord a thread IS a channel, so route the send there.
+        if thread_id is not None:
+            channel_id = thread_id
+
         # Generate a mock message ID
         existing_count = len(self._sent_messages) + sum(len(msgs) for msgs in self._mock_messages.values())
         message_id = str(1000000000000000000 + existing_count)
@@ -487,7 +495,10 @@ class MockDiscordBackend(DiscordBackend):
             author=DiscordUser(id="bot_user"),
             channel=DiscordChannel(id=channel_id),
             guild=Organization(id=kwargs.get("guild_id", "")) if kwargs.get("guild_id") else None,
+            thread=Thread(id=thread_id) if thread_id else None,
         )
+        if reply_to_id:
+            message.metadata["reply_to_id"] = reply_to_id
         self._sent_messages.append(message)
         return message
 
