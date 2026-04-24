@@ -4,6 +4,7 @@ This module provides the Discord backend using the discord.py library.
 """
 
 import asyncio
+import re
 from datetime import datetime, timezone
 from logging import getLogger
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
@@ -126,6 +127,7 @@ class DiscordBackend(BackendBase):
     name: ClassVar[str] = "discord"
     display_name: ClassVar[str] = "Discord"
     format: ClassVar[Format] = Format.DISCORD_MARKDOWN
+    mention_pattern: ClassVar[Optional[re.Pattern]] = re.compile(r"<@!?(\d+)>")
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = DiscordUser
