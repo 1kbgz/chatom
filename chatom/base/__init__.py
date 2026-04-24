@@ -43,6 +43,7 @@ from .conversion import (
     validate_for_backend,
 )
 from .embed import Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedMedia
+from .interaction import Interaction, InteractionType
 from .mention import (
     ChannelMentionMatch,
     MentionMatch,
@@ -101,6 +102,9 @@ __all__ = (
     "EmbedField",
     "EmbedFooter",
     "EmbedMedia",
+    # Interaction
+    "Interaction",
+    "InteractionType",
     # Reaction
     "Emoji",
     "Reaction",

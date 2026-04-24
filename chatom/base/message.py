@@ -170,6 +170,15 @@ class Message(Identifiable):
         default_factory=list,
         description="Rich embeds in the message.",
     )
+    components: Optional[Any] = Field(
+        default=None,
+        description=(
+            "Interactive UI components attached to the message. "
+            "This is a ``chatom.format.ComponentContainer`` but is typed "
+            "as ``Any`` here to avoid a circular import; use the typed "
+            "accessor ``FormattedMessage.components`` when possible."
+        ),
+    )
     reactions: List[Reaction] = Field(
         default_factory=list,
         description="Reactions on the message.",
@@ -456,6 +465,10 @@ class Message(Identifiable):
         for embed in self.embeds:
             fm.embeds.append(FormattedEmbed(embed=embed))
 
+        # Carry over components
+        if self.components is not None:
+            fm.components = self.components
+
         # Add metadata
         fm.metadata["source_backend"] = self.backend
         fm.metadata["message_id"] = self.id
@@ -526,6 +539,7 @@ class Message(Identifiable):
             backend=backend,
             attachments=attachments,
             embeds=embeds,
+            components=formatted.components,
             metadata=dict(formatted.metadata),
             **kwargs,
         )

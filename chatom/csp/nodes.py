@@ -376,9 +376,17 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
                         kwargs["attachments"] = url_attachments
                     if msg.embeds:
                         kwargs["embeds"] = msg.embeds
+                    if msg.components is not None and msg.components.rows:
+                        from chatom.format import attach_components_for_backend
+
+                        kwargs["content"] = msg.content
+                        attach_components_for_backend(kwargs, msg.components, thread_backend.get_format())
+                        content_to_send = kwargs.pop("content")
+                    else:
+                        content_to_send = msg.content
                     await thread_backend.send_message(
                         channel=msg.channel_id,
-                        content=msg.content,
+                        content=content_to_send,
                         **kwargs,
                     )
 
