@@ -507,7 +507,14 @@ class DiscordBackend(BackendBase):
         Args:
             channel: The channel to send to (ID string or Channel object).
             content: The message content.
-            **kwargs: Additional options (embed, file, tts, etc.).
+            **kwargs: Additional options:
+                - ``thread`` — ``str | Thread | Message``. When set, the
+                  message is sent into the corresponding Discord thread
+                  channel (Discord threads are channels); the ``channel``
+                  arg is ignored for the send itself.
+                - ``reply_to`` — ``str | Message`` translated to
+                  ``discord.MessageReference``.
+                - embed, embeds, file, files, tts.
 
         Returns:
             The sent message.
@@ -515,13 +522,17 @@ class DiscordBackend(BackendBase):
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
 
-        # Resolve channel ID
-        channel_id = await self._resolve_channel_id(channel)
+        # Thread overrides the channel: in Discord a thread IS a channel.
+        thread_id = self._extract_thread_id(kwargs.pop("thread", None))
+        target_channel_id = thread_id if thread_id is not None else await self._resolve_channel_id(channel)
+
+        # reply_to → discord.MessageReference
+        reply_to_id = self._extract_reply_to_id(kwargs.pop("reply_to", None))
 
         try:
-            discord_channel = await self._client.fetch_channel(int(channel_id))
+            discord_channel = await self._client.fetch_channel(int(target_channel_id))
             if discord_channel is None:
-                raise RuntimeError(f"Channel {channel_id} not found")
+                raise RuntimeError(f"Channel {target_channel_id} not found")
 
             # Extract common kwargs
             embed = kwargs.get("embed")
@@ -539,6 +550,11 @@ class DiscordBackend(BackendBase):
                 send_kwargs["file"] = file
             if files:
                 send_kwargs["files"] = files
+            if reply_to_id is not None:
+                send_kwargs["reference"] = discord.MessageReference(
+                    message_id=int(reply_to_id),
+                    channel_id=int(target_channel_id),
+                )
 
             msg = await discord_channel.send(**send_kwargs)
 

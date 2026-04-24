@@ -874,6 +874,48 @@ class BackendBase(BaseModel):
         """
         return await self.fetch_messages(channel=channel, after=after)
 
+    @staticmethod
+    def _extract_thread_id(thread: Any) -> Optional[str]:
+        """Extract a thread ID from a ``thread=`` kwarg value.
+
+        Accepts ``None``, a ``str`` ID, a :class:`chatom.base.Thread`, or any
+        :class:`chatom.base.Message` (in which case the message's thread ID
+        is used if set, otherwise the message's own ID — matching the
+        "start a thread from this message" idiom).
+
+        Returns the thread ID as a string, or ``None`` if no thread was given.
+        """
+        if thread is None:
+            return None
+        # Local imports to avoid tight coupling in module-scope types
+        from ..base import Message as _Msg
+        from ..base.thread import Thread as _Thread
+
+        if isinstance(thread, str):
+            return thread or None
+        if isinstance(thread, _Thread):
+            return thread.id or None
+        if isinstance(thread, _Msg):
+            return thread.thread_id or thread.id or None
+        # Duck-type fallback
+        return str(getattr(thread, "id", thread)) or None
+
+    @staticmethod
+    def _extract_reply_to_id(reply_to: Any) -> Optional[str]:
+        """Extract a message ID from a ``reply_to=`` kwarg value.
+
+        Accepts ``None``, a ``str`` ID, or a :class:`chatom.base.Message`.
+        """
+        if reply_to is None:
+            return None
+        from ..base import Message as _Msg
+
+        if isinstance(reply_to, str):
+            return reply_to or None
+        if isinstance(reply_to, _Msg):
+            return reply_to.id or None
+        return str(getattr(reply_to, "id", reply_to)) or None
+
     @abstractmethod
     async def send_message(
         self,
@@ -883,11 +925,25 @@ class BackendBase(BaseModel):
     ) -> Message:
         """Send a message to a channel.
 
+        Standardized optional kwargs (recognized by every backend):
+
+        - ``thread``: ``str | Thread | Message | None`` — send into an
+          existing thread. When a ``Message`` is passed, the message's
+          thread is used if set, otherwise the message itself becomes the
+          thread root. Backends translate this to their native concept
+          (Slack ``thread_ts``, Discord thread channel, Telegram
+          ``message_thread_id``). Symphony has no thread concept and
+          silently ignores this.
+        - ``reply_to``: ``str | Message | None`` — reply referencing a
+          specific message (Discord ``reference=``, Telegram
+          ``reply_to_message_id``, Slack ``thread_ts``). Symphony has no
+          native reply and silently ignores this.
+
         Args:
             channel: The channel to send to (ID string or Channel object).
             content: The message content.
             **kwargs: Additional platform-specific options (e.g., embeds,
-                      attachments, thread_id).
+                      attachments, ``thread``, ``reply_to``).
 
         Returns:
             The sent message.
@@ -897,6 +953,9 @@ class BackendBase(BaseModel):
             >>> msg = await backend.send_message("C123", "Hello!")
             >>> msg = await backend.send_message(Channel(id="C123"), "Hello!")
             >>> msg = await backend.send_message(Channel(name="general"), "Hello!")  # Resolves
+            >>> # Thread and reply:
+            >>> msg = await backend.send_message("C123", "In thread", thread=parent_msg)
+            >>> msg = await backend.send_message("C123", "Replying", reply_to=parent_msg)
         """
         raise NotImplementedError("Subclass must implement send_message()")
 

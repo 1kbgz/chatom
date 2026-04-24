@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Optional, Union
 from pydantic import PrivateAttr
 
 from ..base import Channel, Message, MessageType, Presence, PresenceStatus, User
+from ..base.thread import Thread
 from .backend import TelegramBackend
 from .channel import TelegramChannel, TelegramChatType
 from .message import TelegramMessage
@@ -382,6 +383,12 @@ class MockTelegramBackend(TelegramBackend):
         """Send a mock message."""
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
 
+        # Normalize thread / reply_to (matches production backend)
+        thread_val = self._extract_thread_id(kwargs.pop("thread", None))
+        if thread_val is None and "thread_id" in kwargs:
+            thread_val = kwargs.pop("thread_id")
+        reply_to_id = self._extract_reply_to_id(kwargs.pop("reply_to", None))
+
         self._message_counter += 1
         message_id = str(1000000 + self._message_counter)
 
@@ -393,7 +400,10 @@ class MockTelegramBackend(TelegramBackend):
             created_at=datetime.now(timezone.utc),
             author=TelegramUser(id="bot_user"),
             channel=TelegramChannel(id=channel_id),
+            thread=Thread(id=thread_val) if thread_val else None,
         )
+        if reply_to_id:
+            message.metadata["reply_to_message_id"] = reply_to_id
         self._sent_messages.append(message)
         return message
 

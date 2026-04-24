@@ -589,12 +589,23 @@ class SymphonyBackend(BackendBase):
             **kwargs: Additional options:
                 - data: Template data as dict.
                 - attachments: List of attachment file paths.
+                - ``thread`` / ``reply_to`` — Symphony has no thread or
+                  native reply concept, so these are accepted for
+                  cross-backend source compatibility but silently ignored
+                  (logged at debug).
 
         Returns:
             The sent message.
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        # Drop standardized thread/reply_to kwargs: Symphony has no
+        # corresponding concept (single timeline, no native reply).
+        thread_val = kwargs.pop("thread", None)
+        reply_val = kwargs.pop("reply_to", None)
+        if thread_val is not None or reply_val is not None:
+            log.debug("Symphony has no thread/reply concept; dropping thread=%r reply_to=%r", thread_val, reply_val)
 
         # Resolve channel ID
         channel_id = await self._resolve_channel_id(channel)

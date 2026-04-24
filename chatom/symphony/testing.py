@@ -382,6 +382,10 @@ class MockSymphonyBackend(BackendBase):
         # Resolve channel ID
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
 
+        # Drop standardized thread/reply_to kwargs (Symphony has no concept)
+        kwargs.pop("thread", None)
+        kwargs.pop("reply_to", None)
+
         message_id = str(uuid.uuid4())
         timestamp = datetime.now(timezone.utc)
 

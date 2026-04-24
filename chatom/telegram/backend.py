@@ -311,8 +311,11 @@ class TelegramBackend(BackendBase):
             channel: The chat to send to (ID string or Channel object).
             content: The message content (HTML formatted).
             **kwargs: Additional options:
-                - thread_id: Reply to a forum topic thread.
-                - reply_to: Message ID to reply to.
+                - thread: ``str | Thread | Message`` — forum topic thread.
+                  Translated to ``message_thread_id``. ``thread_id`` is
+                  still accepted as a legacy alias.
+                - reply_to: ``str | Message`` — message to reply to.
+                  Translated to ``reply_to_message_id``.
                 - parse_mode: Parse mode ('HTML', 'MarkdownV2', or None).
                 - disable_notification: Send silently.
                 - protect_content: Protect message from forwarding.
@@ -330,17 +333,17 @@ class TelegramBackend(BackendBase):
         # Default to HTML parse mode
         send_kwargs["parse_mode"] = kwargs.pop("parse_mode", "HTML")
 
-        # Handle thread_id for forum topics
-        if "thread_id" in kwargs:
-            send_kwargs["message_thread_id"] = int(kwargs.pop("thread_id"))
+        # Handle thread (standardized) / thread_id (legacy) for forum topics
+        thread_val = self._extract_thread_id(kwargs.pop("thread", None))
+        if thread_val is None and "thread_id" in kwargs:
+            thread_val = kwargs.pop("thread_id")
+        if thread_val is not None:
+            send_kwargs["message_thread_id"] = int(thread_val)
 
         # Handle reply_to
-        if "reply_to" in kwargs:
-            reply_to = kwargs.pop("reply_to")
-            if isinstance(reply_to, Message):
-                send_kwargs["reply_to_message_id"] = int(reply_to.id)
-            else:
-                send_kwargs["reply_to_message_id"] = int(reply_to)
+        reply_to_id = self._extract_reply_to_id(kwargs.pop("reply_to", None))
+        if reply_to_id is not None:
+            send_kwargs["reply_to_message_id"] = int(reply_to_id)
 
         # Pass through supported kwargs
         for key in ("disable_notification", "protect_content"):

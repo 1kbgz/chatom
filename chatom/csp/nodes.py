@@ -376,6 +376,12 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
                         kwargs["attachments"] = url_attachments
                     if msg.embeds:
                         kwargs["embeds"] = msg.embeds
+                    if msg.thread is not None:
+                        kwargs["thread"] = msg.thread
+                    if msg.reply_to is not None:
+                        kwargs["reply_to"] = msg.reply_to
+                    elif msg.reference is not None and msg.reference.message_id:
+                        kwargs["reply_to"] = msg.reference.message_id
                     if msg.components is not None and msg.components.rows:
                         from chatom.format import attach_components_for_backend
 
