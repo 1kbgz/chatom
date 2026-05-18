@@ -336,7 +336,7 @@ class DiscordMessage(Message):
             is_bot=author.is_bot,
             member=data.get("member"),
             mention_everyone=data.get("mention_everyone", False),
-            tags=mention_users,
+            mentions=mention_users,
             mention_roles=data.get("mention_roles", []),
             mention_channels=[c.get("id", "") for c in data.get("mention_channels", [])],
             nonce=data.get("nonce"),

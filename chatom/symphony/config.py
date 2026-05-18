@@ -9,7 +9,7 @@ import logging
 import os
 import tempfile
 import threading
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union, cast
 
 from pydantic import Field, SecretStr, model_validator
 
@@ -433,7 +433,7 @@ class SymphonyConfig(BackendConfig):
                 original_config_init(config_self, *args, **kwargs)
                 config_self.verify_ssl = False
 
-            Configuration.__init__ = patched_config_init  # ty: ignore[invalid-assignment]
+            cast(Any, Configuration).__init__ = patched_config_init
             log.debug("SSL verification has been disabled via monkey patch")
         except ImportError as e:
             log.warning(f"Could not patch SSL verification: {e}")

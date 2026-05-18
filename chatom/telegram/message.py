@@ -184,7 +184,7 @@ class TelegramMessage(Message):
             reply_to_message_id=data.get("reply_to_message", {}).get("message_id") if data.get("reply_to_message") else None,
             entities=data.get("entities", []),
             has_protected_content=data.get("has_protected_content", False),
-            tags=mention_users,
+            mentions=mention_users,
             raw=data,
             backend="telegram",
         )
@@ -225,7 +225,7 @@ class TelegramMessage(Message):
             reply_to_message_id=msg.reply_to_message.message_id if msg.reply_to_message else None,
             entities=[{"type": e.type, "offset": e.offset, "length": e.length} for e in (msg.entities or [])],
             has_protected_content=getattr(msg, "has_protected_content", False) or False,
-            tags=mention_users,
+            mentions=mention_users,
             backend="telegram",
         )
 

@@ -6,6 +6,7 @@ This module provides the Symphony backend using the Symphony BDK
 
 import asyncio
 import contextlib
+import importlib
 import logging
 import re
 from datetime import datetime, timezone
@@ -36,10 +37,10 @@ log = logging.getLogger(__name__)
 
 # Try to import symphony-bdk
 try:
-    from symphony.bdk.core.config.model.bdk_config import BdkConfig
+    _bdk_config_module = importlib.import_module("symphony.bdk.core.config.model.bdk_config")
+    _presence_service_module = importlib.import_module("symphony.bdk.core.service.presence.presence_service")
+    _symphony_bdk_module = importlib.import_module("symphony.bdk.core.symphony_bdk")
     from symphony.bdk.core.service.datafeed.real_time_event_listener import RealTimeEventListener
-    from symphony.bdk.core.service.presence.presence_service import PresenceStatus
-    from symphony.bdk.core.symphony_bdk import SymphonyBdk
     from symphony.bdk.gen.agent_model.v4_initiator import V4Initiator
     from symphony.bdk.gen.agent_model.v4_message_sent import V4MessageSent
     from symphony.bdk.gen.pod_model.user_id_list import UserIdList
@@ -50,9 +51,13 @@ try:
     HAS_SYMPHONY = True
 except ImportError:
     HAS_SYMPHONY = False
-    SymphonyBdk = None  # ty: ignore[invalid-assignment]
-    BdkConfig = None  # ty: ignore[invalid-assignment]
-    PresenceStatus = None  # ty: ignore[invalid-assignment]
+    _bdk_config_module = None
+    _presence_service_module = None
+    _symphony_bdk_module = None
+
+SymphonyBdk: Any = getattr(_symphony_bdk_module, "SymphonyBdk", None)
+BdkConfig: Any = getattr(_bdk_config_module, "BdkConfig", None)
+PresenceStatus: Any = getattr(_presence_service_module, "PresenceStatus", None)
 
 __all__ = ("SymphonyBackend",)
 
@@ -1357,7 +1362,7 @@ class SymphonyBackend(BackendBase):
                     channel=channel,
                     created_at=msg_timestamp,
                     data=msg.data,
-                    tags=mention_users,  # List of SymphonyUser objects
+                    mentions=mention_users,  # List of SymphonyUser objects
                 )
 
                 # If we didn't find the author via lookup, use info from initiator

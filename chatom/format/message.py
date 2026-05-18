@@ -330,13 +330,15 @@ class FormattedMessage(BaseModel):
             >>> msg = FormattedMessage()
             >>> msg.add_text("Click here: ").add_button("Submit", action_id="submit_form")
         """
-        if self.components is None:
-            self.components = ComponentContainer()
+        components = self.components
+        if components is None:
+            components = ComponentContainer()
+            self.components = components
 
-        self.components.add_button(label, action_id, style, url)
-        if value and self.components.rows:
+        components.add_button(label, action_id, style, url)
+        if value and components.rows:
             # Set value on the last button
-            last_row = self.components.rows[-1]
+            last_row = components.rows[-1]
             if last_row.components:
                 last_button = last_row.components[-1]
                 if isinstance(last_button, Button):
@@ -367,10 +369,12 @@ class FormattedMessage(BaseModel):
             >>> msg = FormattedMessage()
             >>> msg.add_text("Choose:").add_select("my_select", options)
         """
-        if self.components is None:
-            self.components = ComponentContainer()
+        components = self.components
+        if components is None:
+            components = ComponentContainer()
+            self.components = components
 
-        self.components.add_select(action_id, options, placeholder)
+        components.add_select(action_id, options, placeholder)
         return self
 
     def add_action_row(self) -> ActionRow:
@@ -386,10 +390,12 @@ class FormattedMessage(BaseModel):
             >>> row = msg.add_action_row()
             >>> row.add_button("Yes", "yes").add_button("No", "no")
         """
-        if self.components is None:
-            self.components = ComponentContainer()
+        components = self.components
+        if components is None:
+            components = ComponentContainer()
+            self.components = components
 
-        return self.components.add_row()
+        return components.add_row()
 
     def add_embed(
         self,

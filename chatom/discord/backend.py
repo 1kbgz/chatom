@@ -4,6 +4,7 @@ This module provides the Discord backend using the discord.py library.
 """
 
 import asyncio
+import importlib
 import re
 from datetime import datetime, timezone
 from logging import getLogger
@@ -39,18 +40,20 @@ _log = getLogger(__name__)
 
 # Try to import discord.py
 try:
-    import discord
-    from discord import Status as DiscordStatus
-    from discord.activity import Activity, ActivityType, Game
+    _discord = importlib.import_module("discord")
+    _discord_activity = importlib.import_module("discord.activity")
 
     HAS_DISCORD = True
 except ImportError:
     HAS_DISCORD = False
-    discord = None  # ty: ignore[invalid-assignment]
-    DiscordStatus = None  # ty: ignore[invalid-assignment]
-    Game = None  # ty: ignore[invalid-assignment]
-    Activity = None  # ty: ignore[invalid-assignment]
-    ActivityType = None  # ty: ignore[invalid-assignment]
+    _discord = None
+    _discord_activity = None
+
+discord: Any = _discord
+DiscordStatus: Any = getattr(_discord, "Status", None)
+Game: Any = getattr(_discord_activity, "Game", None)
+Activity: Any = getattr(_discord_activity, "Activity", None)
+ActivityType: Any = getattr(_discord_activity, "ActivityType", None)
 
 
 def _status_to_discord(status: str) -> Any:
@@ -1440,7 +1443,7 @@ class DiscordBackend(BackendBase):
                     author=DiscordUser(id=str(msg.author.id)),
                     channel=DiscordChannel(id=str(msg.channel.id)),
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
-                    tags=mention_users,
+                    mentions=mention_users,
                     mention_everyone=msg.mention_everyone,
                     mention_roles=[str(r.id) for r in msg.role_mentions] if msg.role_mentions else [],
                 )

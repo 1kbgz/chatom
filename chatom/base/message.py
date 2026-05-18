@@ -7,6 +7,8 @@ from datetime import datetime
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
+from pydantic import AliasChoices
+
 from .attachment import Attachment
 from .base import BaseModel, Field, Identifiable
 from .channel import Channel
@@ -110,12 +112,14 @@ class Message(Identifiable):
     content: str = Field(
         default="",
         description="Text content of the message.",
-        alias="text",
+        validation_alias=AliasChoices("content", "text"),
+        serialization_alias="text",
     )
     author: Optional[User] = Field(
         default=None,
         description="User who sent the message.",
-        alias="user",
+        validation_alias=AliasChoices("author", "user"),
+        serialization_alias="user",
     )
     channel: Optional[Channel] = Field(
         default=None,
@@ -160,7 +164,8 @@ class Message(Identifiable):
     mentions: List[User] = Field(
         default_factory=list,
         description="Users mentioned in the message.",
-        alias="tags",
+        validation_alias=AliasChoices("mentions", "tags"),
+        serialization_alias="tags",
     )
     attachments: List[Attachment] = Field(
         default_factory=list,

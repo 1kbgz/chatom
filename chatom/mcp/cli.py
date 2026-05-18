@@ -16,12 +16,14 @@ from __future__ import annotations
 
 import os
 import sys
-from typing import Any, cast
+from typing import Any, Literal, TypeAlias, cast
 
 from hydra import compose, initialize_config_module
 from hydra.utils import instantiate
 
 from chatom.mcp.server import build_mcp_server
+
+Transport: TypeAlias = Literal["stdio", "http", "sse", "streamable-http"]
 
 
 def main() -> None:
@@ -40,7 +42,10 @@ def main() -> None:
 
     mcp = build_mcp_server(backends, read_only=cfg.server.read_only)
 
-    transport: str = cfg.server.transport
+    transport_value: str = cfg.server.transport
+    if transport_value not in ("stdio", "http", "sse", "streamable-http"):
+        raise SystemExit(f"error: unsupported transport: {transport_value}")
+    transport = cast(Transport, transport_value)
     if cfg.server.auth_token_env and transport != "stdio":
         auth_token = os.environ.get(cfg.server.auth_token_env, "")
         if auth_token:

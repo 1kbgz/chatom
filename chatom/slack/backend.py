@@ -1101,6 +1101,7 @@ class SlackBackend(BackendBase):
 
         try:
             from slack_sdk.socket_mode.aiohttp import SocketModeClient
+            from slack_sdk.socket_mode.async_client import AsyncBaseSocketModeClient
             from slack_sdk.socket_mode.request import SocketModeRequest
             from slack_sdk.socket_mode.response import SocketModeResponse
         except ImportError as e:
@@ -1121,7 +1122,7 @@ class SlackBackend(BackendBase):
         # so handlers MUST be async and can use regular await
         backend_ref = self  # Capture reference for closure
 
-        async def handle_message(client: SocketModeClient, req: SocketModeRequest):
+        async def handle_message(client: AsyncBaseSocketModeClient, req: SocketModeRequest):
             try:
                 # Acknowledge the event
                 response = SocketModeResponse(envelope_id=req.envelope_id)
@@ -1206,7 +1207,7 @@ class SlackBackend(BackendBase):
                             channel=channel_obj,  # Proper SlackChannel object
                             thread=Thread(id=thread_ts) if thread_ts else None,
                             created_at=datetime.fromtimestamp(float(ts)) if ts else datetime.now(),
-                            tags=mention_users,  # Resolved mention users
+                            mentions=mention_users,  # Resolved mention users
                             metadata={
                                 "is_im": is_im,
                                 "author_name": author_name,
@@ -1225,7 +1226,7 @@ class SlackBackend(BackendBase):
             app_token=self.config.app_token_str,
             web_client=self._async_client,
         )
-        socket_client.socket_mode_request_listeners.append(handle_message)  # ty: ignore[invalid-argument-type]
+        socket_client.socket_mode_request_listeners.append(handle_message)
 
         # Start Socket Mode in background
         socket_task = asyncio.create_task(socket_client.connect())
