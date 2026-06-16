@@ -4,7 +4,7 @@ This module provides classes for file attachments and media.
 """
 
 from enum import Enum
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from .base import BaseModel, Field
 
@@ -81,6 +81,10 @@ class Attachment(BaseModel):
     attachment_type: AttachmentType = Field(
         default=AttachmentType.UNKNOWN,
         description="Type of attachment.",
+    )
+    metadata: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Platform-specific data needed to resolve or download the attachment (e.g. Symphony stream/message IDs).",
     )
 
     @property

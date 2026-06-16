@@ -7,5 +7,13 @@ server:
   port: 8080
   read_only: false
   auth_token_env: null
+  # Optional allow-list of (unprefixed) tool names. null = expose all tools
+  # (subject to capability and read_only gating).
+  enabled_tools: null
+  # Deny-list of tool names that are never exposed, even when supported.
+  # Destructive / identity-changing tools are off by default.
+  disabled_tools:
+    - delete_message
+    - set_presence
 
 backends: {}

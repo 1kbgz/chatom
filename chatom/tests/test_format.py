@@ -2933,3 +2933,68 @@ class TestBackendBaseUploadFile:
         backend = MinimalBackend()
         with pytest.raises(NotImplementedError):
             asyncio.run(backend.upload_file("C123", b"data", filename="test.txt"))
+
+
+class TestBackendBaseDownloadAttachment:
+    """Tests for BackendBase.download_attachment default behavior."""
+
+    @staticmethod
+    def _backend():
+        from chatom.backend import BackendBase
+
+        class MinimalBackend(BackendBase):
+            name: str = "minimal-dl"
+
+            async def connect(self):
+                pass
+
+            async def disconnect(self):
+                pass
+
+            async def send_message(self, channel, content, **kwargs):
+                return None
+
+            async def fetch_user(self, **kwargs):
+                return None
+
+            async def fetch_channel(self, **kwargs):
+                return None
+
+            async def fetch_messages(self, channel, **kwargs):
+                return []
+
+        return MinimalBackend()
+
+    def test_returns_inline_data(self):
+        import asyncio
+
+        from chatom.base import Attachment
+
+        backend = self._backend()
+        att = Attachment(id="a", filename="f.bin", data=b"hello")
+        assert asyncio.run(backend.download_attachment(att)) == b"hello"
+
+    def test_no_source_raises_not_implemented(self):
+        import asyncio
+
+        import pytest
+
+        from chatom.base import Attachment
+
+        backend = self._backend()
+        att = Attachment(id="a", filename="f.bin")  # no data, no url
+        with pytest.raises(NotImplementedError):
+            asyncio.run(backend.download_attachment(att))
+
+    def test_non_http_url_rejected(self):
+        """The base downloader must refuse non-http(s) URLs (SSRF guard)."""
+        import asyncio
+
+        import pytest
+
+        from chatom.base import Attachment
+
+        backend = self._backend()
+        att = Attachment(id="a", filename="passwd", url="file:///etc/passwd")
+        with pytest.raises(ValueError, match="non-http"):
+            asyncio.run(backend.download_attachment(att))

@@ -17,8 +17,11 @@ from pydantic import Field
 from ..backend import BackendBase
 from ..base import (
     SYMPHONY_CAPABILITIES,
+    Attachment,
+    AttachmentType,
     BackendCapabilities,
     Channel,
+    Image,
     Message,
     MessageType,
     Presence,
@@ -80,6 +83,49 @@ PRESENCE_MAP = {
     "off_work": "OFF_WORK",
     "offline": "OFF_WORK",
 }
+
+
+def _symphony_attachments(attachments_info: Any, stream_id: str, message_id: str) -> List[Attachment]:
+    """Convert Symphony ``V4AttachmentInfo`` objects into chatom attachments.
+
+    Symphony has no public download URL; bytes are fetched via the BDK
+    ``get_attachment(stream_id, message_id, attachment_id)`` call.  The
+    stream and message IDs needed for that call are stored in the
+    attachment ``metadata`` so :meth:`SymphonyBackend.download_attachment`
+    can resolve them.
+    """
+    import mimetypes
+
+    result: List[Attachment] = []
+    for info in attachments_info or []:
+        att_id = getattr(info, "id", "") or ""
+        name = getattr(info, "name", "") or "file"
+        size = getattr(info, "size", None)
+        content_type = mimetypes.guess_type(name)[0] or ""
+        att_type = Attachment.from_content_type(content_type) if content_type else AttachmentType.FILE
+        meta = {"stream_id": stream_id, "message_id": message_id}
+        if att_type == AttachmentType.IMAGE or content_type.startswith("image/"):
+            result.append(
+                Image(
+                    id=att_id,
+                    filename=name,
+                    content_type=content_type,
+                    size=size,
+                    metadata=meta,
+                )
+            )
+        else:
+            result.append(
+                Attachment(
+                    id=att_id,
+                    filename=name,
+                    content_type=content_type,
+                    size=size,
+                    attachment_type=att_type,
+                    metadata=meta,
+                )
+            )
+    return result
 
 
 class SymphonyBackend(BackendBase):
@@ -621,6 +667,7 @@ class SymphonyBackend(BackendBase):
                     created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
                     author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
                     channel=SymphonyChannel(id=channel_id),
+                    attachments=_symphony_attachments(getattr(msg, "attachments", None), channel_id, msg.message_id),
                 )
             )
         return messages
@@ -810,6 +857,49 @@ class SymphonyBackend(BackendBase):
         finally:
             with contextlib.suppress(OSError):
                 os.unlink(tmp_path)
+
+    async def download_attachment(
+        self,
+        attachment: Any,
+        *,
+        message: Optional[Message] = None,
+    ) -> bytes:
+        """Download a Symphony attachment's bytes.
+
+        Symphony attachments have no public URL; they are fetched with the
+        BDK ``get_attachment(stream_id, message_id, attachment_id)`` call,
+        which returns the content base64-encoded.  The required stream and
+        message IDs come from the attachment ``metadata`` (populated when
+        the message was received) or from the supplied ``message``.
+        """
+        import base64
+
+        if attachment.data is not None:
+            return attachment.data
+
+        if self._bdk is None:
+            raise RuntimeError("Symphony not connected")
+
+        meta = getattr(attachment, "metadata", {}) or {}
+        stream_id = meta.get("stream_id") or (message.channel_id if message else "")
+        message_id = meta.get("message_id") or (message.id if message else "")
+        attachment_id = getattr(attachment, "id", "") or ""
+
+        if not (stream_id and message_id and attachment_id):
+            raise NotImplementedError(
+                "Cannot download Symphony attachment: stream_id, message_id and attachment_id are required "
+                "(pass the owning message= or use an attachment received from this backend)."
+            )
+
+        message_service = self._bdk.messages()
+        encoded = await message_service.get_attachment(
+            stream_id=stream_id,
+            message_id=message_id,
+            attachment_id=attachment_id,
+        )
+        if isinstance(encoded, (bytes, bytearray)):
+            return base64.b64decode(encoded)
+        return base64.b64decode(str(encoded))
 
     async def edit_message(
         self,
@@ -1476,6 +1566,7 @@ class SymphonyBackend(BackendBase):
                     created_at=msg_timestamp,
                     data=msg.data,
                     mentions=list(mention_users),  # List of SymphonyUser objects
+                    attachments=_symphony_attachments(getattr(msg, "attachments", None), stream_id, msg.message_id),
                 )
 
                 # If we didn't find the author via lookup, use info from initiator

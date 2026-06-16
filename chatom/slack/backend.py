@@ -11,8 +11,11 @@ from pydantic import Field
 from ..backend import BackendBase
 from ..base import (
     SLACK_CAPABILITIES,
+    Attachment,
+    AttachmentType,
     BackendCapabilities,
     Channel,
+    Image,
     Message,
     MessageType,
     Organization,
@@ -31,6 +34,51 @@ from .user import SlackUser
 __all__ = ("SlackBackend",)
 
 _log = getLogger(__name__)
+
+
+def _slack_attachments(files: List[dict]) -> List[Attachment]:
+    """Convert Slack file objects into chatom attachments.
+
+    Slack file URLs (``url_private``) require an ``Authorization: Bearer``
+    header with the bot token, so :meth:`SlackBackend.download_attachment`
+    overrides the base download to add it.
+    """
+    attachments: List[Attachment] = []
+    for f in files or []:
+        if not isinstance(f, dict):
+            continue
+        mimetype = f.get("mimetype", "") or ""
+        # Prefer the direct-download URL when present.
+        url = f.get("url_private_download") or f.get("url_private") or f.get("permalink") or ""
+        att_type = Attachment.from_content_type(mimetype) if mimetype else AttachmentType.FILE
+        file_id = f.get("id", "") or ""
+        filename = f.get("name", "") or f.get("title", "") or "file"
+        size = f.get("size")
+        if att_type == AttachmentType.IMAGE or mimetype.startswith("image/"):
+            attachments.append(
+                Image(
+                    id=file_id,
+                    filename=filename,
+                    url=url,
+                    content_type=mimetype,
+                    size=size,
+                    width=f.get("original_w"),
+                    height=f.get("original_h"),
+                    thumbnail_url=f.get("thumb_360", "") or "",
+                )
+            )
+        else:
+            attachments.append(
+                Attachment(
+                    id=file_id,
+                    filename=filename,
+                    url=url,
+                    content_type=mimetype,
+                    size=size,
+                    attachment_type=att_type,
+                )
+            )
+    return attachments
 
 
 class SlackBackend(BackendBase):
@@ -395,6 +443,8 @@ class SlackBackend(BackendBase):
             blocks=msg_data.get("blocks", []),
             thread=thread,
             reply_count=msg_data.get("reply_count", 0),
+            files=msg_data.get("files", []) or [],
+            attachments=_slack_attachments(msg_data.get("files", []) or []),
         )
 
     async def fetch_messages(
@@ -613,6 +663,37 @@ class SlackBackend(BackendBase):
             channel=SlackChannel(id=channel_id),
             backend="slack",
         )
+
+    async def download_attachment(
+        self,
+        attachment: Any,
+        *,
+        message: Optional[Message] = None,
+    ) -> bytes:
+        """Download a Slack attachment's bytes.
+
+        Slack ``url_private`` links require the bot token as a bearer
+        token; this override supplies it.  Falls back to ``files.info`` to
+        resolve the private URL when the attachment only carries a file ID.
+        """
+        if attachment.data is not None:
+            return attachment.data
+
+        token = self.config.bot_token_str
+        headers = {"Authorization": f"Bearer {token}"} if token else None
+
+        url = (getattr(attachment, "url", "") or "").strip()
+        if not url and getattr(attachment, "id", ""):
+            self._ensure_connected()
+            info = await self._async_client.files_info(file=attachment.id)
+            if info.get("ok"):
+                f = info.get("file", {})
+                url = f.get("url_private_download") or f.get("url_private") or ""
+
+        if url:
+            return await self._download_url(url, headers=headers)
+
+        return await super().download_attachment(attachment, message=message)
 
     async def edit_message(
         self,
@@ -1208,6 +1289,8 @@ class SlackBackend(BackendBase):
                             thread=Thread(id=thread_ts) if thread_ts else None,
                             created_at=datetime.fromtimestamp(float(ts)) if ts else datetime.now(),
                             mentions=list(mention_users),  # Resolved mention users
+                            files=event.get("files", []) or [],
+                            attachments=_slack_attachments(event.get("files", []) or []),
                             metadata={
                                 "is_im": is_im,
                                 "author_name": author_name,

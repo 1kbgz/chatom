@@ -152,6 +152,72 @@ class AddReactionParams(PydanticBaseModel):
     channel: ChannelRef = Field(description="Channel containing the message.")
 
 
+class ListAttachmentsParams(PydanticBaseModel):
+    """Parameters for listing attachments in a channel's recent history."""
+
+    channel: ChannelRef = Field(description="Channel to scan for attachments. Provide at least channel ID or name.")
+    limit: int = Field(default=20, description="Number of recent messages to scan (1-100).", ge=1, le=100)
+
+
+class DownloadAttachmentParams(PydanticBaseModel):
+    """Parameters for downloading an attachment's content."""
+
+    attachment_id: str = Field(description="ID of the attachment to download (from list_recent_attachments).")
+    channel: ChannelRef = Field(description="Channel the attachment was posted in.")
+    message_id: Optional[str] = Field(
+        default=None,
+        description="ID of the message the attachment belongs to. Required by some backends (e.g. Symphony).",
+    )
+    max_bytes: int = Field(
+        default=5_000_000,
+        description="Maximum number of bytes to return (1-20MB). Larger files are rejected.",
+        ge=1,
+        le=20_000_000,
+    )
+
+
+class UploadFileParams(PydanticBaseModel):
+    """Parameters for uploading a file/image to a channel."""
+
+    channel: ChannelRef = Field(description="Channel to upload the file to.")
+    filename: str = Field(description="Name of the file, including extension (e.g. 'chart.png').")
+    data_base64: str = Field(description="The file content, base64-encoded.")
+    content_type: str = Field(default="", description="MIME type of the file (e.g. 'image/png'). Inferred from filename if omitted.")
+    content: str = Field(default="", description="Optional message text to accompany the file.")
+
+
+class GetBotInfoParams(PydanticBaseModel):
+    """Parameters for retrieving the bot's own profile (none required)."""
+
+
+class GetPresenceParams(PydanticBaseModel):
+    """Parameters for reading a user's presence."""
+
+    user: UserRef = Field(description="User to read presence for. Provide at least one identifier.")
+
+
+class RemoveReactionParams(PydanticBaseModel):
+    """Parameters for removing a reaction."""
+
+    message_id: str = Field(description="ID of the message to remove a reaction from.")
+    emoji: str = Field(description="Emoji name or unicode character to remove.")
+    channel: ChannelRef = Field(description="Channel containing the message.")
+
+
+class DeleteMessageParams(PydanticBaseModel):
+    """Parameters for deleting a message."""
+
+    message_id: str = Field(description="ID of the message to delete.")
+    channel: ChannelRef = Field(description="Channel containing the message.")
+
+
+class SetPresenceParams(PydanticBaseModel):
+    """Parameters for setting the bot's own presence."""
+
+    status: str = Field(description="Presence status (e.g. 'available', 'away', 'busy').")
+    status_text: str = Field(default="", description="Optional custom status text.")
+
+
 _TOOL_DESCRIPTORS: list[dict[str, Any]] = [
     {
         "name": "read_channel_history",
@@ -203,6 +269,24 @@ _TOOL_DESCRIPTORS: list[dict[str, Any]] = [
         "write": False,
     },
     {
+        "name": "get_bot_info",
+        "description": (
+            "Get the bot's own user profile (id, name, handle). Use this for "
+            "self-identification — e.g. to tell whether a message was written by, "
+            "or mentions, the bot itself."
+        ),
+        "params_model": GetBotInfoParams,
+        "capability": None,
+        "write": False,
+    },
+    {
+        "name": "get_presence",
+        "description": "Get a user's presence/status (online, away, busy, etc.).",
+        "params_model": GetPresenceParams,
+        "capability": Capability.PRESENCE,
+        "write": False,
+    },
+    {
         "name": "send_message",
         "description": ("Send a new message to a chat channel. The content should be plain text; formatting is handled automatically."),
         "params_model": SendMessageParams,
@@ -221,6 +305,60 @@ _TOOL_DESCRIPTORS: list[dict[str, Any]] = [
         "description": ("Add an emoji reaction to a message. Use this to acknowledge messages (e.g. '👀' for seen, '✅' for done)."),
         "params_model": AddReactionParams,
         "capability": Capability.EMOJI_REACTIONS,
+        "write": True,
+    },
+    {
+        "name": "remove_reaction",
+        "description": "Remove an emoji reaction that was previously added to a message.",
+        "params_model": RemoveReactionParams,
+        "capability": Capability.EMOJI_REACTIONS,
+        "write": True,
+    },
+    {
+        "name": "delete_message",
+        "description": "Delete a message. This is irreversible; use with care.",
+        "params_model": DeleteMessageParams,
+        "capability": Capability.DELETING,
+        "write": True,
+    },
+    {
+        "name": "set_presence",
+        "description": "Set the bot's own presence/status (e.g. 'available', 'away').",
+        "params_model": SetPresenceParams,
+        "capability": Capability.PRESENCE,
+        "write": True,
+    },
+    {
+        "name": "list_recent_attachments",
+        "description": (
+            "List files, images, and documents attached to recent messages in a channel. "
+            "Returns each attachment's id, filename, content_type, size, and the message_id "
+            "it belongs to. Use this to discover attachments before downloading them."
+        ),
+        "params_model": ListAttachmentsParams,
+        "capability": Capability.FILES,
+        "write": False,
+    },
+    {
+        "name": "download_attachment",
+        "description": (
+            "Download the content of an attachment (image or document) received in chat. "
+            "Returns the bytes base64-encoded along with the filename and content_type. "
+            "Use list_recent_attachments first to find the attachment_id."
+        ),
+        "params_model": DownloadAttachmentParams,
+        "capability": Capability.FILES,
+        "write": False,
+    },
+    {
+        "name": "upload_file",
+        "description": (
+            "Upload a file, image, or document to a channel. Provide the content as "
+            "base64-encoded data plus a filename. Use this to share generated images, "
+            "charts, reports, or documents with the chat."
+        ),
+        "params_model": UploadFileParams,
+        "capability": Capability.FILES,
         "write": True,
     },
 ]
@@ -264,11 +402,13 @@ class BackendToolset(AbstractToolset[Any]):
         read_only: bool = False,
         max_retries: int = 1,
         access_policy: Optional[AccessPolicy] = None,
+        disabled_tools: Optional[set[str]] = None,
     ) -> None:
         self._backend = backend
         self._read_only = read_only
         self._max_retries = max_retries
         self._policy = access_policy or AccessPolicy()
+        self._disabled_tools = disabled_tools or set()
         # Cache for membership checks to avoid repeated API calls
         self._membership_cache: dict[str, bool] = {}
         # Cache for channel resolution to avoid repeated name→ID lookups
@@ -322,6 +462,8 @@ class BackendToolset(AbstractToolset[Any]):
 
     def _should_include(self, desc: dict[str, Any]) -> bool:
         """Decide whether a tool descriptor should be exposed."""
+        if desc["name"] in self._disabled_tools:
+            return False
         if desc["write"] and self._read_only:
             return False
         cap = desc.get("capability")
@@ -593,6 +735,13 @@ class BackendToolset(AbstractToolset[Any]):
         await self._check_channel_access(channel)
         return await self._backend.fetch_channel_members(channel)
 
+    async def _call_get_bot_info(self, args: dict[str, Any]) -> Any:
+        return await self._backend.get_bot_info()
+
+    async def _call_get_presence(self, args: dict[str, Any]) -> Any:
+        user = self._user(args)
+        return await self._backend.get_presence(user.id or user)
+
     async def _call_send_message(self, args: dict[str, Any]) -> Any:
         channel = self._channel(args)
         await self._check_channel_access(channel)
@@ -619,3 +768,140 @@ class BackendToolset(AbstractToolset[Any]):
             channel=channel,
         )
         return {"ok": True}
+
+    async def _call_remove_reaction(self, args: dict[str, Any]) -> Any:
+        channel = self._channel(args)
+        await self._check_channel_access(channel)
+        await self._backend.remove_reaction(
+            message=args["message_id"],
+            emoji=args["emoji"],
+            channel=channel,
+        )
+        return {"ok": True}
+
+    async def _call_delete_message(self, args: dict[str, Any]) -> Any:
+        channel = self._channel(args)
+        await self._check_channel_access(channel)
+        await self._backend.delete_message(
+            message=args["message_id"],
+            channel=channel,
+        )
+        return {"ok": True}
+
+    async def _call_set_presence(self, args: dict[str, Any]) -> Any:
+        await self._backend.set_presence(
+            args["status"],
+            args.get("status_text") or None,
+        )
+        return {"ok": True}
+
+    @staticmethod
+    def _attachment_summary(att: Any, message_id: str = "") -> dict[str, Any]:
+        """Build a compact, JSON-safe summary of an attachment."""
+        return {
+            "attachment_id": getattr(att, "id", "") or "",
+            "filename": getattr(att, "filename", "") or "",
+            "content_type": getattr(att, "content_type", "") or "",
+            "size": getattr(att, "size", None),
+            "attachment_type": getattr(getattr(att, "attachment_type", None), "value", "") or "",
+            "message_id": message_id,
+        }
+
+    async def _call_list_recent_attachments(self, args: dict[str, Any]) -> Any:
+        channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
+        await self._check_channel_access(channel)
+        limit = min(args.get("limit", 20), self._policy.max_messages_per_request)
+        messages = await self._backend.fetch_messages(channel=channel, limit=limit)
+        if isinstance(messages, list):
+            messages = self._filter_messages_by_time(messages)
+        result: list[dict[str, Any]] = []
+        for msg in messages or []:
+            msg_id = getattr(msg, "id", "") or ""
+            for att in getattr(msg, "attachments", None) or []:
+                result.append(self._attachment_summary(att, msg_id))
+        return result
+
+    async def _call_download_attachment(self, args: dict[str, Any]) -> Any:
+        import base64
+
+        channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
+        await self._check_channel_access(channel)
+
+        attachment_id = args["attachment_id"]
+        message_id = args.get("message_id") or ""
+        max_bytes = args.get("max_bytes", 5_000_000)
+
+        # Locate the attachment within recent history so we get its full
+        # metadata (url / platform IDs) rather than trusting model-supplied
+        # fields. This keeps downloads scoped to the accessible channel.
+        messages = await self._backend.fetch_messages(channel=channel, limit=self._policy.max_messages_per_request)
+        found_att = None
+        found_msg = None
+        for msg in messages or []:
+            if message_id and (getattr(msg, "id", "") or "") != message_id:
+                continue
+            for att in getattr(msg, "attachments", None) or []:
+                if (getattr(att, "id", "") or "") == attachment_id:
+                    found_att = att
+                    found_msg = msg
+                    break
+            if found_att is not None:
+                break
+
+        if found_att is None:
+            return {
+                "error": "not_found",
+                "message": f"No attachment with id '{attachment_id}' found in the recent history of this channel.",
+            }
+
+        if getattr(found_att, "size", None) and found_att.size > max_bytes:
+            return {
+                "error": "too_large",
+                "message": f"Attachment is {found_att.size} bytes which exceeds the {max_bytes}-byte limit.",
+                "size": found_att.size,
+            }
+
+        data = await self._backend.download_attachment(found_att, message=found_msg)
+        if len(data) > max_bytes:
+            return {
+                "error": "too_large",
+                "message": f"Attachment is {len(data)} bytes which exceeds the {max_bytes}-byte limit.",
+                "size": len(data),
+            }
+
+        return {
+            "filename": getattr(found_att, "filename", "") or "",
+            "content_type": getattr(found_att, "content_type", "") or "",
+            "size": len(data),
+            "data_base64": base64.b64encode(data).decode("ascii"),
+        }
+
+    async def _call_upload_file(self, args: dict[str, Any]) -> Any:
+        import base64
+        import binascii
+
+        channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
+        await self._check_channel_access(channel)
+
+        try:
+            data = base64.b64decode(args["data_base64"], validate=True)
+        except (binascii.Error, ValueError) as e:
+            return {"error": "invalid_data", "message": f"data_base64 is not valid base64: {e}"}
+
+        content_type = args.get("content_type", "")
+        if not content_type:
+            import mimetypes
+
+            content_type = mimetypes.guess_type(args["filename"])[0] or ""
+
+        sent = await self._backend.upload_file(
+            channel=channel,
+            data=data,
+            filename=args["filename"],
+            content_type=content_type,
+            content=args.get("content", ""),
+        )
+        return {"ok": True, "message_id": getattr(sent, "id", "") or ""}

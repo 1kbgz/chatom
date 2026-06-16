@@ -5,7 +5,7 @@ This module provides the Telegram-specific Message class.
 
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
-from chatom.base import Field, Message, User
+from chatom.base import Attachment, AttachmentType, Field, Image, Message, User
 from chatom.telegram.channel import TelegramChannel
 from chatom.telegram.user import TelegramUser
 
@@ -13,6 +13,85 @@ if TYPE_CHECKING:
     from chatom.format import FormattedMessage
 
 __all__ = ("TelegramMessage",)
+
+
+def _telegram_attachments(msg: Any) -> List[Attachment]:
+    """Extract chatom attachments from a python-telegram-bot Message.
+
+    Telegram does not expose download URLs directly — each media object
+    carries a ``file_id`` that must be resolved via ``getFile``.  The
+    ``file_id`` is stored as the attachment ``id`` so
+    :meth:`TelegramBackend.download_attachment` can fetch the bytes.
+    """
+    attachments: List[Attachment] = []
+
+    photos = getattr(msg, "photo", None)
+    if photos:
+        largest = photos[-1]  # Telegram orders photo sizes smallest-to-largest
+        attachments.append(
+            Image(
+                id=largest.file_id,
+                filename="photo.jpg",
+                content_type="image/jpeg",
+                size=getattr(largest, "file_size", None),
+                width=getattr(largest, "width", None),
+                height=getattr(largest, "height", None),
+            )
+        )
+
+    document = getattr(msg, "document", None)
+    if document is not None:
+        content_type = getattr(document, "mime_type", "") or ""
+        attachments.append(
+            Attachment(
+                id=document.file_id,
+                filename=getattr(document, "file_name", "") or "file",
+                content_type=content_type,
+                size=getattr(document, "file_size", None),
+                attachment_type=(Attachment.from_content_type(content_type) if content_type else AttachmentType.FILE),
+            )
+        )
+
+    video = getattr(msg, "video", None)
+    if video is not None:
+        content_type = getattr(video, "mime_type", "") or "video/mp4"
+        attachments.append(
+            Attachment(
+                id=video.file_id,
+                filename=getattr(video, "file_name", "") or "video.mp4",
+                content_type=content_type,
+                size=getattr(video, "file_size", None),
+                attachment_type=AttachmentType.VIDEO,
+            )
+        )
+
+    audio = getattr(msg, "audio", None)
+    if audio is not None:
+        content_type = getattr(audio, "mime_type", "") or "audio/mpeg"
+        attachments.append(
+            Attachment(
+                id=audio.file_id,
+                filename=getattr(audio, "file_name", "") or "audio",
+                content_type=content_type,
+                size=getattr(audio, "file_size", None),
+                attachment_type=AttachmentType.AUDIO,
+            )
+        )
+
+    voice = getattr(msg, "voice", None)
+    if voice is not None:
+        content_type = getattr(voice, "mime_type", "") or "audio/ogg"
+        attachments.append(
+            Attachment(
+                id=voice.file_id,
+                filename="voice.ogg",
+                content_type=content_type,
+                size=getattr(voice, "file_size", None),
+                attachment_type=AttachmentType.AUDIO,
+            )
+        )
+
+    return attachments
 
 
 class TelegramMessage(Message):
@@ -226,6 +305,7 @@ class TelegramMessage(Message):
             entities=[{"type": e.type, "offset": e.offset, "length": e.length} for e in (msg.entities or [])],
             has_protected_content=getattr(msg, "has_protected_content", False) or False,
             mentions=mention_users,
+            attachments=_telegram_attachments(msg),
             backend="telegram",
         )
 

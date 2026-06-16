@@ -40,7 +40,14 @@ def main() -> None:
     if not backends:
         raise SystemExit("error: no backends configured — use +gateway=<name>")
 
-    mcp = build_mcp_server(backends, read_only=cfg.server.read_only)
+    enabled = cfg.server.get("enabled_tools") or None
+    disabled = cfg.server.get("disabled_tools") or None
+    mcp = build_mcp_server(
+        backends,
+        read_only=cfg.server.read_only,
+        enabled_tools=set(enabled) if enabled else None,
+        disabled_tools=set(disabled) if disabled else None,
+    )
 
     transport_value: str = cfg.server.transport
     if transport_value not in ("stdio", "http", "sse", "streamable-http"):

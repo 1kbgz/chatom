@@ -15,9 +15,12 @@ from pydantic import Field
 from ..backend import BackendBase
 from ..base import (
     DISCORD_CAPABILITIES,
+    Attachment,
+    AttachmentType,
     Avatar,
     BackendCapabilities,
     Channel,
+    Image,
     Message,
     MessageType,
     Organization,
@@ -37,6 +40,45 @@ from .user import DiscordUser
 __all__ = ("DiscordBackend",)
 
 _log = getLogger(__name__)
+
+
+def _discord_attachments(msg: Any) -> List[Attachment]:
+    """Extract chatom attachments from a discord.py Message.
+
+    Discord attachment URLs are publicly downloadable (signed CDN links),
+    so the base :meth:`BackendBase.download_attachment` works without an
+    override.
+    """
+    attachments: List[Attachment] = []
+    for att in getattr(msg, "attachments", None) or []:
+        content_type = getattr(att, "content_type", "") or ""
+        att_type = Attachment.from_content_type(content_type) if content_type else AttachmentType.FILE
+        if att_type == AttachmentType.IMAGE or content_type.startswith("image/"):
+            attachments.append(
+                Image(
+                    id=str(att.id),
+                    filename=getattr(att, "filename", "") or "",
+                    url=getattr(att, "url", "") or "",
+                    content_type=content_type,
+                    size=getattr(att, "size", None),
+                    width=getattr(att, "width", None),
+                    height=getattr(att, "height", None),
+                    alt_text=getattr(att, "description", "") or "",
+                )
+            )
+        else:
+            attachments.append(
+                Attachment(
+                    id=str(att.id),
+                    filename=getattr(att, "filename", "") or "",
+                    url=getattr(att, "url", "") or "",
+                    content_type=content_type,
+                    size=getattr(att, "size", None),
+                    attachment_type=att_type,
+                )
+            )
+    return attachments
+
 
 # Try to import discord.py
 try:
@@ -421,6 +463,7 @@ class DiscordBackend(BackendBase):
                     channel=DiscordChannel(id=str(msg.channel.id)),
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
                     is_edited=msg.edited_at is not None,
+                    attachments=_discord_attachments(msg),
                 )
                 messages.append(message)
 
@@ -489,6 +532,7 @@ class DiscordBackend(BackendBase):
                     channel=DiscordChannel(id=str(msg.channel.id)),
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
                     is_edited=msg.edited_at is not None,
+                    attachments=_discord_attachments(msg),
                 )
                 messages.append(message)
 
@@ -1446,6 +1490,7 @@ class DiscordBackend(BackendBase):
                     mentions=mention_users,
                     mention_everyone=msg.mention_everyone,
                     mention_roles=[str(r.id) for r in msg.role_mentions] if msg.role_mentions else [],
+                    attachments=_discord_attachments(msg),
                 )
 
                 await message_queue.put(discord_msg)

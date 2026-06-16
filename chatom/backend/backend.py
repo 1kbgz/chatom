@@ -24,6 +24,7 @@ from typing import (
 from pydantic import Field
 
 from ..base import (
+    Attachment,
     BackendCapabilities,
     BaseModel,
     Channel,
@@ -1020,6 +1021,80 @@ class BackendBase(BaseModel):
             The sent message.
         """
         raise NotImplementedError("This backend does not support file uploads")
+
+    async def download_attachment(
+        self,
+        attachment: Attachment,
+        *,
+        message: Optional[Message] = None,
+    ) -> bytes:
+        """Download the binary content of an attachment.
+
+        Returns the raw bytes of a file/image/document that was received in
+        chat.  The default implementation returns ``attachment.data`` if it
+        is already populated, otherwise performs an HTTP ``GET`` against
+        ``attachment.url``.
+
+        Backends override this to add platform authentication (Slack
+        ``url_private`` bearer token, Telegram ``getFile``, Symphony
+        attachment API) where a plain public download is not possible.
+
+        Args:
+            attachment: The attachment to download. Must carry either
+                in-memory ``data``, a downloadable ``url``, or a platform
+                file ``id`` (for backends that resolve by ID).
+            message: The message the attachment belongs to. Some backends
+                (e.g. Symphony) require the message and channel context to
+                resolve the download.
+
+        Returns:
+            The raw file bytes.
+
+        Raises:
+            NotImplementedError: If the attachment cannot be resolved to a
+                downloadable source.
+
+        Example:
+            >>> for att in message.attachments:
+            ...     data = await backend.download_attachment(att, message=message)
+            ...     Path(att.filename).write_bytes(data)
+        """
+        if attachment.data is not None:
+            return attachment.data
+        url = (attachment.url or "").strip()
+        if url:
+            return await self._download_url(url)
+        raise NotImplementedError(
+            f"{self.__class__.__name__} cannot download attachment {attachment.id or attachment.filename!r}: no data or url available"
+        )
+
+    async def _download_url(self, url: str, headers: Optional[dict] = None) -> bytes:
+        """Download bytes from an ``http(s)`` URL in a worker thread.
+
+        Only ``http`` and ``https`` schemes are allowed to avoid local-file
+        and other SSRF vectors (e.g. ``file://``).
+
+        Args:
+            url: The URL to download.
+            headers: Optional request headers (e.g. an auth bearer token).
+
+        Returns:
+            The downloaded bytes.
+        """
+        import urllib.request
+        from urllib.parse import urlparse
+
+        scheme = urlparse(url).scheme.lower()
+        if scheme not in ("http", "https"):
+            raise ValueError(f"Refusing to download non-http(s) URL: {url!r}")
+
+        def _get() -> bytes:
+            req = urllib.request.Request(url, headers=headers or {})
+            with urllib.request.urlopen(req, timeout=30) as resp:  # noqa: S310 - scheme validated above
+                return resp.read()
+
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(None, _get)
 
     async def delete_message(
         self,

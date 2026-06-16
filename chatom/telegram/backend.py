@@ -390,6 +390,30 @@ class TelegramBackend(BackendBase):
 
         return TelegramMessage.from_telegram_message(msg)
 
+    async def download_attachment(
+        self,
+        attachment: Any,
+        *,
+        message: Optional[Message] = None,
+    ) -> bytes:
+        """Download an attachment's bytes from Telegram.
+
+        Telegram media is referenced by ``file_id`` (stored as the
+        attachment ``id``), which is resolved to a temporary download via
+        ``getFile``.
+        """
+        if attachment.data is not None:
+            return attachment.data
+
+        file_id = (getattr(attachment, "id", "") or "").strip()
+        if file_id:
+            self._ensure_connected()
+            tg_file = await self._bot.get_file(file_id)
+            data = await tg_file.download_as_bytearray()
+            return bytes(data)
+
+        return await super().download_attachment(attachment, message=message)
+
     async def edit_message(
         self,
         message: Union[str, Message],
