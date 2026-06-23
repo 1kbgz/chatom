@@ -23,6 +23,12 @@ class AccessDeniedError(Exception):
     pass
 
 
+class ToolBudgetExceededError(Exception):
+    """Raised when a tool call exceeds the per-run or per-tool call budget."""
+
+    pass
+
+
 @dataclass
 class AccessPolicy:
     """Configures what the agent is allowed to access on behalf of a user.
@@ -403,12 +409,21 @@ class BackendToolset(AbstractToolset[Any]):
         max_retries: int = 1,
         access_policy: Optional[AccessPolicy] = None,
         disabled_tools: Optional[set[str]] = None,
+        max_tool_calls: int = 0,
+        per_tool_limits: Optional[dict[str, int]] = None,
     ) -> None:
         self._backend = backend
         self._read_only = read_only
         self._max_retries = max_retries
         self._policy = access_policy or AccessPolicy()
         self._disabled_tools = disabled_tools or set()
+        # Per-run tool call budget. 0 disables the total cap; per-tool limits
+        # may still apply. A single BackendToolset instance is expected to back
+        # exactly one agent run, so these counters scope naturally to a run.
+        self._max_tool_calls = max_tool_calls
+        self._per_tool_limits = dict(per_tool_limits) if per_tool_limits else {}
+        self._tool_calls_made = 0
+        self._per_tool_calls: dict[str, int] = {}
         # Cache for membership checks to avoid repeated API calls
         self._membership_cache: dict[str, bool] = {}
         # Cache for channel resolution to avoid repeated name→ID lookups
@@ -448,6 +463,18 @@ class BackendToolset(AbstractToolset[Any]):
         handler = getattr(self, f"_call_{name}", None)
         if handler is None:
             raise ValueError(f"Unknown tool: {name}")
+        # Enforce the per-run / per-tool budget before doing any work. Return
+        # the exhaustion as a tool result (not an exception) so the agent can
+        # wrap up gracefully using what it has already gathered.
+        try:
+            self._enforce_budget(name)
+        except ToolBudgetExceededError as e:
+            logger.warning("Tool budget exceeded for '%s': %s", name, e)
+            return {"error": "budget_exceeded", "message": str(e)}
+        # Count this admitted call (denied/failed calls still consume budget,
+        # so prompt injection cannot retry a blocked tool indefinitely).
+        self._tool_calls_made += 1
+        self._per_tool_calls[name] = self._per_tool_calls.get(name, 0) + 1
         # tool_args may be a validated Pydantic model — convert to dict
         if hasattr(tool_args, "model_dump"):
             tool_args = tool_args.model_dump()  # ty: ignore[call-non-callable]
@@ -459,6 +486,25 @@ class BackendToolset(AbstractToolset[Any]):
             logger.warning("Access denied for tool '%s': %s", name, e)
             return {"error": "access_denied", "message": str(e)}
         return _serialize_result(result)
+
+    def _enforce_budget(self, name: str) -> None:
+        """Raise ToolBudgetExceededError if this call would exceed a budget.
+
+        Two independent limits are checked: a total per-run cap
+        (``max_tool_calls``) and an optional per-tool cap from
+        ``per_tool_limits``.  Either set to a falsy value disables that
+        particular check.
+        """
+        if self._max_tool_calls and self._tool_calls_made >= self._max_tool_calls:
+            raise ToolBudgetExceededError(
+                f"Tool call budget exhausted ({self._max_tool_calls} calls used). "
+                "Stop calling tools and answer using the information already gathered."
+            )
+        per_tool_limit = self._per_tool_limits.get(name)
+        if per_tool_limit and self._per_tool_calls.get(name, 0) >= per_tool_limit:
+            raise ToolBudgetExceededError(
+                f"Per-tool budget for '{name}' exhausted ({per_tool_limit} calls used). Use the results already returned instead of calling it again."
+            )
 
     def _should_include(self, desc: dict[str, Any]) -> bool:
         """Decide whether a tool descriptor should be exposed."""

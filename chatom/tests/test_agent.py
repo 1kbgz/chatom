@@ -677,6 +677,82 @@ class TestBackendToolset:
             assert tool.tool_def.description, f"{name} missing description"
 
 
+class TestToolBudget:
+    """Tests for the per-run tool call budget."""
+
+    @pytest.mark.asyncio
+    async def test_unlimited_by_default(self, mock_backend: _MockBackend) -> None:
+        from unittest.mock import MagicMock
+
+        from chatom.agent.toolset import BackendToolset
+
+        toolset = BackendToolset(mock_backend)
+        ctx = MagicMock()
+        tool = MagicMock()
+        # Many calls succeed when no budget is configured.
+        for _ in range(10):
+            result = await toolset.call_tool("get_bot_info", {}, ctx, tool)
+            assert result.get("error") != "budget_exceeded"
+
+    @pytest.mark.asyncio
+    async def test_total_budget_enforced(self, mock_backend: _MockBackend) -> None:
+        from unittest.mock import MagicMock
+
+        from chatom.agent.toolset import BackendToolset
+
+        toolset = BackendToolset(mock_backend, max_tool_calls=3)
+        ctx = MagicMock()
+        tool = MagicMock()
+        # First 3 calls are admitted.
+        for _ in range(3):
+            result = await toolset.call_tool("get_bot_info", {}, ctx, tool)
+            assert result.get("error") != "budget_exceeded"
+        # 4th call is blocked with a controlled result, not an exception.
+        blocked = await toolset.call_tool("get_bot_info", {}, ctx, tool)
+        assert blocked["error"] == "budget_exceeded"
+        assert "budget" in blocked["message"].lower()
+
+    @pytest.mark.asyncio
+    async def test_per_tool_budget_enforced(self, mock_backend: _MockBackend) -> None:
+        from unittest.mock import MagicMock
+
+        from chatom.agent.toolset import BackendToolset
+
+        toolset = BackendToolset(
+            mock_backend,
+            per_tool_limits={"get_bot_info": 1},
+        )
+        ctx = MagicMock()
+        tool = MagicMock()
+        first = await toolset.call_tool("get_bot_info", {}, ctx, tool)
+        assert first.get("error") != "budget_exceeded"
+        second = await toolset.call_tool("get_bot_info", {}, ctx, tool)
+        assert second["error"] == "budget_exceeded"
+        assert "get_bot_info" in second["message"]
+        # A different tool is unaffected by the per-tool cap.
+        other = await toolset.call_tool("get_presence", {"user": {"id": "U1"}}, ctx, tool)
+        assert other.get("error") != "budget_exceeded"
+
+    @pytest.mark.asyncio
+    async def test_denied_call_still_consumes_budget(self, mock_backend: _MockBackend) -> None:
+        """A blocked tool cannot be retried indefinitely against the budget."""
+        from unittest.mock import MagicMock
+
+        from chatom.agent.toolset import AccessPolicy, BackendToolset
+
+        policy = AccessPolicy(blocked_channel_ids={"C1"})
+        toolset = BackendToolset(mock_backend, access_policy=policy, max_tool_calls=2)
+        ctx = MagicMock()
+        tool = MagicMock()
+        # Access is denied, but the attempt still counts toward the budget.
+        first = await toolset.call_tool("read_channel_history", {"channel": {"id": "C1"}}, ctx, tool)
+        assert first["error"] == "access_denied"
+        second = await toolset.call_tool("read_channel_history", {"channel": {"id": "C1"}}, ctx, tool)
+        assert second["error"] == "access_denied"
+        third = await toolset.call_tool("read_channel_history", {"channel": {"id": "C1"}}, ctx, tool)
+        assert third["error"] == "budget_exceeded"
+
+
 class TestChannelContext:
     """Tests for ChannelContext and build_channel_context."""
 
