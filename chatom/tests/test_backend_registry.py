@@ -450,6 +450,13 @@ class TestBuiltinBackends:
         assert SymphonyBackend.name == "symphony"
         assert SymphonyBackend.format == Format.SYMPHONY_MESSAGEML
 
+    def test_telegram_backend_exists(self):
+        """Test Telegram backend can be imported."""
+        from chatom.telegram import TelegramBackend
+
+        assert TelegramBackend.name == "telegram"
+        assert TelegramBackend.format == Format.TELEGRAM_HTML
+
     @pytest.mark.asyncio
     async def test_discord_backend_connect(self):
         """Test Discord backend connect/disconnect with mock."""

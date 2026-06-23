@@ -7,6 +7,7 @@ from chatom.format import (
     PLAINTEXT,
     SLACK_MARKDOWN,
     SYMPHONY_MESSAGEML,
+    TELEGRAM_HTML,
     Bold,
     ChannelMention,
     Code,
@@ -53,6 +54,7 @@ class TestFormat:
         assert Format.SLACK_MARKDOWN == "slack-markdown"
         assert Format.DISCORD_MARKDOWN == "discord-markdown"
         assert Format.HTML == "html"
+        assert Format.TELEGRAM_HTML == "telegram-html"
         assert Format.SYMPHONY_MESSAGEML == "symphony-messageml"
 
     def test_format_constants(self):
@@ -62,6 +64,7 @@ class TestFormat:
         assert SLACK_MARKDOWN == Format.SLACK_MARKDOWN
         assert DISCORD_MARKDOWN == Format.DISCORD_MARKDOWN
         assert HTML == Format.HTML
+        assert TELEGRAM_HTML == Format.TELEGRAM_HTML
         assert SYMPHONY_MESSAGEML == Format.SYMPHONY_MESSAGEML
 
 
@@ -159,6 +162,7 @@ class TestTextNodes:
         assert "Subtitle" in h2.render(Format.MARKDOWN)
         html = h1.render(Format.HTML)
         assert "Title" in html
+        assert h1.render(Format.TELEGRAM_HTML) == "<b>Title</b>\n"
 
     def test_list_nodes(self):
         """Test list node rendering."""
@@ -175,6 +179,7 @@ class TestTextNodes:
 
         html = ul.render(Format.HTML)
         assert "<ul>" in html or "Item 1" in html
+        assert ul.render(Format.TELEGRAM_HTML) == "- Item 1\n- Item 2"
 
         ol = OrderedList(
             items=[
@@ -304,6 +309,16 @@ class TestTable:
         assert "Name" in result
         assert "Alice" in result
         assert "</table>" in result
+
+    def test_table_render_telegram_html(self):
+        """Test table rendering to Telegram-safe HTML."""
+        data = [["Alice <A>", "25"]]
+        table = Table.from_data(data, headers=["Name", "Age"])
+
+        result = table.render(Format.TELEGRAM_HTML)
+        assert result.startswith("<pre>")
+        assert "&lt;A&gt;" in result
+        assert "<table>" not in result
 
     def test_table_render_plaintext(self):
         """Test table rendering to plaintext."""

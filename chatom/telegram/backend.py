@@ -16,6 +16,7 @@ from ..base import (
     Presence,
     User,
 )
+from ..format.telegram import sanitize_telegram_html
 from ..format.variant import Format
 from .channel import TelegramChannel
 from .config import TelegramConfig
@@ -27,6 +28,7 @@ from .user import TelegramUser
 __all__ = ("TelegramBackend",)
 
 _log = getLogger(__name__)
+
 
 # Telegram capabilities
 TELEGRAM_CAPABILITIES = BackendCapabilities(
@@ -58,7 +60,7 @@ class TelegramBackend(BackendBase):
     Attributes:
         name: The backend identifier ('telegram').
         display_name: Human-readable name.
-        format: Telegram uses HTML format for rich text.
+        format: Telegram uses the Bot API HTML subset for rich text.
         capabilities: Telegram-specific capabilities.
         config: Telegram-specific configuration.
 
@@ -71,7 +73,7 @@ class TelegramBackend(BackendBase):
 
     name: ClassVar[str] = "telegram"
     display_name: ClassVar[str] = "Telegram"
-    format: ClassVar[Format] = Format.HTML
+    format: ClassVar[Format] = Format.TELEGRAM_HTML
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = TelegramUser
@@ -327,11 +329,17 @@ class TelegramBackend(BackendBase):
 
         chat_id = await self._resolve_channel_id(channel)
 
-        # Build send kwargs
-        send_kwargs: dict[str, Any] = {"chat_id": int(chat_id), "text": content}
-
         # Default to HTML parse mode
-        send_kwargs["parse_mode"] = kwargs.pop("parse_mode", "HTML")
+        parse_mode = kwargs.pop("parse_mode", "HTML")
+        if parse_mode and str(parse_mode).upper() == "HTML":
+            content = sanitize_telegram_html(content)
+
+        # Build send kwargs
+        send_kwargs: dict[str, Any] = {
+            "chat_id": int(chat_id),
+            "text": content,
+            "parse_mode": parse_mode,
+        }
 
         # Handle thread (standardized) / thread_id (legacy) for forum topics
         thread_val = self._extract_thread_id(kwargs.pop("thread", None))

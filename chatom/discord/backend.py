@@ -20,6 +20,7 @@ from ..base import (
     Avatar,
     BackendCapabilities,
     Channel,
+    ChannelType,
     Image,
     Message,
     MessageType,
@@ -145,6 +146,43 @@ def _discord_channel_type_to_enum(channel_type: int) -> DiscordChannelType:
         16: DiscordChannelType.GUILD_MEDIA,
     }
     return type_map.get(channel_type, DiscordChannelType.GUILD_TEXT)
+
+
+def _discord_channel_type_to_base(channel_type: DiscordChannelType) -> ChannelType:
+    """Convert Discord channel type to generic ChannelType."""
+    if channel_type == DiscordChannelType.DM:
+        return ChannelType.DIRECT
+    if channel_type == DiscordChannelType.GROUP_DM:
+        return ChannelType.GROUP
+    if channel_type in (
+        DiscordChannelType.ANNOUNCEMENT_THREAD,
+        DiscordChannelType.PUBLIC_THREAD,
+        DiscordChannelType.PRIVATE_THREAD,
+    ):
+        return ChannelType.THREAD
+    if channel_type == DiscordChannelType.GUILD_FORUM:
+        return ChannelType.FORUM
+    if channel_type == DiscordChannelType.GUILD_ANNOUNCEMENT:
+        return ChannelType.ANNOUNCEMENT
+    if channel_type == DiscordChannelType.GUILD_TEXT:
+        return ChannelType.PUBLIC
+    return ChannelType.UNKNOWN
+
+
+def _discord_channel_from_api(channel: Any, guild: Any = None) -> DiscordChannel:
+    """Create a DiscordChannel from a discord.py channel object."""
+    discord_type = _discord_channel_type_to_enum(channel.type.value)
+    channel_guild = guild or getattr(channel, "guild", None)
+    return DiscordChannel(
+        id=str(channel.id),
+        name=getattr(channel, "name", "") or "DM",
+        channel_type=_discord_channel_type_to_base(discord_type),
+        guild=Organization(id=str(channel_guild.id)) if channel_guild else None,
+        position=getattr(channel, "position", 0),
+        nsfw=getattr(channel, "nsfw", False),
+        slowmode_delay=getattr(channel, "slowmode_delay", 0),
+        discord_type=discord_type,
+    )
 
 
 class DiscordBackend(BackendBase):
@@ -1480,17 +1518,25 @@ class DiscordBackend(BackendBase):
                 ]
 
                 # Create DiscordMessage
+                channel = _discord_channel_from_api(msg.channel, msg.guild)
+                is_dm = channel.discord_type in (DiscordChannelType.DM, DiscordChannelType.GROUP_DM)
                 discord_msg = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
                     created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
                     author=DiscordUser(id=str(msg.author.id)),
-                    channel=DiscordChannel(id=str(msg.channel.id)),
+                    channel=channel,
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
                     mentions=mention_users,
                     mention_everyone=msg.mention_everyone,
                     mention_roles=[str(r.id) for r in msg.role_mentions] if msg.role_mentions else [],
                     attachments=_discord_attachments(msg),
+                    metadata={
+                        "channel_id": channel.id,
+                        "channel_type": channel.channel_type.value,
+                        "discord_type": channel.discord_type.value,
+                        "is_dm": is_dm,
+                    },
                 )
 
                 await message_queue.put(discord_msg)

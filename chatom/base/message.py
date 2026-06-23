@@ -323,10 +323,15 @@ class Message(Identifiable):
         Returns:
             bool: True if from a DM channel.
         """
-        if self.channel:
-            return self.channel.is_dm
-        # Fall back to metadata
-        return bool(self.metadata.get("is_dm") or self.metadata.get("is_im"))
+        if self.channel and self.channel.is_dm:
+            return True
+
+        def is_truthy(value: Any) -> bool:
+            if isinstance(value, str):
+                return value.strip().lower() in {"1", "true", "yes"}
+            return bool(value)
+
+        return any(is_truthy(self.metadata.get(key)) for key in ("is_dm", "is_im"))
 
     @property
     def is_direct_message(self) -> bool:

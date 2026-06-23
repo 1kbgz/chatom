@@ -57,7 +57,7 @@ class FormattedAttachment(BaseModel):
             return f"[{self.filename}]({self.url})"
         elif fmt == Format.SLACK_MARKDOWN:
             return f"<{self.url}|{self.filename}>"
-        elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
             return f'<a href="{self.url}">{self.filename}</a>'
         else:
             return f"{self.filename}: {self.url}"
@@ -113,6 +113,8 @@ class FormattedImage(BaseModel):
             return f"![{alt}]({self.url})"
         elif fmt == Format.SLACK_MARKDOWN:
             # Slack auto-unfurls images from URLs
+            return self.url
+        elif fmt == Format.TELEGRAM_HTML:
             return self.url
         elif fmt in (Format.HTML,):
             attrs = [f'src="{self.url}"', f'alt="{alt}"']

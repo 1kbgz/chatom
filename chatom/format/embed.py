@@ -82,14 +82,14 @@ class FormattedEmbed(BaseModel):
                 title = f"[{title}]({self.embed.url})"
             elif fmt == Format.SLACK_MARKDOWN:
                 title = f"<{self.embed.url}|{title}>"
-            elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+            elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
                 title = f'<a href="{self.embed.url}">{title}</a>'
 
         if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN):
             return f"**{title}**"
         elif fmt == Format.SLACK_MARKDOWN:
             return f"*{title}*"
-        elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
             return f"<b>{title}</b>"
         return title
 
@@ -103,7 +103,7 @@ class FormattedEmbed(BaseModel):
                 name = f"[{name}]({author.url})"
             elif fmt == Format.SLACK_MARKDOWN:
                 name = f"<{author.url}|{name}>"
-            elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+            elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
                 name = f'<a href="{author.url}">{name}</a>'
         return name
 
@@ -114,7 +114,7 @@ class FormattedEmbed(BaseModel):
                 lines.append(f"**{field.name}**: {field.value}")
             elif fmt == Format.SLACK_MARKDOWN:
                 lines.append(f"*{field.name}*: {field.value}")
-            elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+            elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
                 lines.append(f"<b>{field.name}</b>: {field.value}")
             else:
                 lines.append(f"{field.name}: {field.value}")
@@ -130,6 +130,8 @@ class FormattedEmbed(BaseModel):
             return image.url
         elif fmt == Format.HTML:
             return f'<img src="{image.url}"/>'
+        elif fmt == Format.TELEGRAM_HTML:
+            return image.url
         elif fmt == Format.SYMPHONY_MESSAGEML:
             return f'<img src="{image.url}"/>'
         return image.url
@@ -138,7 +140,7 @@ class FormattedEmbed(BaseModel):
         footer = self.embed.footer
         if not footer:
             return ""
-        if fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+        if fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
             return f"<i>{footer.text}</i>"
         elif fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN):
             return f"*{footer.text}*"
@@ -293,4 +295,4 @@ class FormattedEmbed(BaseModel):
 
     def to_telegram_html(self) -> str:
         """Convert to Telegram-compatible HTML."""
-        return self.render(Format.HTML)
+        return self.render(Format.TELEGRAM_HTML)

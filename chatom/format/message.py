@@ -57,7 +57,7 @@ BACKEND_FORMAT_MAP = {
     "discord": Format.DISCORD_MARKDOWN,
     "slack": Format.SLACK_MARKDOWN,
     "symphony": Format.SYMPHONY_MESSAGEML,
-    "telegram": Format.HTML,
+    "telegram": Format.TELEGRAM_HTML,
 }
 
 
@@ -456,7 +456,7 @@ class FormattedMessage(BaseModel):
                 result.append(fe.to_slack_attachment())
             elif fmt == Format.SYMPHONY_MESSAGEML:
                 result.append({"messageml": fe.to_symphony_messageml()})
-            elif fmt == Format.HTML:
+            elif fmt in (Format.HTML, Format.TELEGRAM_HTML):
                 result.append({"html": fe.to_telegram_html()})
         return result
 
@@ -675,7 +675,7 @@ def format_message(
 
     text = content
 
-    if fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML) and escape_html:
+    if fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML) and escape_html:
         text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
     if fmt == Format.SYMPHONY_MESSAGEML and escape_symphony:

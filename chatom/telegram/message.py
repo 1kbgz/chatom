@@ -185,7 +185,7 @@ class TelegramMessage(Message):
         """
         from chatom.format import Format
 
-        content = formatted.render(Format.HTML)
+        content = formatted.render(Format.TELEGRAM_HTML)
 
         return cls(
             content=content,

@@ -14,6 +14,7 @@ __all__ = (
     "SLACK_MARKDOWN",
     "DISCORD_MARKDOWN",
     "HTML",
+    "TELEGRAM_HTML",
     "SYMPHONY_MESSAGEML",
 )
 
@@ -23,6 +24,7 @@ MARKDOWN = "markdown"
 SLACK_MARKDOWN = "slack-markdown"
 DISCORD_MARKDOWN = "discord-markdown"
 HTML = "html"
+TELEGRAM_HTML = "telegram-html"
 SYMPHONY_MESSAGEML = "symphony-messageml"
 # Alias for backwards compatibility
 SYMPHONY_HTML = SYMPHONY_MESSAGEML
@@ -46,6 +48,9 @@ class Format(str, Enum):
     HTML = "html"
     """Standard HTML."""
 
+    TELEGRAM_HTML = "telegram-html"
+    """Telegram Bot API HTML subset."""
+
     SYMPHONY_MESSAGEML = "symphony-messageml"
     """Symphony's MessageML format (XML-based)."""
 
@@ -57,6 +62,7 @@ FORMAT = Union[
     Literal["slack-markdown"],
     Literal["discord-markdown"],
     Literal["html"],
+    Literal["telegram-html"],
     Literal["symphony-messageml"],
     Format,
     str,

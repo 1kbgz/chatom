@@ -115,6 +115,20 @@ class TestMessageDirectMessage:
         assert message.is_direct_message is False
         assert message.is_dm is False
 
+    def test_is_direct_message_from_string_metadata(self):
+        """Test metadata DM flags parse string booleans."""
+        message = Message(id="M001", content="Hi", metadata={"is_dm": "true"})
+
+        assert message.is_direct_message is True
+        assert message.is_dm is True
+
+    def test_is_direct_message_false_string_metadata(self):
+        """Test string false does not count as a DM flag."""
+        message = Message(id="M001", content="Hi", metadata={"is_dm": "false"})
+
+        assert message.is_direct_message is False
+        assert message.is_dm is False
+
 
 class TestMessageInThread:
     """Tests for Message.is_in_thread()."""

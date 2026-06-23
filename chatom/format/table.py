@@ -4,6 +4,7 @@ This module provides table representation that can be rendered
 to different output formats.
 """
 
+from html import escape
 from typing import Any, List, Optional
 
 from pydantic import Field
@@ -160,6 +161,8 @@ class Table(BaseModel):
             return self._render_markdown()
         elif fmt == Format.SLACK_MARKDOWN:
             return self._render_slack()
+        elif fmt == Format.TELEGRAM_HTML:
+            return self._render_telegram_html()
         elif fmt in (Format.HTML,):
             return self._render_html()
         elif fmt == Format.SYMPHONY_MESSAGEML:
@@ -291,6 +294,11 @@ class Table(BaseModel):
 
         parts.append("</table>")
         return "".join(parts)
+
+    def _render_telegram_html(self) -> str:
+        """Render as Telegram-safe HTML."""
+        table = self._render_plaintext()
+        return f"<pre>{escape(table, quote=False)}</pre>" if table else ""
 
     def _escape_symphony(self, text: str) -> str:
         """Escape text for Symphony MessageML."""

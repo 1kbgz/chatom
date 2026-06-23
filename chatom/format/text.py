@@ -87,7 +87,7 @@ class Text(TextNode):
         """Render plain text, escaping special characters as needed."""
         text = self.content
 
-        if format in (Format.HTML, "html", Format.SYMPHONY_MESSAGEML, "symphony-messageml"):
+        if format in (Format.HTML, "html", Format.TELEGRAM_HTML, "telegram-html", Format.SYMPHONY_MESSAGEML, "symphony-messageml"):
             # Escape HTML special characters
             text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         elif format in (Format.SYMPHONY_MESSAGEML, "symphony-messageml"):
@@ -134,7 +134,7 @@ class Bold(TextNode):
             return f"**{content}**"
         elif fmt == Format.SLACK_MARKDOWN:
             return f"*{content}*"
-        elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
             return f"<b>{content}</b>"
         return content
 
@@ -156,7 +156,7 @@ class Italic(TextNode):
             return f"*{content}*"
         elif fmt == Format.SLACK_MARKDOWN:
             return f"_{content}_"
-        elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
             return f"<i>{content}</i>"
         return content
 
@@ -181,7 +181,7 @@ class Strikethrough(TextNode):
         elif fmt == Format.SYMPHONY_MESSAGEML:
             # Symphony does not support <s>; render with dash decoration
             return f"-{content}-"
-        elif fmt == Format.HTML:
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML):
             return f"<s>{content}</s>"
         return content
 
@@ -206,7 +206,7 @@ class Underline(TextNode):
         elif fmt == Format.SYMPHONY_MESSAGEML:
             # Symphony does not support <u>; render content as-is
             return content
-        elif fmt == Format.HTML:
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML):
             return f"<u>{content}</u>"
         # Most formats don't support underline
         return content
@@ -226,7 +226,7 @@ class Code(TextNode):
 
         if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN):
             return f"`{self.content}`"
-        elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML, Format.SYMPHONY_MESSAGEML):
             escaped = self.content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
             return f"<code>{escaped}</code>"
         return self.content
@@ -252,6 +252,10 @@ class CodeBlock(TextNode):
             # Symphony MessageML doesn't allow <code> inside <pre>
             escaped = self.content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
             return f"<pre>{escaped}</pre>"
+        elif fmt == Format.TELEGRAM_HTML:
+            escaped = self.content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+            lang_attr = f' class="language-{self.language}"' if self.language else ""
+            return f"<pre><code{lang_attr}>{escaped}</code></pre>" if lang_attr else f"<pre>{escaped}</pre>"
         elif fmt == Format.HTML:
             escaped = self.content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
             lang_attr = f' class="language-{self.language}"' if self.language else ""
@@ -281,6 +285,8 @@ class Link(TextNode):
             return f"[{self.text}]({self.url})"
         elif fmt == Format.SLACK_MARKDOWN:
             return f"<{self.url}|{self.text}>"
+        elif fmt == Format.TELEGRAM_HTML:
+            return f'<a href="{self.url}">{self.text}</a>'
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             title_attr = f' title="{self.title}"' if self.title else ""
             return f'<a href="{self.url}"{title_attr}>{self.text}</a>'
@@ -311,7 +317,7 @@ class Quote(TextNode):
             if "<p>" in content:
                 return content.replace("<p>", "<p>\u258e ")
             return f"<p>\u258e {content}</p>"
-        elif fmt == Format.HTML:
+        elif fmt in (Format.HTML, Format.TELEGRAM_HTML):
             return f"<blockquote>{content}</blockquote>"
         return content
 
@@ -332,6 +338,8 @@ class Paragraph(TextNode):
         content = "".join(child.render(format) for child in self.children)
         fmt = Format(format) if isinstance(format, str) else format
 
+        if fmt == Format.TELEGRAM_HTML:
+            return content + "\n"
         if fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             return f"<p>{content}</p>"
         return content + "\n"
@@ -343,6 +351,8 @@ class LineBreak(TextNode):
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         fmt = Format(format) if isinstance(format, str) else format
 
+        if fmt == Format.TELEGRAM_HTML:
+            return "\n"
         if fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             return "<br/>"
         return "\n"
@@ -357,6 +367,8 @@ class HorizontalRule(TextNode):
         if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN):
             return "\n---\n"
         elif fmt == Format.SLACK_MARKDOWN:
+            return "\n---\n"
+        elif fmt == Format.TELEGRAM_HTML:
             return "\n---\n"
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             return "<hr/>"
@@ -394,6 +406,9 @@ class UnorderedList(TextNode):
         if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN):
             lines = [f"- {item.render(format)}" for item in self.items]
             return "\n".join(lines)
+        elif fmt == Format.TELEGRAM_HTML:
+            lines = [f"- {item.render(format)}" for item in self.items]
+            return "\n".join(lines)
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             items_html = "".join(f"<li>{item.render(format)}</li>" for item in self.items)
             return f"<ul>{items_html}</ul>"
@@ -420,6 +435,9 @@ class OrderedList(TextNode):
         fmt = Format(format) if isinstance(format, str) else format
 
         if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN):
+            lines = [f"{i + self.start}. {item.render(format)}" for i, item in enumerate(self.items)]
+            return "\n".join(lines)
+        elif fmt == Format.TELEGRAM_HTML:
             lines = [f"{i + self.start}. {item.render(format)}" for i, item in enumerate(self.items)]
             return "\n".join(lines)
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
@@ -451,6 +469,8 @@ class Heading(TextNode):
         elif fmt == Format.SLACK_MARKDOWN:
             # Slack doesn't have headings, use bold
             return f"*{content}*\n"
+        elif fmt == Format.TELEGRAM_HTML:
+            return f"<b>{content}</b>\n"
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             return f"<h{self.level}>{content}</h{self.level}>"
         return content.upper() + "\n"
@@ -476,6 +496,8 @@ class UserMention(TextNode):
             return f"<@{self.user_id}>"
         elif fmt == Format.SYMPHONY_MESSAGEML:
             return f'<mention uid="{self.user_id}"/>'
+        elif fmt == Format.TELEGRAM_HTML:
+            return f'<a href="tg://user?id={self.user_id}">@{self.display_name or self.user_id}</a>'
         elif fmt in (Format.HTML,):
             return f'<span class="mention" data-user-id="{self.user_id}">@{self.display_name or self.user_id}</span>'
         return f"@{self.display_name or self.user_id}"
@@ -499,6 +521,8 @@ class ChannelMention(TextNode):
             return f"<#{self.channel_id}>"
         elif fmt == Format.SLACK_MARKDOWN:
             return f"<#{self.channel_id}>"
+        elif fmt == Format.TELEGRAM_HTML:
+            return f"#{self.display_name or self.channel_id}"
         elif fmt in (Format.HTML,):
             return f'<span class="channel-mention" data-channel-id="{self.channel_id}">#{self.display_name or self.channel_id}</span>'
         return f"#{self.display_name or self.channel_id}"
@@ -529,6 +553,8 @@ class Emoji(TextNode):
                 return f"<:{self.name}:{self.custom_id}>"
             return f":{self.name}:"
         elif fmt == Format.SLACK_MARKDOWN:
+            return f":{self.name}:"
+        elif fmt == Format.TELEGRAM_HTML:
             return f":{self.name}:"
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             if self.unicode:

@@ -116,6 +116,7 @@ from .format import (
     PLAINTEXT,
     SLACK_MARKDOWN,
     SYMPHONY_MESSAGEML,
+    TELEGRAM_HTML,
     Bold,
     ChannelMention,
     Code,
@@ -257,6 +258,7 @@ __all__ = (
     "SLACK_MARKDOWN",
     "DISCORD_MARKDOWN",
     "HTML",
+    "TELEGRAM_HTML",
     "SYMPHONY_MESSAGEML",
     # Text nodes
     "TextNode",
