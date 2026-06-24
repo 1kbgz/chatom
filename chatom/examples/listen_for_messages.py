@@ -190,7 +190,7 @@ async def listen_symphony(timeout: int) -> bool:
 async def main(backend_name: str, timeout: int) -> bool:
     """Run the listen example."""
     if backend_name == "discord":
-        print("⚠️ Discord listen example requires additional setup - see discord_e2e.py")
+        print("⚠️ Discord listen example requires additional setup - see combined_e2e.py")
         return False
 
     backends = {

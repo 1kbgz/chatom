@@ -153,6 +153,10 @@ addopts = [
     "-vvv",
     "--junitxml=junit.xml",
 ]
+python_files = [
+    "test_*.py",
+    "*_e2e.py",
+]
 testpaths = "chatom/tests"
 
 [tool.ruff]
