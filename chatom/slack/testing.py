@@ -4,7 +4,7 @@ This module provides a mock implementation of the Slack backend
 for use in tests without requiring actual Slack API credentials.
 """
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, ClassVar, Dict, List, Optional, Union
 
 from ..base import Avatar, Channel, Message, MessageType, PresenceStatus, Thread, User
@@ -423,8 +423,8 @@ class MockSlackBackend(SlackBackend):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
         """Fetch mock messages from a channel.
 
@@ -440,11 +440,25 @@ class MockSlackBackend(SlackBackend):
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         messages = self._mock_messages.get(channel_id, [])
 
+        # Coerce bounds to a comparable Slack ts string.
+        def _to_ts(value):
+            if value is None:
+                return None
+            if isinstance(value, datetime):
+                dt = value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+                return f"{dt.timestamp():.6f}"
+            if isinstance(value, Message):
+                return value.id
+            return value
+
+        after_ts = _to_ts(after)
+        before_ts = _to_ts(before)
+
         # Filter by before/after
-        if after:
-            messages = [m for m in messages if m.ts and m.ts > after]
-        if before:
-            messages = [m for m in messages if m.ts and m.ts < before]
+        if after_ts:
+            messages = [m for m in messages if m.ts and m.ts > after_ts]
+        if before_ts:
+            messages = [m for m in messages if m.ts and m.ts < before_ts]
 
         # Sort by timestamp and limit
         messages = sorted(messages, key=lambda m: m.ts)

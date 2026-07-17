@@ -444,19 +444,19 @@ class DiscordBackend(BackendBase):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[Union[str, Message]] = None,
-        after: Optional[Union[str, Message]] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
-        """Fetch messages from a Discord channel.
+        """Fetch messages from a Discord channel, newest-first.
 
         Args:
             channel: The channel to fetch messages from (ID string or Channel object).
-            limit: Maximum number of messages (1-100).
-            before: Fetch messages before this message (ID string or Message object).
-            after: Fetch messages after this message (ID string or Message object).
+            limit: Maximum number of messages to return.
+            before: Upper bound — message id, Message, or datetime.
+            after: Lower bound — message id, Message, or datetime.
 
         Returns:
-            List of messages.
+            List of messages, ordered newest-to-oldest.
         """
         if self._client is None:
             raise RuntimeError("Not connected to Discord")
@@ -464,32 +464,21 @@ class DiscordBackend(BackendBase):
         # Resolve channel ID
         channel_id = await self._resolve_channel_id(channel)
 
-        # Resolve before/after message IDs
-        before_id = None
-        if before:
-            if isinstance(before, Message):
-                before_id = before.id
-            else:
-                before_id = before
-
-        after_id = None
-        if after:
-            if isinstance(after, Message):
-                after_id = after.id
-            else:
-                after_id = after
-
         try:
             discord_channel = await self._client.fetch_channel(int(channel_id))
             if discord_channel is None:
                 return []
 
-            # Build kwargs for history()
-            kwargs: dict[str, Any] = {"limit": min(limit, 100)}
-            if before_id:
-                kwargs["before"] = discord.Object(id=int(before_id))
-            if after_id:
-                kwargs["after"] = discord.Object(id=int(after_id))
+            # discord.py history() accepts datetimes directly, and snowflake
+            # objects for message-id bounds. oldest_first=False keeps the
+            # newest-to-oldest ordering even when an `after` bound is set.
+            kwargs: dict[str, Any] = {"limit": limit, "oldest_first": False}
+            before_bound = self._discord_bound(before)
+            after_bound = self._discord_bound(after)
+            if before_bound is not None:
+                kwargs["before"] = before_bound
+            if after_bound is not None:
+                kwargs["after"] = after_bound
 
             messages: List[Message] = []
             async for msg in discord_channel.history(**kwargs):
@@ -505,9 +494,20 @@ class DiscordBackend(BackendBase):
                 )
                 messages.append(message)
 
-            return messages
+            messages.sort(key=lambda m: m.created_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+            return messages[:limit]
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to fetch messages: {e}") from e
+
+    @staticmethod
+    def _discord_bound(value: Optional[Union[str, Message, datetime]]) -> Any:
+        """Coerce a range bound to a value ``history()`` accepts, or None."""
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+        message_id = value.id if isinstance(value, Message) else value
+        return discord.Object(id=int(message_id))
 
     async def search_messages(
         self,

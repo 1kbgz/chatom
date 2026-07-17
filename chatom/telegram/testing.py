@@ -356,20 +356,25 @@ class MockTelegramBackend(TelegramBackend):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[Union[str, Message]] = None,
-        after: Optional[Union[str, Message]] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
         """Fetch mock messages from a channel."""
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         messages = self._mock_messages.get(channel_id, [])
 
-        before_id = before.id if isinstance(before, Message) else before
-        after_id = after.id if isinstance(after, Message) else after
+        def _to_id(value):
+            if value is None or isinstance(value, datetime):
+                return None
+            return int(value.id if isinstance(value, Message) else value)
 
-        if before_id:
-            messages = [m for m in messages if int(m.id) < int(before_id)]
-        if after_id:
-            messages = [m for m in messages if int(m.id) > int(after_id)]
+        before_id = _to_id(before)
+        after_id = _to_id(after)
+
+        if before_id is not None:
+            messages = [m for m in messages if int(m.id) < before_id]
+        if after_id is not None:
+            messages = [m for m in messages if int(m.id) > after_id]
 
         messages = sorted(messages, key=lambda m: int(m.id), reverse=True)
         return list(messages[:limit])

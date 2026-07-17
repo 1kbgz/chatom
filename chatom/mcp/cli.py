@@ -52,7 +52,7 @@ def main() -> None:
     transport_value: str = cfg.server.transport
     if transport_value not in ("stdio", "http", "sse", "streamable-http"):
         raise SystemExit(f"error: unsupported transport: {transport_value}")
-    transport = cast(Transport, transport_value)
+    transport: Transport = transport_value
     if cfg.server.auth_token_env and transport != "stdio":
         auth_token = os.environ.get(cfg.server.auth_token_env, "")
         if auth_token:

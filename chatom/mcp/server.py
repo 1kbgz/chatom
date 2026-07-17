@@ -12,6 +12,7 @@ from typing import Any, Optional
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
+from chatom.agent.toolset import resolve_history_bounds
 from chatom.backend import BackendBase
 from chatom.base import Channel, User
 from chatom.base.capabilities import Capability
@@ -123,10 +124,14 @@ def _register_backend_tools(
     @_tool("read_channel_history")
     async def read_channel_history(
         channel: ChannelRef = Field(description="Channel to read messages from."),
-        limit: int = Field(default=50, description="Maximum messages (1-200).", ge=1, le=200),
+        limit: int = Field(default=50, description="Maximum messages, newest first (1-200).", ge=1, le=200),
+        last_minutes: Optional[int] = Field(default=None, description="Only messages from the last N minutes (e.g. 30).", ge=1),
+        after: Optional[str] = Field(default=None, description="Only messages at/after this ISO-8601 UTC timestamp."),
+        before: Optional[str] = Field(default=None, description="Only messages at/before this ISO-8601 UTC timestamp."),
     ) -> list[dict[str, Any]]:
-        """Read recent message history from a chat channel."""
-        msgs = await backend.fetch_messages(channel=channel.to_channel(), limit=limit)
+        """Read message history from a chat channel, newest-first."""
+        after_dt, before_dt = resolve_history_bounds(after, before, last_minutes)
+        msgs = await backend.fetch_messages(channel=channel.to_channel(), limit=limit, after=after_dt, before=before_dt)
         return _serialize(msgs)
 
     @_tool("search_messages", cap=Capability.MESSAGE_SEARCH)

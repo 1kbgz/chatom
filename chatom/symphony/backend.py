@@ -5,6 +5,7 @@ This module provides the Symphony backend using the Symphony BDK
 """
 
 import asyncio
+import base64
 import contextlib
 import importlib
 import logging
@@ -184,6 +185,30 @@ class SymphonyBackend(BackendBase):
         """Pydantic config."""
 
         arbitrary_types_allowed = True
+
+    def normalize_channel_id(self, channel_id: str) -> str:
+        """Canonicalize a Symphony stream id for equality comparison.
+
+        Symphony returns stream ids in both standard and URL-safe base64,
+        with or without ``=`` padding, depending on which API produced them
+        (for example the datafeed vs. stream lookups). Decode whichever form
+        was given and re-encode to standard padded base64 so the same stream
+        compares equal regardless of source. Non-base64 values are returned
+        unchanged.
+
+        Args:
+            channel_id: The stream id to canonicalize.
+
+        Returns:
+            The canonical stream id.
+        """
+        if not channel_id:
+            return channel_id
+        try:
+            raw = base64.urlsafe_b64decode(channel_id + "=" * (-len(channel_id) % 4))
+            return base64.b64encode(raw).decode("ascii")
+        except (ValueError, TypeError):
+            return channel_id
 
     async def connect(self) -> None:
         """Connect to Symphony using the BDK.
@@ -554,107 +579,112 @@ class SymphonyBackend(BackendBase):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[Union[str, Message]] = None,
-        after: Optional[Union[str, Message]] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
-        """Fetch messages from a Symphony stream.
+        """Fetch messages from a Symphony stream, newest-first.
 
-        When neither *before* nor *after* is specified, retrieves the most
-        recent *limit* messages by paginating backward in time windows.
+        Returns up to *limit* messages ordered newest-to-oldest. ``after`` and
+        ``before`` bound the range and accept a millisecond-epoch id string, a
+        :class:`Message` (its ``created_at`` is used), or a
+        :class:`~datetime.datetime`. The stream is paged in full over the
+        bounded range (Symphony's API returns oldest-first from a ``since``
+        timestamp; we widen/skip to cover everything) before trimming to the
+        most recent *limit*.
 
         Args:
-            channel: The stream to fetch messages from (ID string or Channel object).
+            channel: The stream to fetch from (ID string or Channel object).
             limit: Maximum number of messages to return.
-            before: Fetch messages before this message (ID string or Message object).
-            after: Fetch messages after this message (ID string or Message object).
+            before: Upper bound — epoch-ms id, Message, or datetime.
+            after: Lower bound — epoch-ms id, Message, or datetime.
 
         Returns:
-            List of messages, ordered oldest-first.
+            List of messages, ordered newest-to-oldest.
         """
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
 
-        # Resolve channel ID
         channel_id = await self._resolve_channel_id(channel)
+        since_ms = self._to_epoch_ms(after)
+        until_ms = self._to_epoch_ms(before)
+        return await self._fetch_range(channel_id, limit, since_ms, until_ms)
 
-        # Resolve after message ID / timestamp
-        after_id = None
-        if after:
-            if isinstance(after, Message):
-                after_id = after.id
-            else:
-                after_id = after
+    @staticmethod
+    def _to_epoch_ms(value: Optional[Union[str, Message, datetime]]) -> Optional[int]:
+        """Coerce a range bound to a millisecond epoch, or None."""
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            dt = value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+            return int(dt.timestamp() * 1000)
+        if isinstance(value, Message):
+            return int(value.created_at.timestamp() * 1000) if value.created_at else None
+        return int(value)
 
-        if after_id:
-            # Simple case: fetch from a known point forward
-            return await self._fetch_messages_since(channel_id, since_ms=int(after_id), limit=limit)
+    async def _fetch_range(
+        self,
+        channel_id: str,
+        limit: int,
+        since_ms: Optional[int],
+        until_ms: Optional[int],
+    ) -> List[Message]:
+        """Collect every message in the ``[since_ms, until_ms]`` range, then
+        return the most recent *limit* of them, newest-first.
 
-        # Default: get the most recent `limit` messages by paging backward
-        return await self._fetch_recent_messages(channel_id, limit)
-
-    async def _fetch_messages_since(self, channel_id: str, since_ms: int, limit: int) -> List[Message]:
-        """Fetch up to *limit* messages after a given timestamp."""
-        message_service = self._bdk.messages()
-        try:
-            messages_data = await message_service.list_messages(stream_id=channel_id, since=since_ms, limit=limit)
-        except Exception as e:
-            raise RuntimeError(f"Failed to fetch messages: {e}") from e
-        return self._convert_messages(messages_data, channel_id)
-
-    async def _fetch_recent_messages(self, channel_id: str, limit: int) -> List[Message]:
-        """Page backward in time to collect the most recent *limit* messages.
-
-        Strategy:
-        The Symphony API returns oldest-first from a given ``since`` timestamp.
-        To get the most recent N messages we widen a lookback window starting
-        from 1 hour, doubling each iteration until we've captured at least
-        ``limit`` messages (or hit the 90-day backstop).  Within each window
-        we use ``skip``-based pagination to fetch ALL messages.
+        Symphony's ``list_messages`` returns oldest-first from a ``since``
+        timestamp, so we skip-paginate a lower bound to fetch all messages,
+        widening the lower bound in growing windows when the caller gave no
+        ``after`` bound.
         """
         message_service = self._bdk.messages()
         now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
         page_limit = 500  # Symphony API max per request
         max_backstop_ms = now_ms - int(timedelta(days=90).total_seconds() * 1000)
 
-        window_hours = 1
-        while True:
-            window_start_ms = now_ms - int(window_hours * 3600 * 1000)
-            if window_start_ms < max_backstop_ms:
-                window_start_ms = max_backstop_ms
-
-            # Fetch ALL messages from window_start to now via skip pagination
-            all_in_window: list = []
+        async def page_from(start_ms: int) -> list:
+            """Fetch ALL messages at/after ``start_ms`` via skip pagination."""
+            collected: list = []
             skip = 0
             while True:
                 try:
                     batch = await message_service.list_messages(
                         stream_id=channel_id,
-                        since=window_start_ms,
+                        since=start_ms,
                         skip=skip,
                         limit=page_limit,
                     )
                 except Exception as e:
                     raise RuntimeError(f"Failed to fetch messages: {e}") from e
-
                 if not batch:
                     break
-                all_in_window.extend(batch)
+                collected.extend(batch)
                 if len(batch) < page_limit:
-                    break  # got everything in this window
+                    break
                 skip += len(batch)
+            return collected
 
-            if len(all_in_window) >= limit:
-                # We have enough — convert and take the most recent `limit`
-                messages = self._convert_messages(all_in_window, channel_id)
-                return messages[-limit:]
+        if since_ms is not None:
+            raw = await page_from(max(since_ms, max_backstop_ms))
+        else:
+            # No lower bound: widen a lookback window until we have >= limit.
+            window_hours = 1
+            raw = []
+            while True:
+                start = now_ms - int(window_hours * 3600 * 1000)
+                if start < max_backstop_ms:
+                    start = max_backstop_ms
+                raw = await page_from(start)
+                if len(raw) >= limit or start <= max_backstop_ms:
+                    break
+                window_hours = min(window_hours * 2, 24 * 90)
 
-            if window_start_ms <= max_backstop_ms:
-                # Hit the backstop — return whatever we have
-                messages = self._convert_messages(all_in_window, channel_id)
-                return messages[-limit:] if len(messages) > limit else messages
-
-            # Not enough — widen the window and retry
-            window_hours = min(window_hours * 2, 24 * 90)
+        messages = self._convert_messages(raw, channel_id)
+        if since_ms is not None:
+            messages = [m for m in messages if m.created_at and int(m.created_at.timestamp() * 1000) >= since_ms]
+        if until_ms is not None:
+            messages = [m for m in messages if m.created_at and int(m.created_at.timestamp() * 1000) <= until_ms]
+        messages.sort(key=lambda m: m.created_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+        return messages[:limit]
 
     def _convert_messages(self, messages_data: list, channel_id: str) -> List[Message]:
         """Convert raw V4Message objects to SymphonyMessage instances."""
@@ -1532,24 +1562,18 @@ class SymphonyBackend(BackendBase):
                 try:
                     stream_type = SymphonyStreamType(stream_type_str)
                 except ValueError:
-                    stream_type = None
+                    stream_type = SymphonyStreamType.ROOM
 
-                # Lookup channel to get full info (id AND name)
-                channel = await self._backend._fetch_channel_by_id(stream_id)
-                if channel is None and stream_type is not None:
-                    # Create channel with at least the stream_type
-                    channel = SymphonyChannel(
-                        id=stream_id,
-                        name="",  # Name not available in event
-                        stream_type=stream_type,
-                    )
-                elif channel is not None and stream_type is not None:
-                    # Update stream_type if we have it
-                    channel = SymphonyChannel(
-                        id=channel.id,
-                        name=channel.name,
-                        stream_type=stream_type,
-                    )
+                # Look up the channel for its name, but always keep the stream
+                # id: _fetch_channel_by_id can return None (get_stream may fail
+                # or be denied), and the message must still carry the channel it
+                # came from so downstream consumers know the invoking channel.
+                looked_up = await self._backend._fetch_channel_by_id(stream_id)
+                channel = SymphonyChannel(
+                    id=stream_id,
+                    name=(looked_up.name if looked_up else "") or "",
+                    stream_type=stream_type,
+                )
 
                 # Lookup author to get full info (id AND name)
                 author = None

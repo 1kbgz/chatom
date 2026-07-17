@@ -6,6 +6,7 @@ This module provides the base class that all backends must implement.
 import asyncio
 from abc import abstractmethod
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from functools import cached_property
 from threading import Lock
 from typing import (
@@ -249,6 +250,22 @@ class BackendBase(BaseModel):
             The Format enum value for this backend.
         """
         return self.__class__.format
+
+    def normalize_channel_id(self, channel_id: str) -> str:
+        """Return a canonical form of a channel id for equality comparison.
+
+        Some platforms expose the same channel under multiple equivalent id
+        encodings. Backends where that happens should override this to return
+        a single canonical form so that equal channels compare equal. The
+        default returns the id unchanged.
+
+        Args:
+            channel_id: The channel id to canonicalize.
+
+        Returns:
+            The canonical channel id.
+        """
+        return channel_id
 
     # Connection methods
 
@@ -791,27 +808,39 @@ class BackendBase(BaseModel):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, "Message", datetime]] = None,
+        after: Optional[Union[str, "Message", datetime]] = None,
     ) -> List[Message]:
-        """Fetch messages from a channel.
+        """Fetch messages from a channel, newest-first.
 
-        Retrieves historical messages from the specified channel.
+        Returns up to ``limit`` messages, ordered newest-to-oldest. ``before``
+        and ``after`` bound the range; each accepts a message id, a
+        :class:`Message`, or a timezone-aware :class:`~datetime.datetime`:
+
+        - ``after``: only messages at or after this point (lower bound).
+        - ``before``: only messages at or before this point (upper bound).
+
+        When a range is given, implementations page the underlying API to
+        cover the whole range without dropping messages (subject to
+        ``limit``); when no range is given, they return the most recent
+        ``limit`` messages.
 
         Args:
             channel: The channel to fetch messages from (ID string or Channel object).
-            limit: Maximum number of messages to fetch.
-            before: Fetch messages before this message ID (for pagination).
-            after: Fetch messages after this message ID (for pagination).
+            limit: Maximum number of messages to return.
+            before: Upper bound — message id, Message, or datetime.
+            after: Lower bound — message id, Message, or datetime.
 
         Returns:
-            List of messages, ordered from oldest to newest.
+            List of messages, ordered newest-to-oldest.
 
         Example:
-            >>> # All of these work:
-            >>> msgs = await backend.fetch_messages("C123")
-            >>> msgs = await backend.fetch_messages(Channel(id="C123"))
-            >>> msgs = await backend.fetch_messages(Channel(name="general"))  # Resolves
+            >>> # Most recent 50:
+            >>> msgs = await backend.fetch_messages("C123", limit=50)
+            >>> # Everything in the last 30 minutes:
+            >>> from datetime import datetime, timedelta, timezone
+            >>> since = datetime.now(timezone.utc) - timedelta(minutes=30)
+            >>> msgs = await backend.fetch_messages("C123", after=since)
         """
         raise NotImplementedError("Subclass must implement fetch_messages()")
 

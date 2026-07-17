@@ -1,6 +1,7 @@
 """Telegram backend implementation for chatom."""
 
 import asyncio
+from datetime import datetime
 from logging import getLogger
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
 
@@ -277,8 +278,8 @@ class TelegramBackend(BackendBase):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[Union[str, Message]] = None,
-        after: Optional[Union[str, Message]] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
         """Fetch messages from a Telegram chat.
 

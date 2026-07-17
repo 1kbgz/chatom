@@ -425,8 +425,8 @@ class MockDiscordBackend(DiscordBackend):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[Union[str, Message]] = None,
-        after: Optional[Union[str, Message]] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
         """Fetch mock messages from a channel.
 
@@ -442,17 +442,22 @@ class MockDiscordBackend(DiscordBackend):
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         messages = self._mock_messages.get(channel_id, [])
 
-        # Extract ID strings from Message objects if needed
-        before_id = before.id if isinstance(before, Message) else before
-        after_id = after.id if isinstance(after, Message) else after
+        # Extract a comparable snowflake id; datetime bounds are not modeled here.
+        def _to_id(value):
+            if value is None or isinstance(value, datetime):
+                return None
+            return int(value.id if isinstance(value, Message) else value)
+
+        before_id = _to_id(before)
+        after_id = _to_id(after)
 
         # Apply before filter
-        if before_id:
-            messages = [m for m in messages if int(m.id) < int(before_id)]
+        if before_id is not None:
+            messages = [m for m in messages if int(m.id) < before_id]
 
         # Apply after filter
-        if after_id:
-            messages = [m for m in messages if int(m.id) > int(after_id)]
+        if after_id is not None:
+            messages = [m for m in messages if int(m.id) > after_id]
 
         # Sort by ID descending (newest first) and limit
         messages = sorted(messages, key=lambda m: int(m.id), reverse=True)

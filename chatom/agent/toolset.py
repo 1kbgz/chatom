@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any, Optional, Set, cast
 
 from pydantic import BaseModel as PydanticBaseModel, Field, TypeAdapter
@@ -15,6 +15,35 @@ from chatom.base import Channel, ChannelType, User
 from chatom.base.capabilities import Capability
 
 logger = logging.getLogger(__name__)
+
+
+def resolve_history_bounds(
+    after: Any = None,
+    before: Any = None,
+    last_minutes: Any = None,
+) -> "tuple[Optional[datetime], Optional[datetime]]":
+    """Resolve history-range args to an ``(after, before)`` datetime pair.
+
+    ``after``/``before`` may be ISO-8601 strings (``Z`` accepted); ``last_minutes``
+    is a convenience lower bound of *now* minus N minutes. Either result may be
+    None. Shared by the agent toolset and the MCP server so both surfaces expose
+    identical range semantics.
+    """
+
+    def _parse(value: Any) -> Optional[datetime]:
+        if not value:
+            return None
+        if isinstance(value, datetime):
+            return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+        dt = datetime.fromisoformat(str(value).strip().replace("Z", "+00:00"))
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+
+    after_dt = _parse(after)
+    before_dt = _parse(before)
+    if last_minutes:
+        window_start = datetime.now(timezone.utc) - timedelta(minutes=int(last_minutes))
+        after_dt = window_start if after_dt is None else max(after_dt, window_start)
+    return after_dt, before_dt
 
 
 class AccessDeniedError(Exception):
@@ -106,7 +135,20 @@ class ReadChannelHistoryParams(PydanticBaseModel):
     """Parameters for reading message history from a channel."""
 
     channel: ChannelRef = Field(description="Channel to read messages from. Provide at least channel ID or name.")
-    limit: int = Field(default=50, description="Maximum number of messages to fetch (1-200).", ge=1, le=200)
+    limit: int = Field(default=50, description="Maximum number of messages to return, newest first (1-200).", ge=1, le=200)
+    last_minutes: Optional[int] = Field(
+        default=None,
+        description="Only messages from the last N minutes (e.g. 30 for the last half hour). Use this for recency without needing the current time.",
+        ge=1,
+    )
+    after: Optional[str] = Field(
+        default=None,
+        description="Only messages at or after this ISO-8601 UTC timestamp (e.g. '2026-07-17T18:51:00Z'). Lower bound of a range.",
+    )
+    before: Optional[str] = Field(
+        default=None,
+        description="Only messages at or before this ISO-8601 UTC timestamp. Upper bound of a range.",
+    )
 
 
 class SearchMessagesParams(PydanticBaseModel):
@@ -228,8 +270,11 @@ _TOOL_DESCRIPTORS: list[dict[str, Any]] = [
     {
         "name": "read_channel_history",
         "description": (
-            "Read recent message history from a chat channel. "
-            "Returns messages ordered oldest-to-newest. "
+            "Read message history from a chat channel. "
+            "Returns messages ordered newest-to-oldest. "
+            "Fetch the most recent messages by count with 'limit', a recent "
+            "window with 'last_minutes' (e.g. 30), or a specific range with "
+            "'after'/'before' ISO-8601 UTC timestamps. "
             "Each message includes the author, content, timestamp, and ID."
         ),
         "params_model": ReadChannelHistoryParams,
@@ -547,21 +592,23 @@ class BackendToolset(AbstractToolset[Any]):
         """
         policy = self._policy
         channel_id = channel.id
+        normalize = self._backend.normalize_channel_id
+        norm_id = normalize(channel_id) if channel_id else channel_id
 
         # 1. Blocked channels — always denied
-        if channel_id and channel_id in policy.blocked_channel_ids:
+        if channel_id and norm_id in {normalize(c) for c in policy.blocked_channel_ids}:
             raise AccessDeniedError(f"Access to channel '{channel_id}' is blocked by policy.")
 
         # 2. Explicit whitelist — if set, only listed channels are allowed
         if policy.allowed_channel_ids is not None:
-            if channel_id not in policy.allowed_channel_ids:
+            if norm_id not in {normalize(c) for c in policy.allowed_channel_ids}:
                 raise AccessDeniedError(f"Channel '{channel_id}' is not in the allowed channel list.")
             # If whitelisted, skip further checks (admin explicitly allowed)
             return
 
         # 3. Restrict to invoking channel
         if policy.restrict_to_invoking_channel and policy.invoking_channel_id:
-            if channel_id and channel_id != policy.invoking_channel_id:
+            if channel_id and norm_id != normalize(policy.invoking_channel_id):
                 raise AccessDeniedError(f"Access restricted to the invoking channel. Cannot read from channel '{channel.name or channel_id}'.")
 
         # 4. Block DM reads
@@ -710,9 +757,12 @@ class BackendToolset(AbstractToolset[Any]):
         channel = await self._resolve_channel_full(channel)
         await self._check_channel_access(channel)
         limit = min(args.get("limit", 50), self._policy.max_messages_per_request)
+        after, before = resolve_history_bounds(args.get("after"), args.get("before"), args.get("last_minutes"))
         messages = await self._backend.fetch_messages(
             channel=channel,
             limit=limit,
+            after=after,
+            before=before,
         )
         if isinstance(messages, list):
             messages = self._filter_messages_by_time(messages)
