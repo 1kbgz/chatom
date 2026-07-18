@@ -315,8 +315,8 @@ class MockSymphonyBackend(BackendBase):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
         """Fetch messages from a mock stream.
 
@@ -335,16 +335,21 @@ class MockSymphonyBackend(BackendBase):
 
         messages_data = self.mock_messages[channel_id]
 
+        def _to_dt(value):
+            if isinstance(value, datetime):
+                return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+            if isinstance(value, Message):
+                return value.created_at
+            return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc)
+
         # Filter by timestamp if specified
         filtered = messages_data
         if before:
-            before_ts = int(before)
-            before_dt = datetime.fromtimestamp(before_ts / 1000, tz=timezone.utc)
-            filtered = [m for m in filtered if m["timestamp"] < before_dt]
+            before_dt = _to_dt(before)
+            filtered = [m for m in filtered if before_dt and m["timestamp"] < before_dt]
         if after:
-            after_ts = int(after)
-            after_dt = datetime.fromtimestamp(after_ts / 1000, tz=timezone.utc)
-            filtered = [m for m in filtered if m["timestamp"] >= after_dt]
+            after_dt = _to_dt(after)
+            filtered = [m for m in filtered if after_dt and m["timestamp"] >= after_dt]
 
         # Sort by timestamp (newest first) and limit
         filtered = sorted(filtered, key=lambda m: m["timestamp"], reverse=True)

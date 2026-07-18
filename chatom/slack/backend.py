@@ -2,7 +2,7 @@
 
 import asyncio
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from logging import getLogger
 from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
 
@@ -451,59 +451,67 @@ class SlackBackend(BackendBase):
         self,
         channel: Union[str, Channel],
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: Optional[Union[str, Message, datetime]] = None,
+        after: Optional[Union[str, Message, datetime]] = None,
     ) -> List[Message]:
-        """Fetch messages from a Slack channel.
+        """Fetch messages from a Slack channel, newest-first.
 
-        Uses the conversations.history API.
+        Uses the conversations.history API with ``oldest``/``latest`` bounds,
+        paging via cursor to cover the full range up to ``limit``.
 
         Args:
             channel: The channel to fetch messages from (ID string or Channel object).
-            limit: Maximum number of messages (1-1000).
-            before: Fetch messages before this timestamp/message (latest).
-            after: Fetch messages after this timestamp/message (oldest).
+            limit: Maximum number of messages to return.
+            before: Upper bound — Slack ts, Message, or datetime (``latest``).
+            after: Lower bound — Slack ts, Message, or datetime (``oldest``).
 
         Returns:
-            List of messages, newest first.
+            List of messages, ordered newest-to-oldest.
         """
         self._ensure_connected()
 
         # Resolve channel ID
         channel_id = await self._resolve_channel_id(channel)
 
-        # Resolve before/after message IDs
-        before_ts = None
-        if before:
-            if isinstance(before, SlackMessage):
-                before_ts = before.id
-            else:
-                before_ts = before
+        latest = self._to_slack_ts(before)
+        oldest = self._to_slack_ts(after)
 
-        after_ts = None
-        if after:
-            if isinstance(after, SlackMessage):
-                after_ts = after.id
-            else:
-                after_ts = after
+        messages: List[Message] = []
+        cursor: Optional[str] = None
+        while len(messages) < limit:
+            kwargs: dict = {"channel": channel_id, "limit": min(limit - len(messages), 1000)}
+            if latest:
+                kwargs["latest"] = latest
+            if oldest:
+                kwargs["oldest"] = oldest
+            if cursor:
+                kwargs["cursor"] = cursor
 
-        kwargs: dict = {"channel": channel_id, "limit": min(limit, 1000)}
-        if before_ts:
-            kwargs["latest"] = before_ts
-        if after_ts:
-            kwargs["oldest"] = after_ts
+            response = await self._async_client.conversations_history(**kwargs)
+            if not response.get("ok"):
+                raise RuntimeError(f"Failed to fetch messages: {response.get('error')}")
 
-        response = await self._async_client.conversations_history(**kwargs)
+            for msg_data in response.get("messages", []):
+                messages.append(self._parse_slack_message(msg_data, channel_id))
 
-        if not response.get("ok"):
-            raise RuntimeError(f"Failed to fetch messages: {response.get('error')}")
+            cursor = (response.get("response_metadata") or {}).get("next_cursor")
+            if not response.get("has_more") or not cursor:
+                break
 
-        messages = []
-        for msg_data in response.get("messages", []):
-            messages.append(self._parse_slack_message(msg_data, channel_id))
+        # Slack returns newest-first within and across cursor pages.
+        return messages[:limit]
 
-        # Slack returns newest first, reverse for oldest first
-        return list(reversed(messages))
+    @staticmethod
+    def _to_slack_ts(value: Optional[Union[str, Message, datetime]]) -> Optional[str]:
+        """Coerce a range bound to a Slack ``ts`` string, or None."""
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            dt = value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+            return f"{dt.timestamp():.6f}"
+        if isinstance(value, SlackMessage):
+            return value.id
+        return str(value)
 
     async def search_messages(
         self,

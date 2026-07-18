@@ -1,4 +1,4 @@
-"""Tests for Symphony backend fetch_messages pagination logic."""
+"""Tests for Symphony backend fetch_messages range + pagination logic."""
 
 import asyncio
 from datetime import datetime, timedelta, timezone
@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+from chatom.base import Message
 from chatom.symphony.backend import SymphonyBackend
 
 
@@ -53,10 +54,8 @@ def mock_list_messages(backend):
 
 
 def _make_side_effect(all_messages):
-    """Build a side_effect that simulates the Symphony API.
-
-    Returns messages with timestamp >= since, oldest-first, paginated via skip/limit.
-    """
+    """Simulate the Symphony API: messages with timestamp >= since, oldest-first,
+    paginated via skip/limit."""
 
     async def _side_effect(stream_id, since, skip=0, limit=500):
         matching = [m for m in all_messages if m.timestamp >= since]
@@ -65,208 +64,138 @@ def _make_side_effect(all_messages):
     return _side_effect
 
 
-class TestFetchRecentMessages:
-    """Test _fetch_recent_messages pagination logic."""
+class TestFetchRange:
+    """_fetch_range: newest-first results, range bounds, full pagination."""
 
-    def test_all_messages_fit_in_first_window(self, backend, mock_list_messages):
-        """When the first 1h window has enough messages, return them directly."""
+    def test_returns_most_recent_limit_newest_first(self, backend, mock_list_messages):
         now = datetime.now(timezone.utc)
-        messages = _make_messages_in_range(
-            _ms(now - timedelta(minutes=30)),
-            _ms(now - timedelta(minutes=5)),
-            30,
-        )
-        mock_list_messages.side_effect = _make_side_effect(messages)
-
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=30))
-
-        assert len(result) == 30
-        # Verify chronological order
-        timestamps = [m.created_at for m in result]
-        assert timestamps == sorted(timestamps)
-
-    def test_messages_span_multiple_windows(self, backend, mock_list_messages):
-        """When recent window is empty, widens backward to find messages."""
-        now = datetime.now(timezone.utc)
-        # Messages are 3 days old — first few windows will be empty
-        old_messages = _make_messages_in_range(
-            _ms(now - timedelta(days=3, hours=12)),
-            _ms(now - timedelta(days=3)),
-            20,
-        )
-        mock_list_messages.side_effect = _make_side_effect(old_messages)
-
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=20))
-
-        assert len(result) == 20
-        timestamps = [m.created_at for m in result]
-        assert timestamps == sorted(timestamps)
-
-    def test_no_duplicate_messages(self, backend, mock_list_messages):
-        """Pagination must not return duplicate messages."""
-        now = datetime.now(timezone.utc)
-        all_messages = _make_messages_in_range(
-            _ms(now - timedelta(days=2)),
-            _ms(now - timedelta(hours=1)),
-            100,
-        )
+        all_messages = _make_messages_in_range(_ms(now - timedelta(minutes=30)), _ms(now - timedelta(minutes=1)), 200)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
 
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
-
-        ids = [m.id for m in result]
-        assert len(ids) == len(set(ids)), f"Duplicate messages: {len(ids)} total, {len(set(ids))} unique"
-
-    def test_returns_most_recent_messages(self, backend, mock_list_messages):
-        """Result should be the MOST RECENT limit messages, not the oldest."""
-        now = datetime.now(timezone.utc)
-        all_messages = _make_messages_in_range(
-            _ms(now - timedelta(minutes=30)),
-            _ms(now - timedelta(minutes=1)),
-            200,
-        )
-        mock_list_messages.side_effect = _make_side_effect(all_messages)
-
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
+        result = asyncio.run(backend._fetch_range("stream123", limit=50, since_ms=None, until_ms=None))
 
         assert len(result) == 50
-        expected_ids = {m.message_id for m in all_messages[-50:]}
-        result_ids = {m.id for m in result}
-        assert result_ids == expected_ids
+        ts = [m.created_at for m in result]
+        assert ts == sorted(ts, reverse=True)  # newest-first
+        assert {m.id for m in result} == {m.message_id for m in all_messages[-50:]}
 
-    def test_fewer_messages_than_limit(self, backend, mock_list_messages):
-        """If fewer messages exist than limit, return all of them."""
+    def test_no_lower_bound_widens_window(self, backend, mock_list_messages):
         now = datetime.now(timezone.utc)
-        messages = _make_messages_in_range(
-            _ms(now - timedelta(hours=6)),
-            _ms(now - timedelta(minutes=10)),
-            15,
-        )
-        mock_list_messages.side_effect = _make_side_effect(messages)
+        old = _make_messages_in_range(_ms(now - timedelta(days=3, hours=12)), _ms(now - timedelta(days=3)), 20)
+        mock_list_messages.side_effect = _make_side_effect(old)
 
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
+        result = asyncio.run(backend._fetch_range("stream123", limit=20, since_ms=None, until_ms=None))
 
-        assert len(result) == 15
+        assert len(result) == 20
+        ts = [m.created_at for m in result]
+        assert ts == sorted(ts, reverse=True)
+
+    def test_since_lower_bound(self, backend, mock_list_messages):
+        now = datetime.now(timezone.utc)
+        all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 120)
+        mock_list_messages.side_effect = _make_side_effect(all_messages)
+        since = _ms(now - timedelta(minutes=30))
+
+        result = asyncio.run(backend._fetch_range("stream123", limit=500, since_ms=since, until_ms=None))
+
+        assert result
+        assert all(_ms(m.created_at) >= since for m in result)
+
+    def test_until_upper_bound(self, backend, mock_list_messages):
+        now = datetime.now(timezone.utc)
+        all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 120)
+        mock_list_messages.side_effect = _make_side_effect(all_messages)
+        until = _ms(now - timedelta(minutes=30))
+
+        result = asyncio.run(backend._fetch_range("stream123", limit=500, since_ms=None, until_ms=until))
+
+        assert result
+        assert all(_ms(m.created_at) <= until for m in result)
+
+    def test_range_between_bounds(self, backend, mock_list_messages):
+        now = datetime.now(timezone.utc)
+        all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 120)
+        mock_list_messages.side_effect = _make_side_effect(all_messages)
+        since = _ms(now - timedelta(minutes=90))
+        until = _ms(now - timedelta(minutes=30))
+
+        result = asyncio.run(backend._fetch_range("stream123", limit=500, since_ms=since, until_ms=until))
+
+        assert result
+        assert all(since <= _ms(m.created_at) <= until for m in result)
+
+    def test_full_pagination_no_duplicates(self, backend, mock_list_messages):
+        now = datetime.now(timezone.utc)
+        all_messages = _make_messages_in_range(_ms(now - timedelta(minutes=30)), _ms(now - timedelta(minutes=1)), 800)
+        mock_list_messages.side_effect = _make_side_effect(all_messages)
+
+        result = asyncio.run(backend._fetch_range("stream123", limit=800, since_ms=None, until_ms=None))
+
+        ids = [m.id for m in result]
+        assert len(ids) == len(set(ids))
+        assert mock_list_messages.call_count >= 2  # skip pagination engaged
 
     def test_empty_channel(self, backend, mock_list_messages):
-        """Empty channel returns empty list without infinite loop."""
         mock_list_messages.side_effect = _make_side_effect([])
-
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
-
+        result = asyncio.run(backend._fetch_range("stream123", limit=50, since_ms=None, until_ms=None))
         assert result == []
 
     def test_backstop_prevents_infinite_pagination(self, backend, mock_list_messages):
-        """Pagination stops at the 90-day backstop even if limit not reached."""
         mock_list_messages.side_effect = _make_side_effect([])
-
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
-
+        result = asyncio.run(backend._fetch_range("stream123", limit=50, since_ms=None, until_ms=None))
         assert result == []
-        # Should not make excessive calls — window doubles each time
-        # 1h -> 2h -> 4h -> ... -> 2160h covers 90 days in ~12 doublings
         assert mock_list_messages.call_count <= 15
 
-    def test_busy_channel_with_many_messages_per_hour(self, backend, mock_list_messages):
-        """Channel with >500 messages per hour still returns correct most-recent."""
-        now = datetime.now(timezone.utc)
-        # 1000 messages in the last 30 minutes
-        all_messages = _make_messages_in_range(
-            _ms(now - timedelta(minutes=30)),
-            _ms(now - timedelta(minutes=1)),
-            1000,
-        )
-        mock_list_messages.side_effect = _make_side_effect(all_messages)
 
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
+class TestToEpochMs:
+    """_to_epoch_ms coerces the range bounds."""
 
-        assert len(result) == 50
-        expected_ids = {m.message_id for m in all_messages[-50:]}
-        result_ids = {m.id for m in result}
-        assert result_ids == expected_ids
+    def test_none(self):
+        assert SymphonyBackend._to_epoch_ms(None) is None
 
-    def test_chronological_order(self, backend, mock_list_messages):
-        """Results are always in chronological (oldest-first) order."""
-        now = datetime.now(timezone.utc)
-        all_messages = _make_messages_in_range(
-            _ms(now - timedelta(days=5)),
-            _ms(now - timedelta(hours=1)),
-            80,
-        )
-        mock_list_messages.side_effect = _make_side_effect(all_messages)
+    def test_aware_datetime(self):
+        dt = datetime(2026, 7, 17, 18, 51, tzinfo=timezone.utc)
+        assert SymphonyBackend._to_epoch_ms(dt) == int(dt.timestamp() * 1000)
 
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=50))
+    def test_naive_datetime_assumed_utc(self):
+        dt = datetime(2026, 7, 17, 18, 51)
+        assert SymphonyBackend._to_epoch_ms(dt) == int(dt.replace(tzinfo=timezone.utc).timestamp() * 1000)
 
-        timestamps = [m.created_at for m in result]
-        assert timestamps == sorted(timestamps)
+    def test_message_uses_created_at(self):
+        created = datetime(2026, 7, 17, 18, 51, tzinfo=timezone.utc)
+        msg = Message(id="x", content="hi", created_at=created)
+        assert SymphonyBackend._to_epoch_ms(msg) == int(created.timestamp() * 1000)
 
-    def test_skip_pagination_within_window(self, backend, mock_list_messages):
-        """Verifies skip-based pagination fetches all messages in a large window."""
-        now = datetime.now(timezone.utc)
-        # 800 messages in the last 30 minutes — requires skip pagination
-        all_messages = _make_messages_in_range(
-            _ms(now - timedelta(minutes=30)),
-            _ms(now - timedelta(minutes=1)),
-            800,
-        )
-        mock_list_messages.side_effect = _make_side_effect(all_messages)
-
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=100))
-
-        assert len(result) == 100
-        expected_ids = {m.message_id for m in all_messages[-100:]}
-        result_ids = {m.id for m in result}
-        assert result_ids == expected_ids
-        # Should have used skip pagination (at least 2 calls for 800 messages)
-        assert mock_list_messages.call_count >= 2
-
-
-class TestFetchMessagesSince:
-    """Test _fetch_messages_since (the after= parameter path)."""
-
-    def test_fetches_from_timestamp(self, backend, mock_list_messages):
-        """Fetches messages after a given timestamp."""
-        now = datetime.now(timezone.utc)
-        messages = _make_messages_in_range(
-            _ms(now - timedelta(hours=2)),
-            _ms(now - timedelta(minutes=5)),
-            10,
-        )
-        mock_list_messages.return_value = messages
-
-        since_ms = _ms(now - timedelta(hours=3))
-        result = asyncio.run(backend._fetch_messages_since("stream123", since_ms, limit=50))
-
-        assert len(result) == 10
-        mock_list_messages.assert_called_once_with(stream_id="stream123", since=since_ms, limit=50)
+    def test_string_epoch(self):
+        assert SymphonyBackend._to_epoch_ms("1716850000000") == 1716850000000
 
 
 class TestFetchMessagesDispatch:
-    """Test the public fetch_messages method dispatch logic."""
+    """The public fetch_messages resolves bounds and returns newest-first."""
 
-    def test_with_after_string_uses_since_path(self, backend, mock_list_messages):
-        """When after= is a string timestamp, uses _fetch_messages_since."""
-        mock_list_messages.return_value = []
-
-        # Patch at class level to avoid pydantic __getattr__ issues
-        with patch(
-            "chatom.symphony.backend.SymphonyBackend._resolve_channel_id",
-            new_callable=lambda: lambda: AsyncMock(return_value="stream123"),
-        ):
-            asyncio.run(backend._fetch_messages_since("stream123", 1716850000000, limit=10))
-
-        mock_list_messages.assert_called_once_with(stream_id="stream123", since=1716850000000, limit=10)
-
-    def test_without_after_uses_recent_path(self, backend, mock_list_messages):
-        """When no after= is given, uses _fetch_recent_messages."""
+    def test_after_datetime_sets_lower_bound(self, backend, mock_list_messages):
         now = datetime.now(timezone.utc)
-        messages = _make_messages_in_range(
-            _ms(now - timedelta(minutes=10)),
-            _ms(now - timedelta(minutes=1)),
-            10,
-        )
-        mock_list_messages.side_effect = _make_side_effect(messages)
+        all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 60)
+        mock_list_messages.side_effect = _make_side_effect(all_messages)
+        cutoff = now - timedelta(minutes=30)
 
-        result = asyncio.run(backend._fetch_recent_messages("stream123", limit=10))
+        with patch.object(SymphonyBackend, "_resolve_channel_id", new=AsyncMock(return_value="stream123")):
+            result = asyncio.run(backend.fetch_messages("stream123", limit=500, after=cutoff))
+
+        assert result
+        assert all(_ms(m.created_at) >= _ms(cutoff) for m in result)
+        ts = [m.created_at for m in result]
+        assert ts == sorted(ts, reverse=True)
+
+    def test_default_returns_recent_newest_first(self, backend, mock_list_messages):
+        now = datetime.now(timezone.utc)
+        all_messages = _make_messages_in_range(_ms(now - timedelta(minutes=20)), _ms(now - timedelta(minutes=1)), 40)
+        mock_list_messages.side_effect = _make_side_effect(all_messages)
+
+        with patch.object(SymphonyBackend, "_resolve_channel_id", new=AsyncMock(return_value="stream123")):
+            result = asyncio.run(backend.fetch_messages("stream123", limit=10))
 
         assert len(result) == 10
+        ts = [m.created_at for m in result]
+        assert ts == sorted(ts, reverse=True)
+        assert {m.id for m in result} == {m.message_id for m in all_messages[-10:]}

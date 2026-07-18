@@ -23,6 +23,9 @@ def _make_backend(members=None, channel_type=ChannelType.PUBLIC):
     backend = MagicMock()
     backend.name = "test"
     backend.capabilities = None
+    # Mirror BackendBase.normalize_channel_id (identity) so channel-id
+    # comparisons in the access policy behave like a real backend.
+    backend.normalize_channel_id = lambda channel_id: channel_id
 
     # fetch_channel_members
     if members is not None:

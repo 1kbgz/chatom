@@ -807,3 +807,93 @@ class TestChannelContext:
         assert ctx.channel_name == "empty"
         assert len(ctx.messages) == 0
         assert len(ctx.participants) == 0
+
+
+class TestChannelIdNormalization:
+    """Symphony hands out one stream under two base64 encodings; the access
+    checks must treat both encodings of the same stream as equal."""
+
+    URL_SAFE = "rnwtyMXxNWMZZNFncwz2BH___oP7GF1WdA"
+    STANDARD = "rnwtyMXxNWMZZNFncwz2BH///oP7GF1WdA=="
+
+    def test_default_normalize_is_identity(self, mock_backend: _MockBackend) -> None:
+        assert mock_backend.normalize_channel_id("C123") == "C123"
+
+    def test_symphony_canonicalizes_encodings(self) -> None:
+        symphony = pytest.importorskip("chatom.symphony")
+        backend = symphony.SymphonyBackend(
+            config=symphony.SymphonyConfig(host="h", bot_username="u", bot_certificate_path="/x.pem"),
+        )
+        assert backend.normalize_channel_id(self.URL_SAFE) == backend.normalize_channel_id(self.STANDARD)
+
+    @pytest.mark.asyncio
+    async def test_invoking_channel_allows_other_encoding(self) -> None:
+        symphony = pytest.importorskip("chatom.symphony")
+        from chatom.agent.toolset import AccessPolicy, BackendToolset
+
+        backend = symphony.SymphonyBackend(
+            config=symphony.SymphonyConfig(host="h", bot_username="u", bot_certificate_path="/x.pem"),
+        )
+        policy = AccessPolicy(
+            invoking_channel_id=self.STANDARD,
+            restrict_to_invoking_channel=True,
+            block_dm_reads=False,
+            require_membership=False,
+        )
+        toolset = BackendToolset(backend, access_policy=policy)
+        # Same stream in the other encoding must be allowed (no raise).
+        await toolset._check_channel_access(Channel(id=self.URL_SAFE))
+
+    @pytest.mark.asyncio
+    async def test_different_channel_still_denied(self) -> None:
+        symphony = pytest.importorskip("chatom.symphony")
+        from chatom.agent.toolset import AccessDeniedError, AccessPolicy, BackendToolset
+
+        backend = symphony.SymphonyBackend(
+            config=symphony.SymphonyConfig(host="h", bot_username="u", bot_certificate_path="/x.pem"),
+        )
+        policy = AccessPolicy(
+            invoking_channel_id=self.STANDARD,
+            restrict_to_invoking_channel=True,
+            block_dm_reads=False,
+            require_membership=False,
+        )
+        toolset = BackendToolset(backend, access_policy=policy)
+        with pytest.raises(AccessDeniedError):
+            await toolset._check_channel_access(Channel(id="c29tZU90aGVyU3RyZWFt"))
+
+
+class TestResolveHistoryBounds:
+    """The shared range resolver behind read_channel_history."""
+
+    def test_none_when_empty(self):
+        from chatom.agent.toolset import resolve_history_bounds
+
+        assert resolve_history_bounds() == (None, None)
+
+    def test_iso_after_before_parsed(self):
+        from datetime import datetime, timezone
+
+        from chatom.agent.toolset import resolve_history_bounds
+
+        after, before = resolve_history_bounds(after="2026-07-17T18:51:00Z", before="2026-07-17T19:21:00+00:00")
+        assert after == datetime(2026, 7, 17, 18, 51, tzinfo=timezone.utc)
+        assert before == datetime(2026, 7, 17, 19, 21, tzinfo=timezone.utc)
+
+    def test_last_minutes_sets_recent_lower_bound(self):
+        from datetime import datetime, timezone
+
+        from chatom.agent.toolset import resolve_history_bounds
+
+        after, before = resolve_history_bounds(last_minutes=30)
+        assert before is None
+        assert after is not None
+        age = (datetime.now(timezone.utc) - after).total_seconds()
+        assert 29 * 60 <= age <= 31 * 60
+
+    def test_last_minutes_takes_more_recent_of_two_lower_bounds(self):
+        from chatom.agent.toolset import resolve_history_bounds
+
+        # An old explicit `after` is overridden by the more recent last_minutes.
+        after, _ = resolve_history_bounds(after="2000-01-01T00:00:00Z", last_minutes=30)
+        assert after.year != 2000
