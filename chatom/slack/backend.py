@@ -587,14 +587,7 @@ class SlackBackend(BackendBase):
         Args:
             channel: The channel to send to (ID string or Channel object).
             content: The message content.
-            **kwargs: Additional options. Accepts:
-                      - ``thread`` (standardized) - ``str | Thread | Message``,
-                        translated to ``thread_ts``.
-                      - ``reply_to`` (standardized) - ``str | Message``, also
-                        translated to ``thread_ts`` since Slack has no
-                        dedicated reply primitive.
-                      - ``thread_id`` / ``thread_ts`` (legacy) — still honored.
-                      Plus: blocks, attachments, unfurl_links, etc.
+                        kwargs: Slack thread, reply, block, attachment, and unfurl options.
 
         Returns:
             The sent message.

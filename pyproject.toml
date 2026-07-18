@@ -199,19 +199,9 @@ exclude = [
 [tool.yardang]
 pages = [
     "docs/src/installation.md",
-    "docs/src/quickstart.md",
-    "docs/src/base-models.md",
-    "docs/src/backends.md",
-    "docs/src/backend-config.md",
-    "docs/src/messaging.md",
-    "docs/src/mentions.md",
-    "docs/src/reactions-threads.md",
-    "docs/src/format-system.md",
-    "docs/src/advanced-features.md",
-    "docs/src/conversion.md",
-    "docs/src/csp-integration.md",
-    "docs/src/examples.md",
-    "docs/src/integration-testing.md",
+    "docs/src/tutorials.md",
+    "docs/src/howtos.md",
+    "docs/src/concepts.md",
     "docs/src/api.md",
 ]
 use-autoapi = false
