@@ -20,23 +20,26 @@ install:  ## install library
 #########
 # LINTS #
 #########
-.PHONY: lint-py lint-docs fix-py fix-docs lint lints fix format
+.PHONY: lint-py lint-docs fix-py fix-docs lint lints fix format docs
 
 lint-py:  ## lint python with ruff
 	python -m ruff check chatom
 	python -m ruff format --check chatom
 
 lint-docs:  ## lint docs with mdformat and codespell
-	python -m mdformat --check README.md
-	python -m codespell_lib README.md
+	python -m mdformat --check README.md docs/src
+	python -m codespell_lib README.md docs/src
 
 fix-py:  ## autoformat python code with ruff
 	python -m ruff check --fix chatom
 	python -m ruff format chatom
 
 fix-docs:  ## autoformat docs with mdformat and codespell
-	python -m mdformat README.md
-	python -m codespell_lib --write README.md
+	python -m mdformat README.md docs/src
+	python -m codespell_lib --write README.md docs/src
+
+docs:  ## build documentation with Yardang
+	yardang build
 
 lint: lint-py lint-docs  ## run all linters
 lints: lint

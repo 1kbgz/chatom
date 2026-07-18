@@ -119,6 +119,7 @@ docs/api
 docs/html
 docs/index.md
 docs/jupyter_execute
+docs/versions/
 docs/src/_build/
 docs/superpowers
 index.md

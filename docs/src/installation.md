@@ -1,81 +1,48 @@
 # Installation
 
-## Requirements
+Chatom supports Python 3.11 and newer.
 
-- Python 3.10 or higher
-- pip or uv package manager
-
-## Basic Installation
-
-Install chatom with all backends:
+## Install the core package
 
 ```bash
 pip install chatom
 ```
 
-Or with uv:
+The core package contains platform-independent models, formatting, conversion, registries, bridging, and backend interfaces.
+
+## Install backend SDKs
+
+Install only the platform SDKs your application uses:
 
 ```bash
-uv pip install chatom
+pip install slack-sdk
+pip install discord.py
+pip install symphony-bdk-python
+pip install python-telegram-bot
 ```
 
-## Platform-Specific Installation
+Importing common Chatom models and formatting does not require those SDKs. Constructing a concrete backend does.
 
-Install only the backends you need:
+## Install optional integrations
 
 ```bash
-# Slack only
-pip install chatom[slack]
-
-# Discord only
-pip install chatom[discord]
-
-# Symphony only
-pip install chatom[symphony]
-
-# Multiple backends
-pip install chatom[slack,discord]
+pip install 'chatom[agent]'
+pip install 'chatom[mcp]'
+pip install csp
 ```
 
-## Development Installation
+The `agent` extra installs pydantic-ai integration. The `mcp` extra installs FastMCP and Hydra configuration support. CSP remains a separate optional dependency.
 
-For development with testing tools:
-
-```bash
-pip install chatom[develop]
-```
-
-Or clone the repository:
+## Install for development
 
 ```bash
 git clone https://github.com/1kbgz/chatom.git
 cd chatom
-pip install -e .[develop]
+pip install -e '.[develop]'
 ```
 
-## Verify Installation
+Build the public documentation directly with Yardang:
 
-```python
-import chatom
-print(chatom.__version__)
-
-# Check available backends
-from chatom.backend import list_backends
-print(list_backends())
+```bash
+yardang build
 ```
-
-## Dependencies
-
-Core dependencies:
-- `pydantic` - Data validation and models
-- `aiohttp` - Async HTTP client
-
-Backend-specific dependencies are installed automatically:
-- **Slack**: `slack-sdk`
-- **Discord**: `discord.py`
-- **Symphony**: `symphony-bdk-python`
-
-## Next Steps
-
-- [Quickstart Guide](quickstart.md) - Build your first bot
-- [Backend Configuration](backend-config.md) - Set up your credentials

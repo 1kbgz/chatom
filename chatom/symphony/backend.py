@@ -781,13 +781,7 @@ class SymphonyBackend(BackendBase):
         Args:
             channel: The stream to send to (ID string or Channel object).
             content: The message content (MessageML).
-            **kwargs: Additional options:
-                - data: Template data as dict.
-                - attachments: List of attachment file paths.
-                - ``thread`` / ``reply_to`` — Symphony has no thread or
-                  native reply concept, so these are accepted for
-                  cross-backend source compatibility but silently ignored
-                  (logged at debug).
+            kwargs: Symphony template data and attachments; thread and reply options are ignored.
 
         Returns:
             The sent message.

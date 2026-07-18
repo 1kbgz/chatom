@@ -313,15 +313,7 @@ class TelegramBackend(BackendBase):
         Args:
             channel: The chat to send to (ID string or Channel object).
             content: The message content (HTML formatted).
-            **kwargs: Additional options:
-                - thread: ``str | Thread | Message`` — forum topic thread.
-                  Translated to ``message_thread_id``. ``thread_id`` is
-                  still accepted as a legacy alias.
-                - reply_to: ``str | Message`` — message to reply to.
-                  Translated to ``reply_to_message_id``.
-                - parse_mode: Parse mode ('HTML', 'MarkdownV2', or None).
-                - disable_notification: Send silently.
-                - protect_content: Protect message from forwarding.
+                        kwargs: Telegram thread, reply, parse mode, notification, and content-protection options.
 
         Returns:
             The sent message.

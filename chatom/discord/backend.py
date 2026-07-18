@@ -592,14 +592,7 @@ class DiscordBackend(BackendBase):
         Args:
             channel: The channel to send to (ID string or Channel object).
             content: The message content.
-            **kwargs: Additional options:
-                - ``thread`` — ``str | Thread | Message``. When set, the
-                  message is sent into the corresponding Discord thread
-                  channel (Discord threads are channels); the ``channel``
-                  arg is ignored for the send itself.
-                - ``reply_to`` — ``str | Message`` translated to
-                  ``discord.MessageReference``.
-                - embed, embeds, file, files, tts.
+                        kwargs: Discord thread, reply, embed, file, and text-to-speech options.
 
         Returns:
             The sent message.
