@@ -1,0 +1,763 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="prev" title="Backend APIs" href="api-backends.html">
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
+        <title>Integration APIs - chatom v0.2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=890fd012" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #eeffcc;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">chatom <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.2.0</code></div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  <span class="sidebar-brand-text">chatom <code style='font-size: var(--font-size--small--4);color: var(--sd-color-primary);'>v0.2.0</code></span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input aria-label="Toggle navigation of Tutorials" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial-unified-frontend.html">Tutorial: one message for four backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial-conversation.html">Tutorial: model a conversation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="howtos.html">How-to guides</a><input aria-label="Toggle navigation of How-to guides" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="howto-backends.html">Connect and send through a backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-formatting.html">Format rich messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-bridge.html">Bridge messages between platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-interactions.html">Handle buttons and menus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-ai.html">Expose a backend to agents and MCP clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-csp.html">Connect Chatom to CSP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-testing.html">Test backend-independent code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">The unified frontend</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="api.html">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api-core.html">Core models and backend interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html">Platform backends</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Integrations</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../_sources/docs/src/api-integrations.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section class="tex2jax_ignore mathjax_ignore" id="integration-apis">
+<h1>Integration APIs<a class="headerlink" href="#integration-apis" title="Link to this heading">¶</a></h1>
+<p>Cross-platform bridging, interaction dispatch, agent tools, MCP servers, and CSP adapters.</p>
+<section id="bridging">
+<h2>Bridging<a class="headerlink" href="#bridging" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chatom.bridge.</span></span><span class="sig-name descname"><span class="pre">IdentityMapper</span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Maps user identities across chat backends.</p>
+<p>Uses email as the primary join key.  Backends are registered so
+the mapper can perform <code class="docutils literal notranslate"><span class="pre">fetch_user(email=...)</span></code> lookups.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mapper</span> <span class="o">=</span> <span class="n">IdentityMapper</span><span class="p">()</span>
+<span class="n">mapper</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">,</span> <span class="n">slack_backend</span><span class="p">)</span>
+<span class="n">mapper</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="s2">&quot;symphony&quot;</span><span class="p">,</span> <span class="n">symphony_backend</span><span class="p">)</span>
+
+<span class="c1"># Auto-discover a user on all backends by email</span>
+<span class="k">await</span> <span class="n">mapper</span><span class="o">.</span><span class="n">link_by_email</span><span class="p">(</span><span class="s2">&quot;alice@company.com&quot;</span><span class="p">)</span>
+
+<span class="c1"># Resolve from one backend to another</span>
+<span class="n">sym_user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">mapper</span><span class="o">.</span><span class="n">resolve</span><span class="p">(</span><span class="n">slack_user</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">&quot;symphony&quot;</span><span class="p">)</span>
+
+<span class="c1"># Manual link</span>
+<span class="n">mapper</span><span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="n">slack_user</span><span class="p">,</span> <span class="n">symphony_user</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s2">&quot;email&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.register_backend">
+<span class="sig-name descname"><span class="pre">register_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.register_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.register_backend" title="Link to this definition">¶</a></dt>
+<dd><p>Register a backend for user lookups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Short identifier (e.g. <code class="docutils literal notranslate"><span class="pre">&quot;slack&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;symphony&quot;</span></code>).</p></li>
+<li><p><strong>backend</strong> – A chatom <code class="docutils literal notranslate"><span class="pre">BackendBase</span></code> instance.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.backends">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">backends</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chatom.bridge.IdentityMapper.backends" title="Link to this definition">¶</a></dt>
+<dd><p>List of registered backend names.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.link">
+<span class="sig-name descname"><span class="pre">link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">users</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.user.User" title="chatom.base.user.User"><span class="pre">User</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'email'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backends</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LinkedIdentity</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.link" title="Link to this definition">¶</a></dt>
+<dd><p>Manually link User objects as the same person.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*users</strong> – Two or more User objects from different backends.</p></li>
+<li><p><strong>by</strong> – The field to use as the join key (currently only <code class="docutils literal notranslate"><span class="pre">&quot;email&quot;</span></code>).</p></li>
+<li><p><strong>backends</strong> – Optional list of backend names corresponding to each user.
+If not provided, uses <code class="docutils literal notranslate"><span class="pre">user.metadata.get(&quot;backend&quot;)</span></code> or
+the user’s class name as a fallback.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The linked identity group.</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If fewer than 2 users or join key is missing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.link_by_email">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">link_by_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LinkedIdentity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.link_by_email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.link_by_email" title="Link to this definition">¶</a></dt>
+<dd><p>Discover and link a user across all registered backends by email.</p>
+<p>Queries each registered backend with <code class="docutils literal notranslate"><span class="pre">fetch_user(email=...)</span></code>.
+If found on 2+ backends, links them into an identity group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>email</strong> – The email address to search for.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The linked identity group, or None if found on fewer than 2 backends.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.link_all_by_email">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">link_all_by_email</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">emails</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinkedIdentity</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.link_all_by_email"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.link_all_by_email" title="Link to this definition">¶</a></dt>
+<dd><p>Link multiple users by email in batch.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>emails</strong> – List of email addresses.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of successfully linked identity groups (found on 2+ backends).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.resolve">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">resolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.user.User" title="chatom.base.user.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api-core.html#chatom.base.user.User" title="chatom.base.user.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.resolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.resolve" title="Link to this definition">¶</a></dt>
+<dd><p>Resolve a user from one backend to another.</p>
+<p>Looks up the user’s identity group and returns the cached User
+for the target backend.  If not cached, attempts a backend
+lookup by email.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – A User object or user ID string.</p></li>
+<li><p><strong>source</strong> – The backend the user is from (required if user is a string,
+or if the user isn’t already linked).</p></li>
+<li><p><strong>target</strong> – The backend to resolve to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The User on the target backend, or None if not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.resolve_id">
+<span class="sig-name descname"><span class="pre">resolve_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.user.User" title="chatom.base.user.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.resolve_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.resolve_id" title="Link to this definition">¶</a></dt>
+<dd><p>Synchronously resolve a user ID on the target backend.</p>
+<p>Only uses the local cache — does not make backend calls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – A User object or user ID string.</p></li>
+<li><p><strong>source</strong> – The source backend.</p></li>
+<li><p><strong>target</strong> – The target backend.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The user ID on the target backend, or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.get_identity">
+<span class="sig-name descname"><span class="pre">get_identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.user.User" title="chatom.base.user.User"><span class="pre">User</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">LinkedIdentity</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.get_identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.get_identity" title="Link to this definition">¶</a></dt>
+<dd><p>Get the identity group for a user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>user</strong> – A User object or user ID string.</p></li>
+<li><p><strong>backend</strong> – The backend name (required if user is a string).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The LinkedIdentity group, or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.identities">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identities</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">LinkedIdentity</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chatom.bridge.IdentityMapper.identities" title="Link to this definition">¶</a></dt>
+<dd><p>All linked identity groups.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.IdentityMapper.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/identity.html#IdentityMapper.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.IdentityMapper.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Clear all mappings.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chatom.bridge.MessageBridge">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chatom.bridge.</span></span><span class="sig-name descname"><span class="pre">MessageBridge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dest_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identity_mapper</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chatom.bridge.IdentityMapper" title="chatom.bridge.identity.IdentityMapper"><span class="pre">IdentityMapper</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attribution_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'📨</span> <span class="pre">{name}</span> <span class="pre">(via</span> <span class="pre">{source}):\n'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chatom/bridge/relay.html#MessageBridge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.MessageBridge" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Forwards messages between two chat backends.</p>
+<p>Handles:
+- Format conversion (markdown ↔ HTML ↔ MessageML)
+- Mention translation via IdentityMapper
+- Sender attribution
+- Attachment forwarding</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bridge</span> <span class="o">=</span> <span class="n">MessageBridge</span><span class="p">(</span>
+    <span class="n">source</span><span class="o">=</span><span class="n">slack_backend</span><span class="p">,</span>
+    <span class="n">dest</span><span class="o">=</span><span class="n">symphony_backend</span><span class="p">,</span>
+    <span class="n">identity_mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
+    <span class="n">channels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;C123&quot;</span><span class="p">:</span> <span class="s2">&quot;sym_stream_id&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="c1"># Forward a single message</span>
+<span class="k">await</span> <span class="n">bridge</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+<span class="c1"># Forward with explicit target channel</span>
+<span class="k">await</span> <span class="n">bridge</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">to_channel</span><span class="o">=</span><span class="s2">&quot;sym_stream_id&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.MessageBridge.forward">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.message.Message" title="chatom.base.message.Message"><span class="pre">Message</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_attachments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="api-core.html#chatom.base.message.Message" title="chatom.base.message.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/relay.html#MessageBridge.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.MessageBridge.forward" title="Link to this definition">¶</a></dt>
+<dd><p>Forward a message from source to dest.</p>
+<ol class="arabic simple">
+<li><p>Resolves the target channel</p></li>
+<li><p>Converts the message to a FormattedMessage</p></li>
+<li><p>Translates mentions via the IdentityMapper</p></li>
+<li><p>Prepends sender attribution (if enabled)</p></li>
+<li><p>Renders for the destination backend and sends</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> – The source message to forward.</p></li>
+<li><p><strong>to_channel</strong> – Explicit target channel ID (overrides channel map).</p></li>
+<li><p><strong>include_attachments</strong> – Whether to include attachments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sent message on the destination, or None on failure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.bridge.MessageBridge.forward_many">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forward_many</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.message.Message" title="chatom.base.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_attachments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.message.Message" title="chatom.base.message.Message"><span class="pre">Message</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/chatom/bridge/relay.html#MessageBridge.forward_many"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.bridge.MessageBridge.forward_many" title="Link to this definition">¶</a></dt>
+<dd><p>Forward multiple messages in order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – Source messages.</p></li>
+<li><p><strong>to_channel</strong> – Target channel (uses channel map if not provided).</p></li>
+<li><p><strong>include_attachments</strong> – Whether to include attachments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of sent messages (None entries excluded).</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-chatom.handlers">
+<span id="interaction-dispatch"></span><h2>Interaction dispatch<a class="headerlink" href="#module-chatom.handlers" title="Link to this heading">¶</a></h2>
+<p>Interaction handler registry.</p>
+<p>Provides a small, dependency-free pub/sub for dispatching
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interaction</span></code> events to registered callbacks,
+keyed on <code class="docutils literal notranslate"><span class="pre">action_id</span></code>. Usable with or without CSP.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">registry</span> <span class="o">=</span> <span class="n">InteractionRegistry</span><span class="p">()</span>
+
+<span class="nd">@registry</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;confirm_button&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">handle_confirm</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">channel_id</span><span class="p">,</span> <span class="s2">&quot;Confirmed!&quot;</span><span class="p">)</span>
+
+<span class="c1"># Drive the registry from a backend stream</span>
+<span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_interactions</span><span class="p">():</span>
+    <span class="k">await</span> <span class="n">registry</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py data">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionHandler">
+<span class="sig-prename descclassname"><span class="pre">chatom.handlers.</span></span><span class="sig-name descname"><span class="pre">InteractionHandler</span></span><a class="headerlink" href="#chatom.handlers.InteractionHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Handlers can be sync or async callables accepting a single
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Interaction</span></code> argument. Async handlers are awaited; sync
+handlers are called directly.</p>
+<p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">Callable</span></code>[[<a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Interaction</span></code></a>], <code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code> | <code class="xref py py-class docutils literal notranslate"><span class="pre">Awaitable</span></code>[<code class="xref py py-obj docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chatom.handlers.</span></span><span class="sig-name descname"><span class="pre">InteractionRegistry</span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Dispatch interactions to handlers keyed by <code class="docutils literal notranslate"><span class="pre">action_id</span></code>.</p>
+<p>Handlers are called in registration order. A single handler can be
+registered for multiple action IDs by calling <a class="reference internal" href="#chatom.handlers.InteractionRegistry.register" title="chatom.handlers.InteractionRegistry.register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code></a>
+repeatedly. Use <code class="docutils literal notranslate"><span class="pre">action_id=&quot;&quot;</span></code> (or <a class="reference internal" href="#chatom.handlers.InteractionRegistry.register_default" title="chatom.handlers.InteractionRegistry.register_default"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register_default()</span></code></a>) to
+register a catch-all handler that fires when no specific handler
+matches.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.register">
+<span class="sig-name descname"><span class="pre">register</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.register"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.register" title="Link to this definition">¶</a></dt>
+<dd><p>Register <code class="docutils literal notranslate"><span class="pre">handler</span></code> for <code class="docutils literal notranslate"><span class="pre">action_id</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.register_default">
+<span class="sig-name descname"><span class="pre">register_default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.register_default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.register_default" title="Link to this definition">¶</a></dt>
+<dd><p>Register a catch-all handler.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.unregister">
+<span class="sig-name descname"><span class="pre">unregister</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">handler</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.unregister"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.unregister" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a previously registered handler. Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if removed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Remove all handlers, or just those for <code class="docutils literal notranslate"><span class="pre">action_id</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.on">
+<span class="sig-name descname"><span class="pre">on</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.on"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.on" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator form of <a class="reference internal" href="#chatom.handlers.InteractionRegistry.register" title="chatom.handlers.InteractionRegistry.register"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register()</span></code></a>.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@registry</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;my_button&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">handle</span><span class="p">(</span><span class="n">event</span><span class="p">):</span> <span class="o">...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.action_ids">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#chatom.handlers.InteractionRegistry.action_ids" title="Link to this definition">¶</a></dt>
+<dd><p>Return all registered action IDs (excluding the wildcard).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.handlers_for">
+<span class="sig-name descname"><span class="pre">handlers_for</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Awaitable</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.handlers_for"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.handlers_for" title="Link to this definition">¶</a></dt>
+<dd><p>Return the handler list that <a class="reference internal" href="#chatom.handlers.InteractionRegistry.dispatch" title="chatom.handlers.InteractionRegistry.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch()</span></code></a> would call.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.dispatch">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.dispatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.dispatch" title="Link to this definition">¶</a></dt>
+<dd><p>Dispatch <code class="docutils literal notranslate"><span class="pre">event</span></code> to all matching handlers.</p>
+<p>Returns the list of handler results, in registration order.
+Exceptions from individual handlers are logged and do not
+prevent subsequent handlers from running.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="chatom.handlers.InteractionRegistry.dispatch_sync">
+<span class="sig-name descname"><span class="pre">dispatch_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="api-core.html#chatom.base.interaction.Interaction" title="chatom.base.interaction.Interaction"><span class="pre">Interaction</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../_modules/chatom/handlers.html#InteractionRegistry.dispatch_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.handlers.InteractionRegistry.dispatch_sync" title="Link to this definition">¶</a></dt>
+<dd><p>Sync wrapper around <a class="reference internal" href="#chatom.handlers.InteractionRegistry.dispatch" title="chatom.handlers.InteractionRegistry.dispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">dispatch()</span></code></a>.</p>
+<p>Runs the async dispatcher on the current event loop if one is
+running, otherwise in a short-lived loop. Useful for CSP nodes
+and other sync call sites.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="agents">
+<h2>Agents<a class="headerlink" href="#agents" title="Link to this heading">¶</a></h2>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">chatom[agent]</span></code>.</p>
+</section>
+<section id="model-context-protocol">
+<h2>Model Context Protocol<a class="headerlink" href="#model-context-protocol" title="Link to this heading">¶</a></h2>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">chatom[mcp]</span></code>.</p>
+</section>
+<section id="csp">
+<h2>CSP<a class="headerlink" href="#csp" title="Link to this heading">¶</a></h2>
+<p>Requires <code class="docutils literal notranslate"><span class="pre">csp</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="chatom.csp.BackendAdapter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chatom.csp.</span></span><span class="sig-name descname"><span class="pre">BackendAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chatom/csp.html#BackendAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.csp.BackendAdapter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases:</p>
+<p>Placeholder when csp is not installed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chatom.csp.message_reader">
+<span class="sig-prename descclassname"><span class="pre">chatom.csp.</span></span><span class="sig-name descname"><span class="pre">message_reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chatom/csp.html#message_reader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.csp.message_reader" title="Link to this definition">¶</a></dt>
+<dd><p>Placeholder when csp is not installed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chatom.csp.message_writer">
+<span class="sig-prename descclassname"><span class="pre">chatom.csp.</span></span><span class="sig-name descname"><span class="pre">message_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chatom/csp.html#message_writer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.csp.message_writer" title="Link to this definition">¶</a></dt>
+<dd><p>Placeholder when csp is not installed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="chatom.csp.interaction_reader">
+<span class="sig-prename descclassname"><span class="pre">chatom.csp.</span></span><span class="sig-name descname"><span class="pre">interaction_reader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chatom/csp.html#interaction_reader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.csp.interaction_reader" title="Link to this definition">¶</a></dt>
+<dd><p>Placeholder when csp is not installed.</p>
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="api-backends.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Backend APIs</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; the chatom authors
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Integration APIs</a><ul>
+<li><a class="reference internal" href="#bridging">Bridging</a><ul>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper"><code class="docutils literal notranslate"><span class="pre">IdentityMapper</span></code></a><ul>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.register_backend"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.register_backend()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.backends"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.backends</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.link"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.link()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.link_by_email"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.link_by_email()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.link_all_by_email"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.link_all_by_email()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.resolve"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.resolve()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.resolve_id"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.resolve_id()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.get_identity"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.get_identity()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.identities"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.identities</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.IdentityMapper.clear"><code class="docutils literal notranslate"><span class="pre">IdentityMapper.clear()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#chatom.bridge.MessageBridge"><code class="docutils literal notranslate"><span class="pre">MessageBridge</span></code></a><ul>
+<li><a class="reference internal" href="#chatom.bridge.MessageBridge.forward"><code class="docutils literal notranslate"><span class="pre">MessageBridge.forward()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.bridge.MessageBridge.forward_many"><code class="docutils literal notranslate"><span class="pre">MessageBridge.forward_many()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-chatom.handlers">Interaction dispatch</a><ul>
+<li><a class="reference internal" href="#chatom.handlers.InteractionHandler"><code class="docutils literal notranslate"><span class="pre">InteractionHandler</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry</span></code></a><ul>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.register"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.register()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.register_default"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.register_default()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.unregister"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.unregister()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.clear"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.clear()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.on"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.on()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.action_ids"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.action_ids</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.handlers_for"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.handlers_for()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.dispatch"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.dispatch()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.handlers.InteractionRegistry.dispatch_sync"><code class="docutils literal notranslate"><span class="pre">InteractionRegistry.dispatch_sync()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#agents">Agents</a></li>
+<li><a class="reference internal" href="#model-context-protocol">Model Context Protocol</a></li>
+<li><a class="reference internal" href="#csp">CSP</a><ul>
+<li><a class="reference internal" href="#chatom.csp.BackendAdapter"><code class="docutils literal notranslate"><span class="pre">BackendAdapter</span></code></a></li>
+<li><a class="reference internal" href="#chatom.csp.message_reader"><code class="docutils literal notranslate"><span class="pre">message_reader()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.csp.message_writer"><code class="docutils literal notranslate"><span class="pre">message_writer()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.csp.interaction_reader"><code class="docutils literal notranslate"><span class="pre">interaction_reader()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=938c9ccc"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script src="../../_static/js/custom.js?v=956e5d78"></script>
+    </body>
+</html>

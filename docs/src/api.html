@@ -3,10 +3,10 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="prev" title="Integration Testing" href="integration-testing.html">
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="Core API" href="api-core.html"><link rel="prev" title="The unified frontend" href="concepts.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>API Reference - chatom v0.2.0</title>
+        <title>API reference - chatom v0.2.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
       </label>
     </div>
@@ -198,20 +198,29 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="base-models.html">Base Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend-config.html">Backend Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messaging.html">Messaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mentions.html">Mentions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reactions-threads.html">Reactions and Threads</a></li>
-<li class="toctree-l1"><a class="reference internal" href="format-system.html">Format System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced-features.html">Advanced Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conversion.html">Type Conversion System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="csp-integration.html">CSP Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="integration-testing.html">Integration Testing</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input aria-label="Toggle navigation of Tutorials" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial-unified-frontend.html">Tutorial: one message for four backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial-conversation.html">Tutorial: model a conversation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="howtos.html">How-to guides</a><input aria-label="Toggle navigation of How-to guides" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="howto-backends.html">Connect and send through a backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-formatting.html">Format rich messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-bridge.html">Bridge messages between platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-interactions.html">Handle buttons and menus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-ai.html">Expose a backend to agents and MCP clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-csp.html">Connect Chatom to CSP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-testing.html">Test backend-independent code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">The unified frontend</a></li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">API reference</a><input aria-label="Toggle navigation of API reference" checked="" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-core.html">Core models and backend interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html">Platform backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html">Integrations</a></li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -245,277 +254,90 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
           </label>
         </div>
         <article role="main" id="furo-main-content">
           <section class="tex2jax_ignore mathjax_ignore" id="api-reference">
-<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
-<p>This page provides links to the automatically generated API documentation.</p>
-<section id="modules">
-<h2>Modules<a class="headerlink" href="#modules" title="Link to this heading">¶</a></h2>
-<p>The full API documentation is auto-generated from the source code docstrings.</p>
-<section id="core-modules">
-<h3>Core Modules<a class="headerlink" href="#core-modules" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>chatom</strong> - Main module with all exports</p></li>
-<li><p><strong>chatom.base</strong> - Base models (User, Channel, Message, etc.)</p></li>
-<li><p><strong>chatom.format</strong> - Format system (TextNode, Table, FormattedMessage)</p></li>
-<li><p><strong>chatom.backend</strong> - Backend base class and configuration</p></li>
-<li><p><strong>chatom.enums</strong> - Backend type constants</p></li>
+<h1>API reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+<p>The reference is generated from public package exports and their docstrings.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api-core.html">Core models and backend interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-core.html#module-chatom.base.base">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-core.html#module-chatom.base.capabilities">Capabilities and conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-core.html#module-chatom.base.connection">Connections and backends</a></li>
 </ul>
-</section>
-<section id="backend-modules">
-<h3>Backend Modules<a class="headerlink" href="#backend-modules" title="Link to this heading">¶</a></h3>
-<ul class="simple">
-<li><p><strong>chatom.discord</strong> - Discord-specific models and utilities</p></li>
-<li><p><strong>chatom.slack</strong> - Slack-specific models and utilities</p></li>
-<li><p><strong>chatom.symphony</strong> - Symphony-specific models and utilities</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-format.html">Formatting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.variant.Format"><code class="docutils literal notranslate"><span class="pre">Format</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.TextNode"><code class="docutils literal notranslate"><span class="pre">TextNode</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Text"><code class="docutils literal notranslate"><span class="pre">Text</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Raw"><code class="docutils literal notranslate"><span class="pre">Raw</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Bold"><code class="docutils literal notranslate"><span class="pre">Bold</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Italic"><code class="docutils literal notranslate"><span class="pre">Italic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Strikethrough"><code class="docutils literal notranslate"><span class="pre">Strikethrough</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Underline"><code class="docutils literal notranslate"><span class="pre">Underline</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Code"><code class="docutils literal notranslate"><span class="pre">Code</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.CodeBlock"><code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Link"><code class="docutils literal notranslate"><span class="pre">Link</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Quote"><code class="docutils literal notranslate"><span class="pre">Quote</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Paragraph"><code class="docutils literal notranslate"><span class="pre">Paragraph</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.LineBreak"><code class="docutils literal notranslate"><span class="pre">LineBreak</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.HorizontalRule"><code class="docutils literal notranslate"><span class="pre">HorizontalRule</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.ListItem"><code class="docutils literal notranslate"><span class="pre">ListItem</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.UnorderedList"><code class="docutils literal notranslate"><span class="pre">UnorderedList</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.OrderedList"><code class="docutils literal notranslate"><span class="pre">OrderedList</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Heading"><code class="docutils literal notranslate"><span class="pre">Heading</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.UserMention"><code class="docutils literal notranslate"><span class="pre">UserMention</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.ChannelMention"><code class="docutils literal notranslate"><span class="pre">ChannelMention</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Emoji"><code class="docutils literal notranslate"><span class="pre">Emoji</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Span"><code class="docutils literal notranslate"><span class="pre">Span</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.text.Document"><code class="docutils literal notranslate"><span class="pre">Document</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.table.Table"><code class="docutils literal notranslate"><span class="pre">Table</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.table.TableRow"><code class="docutils literal notranslate"><span class="pre">TableRow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.table.TableCell"><code class="docutils literal notranslate"><span class="pre">TableCell</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.table.TableAlignment"><code class="docutils literal notranslate"><span class="pre">TableAlignment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.attachment.FormattedAttachment"><code class="docutils literal notranslate"><span class="pre">FormattedAttachment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.attachment.FormattedImage"><code class="docutils literal notranslate"><span class="pre">FormattedImage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.embed.FormattedEmbed"><code class="docutils literal notranslate"><span class="pre">FormattedEmbed</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.ButtonStyle"><code class="docutils literal notranslate"><span class="pre">ButtonStyle</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.Button"><code class="docutils literal notranslate"><span class="pre">Button</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.SelectOption"><code class="docutils literal notranslate"><span class="pre">SelectOption</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.SelectMenu"><code class="docutils literal notranslate"><span class="pre">SelectMenu</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.ActionRow"><code class="docutils literal notranslate"><span class="pre">ActionRow</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.TextInput"><code class="docutils literal notranslate"><span class="pre">TextInput</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.TextInputStyle"><code class="docutils literal notranslate"><span class="pre">TextInputStyle</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.Modal"><code class="docutils literal notranslate"><span class="pre">Modal</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.ComponentContainer"><code class="docutils literal notranslate"><span class="pre">ComponentContainer</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.components.attach_components_for_backend"><code class="docutils literal notranslate"><span class="pre">attach_components_for_backend()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.message.FormattedMessage"><code class="docutils literal notranslate"><span class="pre">FormattedMessage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.message.MessageBuilder"><code class="docutils literal notranslate"><span class="pre">MessageBuilder</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.message.render_message"><code class="docutils literal notranslate"><span class="pre">render_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.message.format_message"><code class="docutils literal notranslate"><span class="pre">format_message()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.message.get_format_for_backend"><code class="docutils literal notranslate"><span class="pre">get_format_for_backend()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.parse.parse_markdown"><code class="docutils literal notranslate"><span class="pre">parse_markdown()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html#chatom.format.parse.convert_format"><code class="docutils literal notranslate"><span class="pre">convert_format()</span></code></a></li>
 </ul>
-</section>
-</section>
-<section id="quick-reference">
-<h2>Quick Reference<a class="headerlink" href="#quick-reference" title="Link to this heading">¶</a></h2>
-<section id="base-models">
-<h3>Base Models<a class="headerlink" href="#base-models" title="Link to this heading">¶</a></h3>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Class</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">User</span></code></p></td>
-<td><p>Represents a chat user</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Channel</span></code></p></td>
-<td><p>Represents a chat channel</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Thread</span></code></p></td>
-<td><p>Represents a thread in a channel</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Message</span></code></p></td>
-<td><p>Represents a chat message</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Attachment</span></code></p></td>
-<td><p>Represents a file attachment</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Embed</span></code></p></td>
-<td><p>Represents a rich embed</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Emoji</span></code></p></td>
-<td><p>Represents an emoji</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Reaction</span></code></p></td>
-<td><p>Represents a message reaction</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Presence</span></code></p></td>
-<td><p>Represents user presence/status</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Capabilities</span></code></p></td>
-<td><p>Represents backend capabilities</p></td>
-</tr>
-</tbody>
-</table>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-backends.html">Platform backends</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html#module-chatom.discord.config">Discord</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html#module-chatom.slack.config">Slack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html#module-chatom.symphony.config">Symphony</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html#module-chatom.telegram.config">Telegram</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-integrations.html">Integrations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html#bridging">Bridging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html#module-chatom.handlers">Interaction dispatch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html#agents">Agents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html#model-context-protocol">Model Context Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html#csp">CSP</a></li>
+</ul>
+</li>
+</ul>
 </div>
-</section>
-<section id="format-system">
-<h3>Format System<a class="headerlink" href="#format-system" title="Link to this heading">¶</a></h3>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Class</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Format</span></code></p></td>
-<td><p>Enum of output formats</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">TextNode</span></code></p></td>
-<td><p>Base class for text formatting</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Text</span></code></p></td>
-<td><p>Plain text content</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Bold</span></code></p></td>
-<td><p>Bold formatted text</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Italic</span></code></p></td>
-<td><p>Italic formatted text</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Code</span></code></p></td>
-<td><p>Inline code</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CodeBlock</span></code></p></td>
-<td><p>Code block with syntax highlighting</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Link</span></code></p></td>
-<td><p>Hyperlink</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Quote</span></code></p></td>
-<td><p>Block quote</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Heading</span></code></p></td>
-<td><p>Heading (h1-h6)</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Paragraph</span></code></p></td>
-<td><p>Paragraph of text</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Table</span></code></p></td>
-<td><p>Data table</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">FormattedMessage</span></code></p></td>
-<td><p>Container for formatted content</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">MessageBuilder</span></code></p></td>
-<td><p>Fluent API for building messages</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="backend-specific-models">
-<h3>Backend-Specific Models<a class="headerlink" href="#backend-specific-models" title="Link to this heading">¶</a></h3>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Backend</p></th>
-<th class="head"><p>User</p></th>
-<th class="head"><p>Channel</p></th>
-<th class="head"><p>Presence</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Discord</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">DiscordUser</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">DiscordChannel</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">DiscordPresence</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>Slack</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SlackUser</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SlackChannel</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SlackPresence</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>Symphony</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SymphonyUser</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SymphonyChannel</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">SymphonyPresence</span></code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="mention-functions">
-<h3>Mention Functions<a class="headerlink" href="#mention-functions" title="Link to this heading">¶</a></h3>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Backend</p></th>
-<th class="head"><p>Functions</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Discord</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mention_user</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_channel</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_role</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_everyone</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_here</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>Slack</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mention_user</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_channel</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_user_group</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_here</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_channel_all</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_everyone</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p>Symphony</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mention_user</span></code>, <code class="docutils literal notranslate"><span class="pre">mention_user_by_email</span></code>, <code class="docutils literal notranslate"><span class="pre">format_hashtag</span></code>, <code class="docutils literal notranslate"><span class="pre">format_cashtag</span></code></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="backend-methods">
-<h3>Backend Methods<a class="headerlink" href="#backend-methods" title="Link to this heading">¶</a></h3>
-<p>All backends inherit from <code class="docutils literal notranslate"><span class="pre">BackendBase</span></code> and provide these core methods:</p>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Method</p></th>
-<th class="head"><p>Description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">connect()</span></code></p></td>
-<td><p>Establish connection to the backend</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">disconnect()</span></code></p></td>
-<td><p>Disconnect from the backend</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fetch_user(id)</span></code></p></td>
-<td><p>Fetch a user by ID</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fetch_channel(id)</span></code></p></td>
-<td><p>Fetch a channel by ID</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fetch_messages(channel_id,</span> <span class="pre">limit,</span> <span class="pre">before,</span> <span class="pre">after)</span></code></p></td>
-<td><p>Fetch message history from a channel</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">send_message(channel_id,</span> <span class="pre">content,</span> <span class="pre">**kwargs)</span></code></p></td>
-<td><p>Send a message to a channel</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lookup_user(id,</span> <span class="pre">name,</span> <span class="pre">email,</span> <span class="pre">handle)</span></code></p></td>
-<td><p>Look up a user by any identifier</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lookup_channel(id,</span> <span class="pre">name)</span></code></p></td>
-<td><p>Look up a channel by any identifier</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">get_presence(user_id)</span></code></p></td>
-<td><p>Get a user’s presence/online status</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">set_presence(status,</span> <span class="pre">status_text,</span> <span class="pre">**kwargs)</span></code></p></td>
-<td><p>Set the current user’s presence status</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<section id="presence-support-by-backend">
-<h4>Presence Support by Backend<a class="headerlink" href="#presence-support-by-backend" title="Link to this heading">¶</a></h4>
-<div class="table-wrapper colwidths-auto docutils container">
-<table class="docutils align-default">
-<thead>
-<tr class="row-odd"><th class="head"><p>Backend</p></th>
-<th class="head"><p><code class="docutils literal notranslate"><span class="pre">get_presence</span></code></p></th>
-<th class="head"><p><code class="docutils literal notranslate"><span class="pre">set_presence</span></code></p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p>Discord</p></td>
-<td><p>✅ Returns user presence with activity</p></td>
-<td><p>✅ Set bot presence/status</p></td>
-</tr>
-<tr class="row-odd"><td><p>Slack</p></td>
-<td><p>✅ Returns active/away status</p></td>
-<td><p>✅ Set presence and status text</p></td>
-</tr>
-<tr class="row-even"><td><p>Symphony</p></td>
-<td><p>✅ Returns Symphony presence category</p></td>
-<td><p>✅ Set availability status</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="sync-helper">
-<h4>Sync Helper<a class="headerlink" href="#sync-helper" title="Link to this heading">¶</a></h4>
-<p>All async methods are available synchronously via the <code class="docutils literal notranslate"><span class="pre">sync</span></code> property:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">backend</span> <span class="o">=</span> <span class="n">DiscordBackend</span><span class="p">()</span>
-<span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="n">messages</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="s2">&quot;channel_id&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-<span class="n">presence</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="s2">&quot;user_id&quot;</span><span class="p">)</span>
-<span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span><span class="s2">&quot;online&quot;</span><span class="p">,</span> <span class="s2">&quot;Available&quot;</span><span class="p">)</span>
-<span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-</section>
-</section>
 </section>
 
         </article>
@@ -523,15 +345,23 @@
       <footer>
         
         <div class="related-pages">
-          
-          <a class="prev-page" href="integration-testing.html">
+          <a class="next-page" href="api-core.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Core API</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="concepts.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Integration Testing</div>
+                <div class="title">The unified frontend</div>
                 
               </div>
             </a>
@@ -553,43 +383,8 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">API Reference</a><ul>
-<li><a class="reference internal" href="#modules">Modules</a><ul>
-<li><a class="reference internal" href="#core-modules">Core Modules</a></li>
-<li><a class="reference internal" href="#backend-modules">Backend Modules</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#quick-reference">Quick Reference</a><ul>
-<li><a class="reference internal" href="#base-models">Base Models</a></li>
-<li><a class="reference internal" href="#format-system">Format System</a></li>
-<li><a class="reference internal" href="#backend-specific-models">Backend-Specific Models</a></li>
-<li><a class="reference internal" href="#mention-functions">Mention Functions</a></li>
-<li><a class="reference internal" href="#backend-methods">Backend Methods</a><ul>
-<li><a class="reference internal" href="#presence-support-by-backend">Presence Support by Backend</a></li>
-<li><a class="reference internal" href="#sync-helper">Sync Helper</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>

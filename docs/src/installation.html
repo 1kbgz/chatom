@@ -3,7 +3,7 @@
   <head><meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="Quickstart" href="quickstart.html"><link rel="prev" title="Overview" href="../../index.html">
+<link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html"><link rel="next" title="Tutorials" href="tutorials.html"><link rel="prev" title="Chatom" href="../../index.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
         <title>Installation - chatom v0.2.0</title>
@@ -198,20 +198,29 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="base-models.html">Base Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backends.html">Backends</a></li>
-<li class="toctree-l1"><a class="reference internal" href="backend-config.html">Backend Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="messaging.html">Messaging</a></li>
-<li class="toctree-l1"><a class="reference internal" href="mentions.html">Mentions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reactions-threads.html">Reactions and Threads</a></li>
-<li class="toctree-l1"><a class="reference internal" href="format-system.html">Format System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced-features.html">Advanced Features</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conversion.html">Type Conversion System</a></li>
-<li class="toctree-l1"><a class="reference internal" href="csp-integration.html">CSP Integration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="integration-testing.html">Integration Testing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input aria-label="Toggle navigation of Tutorials" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial-unified-frontend.html">Tutorial: one message for four backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial-conversation.html">Tutorial: model a conversation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="howtos.html">How-to guides</a><input aria-label="Toggle navigation of How-to guides" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="howto-backends.html">Connect and send through a backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-formatting.html">Format rich messages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-bridge.html">Bridge messages between platforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-interactions.html">Handle buttons and menus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-ai.html">Expose a backend to agents and MCP clients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-csp.html">Connect Chatom to CSP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="howto-testing.html">Test backend-independent code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts.html">The unified frontend</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api.html">API reference</a><input aria-label="Toggle navigation of API reference" class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><span class="icon"><svg><use href="#svg-arrow-right"></use></svg></span></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api-core.html">Core models and backend interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-format.html">Formatting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-backends.html">Platform backends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api-integrations.html">Integrations</a></li>
+</ul>
+</li>
 </ul>
 
 </div>
@@ -252,85 +261,45 @@
         <article role="main" id="furo-main-content">
           <section class="tex2jax_ignore mathjax_ignore" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h1>
-<section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>Python 3.10 or higher</p></li>
-<li><p>pip or uv package manager</p></li>
-</ul>
-</section>
-<section id="basic-installation">
-<h2>Basic Installation<a class="headerlink" href="#basic-installation" title="Link to this heading">¶</a></h2>
-<p>Install chatom with all backends:</p>
+<p>Chatom supports Python 3.11 and newer.</p>
+<section id="install-the-core-package">
+<h2>Install the core package<a class="headerlink" href="#install-the-core-package" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>chatom
 </pre></div>
 </div>
-<p>Or with uv:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>chatom
-</pre></div>
-</div>
+<p>The core package contains platform-independent models, formatting, conversion, registries, bridging, and backend interfaces.</p>
 </section>
-<section id="platform-specific-installation">
-<h2>Platform-Specific Installation<a class="headerlink" href="#platform-specific-installation" title="Link to this heading">¶</a></h2>
-<p>Install only the backends you need:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Slack only</span>
-pip<span class="w"> </span>install<span class="w"> </span>chatom<span class="o">[</span>slack<span class="o">]</span>
-
-<span class="c1"># Discord only</span>
-pip<span class="w"> </span>install<span class="w"> </span>chatom<span class="o">[</span>discord<span class="o">]</span>
-
-<span class="c1"># Symphony only</span>
-pip<span class="w"> </span>install<span class="w"> </span>chatom<span class="o">[</span>symphony<span class="o">]</span>
-
-<span class="c1"># Multiple backends</span>
-pip<span class="w"> </span>install<span class="w"> </span>chatom<span class="o">[</span>slack,discord<span class="o">]</span>
+<section id="install-backend-sdks">
+<h2>Install backend SDKs<a class="headerlink" href="#install-backend-sdks" title="Link to this heading">¶</a></h2>
+<p>Install only the platform SDKs your application uses:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>slack-sdk
+pip<span class="w"> </span>install<span class="w"> </span>discord.py
+pip<span class="w"> </span>install<span class="w"> </span>symphony-bdk-python
+pip<span class="w"> </span>install<span class="w"> </span>python-telegram-bot
 </pre></div>
 </div>
+<p>Importing common Chatom models and formatting does not require those SDKs. Constructing a concrete backend does.</p>
 </section>
-<section id="development-installation">
-<h2>Development Installation<a class="headerlink" href="#development-installation" title="Link to this heading">¶</a></h2>
-<p>For development with testing tools:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>chatom<span class="o">[</span>develop<span class="o">]</span>
+<section id="install-optional-integrations">
+<h2>Install optional integrations<a class="headerlink" href="#install-optional-integrations" title="Link to this heading">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;chatom[agent]&#39;</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;chatom[mcp]&#39;</span>
+pip<span class="w"> </span>install<span class="w"> </span>csp
 </pre></div>
 </div>
-<p>Or clone the repository:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">agent</span></code> extra installs pydantic-ai integration. The <code class="docutils literal notranslate"><span class="pre">mcp</span></code> extra installs FastMCP and Hydra configuration support. CSP remains a separate optional dependency.</p>
+</section>
+<section id="install-for-development">
+<h2>Install for development<a class="headerlink" href="#install-for-development" title="Link to this heading">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/1kbgz/chatom.git
 <span class="nb">cd</span><span class="w"> </span>chatom
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.<span class="o">[</span>develop<span class="o">]</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.[develop]&#39;</span>
 </pre></div>
 </div>
-</section>
-<section id="verify-installation">
-<h2>Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">chatom</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">chatom</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
-
-<span class="c1"># Check available backends</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_backends</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">list_backends</span><span class="p">())</span>
+<p>Build the public documentation directly with Yardang:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yardang<span class="w"> </span>build
 </pre></div>
 </div>
-</section>
-<section id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading">¶</a></h2>
-<p>Core dependencies:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">pydantic</span></code> - Data validation and models</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">aiohttp</span></code> - Async HTTP client</p></li>
-</ul>
-<p>Backend-specific dependencies are installed automatically:</p>
-<ul class="simple">
-<li><p><strong>Slack</strong>: <code class="docutils literal notranslate"><span class="pre">slack-sdk</span></code></p></li>
-<li><p><strong>Discord</strong>: <code class="docutils literal notranslate"><span class="pre">discord.py</span></code></p></li>
-<li><p><strong>Symphony</strong>: <code class="docutils literal notranslate"><span class="pre">symphony-bdk-python</span></code></p></li>
-</ul>
-</section>
-<section id="next-steps">
-<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="quickstart.html"><span class="std std-doc">Quickstart Guide</span></a> - Build your first bot</p></li>
-<li><p><a class="reference internal" href="backend-config.html"><span class="std std-doc">Backend Configuration</span></a> - Set up your credentials</p></li>
-</ul>
 </section>
 </section>
 
@@ -339,12 +308,12 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="quickstart.html">
+          <a class="next-page" href="tutorials.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Quickstart</div>
+                <div class="title">Tutorials</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -390,13 +359,10 @@ pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </s
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#basic-installation">Basic Installation</a></li>
-<li><a class="reference internal" href="#platform-specific-installation">Platform-Specific Installation</a></li>
-<li><a class="reference internal" href="#development-installation">Development Installation</a></li>
-<li><a class="reference internal" href="#verify-installation">Verify Installation</a></li>
-<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
-<li><a class="reference internal" href="#next-steps">Next Steps</a></li>
+<li><a class="reference internal" href="#install-the-core-package">Install the core package</a></li>
+<li><a class="reference internal" href="#install-backend-sdks">Install backend SDKs</a></li>
+<li><a class="reference internal" href="#install-optional-integrations">Install optional integrations</a></li>
+<li><a class="reference internal" href="#install-for-development">Install for development</a></li>
 </ul>
 </li>
 </ul>
