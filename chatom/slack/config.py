@@ -5,7 +5,6 @@ This module provides configuration classes for the Slack backend.
 
 from pathlib import Path
 from ssl import SSLContext
-from typing import Optional, Union
 
 from pydantic import Field, SecretStr, field_validator
 
@@ -35,17 +34,17 @@ class SlackConfig(BackendConfig):
         >>> backend = SlackBackend(config=config)
     """
 
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = {"arbitrary_types_allowed": True}  # noqa: RUF012
 
-    bot_token: Union[str, SecretStr] = Field(
+    bot_token: str | SecretStr = Field(
         default=SecretStr(""),
         description="Slack Bot User OAuth Token (xoxb-...) or path to file.",
     )
-    app_token: Union[str, SecretStr] = Field(
+    app_token: str | SecretStr = Field(
         default=SecretStr(""),
         description="Slack App-Level Token (xapp-...) or path to file.",
     )
-    signing_secret: Union[str, SecretStr] = Field(
+    signing_secret: str | SecretStr = Field(
         default=SecretStr(""),
         description="Slack signing secret for request verification.",
     )
@@ -61,14 +60,14 @@ class SlackConfig(BackendConfig):
         default=False,
         description="Whether to use Socket Mode for events.",
     )
-    ssl: Optional[SSLContext] = Field(
+    ssl: SSLContext | None = Field(
         default=None,
         description="Optional SSL context for connections.",
     )
 
     @field_validator("app_token", mode="before")
     @classmethod
-    def validate_app_token(cls, v: Union[str, SecretStr, None]) -> SecretStr:
+    def validate_app_token(cls, v: str | SecretStr | None) -> SecretStr:
         """Validate app token - can be a token string or path to file."""
         if v is None or v == "":
             return SecretStr("")
@@ -86,7 +85,7 @@ class SlackConfig(BackendConfig):
 
     @field_validator("bot_token", mode="before")
     @classmethod
-    def validate_bot_token(cls, v: Union[str, SecretStr, None]) -> SecretStr:
+    def validate_bot_token(cls, v: str | SecretStr | None) -> SecretStr:
         """Validate bot token - can be a token string or path to file."""
         if v is None or v == "":
             return SecretStr("")

@@ -20,14 +20,13 @@ Usage:
 import asyncio
 import os
 import sys
-from typing import Dict, List, Optional
 
 from chatom.backend import BackendBase
 from chatom.base import Message
 from chatom.format import FormattedMessage
 
 
-def get_env(name: str, required: bool = True) -> Optional[str]:
+def get_env(name: str, required: bool = True) -> str | None:
     """Get environment variable."""
     value = os.environ.get(name)
     if required and not value:
@@ -39,8 +38,8 @@ class CrossPlatformBot:
     """A bot that can run on multiple platforms simultaneously."""
 
     def __init__(self):
-        self.backends: Dict[str, BackendBase] = {}
-        self.channels: Dict[str, str] = {}  # backend_name -> channel_id
+        self.backends: dict[str, BackendBase] = {}
+        self.channels: dict[str, str] = {}  # backend_name -> channel_id
 
     async def add_slack(self) -> bool:
         """Add Slack backend."""
@@ -158,7 +157,7 @@ class CrossPlatformBot:
         print(f"✅ Connected to Symphony ({room_name})")
         return True
 
-    async def broadcast(self, content: str) -> List[Message]:
+    async def broadcast(self, content: str) -> list[Message]:
         """Send a message to all connected platforms.
 
         Uses FormattedMessage to render appropriately for each backend.

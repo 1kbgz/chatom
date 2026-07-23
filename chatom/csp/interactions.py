@@ -10,7 +10,6 @@ import contextlib
 import logging
 import threading
 from queue import Queue
-from typing import List, Optional
 
 from csp import ts
 from csp.impl.pushadapter import PushInputAdapter
@@ -33,16 +32,16 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
     def __init__(
         self,
         backend: BackendBase,
-        channel: Optional[str] = None,
+        channel: str | None = None,
     ):
         self._backend = backend
         self._channel = channel
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._running_event = threading.Event()
         self._queue: Queue = Queue()
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
-        self._error: Optional[Exception] = None
-        self._shutdown_event: Optional[asyncio.Event] = None
+        self._loop: asyncio.AbstractEventLoop | None = None
+        self._error: Exception | None = None
+        self._shutdown_event: asyncio.Event | None = None
 
     def start(self, starttime, endtime):
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -68,7 +67,7 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
         try:
             asyncio.run(self._async_run_with_setup())
         except Exception as e:
-            log.exception("Error in interaction reader: %s", e)
+            log.exception("Error in interaction reader: %s", e)  # noqa: TRY401
             self._error = e
             self._running_event.clear()
         finally:
@@ -104,7 +103,7 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
             consumer = asyncio.create_task(self._consume(stream))
             shutdown = asyncio.create_task(self._shutdown_event.wait())
             try:
-                done, _ = await asyncio.wait(
+                _done, _ = await asyncio.wait(
                     [consumer, shutdown],
                     return_when=asyncio.FIRST_COMPLETED,
                 )
@@ -137,7 +136,7 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
         while self._running_event.is_set():
             try:
                 await asyncio.sleep(0.01)
-                batch: List[Interaction] = []
+                batch: list[Interaction] = []
                 while not self._queue.empty():
                     item = self._queue.get_nowait()
                     if item is None:
@@ -154,7 +153,7 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
 InteractionReaderPushAdapter = py_push_adapter_def(
     "InteractionReaderPushAdapter",
     InteractionReaderPushAdapterImpl,
-    ts[List[Interaction]],
+    ts[list[Interaction]],
     backend=object,
     channel=(str, None),
     memoize=False,
@@ -163,8 +162,8 @@ InteractionReaderPushAdapter = py_push_adapter_def(
 
 def interaction_reader(
     backend: BackendBase,
-    channel: Optional[str] = None,
-) -> "ts[List[Interaction]]":
+    channel: str | None = None,
+) -> "ts[list[Interaction]]":
     """Create a CSP time series of interactions from a chatom backend.
 
     Args:

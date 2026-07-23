@@ -22,7 +22,7 @@ Example:
 
 # Check if csp is available
 try:
-    import csp  # noqa: F401
+    import csp
 
     HAS_CSP = True
 except ImportError:
@@ -34,8 +34,8 @@ if HAS_CSP:
     from .nodes import message_reader, message_writer
 
     __all__ = (
-        "BackendAdapter",
         "HAS_CSP",
+        "BackendAdapter",
         "interaction_reader",
         "message_reader",
         "message_writer",

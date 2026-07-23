@@ -8,7 +8,7 @@ import json
 import re
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from chatom.base import Field, Message, User
 
@@ -57,35 +57,35 @@ class SymphonyMessage(Message):
     # message_id
     # stream_id
 
-    message_ml: Optional[str] = Field(
+    message_ml: str | None = Field(
         default=None,
         description="The MessageML content.",
     )
-    presentation_ml: Optional[str] = Field(
+    presentation_ml: str | None = Field(
         default=None,
         description="The PresentationML rendered content.",
     )
-    entity_data: Dict[str, Any] = Field(
+    entity_data: dict[str, Any] = Field(
         default_factory=dict,
         description="Entity data for structured objects.",
     )
-    data: Optional[str] = Field(
+    data: str | None = Field(
         default=None,
         description="The JSON data associated with the message.",
     )
-    shared_message: Optional[Dict[str, Any]] = Field(
+    shared_message: dict[str, Any] | None = Field(
         default=None,
         description="Shared/forwarded message info.",
     )
-    ingestion_date: Optional[datetime] = Field(
+    ingestion_date: datetime | None = Field(
         default=None,
         description="When the message was ingested.",
     )
-    diagnostic: Optional[str] = Field(
+    diagnostic: str | None = Field(
         default=None,
         description="Diagnostic information.",
     )
-    sid: Optional[str] = Field(
+    sid: str | None = Field(
         default=None,
         description="Session ID.",
     )
@@ -101,15 +101,15 @@ class SymphonyMessage(Message):
         default=False,
         description="Whether copying is disabled.",
     )
-    attachments_metadata: List[Dict[str, Any]] = Field(
+    attachments_metadata: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Metadata about attachments.",
     )
-    hashtags: List[str] = Field(
+    hashtags: list[str] = Field(
         default_factory=list,
         description="List of hashtags in the message.",
     )
-    cashtags: List[str] = Field(
+    cashtags: list[str] = Field(
         default_factory=list,
         description="List of cashtags in the message.",
     )
@@ -168,12 +168,12 @@ class SymphonyMessage(Message):
         user_id_int = int(user_id_str) if user_id_str.isdigit() else None
 
         # Check mentions (User objects from base class)
-        for user in self.mentions:
+        for user in self.mentions:  # noqa: PLR1704
             if user.id == user_id_str:
                 return True
 
         # Check entity_data for mention entities
-        for key, entity in self.entity_data.items():
+        for entity in self.entity_data.values():
             if isinstance(entity, dict) and entity.get("type") == "com.symphony.user.mention":
                 mentioned_id = entity.get("id", [{}])[0].get("value")
                 if mentioned_id and str(mentioned_id) == user_id_str:
@@ -188,7 +188,7 @@ class SymphonyMessage(Message):
         return False
 
     @staticmethod
-    def extract_mentions_from_data(data: Optional[str]) -> List[int]:
+    def extract_mentions_from_data(data: str | None) -> list[int]:
         """Extract user IDs from Symphony data field (JSON entity data).
 
         Symphony encodes mentions in the data field as JSON with entity
@@ -206,7 +206,7 @@ class SymphonyMessage(Message):
         try:
             entities = json.loads(data)
             mentions = []
-            for key, entity in entities.items():
+            for entity in entities.values():
                 if isinstance(entity, dict) and entity.get("type") == "com.symphony.user.mention":
                     id_list = entity.get("id", [])
                     if id_list and isinstance(id_list, list) and len(id_list) > 0:
@@ -265,7 +265,7 @@ class SymphonyMessage(Message):
         return text.strip()
 
     @classmethod
-    def from_api_response(cls, data: Dict[str, Any]) -> "SymphonyMessage":
+    def from_api_response(cls, data: dict[str, Any]) -> "SymphonyMessage":
         """Create a SymphonyMessage from an API response.
 
         Args:
@@ -285,7 +285,7 @@ class SymphonyMessage(Message):
             message_ml=data.get("message", ""),
             formatted_content=data.get("message", ""),
             author=SymphonyUser(id=str(user_data.get("userId", ""))),
-            created_at=datetime.fromtimestamp(timestamp / 1000) if timestamp else None,
+            created_at=datetime.fromtimestamp(timestamp / 1000) if timestamp else None,  # noqa: DTZ006
             data=data.get("data"),
             entity_data=data.get("entityData", {}),
             attachments_metadata=data.get("attachments", []),

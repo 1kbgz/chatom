@@ -4,8 +4,8 @@ This module provides a mock implementation of the Slack backend
 for use in tests without requiring actual Slack API credentials.
 """
 
-from datetime import datetime, timezone
-from typing import Any, ClassVar, Dict, List, Optional, Union
+from datetime import UTC, datetime
+from typing import Any, ClassVar
 
 from ..base import Avatar, Channel, Message, MessageType, PresenceStatus, Thread, User
 from .backend import SlackBackend
@@ -46,17 +46,17 @@ class MockSlackBackend(SlackBackend):
 
     def __init__(self, **data: Any) -> None:
         super().__init__(**data)
-        self._mock_users: Dict[str, SlackUser] = {}
-        self._mock_channels: Dict[str, SlackChannel] = {}
-        self._mock_messages: Dict[str, List[SlackMessage]] = {}
-        self._mock_presence: Dict[str, SlackPresence] = {}
-        self._sent_messages: List[SlackMessage] = []
-        self._deleted_messages: List[tuple] = []
-        self._added_reactions: List[tuple] = []
-        self._removed_reactions: List[tuple] = []
-        self._reactions: Dict[tuple, List[str]] = {}
-        self._presence_changes: List[Dict[str, Any]] = []
-        self._created_dms: List[List[str]] = []
+        self._mock_users: dict[str, SlackUser] = {}
+        self._mock_channels: dict[str, SlackChannel] = {}
+        self._mock_messages: dict[str, list[SlackMessage]] = {}
+        self._mock_presence: dict[str, SlackPresence] = {}
+        self._sent_messages: list[SlackMessage] = []
+        self._deleted_messages: list[tuple] = []
+        self._added_reactions: list[tuple] = []
+        self._removed_reactions: list[tuple] = []
+        self._reactions: dict[tuple, list[str]] = {}
+        self._presence_changes: list[dict[str, Any]] = []
+        self._created_dms: list[list[str]] = []
         self._dm_counter: int = 0
         self._message_counter: int = 0
         self._current_presence: str = "auto"
@@ -68,9 +68,9 @@ class MockSlackBackend(SlackBackend):
         self,
         id: str,
         name: str,
-        handle: Optional[str] = None,
+        handle: str | None = None,
         *,
-        display_name: Optional[str] = None,
+        display_name: str | None = None,
         avatar_url: str = "",
         is_bot: bool = False,
     ) -> SlackUser:
@@ -139,8 +139,8 @@ class MockSlackBackend(SlackBackend):
         user_id: str,
         content: str,
         *,
-        message_id: Optional[str] = None,
-        timestamp: Optional[datetime] = None,
+        message_id: str | None = None,
+        timestamp: datetime | None = None,
     ) -> str:
         """Add a mock message to a channel.
 
@@ -163,7 +163,7 @@ class MockSlackBackend(SlackBackend):
             content=content,
             channel=SlackChannel(id=channel_id),
             author=SlackUser(id=user_id),
-            created_at=timestamp or datetime.now(),
+            created_at=timestamp or datetime.now(),  # noqa: DTZ005
         )
         if channel_id not in self._mock_messages:
             self._mock_messages[channel_id] = []
@@ -203,7 +203,7 @@ class MockSlackBackend(SlackBackend):
         return presence
 
     @property
-    def sent_messages(self) -> List[SlackMessage]:
+    def sent_messages(self) -> list[SlackMessage]:
         """Get all messages sent through this backend.
 
         Returns:
@@ -212,7 +212,7 @@ class MockSlackBackend(SlackBackend):
         return self._sent_messages
 
     @property
-    def added_reactions(self) -> List[tuple]:
+    def added_reactions(self) -> list[tuple]:
         """Get all reactions added through this backend.
 
         Returns:
@@ -221,7 +221,7 @@ class MockSlackBackend(SlackBackend):
         return self._added_reactions
 
     @property
-    def removed_reactions(self) -> List[tuple]:
+    def removed_reactions(self) -> list[tuple]:
         """Get all reactions removed through this backend.
 
         Returns:
@@ -230,7 +230,7 @@ class MockSlackBackend(SlackBackend):
         return self._removed_reactions
 
     @property
-    def presence_changes(self) -> List[Dict[str, Any]]:
+    def presence_changes(self) -> list[dict[str, Any]]:
         """Get all presence changes made through this backend.
 
         Returns:
@@ -239,7 +239,7 @@ class MockSlackBackend(SlackBackend):
         return self._presence_changes
 
     @property
-    def created_dms(self) -> List[List[str]]:
+    def created_dms(self) -> list[list[str]]:
         """Get all DMs created through this backend.
 
         Returns:
@@ -248,7 +248,7 @@ class MockSlackBackend(SlackBackend):
         return self._created_dms
 
     @property
-    def mock_users(self) -> Dict[str, SlackUser]:
+    def mock_users(self) -> dict[str, SlackUser]:
         """Get all mock users.
 
         Returns:
@@ -274,7 +274,7 @@ class MockSlackBackend(SlackBackend):
         self.users.clear()
         self.channels.clear()
 
-    def get_sent_messages(self) -> List[SlackMessage]:
+    def get_sent_messages(self) -> list[SlackMessage]:
         """Get all messages sent through this backend.
 
         Returns:
@@ -282,7 +282,7 @@ class MockSlackBackend(SlackBackend):
         """
         return self._sent_messages.copy()
 
-    def get_deleted_messages(self) -> List[tuple]:
+    def get_deleted_messages(self) -> list[tuple]:
         """Get all deleted message references.
 
         Returns:
@@ -290,7 +290,7 @@ class MockSlackBackend(SlackBackend):
         """
         return self._deleted_messages.copy()
 
-    def get_reactions(self, channel_id: str, message_id: str) -> List[str]:
+    def get_reactions(self, channel_id: str, message_id: str) -> list[str]:
         """Get reactions for a message.
 
         Args:
@@ -326,13 +326,13 @@ class MockSlackBackend(SlackBackend):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[SlackUser]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> SlackUser | None:
         """Fetch a mock user by ID or other attributes.
 
         Args:
@@ -379,11 +379,11 @@ class MockSlackBackend(SlackBackend):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[SlackChannel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> SlackChannel | None:
         """Fetch a mock channel by ID or name.
 
         Args:
@@ -421,11 +421,11 @@ class MockSlackBackend(SlackBackend):
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch mock messages from a channel.
 
         Args:
@@ -445,7 +445,7 @@ class MockSlackBackend(SlackBackend):
             if value is None:
                 return None
             if isinstance(value, datetime):
-                dt = value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+                dt = value if value.tzinfo else value.replace(tzinfo=UTC)
                 return f"{dt.timestamp():.6f}"
             if isinstance(value, Message):
                 return value.id
@@ -466,7 +466,7 @@ class MockSlackBackend(SlackBackend):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> SlackMessage:
@@ -492,13 +492,13 @@ class MockSlackBackend(SlackBackend):
                 kwargs["thread_ts"] = thread_ts
 
         self._message_counter += 1
-        ts = f"{datetime.now().timestamp():.6f}"
+        ts = f"{datetime.now().timestamp():.6f}"  # noqa: DTZ005
 
         message = SlackMessage(
             id=ts,
             content=content,
             channel=SlackChannel(id=channel_id),
-            created_at=datetime.now(),
+            created_at=datetime.now(),  # noqa: DTZ005
             thread=Thread(id=str(kwargs.get("thread_ts"))) if kwargs.get("thread_ts") else None,
         )
 
@@ -512,9 +512,9 @@ class MockSlackBackend(SlackBackend):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Edit a mock message.
@@ -553,8 +553,8 @@ class MockSlackBackend(SlackBackend):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a mock message.
 
@@ -578,10 +578,10 @@ class MockSlackBackend(SlackBackend):
     async def forward_message(
         self,
         message: Message,
-        to_channel: Union[str, Channel],
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Forward a mock message to another channel.
@@ -597,7 +597,7 @@ class MockSlackBackend(SlackBackend):
             The forwarded message in the destination channel.
         """
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID.")
+            raise ValueError("forward_message requires a Message object, not just a message ID.")  # noqa: TRY004
 
         # Resolve destination channel ID
         if isinstance(to_channel, Channel):
@@ -619,13 +619,13 @@ class MockSlackBackend(SlackBackend):
 
         # Create the forwarded message
         self._message_counter += 1
-        ts = f"{datetime.now().timestamp():.6f}"
+        ts = f"{datetime.now().timestamp():.6f}"  # noqa: DTZ005
 
         forwarded_msg = SlackMessage(
             id=ts,
             content=forwarded_content,
             channel=SlackChannel(id=dest_channel_id),
-            created_at=datetime.now(),
+            created_at=datetime.now(),  # noqa: DTZ005
             message_type=MessageType.FORWARD,
         )
         forwarded_msg.forwarded_from = message
@@ -641,7 +641,7 @@ class MockSlackBackend(SlackBackend):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set mock presence.
@@ -656,7 +656,7 @@ class MockSlackBackend(SlackBackend):
             self._current_status_text = status_text
         self._presence_changes.append({"status": status, "status_text": status_text})
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[SlackPresence]:
+    async def get_presence(self, user: str | User) -> SlackPresence | None:
         """Get mock presence for a user.
 
         Args:
@@ -677,9 +677,9 @@ class MockSlackBackend(SlackBackend):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a mock reaction.
 
@@ -707,9 +707,9 @@ class MockSlackBackend(SlackBackend):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a mock reaction.
 
@@ -734,8 +734,8 @@ class MockSlackBackend(SlackBackend):
 
     async def create_dm(
         self,
-        users: List[Union[str, User]],
-    ) -> Optional[str]:
+        users: list[str | User],
+    ) -> str | None:
         """Create a mock DM channel with the specified users.
 
         Args:

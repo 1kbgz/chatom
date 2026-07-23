@@ -5,8 +5,6 @@ Attachments can reference files by URL or hold in-memory binary data
 for direct upload to backend APIs.
 """
 
-from typing import Optional
-
 from pydantic import Field
 
 from chatom.base import BaseModel
@@ -33,8 +31,8 @@ class FormattedAttachment(BaseModel):
 
     filename: str = Field(default="", description="Name of the file.")
     url: str = Field(default="", description="URL to the attachment.")
-    data: Optional[bytes] = Field(default=None, description="Raw file bytes for direct upload.", exclude=True, repr=False)
-    size: Optional[int] = Field(default=None, description="File size in bytes.")
+    data: bytes | None = Field(default=None, description="Raw file bytes for direct upload.", exclude=True, repr=False)
+    size: int | None = Field(default=None, description="File size in bytes.")
     content_type: str = Field(default="", description="MIME type.")
 
     @property
@@ -82,13 +80,13 @@ class FormattedImage(BaseModel):
     """
 
     url: str = Field(default="", description="URL to the image.")
-    data: Optional[bytes] = Field(default=None, description="Raw image bytes for direct upload.", exclude=True, repr=False)
+    data: bytes | None = Field(default=None, description="Raw image bytes for direct upload.", exclude=True, repr=False)
     alt_text: str = Field(default="", description="Alternative text.")
     title: str = Field(default="", description="Image title.")
     filename: str = Field(default="", description="Filename for the upload.")
     content_type: str = Field(default="", description="MIME type (e.g. image/png).")
-    width: Optional[int] = Field(default=None, description="Width in pixels.")
-    height: Optional[int] = Field(default=None, description="Height in pixels.")
+    width: int | None = Field(default=None, description="Width in pixels.")
+    height: int | None = Field(default=None, description="Height in pixels.")
 
     @property
     def has_data(self) -> bool:

@@ -73,87 +73,87 @@ Organization.model_rebuild()
 Channel.model_rebuild()
 
 __all__ = (
-    # Base
-    "BaseModel",
-    "Field",
-    "Identifiable",
-    # User
-    "Avatar",
-    "User",
-    # Channel
-    "Channel",
-    "ChannelType",
-    # Thread
-    "Thread",
-    # Organization
-    "Organization",
-    # Message
-    "Message",
-    "MessageReference",
-    "MessageType",
+    "DISCORD_CAPABILITIES",
+    "SLACK_CAPABILITIES",
+    "SYMPHONY_CAPABILITIES",
+    "TELEGRAM_CAPABILITIES",
+    # Presence
+    "Activity",
+    "ActivityType",
     # Attachment
     "Attachment",
     "AttachmentType",
-    "File",
-    "Image",
+    # Authorization
+    "AuthorizationPolicy",
+    "AuthorizationResult",
+    # User
+    "Avatar",
+    # Capabilities
+    "BackendCapabilities",
+    # Conversion utilities
+    "BackendNotFoundError",
+    # Base
+    "BaseModel",
+    "Capability",
+    # Channel
+    "Channel",
+    "ChannelMentionMatch",
+    "ChannelRegistry",
+    "ChannelType",
+    # Connection and registries
+    "Connection",
+    "ConversionError",
     # Embed
     "Embed",
     "EmbedAuthor",
     "EmbedField",
     "EmbedFooter",
     "EmbedMedia",
+    # Reaction
+    "Emoji",
+    "Field",
+    "File",
+    "Identifiable",
+    "Image",
     # Interaction
     "Interaction",
     "InteractionType",
-    # Reaction
-    "Emoji",
+    "LookupError",
+    "MentionMatch",
+    # Message
+    "Message",
+    "MessageReference",
+    "MessageType",
+    # Organization
+    "Organization",
+    "Permission",
+    "Presence",
+    "PresenceStatus",
     "Reaction",
     "ReactionEvent",
     "ReactionEventType",
-    # Presence
-    "Activity",
-    "ActivityType",
-    "Presence",
-    "PresenceStatus",
-    # Capabilities
-    "BackendCapabilities",
-    "Capability",
-    "DISCORD_CAPABILITIES",
-    "SLACK_CAPABILITIES",
-    "SYMPHONY_CAPABILITIES",
-    "TELEGRAM_CAPABILITIES",
-    # Conversion utilities
-    "BackendNotFoundError",
-    "ConversionError",
+    "SimpleAuthorizationPolicy",
+    # Thread
+    "Thread",
+    "User",
+    "UserRegistry",
     "ValidationResult",
     "can_promote",
     "demote",
+    "extract_channel_ids",
+    "extract_mention_ids",
     "get_backend_type",
     "get_base_type",
+    "is_user_authorized",
     "list_backends_for_type",
+    # Mention utilities
+    "mention_channel",
+    "mention_channel_for_backend",
+    "mention_user",
+    "mention_user_for_backend",
+    "parse_channel_mentions",
+    "parse_mentions",
     "promote",
     "register_backend_type",
     "validate_for_backend",
-    # Mention utilities
-    "mention_channel",
-    "mention_user",
-    "mention_channel_for_backend",
-    "mention_user_for_backend",
-    "parse_mentions",
-    "parse_channel_mentions",
-    "extract_mention_ids",
-    "extract_channel_ids",
-    "MentionMatch",
-    "ChannelMentionMatch",
-    # Authorization
-    "AuthorizationPolicy",
-    "AuthorizationResult",
-    "Permission",
-    "SimpleAuthorizationPolicy",
-    "is_user_authorized",
-    # Connection and registries
-    "Connection",
-    "UserRegistry",
-    "ChannelRegistry",
-    "LookupError",
 )

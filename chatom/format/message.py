@@ -4,7 +4,7 @@ This module provides utilities for building and converting messages
 between different chat platform formats.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -41,12 +41,12 @@ if TYPE_CHECKING:
     from chatom.base.embed import Embed
 
 __all__ = (
+    "BACKEND_FORMAT_MAP",
     "FormattedMessage",
     "MessageBuilder",
-    "render_message",
     "format_message",
-    "BACKEND_FORMAT_MAP",
     "get_format_for_backend",
+    "render_message",
 )
 
 
@@ -98,23 +98,23 @@ class FormattedMessage(BaseModel):
         metadata: Additional platform-specific metadata.
     """
 
-    content: List[Union[TextNode, Table, FormattedImage, FormattedAttachment, FormattedEmbed]] = Field(
+    content: list[TextNode | Table | FormattedImage | FormattedAttachment | FormattedEmbed] = Field(
         default_factory=list,
         description="Content nodes.",
     )
-    attachments: List[FormattedAttachment] = Field(
+    attachments: list[FormattedAttachment] = Field(
         default_factory=list,
         description="File attachments.",
     )
-    embeds: List[FormattedEmbed] = Field(
+    embeds: list[FormattedEmbed] = Field(
         default_factory=list,
         description="Rich embeds (rendered natively on supported backends).",
     )
-    components: Optional[ComponentContainer] = Field(
+    components: ComponentContainer | None = Field(
         default=None,
         description="Interactive components (buttons, menus, etc.).",
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Platform-specific metadata.",
     )
@@ -159,7 +159,7 @@ class FormattedMessage(BaseModel):
         format = get_format_for_backend(backend)
         return self.render(format)
 
-    def append(self, item: Union[TextNode, Table, FormattedImage, FormattedAttachment, str]) -> "FormattedMessage":
+    def append(self, item: TextNode | Table | FormattedImage | FormattedAttachment | str) -> "FormattedMessage":
         """Append content to the message.
 
         Args:
@@ -309,8 +309,8 @@ class FormattedMessage(BaseModel):
         label: str,
         action_id: str = "",
         style: ButtonStyle = ButtonStyle.PRIMARY,
-        url: Optional[str] = None,
-        value: Optional[str] = None,
+        url: str | None = None,
+        value: str | None = None,
     ) -> "FormattedMessage":
         """Add an interactive button to the message.
 
@@ -348,7 +348,7 @@ class FormattedMessage(BaseModel):
     def add_select(
         self,
         action_id: str,
-        options: List[SelectOption],
+        options: list[SelectOption],
         placeholder: str = "Select an option",
     ) -> "FormattedMessage":
         """Add a select menu to the message.
@@ -399,11 +399,11 @@ class FormattedMessage(BaseModel):
 
     def add_embed(
         self,
-        embed: "Optional[Embed]" = None,
+        embed: "Embed | None" = None,
         *,
         title: str = "",
         description: str = "",
-        color: Optional[int] = None,
+        color: int | None = None,
         url: str = "",
         inline: bool = False,
     ) -> "FormattedMessage":
@@ -434,7 +434,7 @@ class FormattedMessage(BaseModel):
             self.content.append(fe)
         return self
 
-    def get_embeds(self, format: FORMAT = Format.MARKDOWN) -> List[Dict[str, Any]]:
+    def get_embeds(self, format: FORMAT = Format.MARKDOWN) -> list[dict[str, Any]]:
         """Get structured embed payloads for the specified format.
 
         Returns a list of dicts suitable for passing to the backend API.
@@ -448,7 +448,7 @@ class FormattedMessage(BaseModel):
             List of backend-specific embed dicts.
         """
         fmt = Format(format) if isinstance(format, str) else format
-        result: List[Dict[str, Any]] = []
+        result: list[dict[str, Any]] = []
         for fe in self.embeds:
             if fmt == Format.DISCORD_MARKDOWN:
                 result.append(fe.to_discord_dict())
@@ -460,7 +460,7 @@ class FormattedMessage(BaseModel):
                 result.append({"html": fe.to_telegram_html()})
         return result
 
-    def get_embeds_for(self, backend: str) -> List[Dict[str, Any]]:
+    def get_embeds_for(self, backend: str) -> list[dict[str, Any]]:
         """Get structured embed payloads for a specific backend.
 
         Args:
@@ -472,7 +472,7 @@ class FormattedMessage(BaseModel):
         fmt = get_format_for_backend(backend)
         return self.get_embeds(fmt)
 
-    def get_components(self, format: FORMAT = Format.MARKDOWN) -> List[Dict[str, Any]]:
+    def get_components(self, format: FORMAT = Format.MARKDOWN) -> list[dict[str, Any]]:
         """Get rendered components for the specified format.
 
         Args:
@@ -502,10 +502,10 @@ class MessageBuilder:
     """
 
     def __init__(self):
-        self._content: List[Union[TextNode, Table, FormattedImage, FormattedAttachment, FormattedEmbed]] = []
-        self._attachments: List[FormattedAttachment] = []
-        self._embeds: List[FormattedEmbed] = []
-        self._metadata: Dict[str, Any] = {}
+        self._content: list[TextNode | Table | FormattedImage | FormattedAttachment | FormattedEmbed] = []
+        self._attachments: list[FormattedAttachment] = []
+        self._embeds: list[FormattedEmbed] = []
+        self._metadata: dict[str, Any] = {}
 
     def text(self, content: str) -> "MessageBuilder":
         """Add plain text."""
@@ -562,13 +562,13 @@ class MessageBuilder:
         self._content.append(Paragraph(children=[Text(content=content)]))
         return self
 
-    def bullet_list(self, items: List[str]) -> "MessageBuilder":
+    def bullet_list(self, items: list[str]) -> "MessageBuilder":
         """Add a bullet list."""
         list_items = [ListItem(child=Text(content=item)) for item in items]
         self._content.append(UnorderedList(items=list_items))
         return self
 
-    def numbered_list(self, items: List[str], start: int = 1) -> "MessageBuilder":
+    def numbered_list(self, items: list[str], start: int = 1) -> "MessageBuilder":
         """Add a numbered list."""
         list_items = [ListItem(child=Text(content=item)) for item in items]
         self._content.append(OrderedList(items=list_items, start=start))
@@ -576,8 +576,8 @@ class MessageBuilder:
 
     def table(
         self,
-        data: List[List[Any]],
-        headers: Optional[List[str]] = None,
+        data: list[list[Any]],
+        headers: list[str] | None = None,
         caption: str = "",
     ) -> "MessageBuilder":
         """Add a table from data."""
@@ -586,8 +586,8 @@ class MessageBuilder:
 
     def table_from_dicts(
         self,
-        data: List[dict],
-        columns: Optional[List[str]] = None,
+        data: list[dict],
+        columns: list[str] | None = None,
         caption: str = "",
     ) -> "MessageBuilder":
         """Add a table from a list of dictionaries."""

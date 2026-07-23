@@ -4,11 +4,11 @@ This module provides classes for file attachments and media.
 """
 
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any
 
 from .base import BaseModel, Field
 
-__all__ = ("Attachment", "AttachmentType", "Image", "File")
+__all__ = ("Attachment", "AttachmentType", "File", "Image")
 
 
 class AttachmentType(str, Enum):
@@ -64,7 +64,7 @@ class Attachment(BaseModel):
         default="",
         description="URL to download the attachment.",
     )
-    data: Optional[bytes] = Field(
+    data: bytes | None = Field(
         default=None,
         description="Raw file bytes for direct upload.",
         exclude=True,
@@ -74,7 +74,7 @@ class Attachment(BaseModel):
         default="",
         description="MIME type of the attachment.",
     )
-    size: Optional[int] = Field(
+    size: int | None = Field(
         default=None,
         description="File size in bytes.",
     )
@@ -82,7 +82,7 @@ class Attachment(BaseModel):
         default=AttachmentType.UNKNOWN,
         description="Type of attachment.",
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Platform-specific data needed to resolve or download the attachment (e.g. Symphony stream/message IDs).",
     )
@@ -139,11 +139,11 @@ class Image(Attachment):
         default=AttachmentType.IMAGE,
         description="Type of attachment.",
     )
-    width: Optional[int] = Field(
+    width: int | None = Field(
         default=None,
         description="Image width in pixels.",
     )
-    height: Optional[int] = Field(
+    height: int | None = Field(
         default=None,
         description="Image height in pixels.",
     )

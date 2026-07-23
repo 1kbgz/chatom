@@ -6,7 +6,7 @@ This module provides the base Channel class representing a chat channel or room.
 from __future__ import annotations
 
 from enum import Enum
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from pydantic import model_validator
 
@@ -72,21 +72,21 @@ class Channel(Identifiable):
         default=False,
         description="Whether the channel is archived.",
     )
-    member_count: Optional[int] = Field(
+    member_count: int | None = Field(
         default=None,
         description="Number of members in the channel.",
     )
-    parent: Optional["Channel"] = Field(
+    parent: Channel | None = Field(
         default=None,
         description="Parent channel (for threads/subchannels).",
     )
-    users: List["User"] = Field(
+    users: list[User] = Field(
         default_factory=list,
         description="Users in a DM channel (for DIRECT/GROUP types).",
     )
 
     @model_validator(mode="after")
-    def _validate_dm_users(self) -> "Channel":
+    def _validate_dm_users(self) -> Channel:
         """Validate that users field is appropriate for channel type."""
         if self.users:
             if self.channel_type == ChannelType.DIRECT:
@@ -184,7 +184,7 @@ class Channel(Identifiable):
         return bool(self.id or self.name or self.users)
 
     @classmethod
-    def dm_to(cls, user: "User") -> "Channel":
+    def dm_to(cls, user: User) -> Channel:
         """Create an incomplete DM channel to a user.
 
         The returned channel is marked incomplete and will be resolved
@@ -208,7 +208,7 @@ class Channel(Identifiable):
         return channel
 
     @classmethod
-    def group_dm_to(cls, users: List["User"]) -> "Channel":
+    def group_dm_to(cls, users: list[User]) -> Channel:
         """Create an incomplete group DM channel to multiple users.
 
         The returned channel is marked incomplete and will be resolved

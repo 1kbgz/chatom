@@ -3,7 +3,7 @@
 This module provides base classes for configuring chat backends.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from pydantic import Field, SecretStr
 
@@ -45,7 +45,7 @@ class BackendConfig(BaseModel):
         default=3,
         description="Number of retries for failed requests.",
     )
-    extra: Dict[str, Any] = Field(
+    extra: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional backend-specific configuration.",
     )

@@ -20,7 +20,8 @@ Example::
 import asyncio
 import inspect
 import logging
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Union
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from chatom.base import Interaction
 
@@ -31,7 +32,7 @@ log = logging.getLogger(__name__)
 #: Handlers can be sync or async callables accepting a single
 #: :class:`Interaction` argument. Async handlers are awaited; sync
 #: handlers are called directly.
-InteractionHandler = Callable[[Interaction], Union[Any, Awaitable[Any]]]
+InteractionHandler = Callable[[Interaction], Any | Awaitable[Any]]
 
 
 class InteractionRegistry:
@@ -47,7 +48,7 @@ class InteractionRegistry:
     WILDCARD = ""
 
     def __init__(self) -> None:
-        self._handlers: Dict[str, List[InteractionHandler]] = {}
+        self._handlers: dict[str, list[InteractionHandler]] = {}
 
     def register(self, action_id: str, handler: InteractionHandler) -> None:
         """Register ``handler`` for ``action_id``."""
@@ -70,7 +71,7 @@ class InteractionRegistry:
             del self._handlers[action_id]
         return True
 
-    def clear(self, action_id: Optional[str] = None) -> None:
+    def clear(self, action_id: str | None = None) -> None:
         """Remove all handlers, or just those for ``action_id``."""
         if action_id is None:
             self._handlers.clear()
@@ -93,25 +94,25 @@ class InteractionRegistry:
         return decorator
 
     @property
-    def action_ids(self) -> List[str]:
+    def action_ids(self) -> list[str]:
         """Return all registered action IDs (excluding the wildcard)."""
         return [aid for aid in self._handlers if aid != self.WILDCARD]
 
-    def handlers_for(self, action_id: str) -> List[InteractionHandler]:
+    def handlers_for(self, action_id: str) -> list[InteractionHandler]:
         """Return the handler list that :meth:`dispatch` would call."""
         specific = self._handlers.get(action_id, [])
         if specific:
             return list(specific)
         return list(self._handlers.get(self.WILDCARD, []))
 
-    async def dispatch(self, event: Interaction) -> List[Any]:
+    async def dispatch(self, event: Interaction) -> list[Any]:
         """Dispatch ``event`` to all matching handlers.
 
         Returns the list of handler results, in registration order.
         Exceptions from individual handlers are logged and do not
         prevent subsequent handlers from running.
         """
-        results: List[Any] = []
+        results: list[Any] = []
         for handler in self.handlers_for(event.action_id):
             try:
                 result = handler(event)
@@ -125,7 +126,7 @@ class InteractionRegistry:
                 )
         return results
 
-    def dispatch_sync(self, event: Interaction) -> List[Any]:
+    def dispatch_sync(self, event: Interaction) -> list[Any]:
         """Sync wrapper around :meth:`dispatch`.
 
         Runs the async dispatcher on the current event loop if one is

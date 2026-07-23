@@ -1,6 +1,6 @@
 """Tests for backend registry and backend base class."""
 
-from typing import ClassVar, Optional
+from typing import ClassVar
 
 try:
     from typing import override
@@ -201,14 +201,12 @@ class TestSyncHelper:
             async def disconnect(self):
                 self.connected = False
 
-            async def fetch_user(
-                self, id: Optional[str] = None, name: Optional[str] = None, email: Optional[str] = None, handle: Optional[str] = None
-            ):
+            async def fetch_user(self, id: str | None = None, name: str | None = None, email: str | None = None, handle: str | None = None):
                 if id:
                     return User(id=id, name=f"User {id}")
                 return None
 
-            async def fetch_channel(self, id: Optional[str] = None, name: Optional[str] = None):
+            async def fetch_channel(self, id: str | None = None, name: str | None = None):
                 return None
 
             async def fetch_messages(self, channel, limit=100, before=None, after=None):
@@ -583,7 +581,7 @@ class TestFetchMessages:
 
         # Verify the method exists
         assert hasattr(BackendBase, "fetch_messages")
-        method = getattr(BackendBase, "fetch_messages")
+        method = BackendBase.fetch_messages
         assert callable(method)
 
     def test_fetch_messages_signature(self):
@@ -781,7 +779,7 @@ class TestPresenceMethods:
         from chatom.backend import BackendBase
 
         assert hasattr(BackendBase, "get_presence")
-        method = getattr(BackendBase, "get_presence")
+        method = BackendBase.get_presence
         assert callable(method)
 
     def test_set_presence_method_exists(self):
@@ -789,7 +787,7 @@ class TestPresenceMethods:
         from chatom.backend import BackendBase
 
         assert hasattr(BackendBase, "set_presence")
-        method = getattr(BackendBase, "set_presence")
+        method = BackendBase.set_presence
         assert callable(method)
 
     def test_get_presence_signature(self):
@@ -970,7 +968,7 @@ class TestPresenceMethods:
                     status_text="Working",
                 )
 
-            async def set_presence(self, status: str, status_text: Optional[str] = None, **kwargs):
+            async def set_presence(self, status: str, status_text: str | None = None, **kwargs):
                 pass  # No-op for test
 
         backend = CustomPresenceBackend()
@@ -1019,7 +1017,7 @@ class TestPresenceMethods:
                     status_text=self._current_status_text,
                 )
 
-            async def set_presence(self, status: str, status_text: Optional[str] = None, **kwargs):
+            async def set_presence(self, status: str, status_text: str | None = None, **kwargs):
                 self._current_status = status
                 self._current_status_text = status_text or ""
 
@@ -1057,7 +1055,7 @@ class TestReplyInThread:
         class ThreadBackend(BackendBase):
             name: ClassVar[str] = "thread_test"
             format: ClassVar[Format] = Format.MARKDOWN
-            last_thread_id: Optional[str] = None
+            last_thread_id: str | None = None
 
             async def connect(self):
                 self.connected = True
@@ -1093,7 +1091,7 @@ class TestReplyInThread:
         class ThreadBackend(BackendBase):
             name: ClassVar[str] = "thread_test2"
             format: ClassVar[Format] = Format.MARKDOWN
-            last_thread_id: Optional[str] = None
+            last_thread_id: str | None = None
 
             async def connect(self):
                 self.connected = True
@@ -1267,7 +1265,7 @@ class TestSyncHelperMethods:
         class RoomBackend(BackendBase):
             name: ClassVar[str] = "room_test"
             format: ClassVar[Format] = Format.MARKDOWN
-            joined_channel: Optional[str] = None
+            joined_channel: str | None = None
 
             async def connect(self):
                 pass
@@ -1303,7 +1301,7 @@ class TestSyncHelperMethods:
         class LeaveBackend(BackendBase):
             name: ClassVar[str] = "leave_test"
             format: ClassVar[Format] = Format.MARKDOWN
-            left_channel: Optional[str] = None
+            left_channel: str | None = None
 
             async def connect(self):
                 pass
@@ -1339,7 +1337,7 @@ class TestSyncHelperMethods:
         class DMBackend(BackendBase):
             name: ClassVar[str] = "dm_test"
             format: ClassVar[Format] = Format.MARKDOWN
-            dm_user_ids: Optional[list] = None
+            dm_user_ids: list | None = None
 
             async def connect(self):
                 pass
@@ -1377,7 +1375,7 @@ class TestSyncHelperMethods:
         class CreateBackend(BackendBase):
             name: ClassVar[str] = "create_test"
             format: ClassVar[Format] = Format.MARKDOWN
-            created_name: Optional[str] = None
+            created_name: str | None = None
 
             async def connect(self):
                 pass

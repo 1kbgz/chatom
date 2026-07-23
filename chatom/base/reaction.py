@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 from .base import BaseModel, Field
 from .user import User
@@ -15,7 +15,7 @@ from .user import User
 if TYPE_CHECKING:
     from .message import Message
 
-__all__ = ("Reaction", "Emoji", "ReactionEvent", "ReactionEventType")
+__all__ = ("Emoji", "Reaction", "ReactionEvent", "ReactionEventType")
 
 
 class Emoji(BaseModel):
@@ -78,7 +78,7 @@ class Reaction(BaseModel):
         default=1,
         description="Number of times this reaction was added.",
     )
-    users: List[User] = Field(
+    users: list[User] = Field(
         default_factory=list,
         description="List of users who added this reaction.",
     )
@@ -119,11 +119,11 @@ class ReactionEvent(BaseModel):
         ...         print(f"User {event.user.id} added {event.emoji}")
     """
 
-    message: Optional["Message"] = Field(
+    message: Message | None = Field(
         default=None,
         description="The message the reaction is on.",
     )
-    user: Optional[User] = Field(
+    user: User | None = Field(
         default=None,
         description="The user who added/removed the reaction.",
     )
@@ -133,7 +133,7 @@ class ReactionEvent(BaseModel):
     event_type: ReactionEventType = Field(
         description="Whether the reaction was added or removed.",
     )
-    timestamp: Optional[datetime] = Field(
+    timestamp: datetime | None = Field(
         default=None,
         description="When the reaction event occurred.",
     )

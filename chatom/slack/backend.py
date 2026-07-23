@@ -2,9 +2,10 @@
 
 import asyncio
 import re
-from datetime import datetime, timezone
+from collections.abc import AsyncIterator
+from datetime import UTC, datetime
 from logging import getLogger
-from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
+from typing import Any, ClassVar
 
 from pydantic import Field
 
@@ -36,14 +37,14 @@ __all__ = ("SlackBackend",)
 _log = getLogger(__name__)
 
 
-def _slack_attachments(files: List[dict]) -> List[Attachment]:
+def _slack_attachments(files: list[dict]) -> list[Attachment]:
     """Convert Slack file objects into chatom attachments.
 
     Slack file URLs (``url_private``) require an ``Authorization: Bearer``
     header with the bot token, so :meth:`SlackBackend.download_attachment`
     overrides the base download to add it.
     """
-    attachments: List[Attachment] = []
+    attachments: list[Attachment] = []
     for f in files or []:
         if not isinstance(f, dict):
             continue
@@ -104,14 +105,14 @@ class SlackBackend(BackendBase):
     name: ClassVar[str] = "slack"
     display_name: ClassVar[str] = "Slack"
     format: ClassVar[Format] = Format.SLACK_MARKDOWN
-    mention_pattern: ClassVar[Optional[re.Pattern]] = re.compile(r"<@(U[A-Z0-9]+)>")
+    mention_pattern: ClassVar[re.Pattern | None] = re.compile(r"<@(U[A-Z0-9]+)>")
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = SlackUser
     channel_class: ClassVar[type] = SlackChannel
     presence_class: ClassVar[type] = SlackPresence
 
-    capabilities: Optional[BackendCapabilities] = SLACK_CAPABILITIES
+    capabilities: BackendCapabilities | None = SLACK_CAPABILITIES
     config: SlackConfig = Field(default_factory=SlackConfig)
 
     # Internal client (set during connect)
@@ -119,16 +120,16 @@ class SlackBackend(BackendBase):
     _async_client: Any = None
 
     # Cached bot info (set during connect or on first get_bot_info call)
-    _bot_user_id: Optional[str] = None
-    _bot_user_name: Optional[str] = None
+    _bot_user_id: str | None = None
+    _bot_user_name: str | None = None
 
     @property
-    def bot_user_id(self) -> Optional[str]:
+    def bot_user_id(self) -> str | None:
         """Get the bot's user ID (cached from connect/get_bot_info)."""
         return self._bot_user_id
 
     @property
-    def bot_user_name(self) -> Optional[str]:
+    def bot_user_name(self) -> str | None:
         """Get the bot's username (cached from connect/get_bot_info)."""
         return self._bot_user_name
 
@@ -178,13 +179,13 @@ class SlackBackend(BackendBase):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[SlackUser]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> SlackUser | None:
         """Fetch a user from Slack.
 
         Accepts flexible inputs:
@@ -234,7 +235,7 @@ class SlackBackend(BackendBase):
                 if response.get("ok"):
                     user_data = response.get("user", {})
                     return await self._fetch_user_by_id(user_data.get("id"))
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         # Search by name or handle requires listing users
@@ -257,7 +258,7 @@ class SlackBackend(BackendBase):
                             return await self._fetch_user_by_id(user_data.get("id"))
 
                         # Match name (display_name or real_name)
-                        if name:
+                        if name:  # noqa: SIM102
                             if display_name.lower() == name.lower() or real_name.lower() == name.lower() or user_name.lower() == name.lower():
                                 return await self._fetch_user_by_id(user_data.get("id"))
 
@@ -265,12 +266,12 @@ class SlackBackend(BackendBase):
                     cursor = response.get("response_metadata", {}).get("next_cursor")
                     if not cursor:
                         break
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         return None
 
-    async def _fetch_user_by_id(self, user_id: str) -> Optional[SlackUser]:
+    async def _fetch_user_by_id(self, user_id: str) -> SlackUser | None:
         """Fetch a user by ID from the Slack API."""
         try:
             response = await self._async_client.users_info(user=user_id)
@@ -295,17 +296,17 @@ class SlackBackend(BackendBase):
                 )
                 self.users.add(user)
                 return user
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
         return None
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[SlackChannel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> SlackChannel | None:
         """Fetch a channel from Slack.
 
         Accepts flexible inputs:
@@ -366,12 +367,12 @@ class SlackBackend(BackendBase):
                     cursor = response.get("response_metadata", {}).get("next_cursor")
                     if not cursor:
                         break
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 _log.warning(f"Error listing channels: {e}")
 
         return None
 
-    async def _fetch_channel_by_id(self, channel_id: str) -> Optional[SlackChannel]:
+    async def _fetch_channel_by_id(self, channel_id: str) -> SlackChannel | None:
         """Fetch a channel by ID from the Slack API."""
         try:
             response = await self._async_client.conversations_info(channel=channel_id)
@@ -398,7 +399,7 @@ class SlackBackend(BackendBase):
                 )
                 self.channels.add(channel)
                 return channel
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             _log.warning(f"Error fetching channel {channel_id}: {e}")
         return None
 
@@ -408,7 +409,7 @@ class SlackBackend(BackendBase):
         # Convert Slack timestamp to datetime
         try:
             timestamp = float(ts.split(".")[0]) if ts else 0
-            created_at = datetime.fromtimestamp(timestamp) if timestamp else None
+            created_at = datetime.fromtimestamp(timestamp) if timestamp else None  # noqa: DTZ006
         except (ValueError, TypeError):
             created_at = None
 
@@ -449,11 +450,11 @@ class SlackBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch messages from a Slack channel, newest-first.
 
         Uses the conversations.history API with ``oldest``/``latest`` bounds,
@@ -476,8 +477,8 @@ class SlackBackend(BackendBase):
         latest = self._to_slack_ts(before)
         oldest = self._to_slack_ts(after)
 
-        messages: List[Message] = []
-        cursor: Optional[str] = None
+        messages: list[Message] = []
+        cursor: str | None = None
         while len(messages) < limit:
             kwargs: dict = {"channel": channel_id, "limit": min(limit - len(messages), 1000)}
             if latest:
@@ -502,12 +503,12 @@ class SlackBackend(BackendBase):
         return messages[:limit]
 
     @staticmethod
-    def _to_slack_ts(value: Optional[Union[str, Message, datetime]]) -> Optional[str]:
+    def _to_slack_ts(value: str | Message | datetime | None) -> str | None:
         """Coerce a range bound to a Slack ``ts`` string, or None."""
         if value is None:
             return None
         if isinstance(value, datetime):
-            dt = value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+            dt = value if value.tzinfo else value.replace(tzinfo=UTC)
             return f"{dt.timestamp():.6f}"
         if isinstance(value, SlackMessage):
             return value.id
@@ -516,10 +517,10 @@ class SlackBackend(BackendBase):
     async def search_messages(
         self,
         query: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         limit: int = 50,
         **kwargs: Any,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Search for messages matching a query.
 
         Uses the search.messages API. Requires search:read scope.
@@ -576,7 +577,7 @@ class SlackBackend(BackendBase):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> SlackMessage:
@@ -625,7 +626,7 @@ class SlackBackend(BackendBase):
 
     async def upload_file(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         data: bytes,
         filename: str = "file",
         content_type: str = "",
@@ -669,7 +670,7 @@ class SlackBackend(BackendBase):
         self,
         attachment: Any,
         *,
-        message: Optional[Message] = None,
+        message: Message | None = None,
     ) -> bytes:
         """Download a Slack attachment's bytes.
 
@@ -698,9 +699,9 @@ class SlackBackend(BackendBase):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Edit a Slack message.
@@ -737,8 +738,8 @@ class SlackBackend(BackendBase):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a Slack message.
 
@@ -764,10 +765,10 @@ class SlackBackend(BackendBase):
     async def forward_message(
         self,
         message: Message,
-        to_channel: Union[str, Channel],
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> SlackMessage:
         """Forward a message to another Slack channel.
@@ -789,7 +790,7 @@ class SlackBackend(BackendBase):
 
         # Resolve the source message if it's just an ID
         if isinstance(message, str):
-            raise ValueError(
+            raise ValueError(  # noqa: TRY004
                 "forward_message requires a SlackMessage object, not just a message ID. Use fetch_messages() to get the full message first."
             )
 
@@ -841,7 +842,7 @@ class SlackBackend(BackendBase):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set user presence on Slack.
@@ -874,7 +875,7 @@ class SlackBackend(BackendBase):
             if not response.get("ok"):
                 raise RuntimeError(f"Failed to set status: {response.get('error')}")
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[SlackPresence]:
+    async def get_presence(self, user: str | User) -> SlackPresence | None:
         """Get a user's presence on Slack.
 
         Uses the users.getPresence API.
@@ -907,9 +908,9 @@ class SlackBackend(BackendBase):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a reaction to a message.
 
@@ -942,9 +943,9 @@ class SlackBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a reaction from a message.
 
@@ -1027,7 +1028,7 @@ class SlackBackend(BackendBase):
         """
         return "<!channel>"
 
-    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_dm(self, users: list[str | User]) -> str | None:
         """Create a DM/IM channel with the specified users.
 
         Uses conversations.open API to create or retrieve a DM channel.
@@ -1044,7 +1045,7 @@ class SlackBackend(BackendBase):
         self._ensure_connected()
 
         # Resolve user IDs
-        user_ids: List[str] = []
+        user_ids: list[str] = []
         for user in users:
             if isinstance(user, User):
                 if user.is_incomplete:
@@ -1079,7 +1080,7 @@ class SlackBackend(BackendBase):
         description: str = "",
         public: bool = True,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a new Slack channel.
 
         Uses conversations.create API to create a public or private channel.
@@ -1122,7 +1123,7 @@ class SlackBackend(BackendBase):
             error = response.get("error", "Unknown error")
             raise RuntimeError(f"Failed to create channel: {error}")
 
-    async def get_bot_info(self) -> Optional[User]:
+    async def get_bot_info(self) -> User | None:
         """Get information about the connected bot user.
 
         Returns:
@@ -1147,14 +1148,14 @@ class SlackBackend(BackendBase):
                     name=user_name,
                     handle=user_name,
                 )
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
 
         return None
 
     async def stream_messages(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[SlackMessage]:
@@ -1174,7 +1175,7 @@ class SlackBackend(BackendBase):
         self._ensure_connected()
 
         # Resolve channel ID if provided
-        channel_id: Optional[str] = None
+        channel_id: str | None = None
         if channel is not None:
             channel_id = await self._resolve_channel_id(channel)
 
@@ -1194,7 +1195,7 @@ class SlackBackend(BackendBase):
         bot_user_id = bot_info.id if bot_info else None
 
         # Track when the stream started for skip_history
-        stream_start_ts = datetime.now().timestamp()
+        stream_start_ts = datetime.now().timestamp()  # noqa: DTZ005
 
         # Create a queue for messages
         message_queue: asyncio.Queue[SlackMessage] = asyncio.Queue()
@@ -1247,7 +1248,7 @@ class SlackBackend(BackendBase):
                                 author = await backend_ref._fetch_user_by_id(user_id)
                                 if author:
                                     author_name = author.name or ""
-                        except Exception:
+                        except Exception:  # noqa: BLE001, S110
                             pass  # Lookup failed, continue with basic info
 
                         # Try to lookup channel to get full info (id AND name)
@@ -1262,7 +1263,7 @@ class SlackBackend(BackendBase):
                                     # Update is_im from channel object if available
                                     if hasattr(channel_obj, "is_im") and channel_obj.is_im:
                                         is_im = True
-                        except Exception:
+                        except Exception:  # noqa: BLE001, S110
                             pass  # Lookup failed, continue with basic info
 
                         # Parse user mentions from text (<@U12345678> format) and resolve
@@ -1277,7 +1278,7 @@ class SlackBackend(BackendBase):
                                 else:
                                     # Fallback to just ID if resolution fails
                                     mention_users.append(SlackUser(id=mention_user_id))
-                            except Exception:
+                            except Exception:  # noqa: BLE001
                                 mention_users.append(SlackUser(id=mention_user_id))
 
                         # Create SlackMessage with full user/channel info
@@ -1288,7 +1289,7 @@ class SlackBackend(BackendBase):
                             author=author,
                             channel=channel_obj,  # Proper SlackChannel object
                             thread=Thread(id=thread_ts) if thread_ts else None,
-                            created_at=datetime.fromtimestamp(float(ts)) if ts else datetime.now(),
+                            created_at=datetime.fromtimestamp(float(ts)) if ts else datetime.now(),  # noqa: DTZ005, DTZ006
                             mentions=list(mention_users),  # Resolved mention users
                             files=event.get("files", []) or [],
                             attachments=_slack_attachments(event.get("files", []) or []),
@@ -1301,7 +1302,7 @@ class SlackBackend(BackendBase):
 
                         # Put message on queue (same event loop, no thread-safe needed)
                         await message_queue.put(slack_msg)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 # Log the error for debugging
                 _log.exception(f"Error handling Slack message: {e}")
 
@@ -1324,7 +1325,7 @@ class SlackBackend(BackendBase):
                     # Wait for messages with a timeout to allow checking stop_event
                     message = await asyncio.wait_for(message_queue.get(), timeout=1.0)
                     yield message
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     continue
         finally:
             # Clean up

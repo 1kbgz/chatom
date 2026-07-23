@@ -5,7 +5,7 @@ by prompt injection or malicious tool calls.
 """
 
 import asyncio
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -300,11 +300,11 @@ class TestMembershipCheck:
 class TestHistoryTimeFiltering:
     def test_filters_old_messages(self):
         """Messages before history_visible_since are excluded."""
-        cutoff = datetime(2025, 6, 1, tzinfo=timezone.utc)
+        cutoff = datetime(2025, 6, 1, tzinfo=UTC)
         messages = [
-            Message(id="m1", content="old", timestamp=datetime(2025, 5, 15, tzinfo=timezone.utc)),
-            Message(id="m2", content="new", timestamp=datetime(2025, 6, 15, tzinfo=timezone.utc)),
-            Message(id="m3", content="newer", timestamp=datetime(2025, 6, 20, tzinfo=timezone.utc)),
+            Message(id="m1", content="old", timestamp=datetime(2025, 5, 15, tzinfo=UTC)),
+            Message(id="m2", content="new", timestamp=datetime(2025, 6, 15, tzinfo=UTC)),
+            Message(id="m3", content="newer", timestamp=datetime(2025, 6, 20, tzinfo=UTC)),
         ]
         policy = AccessPolicy(history_visible_since=cutoff)
         toolset = _make_toolset(_make_backend(), policy)
@@ -317,8 +317,8 @@ class TestHistoryTimeFiltering:
     def test_no_cutoff_returns_all(self):
         """Without history_visible_since, all messages pass through."""
         messages = [
-            Message(id="m1", content="old", timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc)),
-            Message(id="m2", content="new", timestamp=datetime(2025, 6, 15, tzinfo=timezone.utc)),
+            Message(id="m1", content="old", timestamp=datetime(2020, 1, 1, tzinfo=UTC)),
+            Message(id="m2", content="new", timestamp=datetime(2025, 6, 15, tzinfo=UTC)),
         ]
         policy = AccessPolicy(history_visible_since=None)
         toolset = _make_toolset(_make_backend(), policy)
@@ -328,7 +328,7 @@ class TestHistoryTimeFiltering:
 
     def test_epoch_millis_timestamps(self):
         """Handles numeric epoch millisecond timestamps."""
-        cutoff = datetime(2025, 6, 1, tzinfo=timezone.utc)
+        cutoff = datetime(2025, 6, 1, tzinfo=UTC)
         cutoff_ms = int(cutoff.timestamp() * 1000)
         messages = [
             {"id": "m1", "content": "old", "timestamp": cutoff_ms - 1000000},
@@ -343,10 +343,10 @@ class TestHistoryTimeFiltering:
 
     def test_messages_without_timestamp_excluded(self):
         """Messages with no timestamp are excluded for safety."""
-        cutoff = datetime(2025, 6, 1, tzinfo=timezone.utc)
+        cutoff = datetime(2025, 6, 1, tzinfo=UTC)
         messages = [
             Message(id="m1", content="no-ts"),  # timestamp=None
-            Message(id="m2", content="has-ts", timestamp=datetime(2025, 6, 15, tzinfo=timezone.utc)),
+            Message(id="m2", content="has-ts", timestamp=datetime(2025, 6, 15, tzinfo=UTC)),
         ]
         policy = AccessPolicy(history_visible_since=cutoff)
         toolset = _make_toolset(_make_backend(), policy)

@@ -9,7 +9,6 @@ import contextlib
 import logging
 import threading
 from queue import Queue
-from typing import List, Optional, Set
 
 import csp
 from csp import ts
@@ -21,9 +20,9 @@ from ..base import Message
 
 __all__ = (
     "MessageReaderPushAdapter",
+    "_send_messages_thread",
     "message_reader",
     "message_writer",
-    "_send_messages_thread",
 )
 
 log = logging.getLogger(__name__)
@@ -39,7 +38,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
     def __init__(
         self,
         backend: BackendBase,
-        channels: Optional[Set[str]] = None,
+        channels: set[str] | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ):
@@ -54,15 +53,15 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         """
         self._backend = backend
         self._channels = channels or set()
-        self._resolved_channel_ids: Set[str] = set()
+        self._resolved_channel_ids: set[str] = set()
         self._skip_own = skip_own
         self._skip_history = skip_history
-        self._thread: Optional[threading.Thread] = None
+        self._thread: threading.Thread | None = None
         self._running_event = threading.Event()  # Thread-safe running flag
         self._message_queue: Queue = Queue()
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
-        self._error: Optional[Exception] = None
-        self._shutdown_event: Optional[asyncio.Event] = None
+        self._loop: asyncio.AbstractEventLoop | None = None
+        self._error: Exception | None = None
+        self._shutdown_event: asyncio.Event | None = None
 
     def start(self, starttime, endtime):
         """Start the adapter."""
@@ -104,7 +103,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         try:
             asyncio.run(self._async_run_with_setup())
         except Exception as e:
-            log.exception(f"Error in message reader: {e}")
+            log.exception(f"Error in message reader: {e}")  # noqa: TRY401
             self._error = e
             self._running_event.clear()
         finally:
@@ -176,7 +175,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
             # Disconnect the thread-local backend
             try:
                 await thread_backend.disconnect()
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
     async def _consume_stream(self, stream, timeout: float = 30.0):
@@ -256,7 +255,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
                 # Backend doesn't support fetch_channel, assume it's an ID
                 self._resolved_channel_ids.add(channel)
                 log.debug(f"Backend doesn't support fetch_channel, using '{channel}' as ID")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 log.warning(f"Error resolving channel '{channel}': {e}, using as ID")
                 self._resolved_channel_ids.add(channel)
 
@@ -265,7 +264,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
         while self._running_event.is_set():
             try:
                 await asyncio.sleep(0.01)
-                messages: List[Message] = []
+                messages: list[Message] = []
                 while not self._message_queue.empty():
                     msg = self._message_queue.get_nowait()
                     if msg is None:
@@ -276,14 +275,14 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                log.exception(f"Error processing message queue: {e}")
+                log.exception(f"Error processing message queue: {e}")  # noqa: TRY401
 
 
 # Create the CSP adapter definition
 MessageReaderPushAdapter = py_push_adapter_def(
     "MessageReaderPushAdapter",
     MessageReaderPushAdapterImpl,
-    ts[List[Message]],
+    ts[list[Message]],
     backend=object,
     channels=set,
     skip_own=bool,
@@ -294,10 +293,10 @@ MessageReaderPushAdapter = py_push_adapter_def(
 
 def message_reader(
     backend: BackendBase,
-    channels: Optional[Set[str]] = None,
+    channels: set[str] | None = None,
     skip_own: bool = True,
     skip_history: bool = True,
-) -> ts[List[Message]]:
+) -> ts[list[Message]]:
     """Create a CSP time series of messages from a chatom backend.
 
     This is a convenience function that wraps the MessageReaderPushAdapter.
@@ -418,7 +417,7 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
             log.debug("Disconnecting thread-local backend")
             try:
                 await thread_backend.disconnect()
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
     try:
@@ -472,7 +471,7 @@ def _set_presence_thread(presence_queue: Queue, backend: BackendBase):
                             timeout=timeout,
                         )
                     log.debug("Presence set successfully")
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     log.error("Timeout setting presence")
                 except Exception:
                     log.exception("Failed setting presence")
@@ -481,7 +480,7 @@ def _set_presence_thread(presence_queue: Queue, backend: BackendBase):
             log.debug("Disconnecting thread-local backend")
             try:
                 await thread_backend.disconnect()
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
     try:
@@ -512,8 +511,8 @@ def message_writer(
         ...     message_writer(backend, response)
     """
     with csp.state():
-        s_queue: Optional[Queue] = None
-        s_thread: Optional[threading.Thread] = None
+        s_queue: Queue | None = None
+        s_thread: threading.Thread | None = None
 
     with csp.start():
         s_queue = Queue(maxsize=0)

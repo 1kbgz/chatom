@@ -3,7 +3,7 @@
 This module provides the Discord-specific Guild class which extends Organization.
 """
 
-from typing import Any, Optional
+from typing import Any
 
 from chatom.base import Field, Organization
 
@@ -39,15 +39,15 @@ class DiscordGuild(Organization):
         default="en-US",
         description="The guild's preferred locale.",
     )
-    approximate_member_count: Optional[int] = Field(
+    approximate_member_count: int | None = Field(
         default=None,
         description="Approximate number of members.",
     )
-    approximate_presence_count: Optional[int] = Field(
+    approximate_presence_count: int | None = Field(
         default=None,
         description="Approximate number of online members.",
     )
-    vanity_url_code: Optional[str] = Field(
+    vanity_url_code: str | None = Field(
         default=None,
         description="The guild's vanity invite code if set.",
     )

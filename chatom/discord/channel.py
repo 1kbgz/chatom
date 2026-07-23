@@ -4,7 +4,6 @@ This module provides the Discord-specific Channel class.
 """
 
 from enum import Enum
-from typing import Optional
 
 from chatom.base import Channel, Field, Organization
 
@@ -43,7 +42,7 @@ class DiscordChannel(Channel):
         rate_limit_per_user: Slowmode rate limit.
     """
 
-    guild: Optional[Organization] = Field(
+    guild: Organization | None = Field(
         default=None,
         description="The guild/server this channel belongs to.",
     )
@@ -63,11 +62,11 @@ class DiscordChannel(Channel):
         default=DiscordChannelType.GUILD_TEXT,
         description="Discord-specific channel type.",
     )
-    bitrate: Optional[int] = Field(
+    bitrate: int | None = Field(
         default=None,
         description="Voice channel bitrate.",
     )
-    user_limit: Optional[int] = Field(
+    user_limit: int | None = Field(
         default=None,
         description="Voice channel user limit.",
     )

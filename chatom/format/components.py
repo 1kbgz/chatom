@@ -10,7 +10,7 @@ Supported platforms:
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from pydantic import Field
 
@@ -19,15 +19,15 @@ from chatom.base import BaseModel
 from .variant import FORMAT, Format
 
 __all__ = (
-    "ButtonStyle",
-    "Button",
-    "SelectOption",
-    "SelectMenu",
     "ActionRow",
+    "Button",
+    "ButtonStyle",
+    "ComponentContainer",
+    "Modal",
+    "SelectMenu",
+    "SelectOption",
     "TextInput",
     "TextInputStyle",
-    "Modal",
-    "ComponentContainer",
     "attach_components_for_backend",
 )
 
@@ -78,7 +78,7 @@ class Button(BaseModel):
         default=ButtonStyle.PRIMARY,
         description="Visual style of the button.",
     )
-    url: Optional[str] = Field(
+    url: str | None = Field(
         default=None,
         description="URL to open (for link buttons).",
     )
@@ -86,16 +86,16 @@ class Button(BaseModel):
         default=False,
         description="Whether the button is disabled.",
     )
-    emoji: Optional[str] = Field(
+    emoji: str | None = Field(
         default=None,
         description="Emoji to display with the label.",
     )
-    value: Optional[str] = Field(
+    value: str | None = Field(
         default=None,
         description="Value sent with the callback.",
     )
 
-    def render(self, format: FORMAT = Format.MARKDOWN) -> Dict[str, Any]:
+    def render(self, format: FORMAT = Format.MARKDOWN) -> dict[str, Any]:
         """Render the button to platform-specific format.
 
         Args:
@@ -114,9 +114,9 @@ class Button(BaseModel):
             # Return generic dict for other formats
             return self._render_generic()
 
-    def _render_slack(self) -> Dict[str, Any]:
+    def _render_slack(self) -> dict[str, Any]:
         """Render for Slack Block Kit."""
-        button: Dict[str, Any] = {
+        button: dict[str, Any] = {
             "type": "button",
             "text": {
                 "type": "plain_text",
@@ -141,7 +141,7 @@ class Button(BaseModel):
 
         return button
 
-    def _render_discord(self) -> Dict[str, Any]:
+    def _render_discord(self) -> dict[str, Any]:
         """Render for Discord Components."""
         # Discord button styles: 1=Primary, 2=Secondary, 3=Success, 4=Danger, 5=Link
         style_map = {
@@ -152,7 +152,7 @@ class Button(BaseModel):
             ButtonStyle.LINK: 5,
         }
 
-        button: Dict[str, Any] = {
+        button: dict[str, Any] = {
             "type": 2,  # Button component type
             "label": self.label,
             "style": style_map.get(self.style, 1),
@@ -169,7 +169,7 @@ class Button(BaseModel):
 
         return button
 
-    def _render_symphony(self) -> Dict[str, Any]:
+    def _render_symphony(self) -> dict[str, Any]:
         """Render for Symphony MessageML."""
         # Symphony uses <button> tags in MessageML
         name = self.action_id or f"button_{id(self)}"
@@ -177,7 +177,7 @@ class Button(BaseModel):
         messageml = f'<button name="{name}" {style_class}>{self.label}</button>'
         return {"type": "button", "messageml": messageml, "name": name}
 
-    def _render_generic(self) -> Dict[str, Any]:
+    def _render_generic(self) -> dict[str, Any]:
         """Render generic dict representation."""
         return {
             "type": "button",
@@ -202,11 +202,11 @@ class SelectOption(BaseModel):
 
     label: str = Field(description="Display text for the option.")
     value: str = Field(description="Value sent when option is selected.")
-    description: Optional[str] = Field(
+    description: str | None = Field(
         default=None,
         description="Optional description text.",
     )
-    emoji: Optional[str] = Field(
+    emoji: str | None = Field(
         default=None,
         description="Optional emoji to display.",
     )
@@ -235,7 +235,7 @@ class SelectMenu(BaseModel):
         default="Select an option",
         description="Placeholder text.",
     )
-    options: List[SelectOption] = Field(
+    options: list[SelectOption] = Field(
         default_factory=list,
         description="Selectable options.",
     )
@@ -252,7 +252,7 @@ class SelectMenu(BaseModel):
         description="Whether the select is disabled.",
     )
 
-    def render(self, format: FORMAT = Format.MARKDOWN) -> Dict[str, Any]:
+    def render(self, format: FORMAT = Format.MARKDOWN) -> dict[str, Any]:
         """Render the select menu to platform-specific format."""
         if format == Format.SLACK_MARKDOWN:
             return self._render_slack()
@@ -263,11 +263,11 @@ class SelectMenu(BaseModel):
         else:
             return self._render_generic()
 
-    def _render_slack(self) -> Dict[str, Any]:
+    def _render_slack(self) -> dict[str, Any]:
         """Render for Slack Block Kit."""
         options = []
         for opt in self.options:
-            option: Dict[str, Any] = {
+            option: dict[str, Any] = {
                 "text": {"type": "plain_text", "text": opt.label},
                 "value": opt.value,
             }
@@ -282,11 +282,11 @@ class SelectMenu(BaseModel):
             "options": options,
         }
 
-    def _render_discord(self) -> Dict[str, Any]:
+    def _render_discord(self) -> dict[str, Any]:
         """Render for Discord Components."""
         options = []
         for opt in self.options:
-            option: Dict[str, Any] = {
+            option: dict[str, Any] = {
                 "label": opt.label,
                 "value": opt.value,
                 "default": opt.default,
@@ -307,7 +307,7 @@ class SelectMenu(BaseModel):
             "disabled": self.disabled,
         }
 
-    def _render_symphony(self) -> Dict[str, Any]:
+    def _render_symphony(self) -> dict[str, Any]:
         """Render for Symphony MessageML."""
         options_ml = []
         for opt in self.options:
@@ -318,7 +318,7 @@ class SelectMenu(BaseModel):
         messageml = f'<select name="{self.action_id}">\n{options_str}\n</select>'
         return {"type": "select", "messageml": messageml, "action_id": self.action_id}
 
-    def _render_generic(self) -> Dict[str, Any]:
+    def _render_generic(self) -> dict[str, Any]:
         """Render generic dict representation."""
         return {
             "type": "select",
@@ -338,12 +338,12 @@ class ActionRow(BaseModel):
         components: List of components in this row.
     """
 
-    components: List[Union[Button, SelectMenu]] = Field(
+    components: list[Button | SelectMenu] = Field(
         default_factory=list,
         description="Components in this row.",
     )
 
-    def render(self, format: FORMAT = Format.MARKDOWN) -> Dict[str, Any]:
+    def render(self, format: FORMAT = Format.MARKDOWN) -> dict[str, Any]:
         """Render the action row to platform-specific format."""
         if format == Format.SLACK_MARKDOWN:
             return self._render_slack()
@@ -354,7 +354,7 @@ class ActionRow(BaseModel):
         else:
             return self._render_generic()
 
-    def _render_slack(self) -> Dict[str, Any]:
+    def _render_slack(self) -> dict[str, Any]:
         """Render for Slack Block Kit."""
         elements = [comp.render(Format.SLACK_MARKDOWN) for comp in self.components]
         return {
@@ -362,7 +362,7 @@ class ActionRow(BaseModel):
             "elements": elements,
         }
 
-    def _render_discord(self) -> Dict[str, Any]:
+    def _render_discord(self) -> dict[str, Any]:
         """Render for Discord Components."""
         components = [comp.render(Format.DISCORD_MARKDOWN) for comp in self.components]
         return {
@@ -370,18 +370,16 @@ class ActionRow(BaseModel):
             "components": components,
         }
 
-    def _render_symphony(self) -> Dict[str, Any]:
+    def _render_symphony(self) -> dict[str, Any]:
         """Render for Symphony MessageML."""
         parts = []
         for comp in self.components:
-            if isinstance(comp, Button):
-                parts.append(comp._render_symphony()["messageml"])
-            elif isinstance(comp, SelectMenu):
+            if isinstance(comp, (Button, SelectMenu)):
                 parts.append(comp._render_symphony()["messageml"])
         messageml = " ".join(parts)
         return {"type": "action_row", "messageml": messageml}
 
-    def _render_generic(self) -> Dict[str, Any]:
+    def _render_generic(self) -> dict[str, Any]:
         """Render generic dict representation."""
         return {
             "type": "action_row",
@@ -393,8 +391,8 @@ class ActionRow(BaseModel):
         label: str,
         action_id: str = "",
         style: ButtonStyle = ButtonStyle.PRIMARY,
-        url: Optional[str] = None,
-        value: Optional[str] = None,
+        url: str | None = None,
+        value: str | None = None,
     ) -> "ActionRow":
         """Add a button to the row.
 
@@ -422,7 +420,7 @@ class ActionRow(BaseModel):
     def add_select(
         self,
         action_id: str,
-        options: List[SelectOption],
+        options: list[SelectOption],
         placeholder: str = "Select an option",
     ) -> "ActionRow":
         """Add a select menu to the row.
@@ -479,11 +477,11 @@ class TextInput(BaseModel):
         default=TextInputStyle.SHORT,
         description="Input style.",
     )
-    min_length: Optional[int] = Field(
+    min_length: int | None = Field(
         default=None,
         description="Minimum input length.",
     )
-    max_length: Optional[int] = Field(
+    max_length: int | None = Field(
         default=None,
         description="Maximum input length.",
     )
@@ -496,7 +494,7 @@ class TextInput(BaseModel):
         description="Default value.",
     )
 
-    def render(self, format: FORMAT = Format.MARKDOWN) -> Dict[str, Any]:
+    def render(self, format: FORMAT = Format.MARKDOWN) -> dict[str, Any]:
         """Render the text input to platform-specific format."""
         if format == Format.SLACK_MARKDOWN:
             return self._render_slack()
@@ -507,9 +505,9 @@ class TextInput(BaseModel):
         else:
             return self._render_generic()
 
-    def _render_slack(self) -> Dict[str, Any]:
+    def _render_slack(self) -> dict[str, Any]:
         """Render for Slack Block Kit (modal input)."""
-        element: Dict[str, Any] = {
+        element: dict[str, Any] = {
             "type": "plain_text_input",
             "action_id": self.action_id,
             "multiline": self.style == TextInputStyle.PARAGRAPH,
@@ -530,11 +528,11 @@ class TextInput(BaseModel):
             "optional": not self.required,
         }
 
-    def _render_discord(self) -> Dict[str, Any]:
+    def _render_discord(self) -> dict[str, Any]:
         """Render for Discord Components (modal input)."""
         style = 1 if self.style == TextInputStyle.SHORT else 2
 
-        component: Dict[str, Any] = {
+        component: dict[str, Any] = {
             "type": 4,  # Text input component type
             "custom_id": self.action_id,
             "style": style,
@@ -555,7 +553,7 @@ class TextInput(BaseModel):
             "components": [component],
         }
 
-    def _render_symphony(self) -> Dict[str, Any]:
+    def _render_symphony(self) -> dict[str, Any]:
         """Render for Symphony MessageML."""
         input_type = "textarea" if self.style == TextInputStyle.PARAGRAPH else "text-field"
         required = ' required="true"' if self.required else ""
@@ -563,7 +561,7 @@ class TextInput(BaseModel):
         messageml = f'<{input_type} name="{self.action_id}"{required}{placeholder}>{self.default_value}</{input_type}>'
         return {"type": "text_input", "messageml": messageml, "action_id": self.action_id}
 
-    def _render_generic(self) -> Dict[str, Any]:
+    def _render_generic(self) -> dict[str, Any]:
         """Render generic dict representation."""
         return {
             "type": "text_input",
@@ -598,12 +596,12 @@ class Modal(BaseModel):
         default="Cancel",
         description="Close button text.",
     )
-    inputs: List[TextInput] = Field(
+    inputs: list[TextInput] = Field(
         default_factory=list,
         description="Form input elements.",
     )
 
-    def render(self, format: FORMAT = Format.MARKDOWN) -> Dict[str, Any]:
+    def render(self, format: FORMAT = Format.MARKDOWN) -> dict[str, Any]:
         """Render the modal to platform-specific format."""
         if format == Format.SLACK_MARKDOWN:
             return self._render_slack()
@@ -614,7 +612,7 @@ class Modal(BaseModel):
         else:
             return self._render_generic()
 
-    def _render_slack(self) -> Dict[str, Any]:
+    def _render_slack(self) -> dict[str, Any]:
         """Render for Slack modal view."""
         blocks = [inp.render(Format.SLACK_MARKDOWN) for inp in self.inputs]
 
@@ -627,7 +625,7 @@ class Modal(BaseModel):
             "blocks": blocks,
         }
 
-    def _render_discord(self) -> Dict[str, Any]:
+    def _render_discord(self) -> dict[str, Any]:
         """Render for Discord modal."""
         components = [inp.render(Format.DISCORD_MARKDOWN) for inp in self.inputs]
 
@@ -638,7 +636,7 @@ class Modal(BaseModel):
             "components": components,
         }
 
-    def _render_symphony(self) -> Dict[str, Any]:
+    def _render_symphony(self) -> dict[str, Any]:
         """Render for Symphony form."""
         inputs_ml = [inp._render_symphony()["messageml"] for inp in self.inputs]
         inputs_str = "\n".join(inputs_ml)
@@ -649,7 +647,7 @@ class Modal(BaseModel):
 </form>"""
         return {"type": "modal", "messageml": messageml, "callback_id": self.callback_id}
 
-    def _render_generic(self) -> Dict[str, Any]:
+    def _render_generic(self) -> dict[str, Any]:
         """Render generic dict representation."""
         return {
             "type": "modal",
@@ -699,12 +697,12 @@ class ComponentContainer(BaseModel):
         rows: List of action rows.
     """
 
-    rows: List[ActionRow] = Field(
+    rows: list[ActionRow] = Field(
         default_factory=list,
         description="Action rows containing components.",
     )
 
-    def render(self, format: FORMAT = Format.MARKDOWN) -> List[Dict[str, Any]]:
+    def render(self, format: FORMAT = Format.MARKDOWN) -> list[dict[str, Any]]:
         """Render all rows to platform-specific format."""
         if format == Format.SYMPHONY_MESSAGEML:
             # Symphony uses inline MessageML
@@ -728,7 +726,7 @@ class ComponentContainer(BaseModel):
         label: str,
         action_id: str = "",
         style: ButtonStyle = ButtonStyle.PRIMARY,
-        url: Optional[str] = None,
+        url: str | None = None,
     ) -> "ComponentContainer":
         """Add a button to the last row (creates row if needed).
 
@@ -750,7 +748,7 @@ class ComponentContainer(BaseModel):
     def add_select(
         self,
         action_id: str,
-        options: List[SelectOption],
+        options: list[SelectOption],
         placeholder: str = "Select an option",
     ) -> "ComponentContainer":
         """Add a select menu (creates new row for it).
@@ -770,10 +768,10 @@ class ComponentContainer(BaseModel):
 
 
 def attach_components_for_backend(
-    kwargs: Dict[str, Any],
+    kwargs: dict[str, Any],
     container: "ComponentContainer",
     backend_format: "FORMAT",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Populate ``send_message`` keyword args for interactive components.
 
     Writes the correct kwarg for the target backend format into ``kwargs``

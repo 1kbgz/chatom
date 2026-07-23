@@ -7,7 +7,7 @@ served, tool names are prefixed with the backend name
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from fastmcp import FastMCP
 from pydantic import BaseModel, Field
@@ -23,8 +23,8 @@ __all__ = ("build_mcp_server",)
 class ChannelRef(BaseModel):
     """Partial channel reference.  Provide at least ``id`` or ``name``."""
 
-    id: Optional[str] = Field(default=None, description="Channel ID.")
-    name: Optional[str] = Field(default=None, description="Channel name.")
+    id: str | None = Field(default=None, description="Channel ID.")
+    name: str | None = Field(default=None, description="Channel name.")
 
     def to_channel(self) -> Channel:
         return Channel(id=self.id or "", name=self.name or "")
@@ -33,10 +33,10 @@ class ChannelRef(BaseModel):
 class UserRef(BaseModel):
     """Partial user reference.  Provide at least one identifier."""
 
-    id: Optional[str] = Field(default=None, description="User ID.")
-    name: Optional[str] = Field(default=None, description="User display name.")
-    email: Optional[str] = Field(default=None, description="User email address.")
-    handle: Optional[str] = Field(default=None, description="User handle / username.")
+    id: str | None = Field(default=None, description="User ID.")
+    name: str | None = Field(default=None, description="User display name.")
+    email: str | None = Field(default=None, description="User email address.")
+    handle: str | None = Field(default=None, description="User handle / username.")
 
     def to_user(self) -> User:
         return User(
@@ -66,8 +66,8 @@ def _register_backend_tools(
     *,
     prefix: str = "",
     read_only: bool = False,
-    enabled_tools: Optional[set[str]] = None,
-    disabled_tools: Optional[set[str]] = None,
+    enabled_tools: set[str] | None = None,
+    disabled_tools: set[str] | None = None,
 ) -> None:
     """Register MCP tools for a single backend.
 
@@ -94,11 +94,9 @@ def _register_backend_tools(
     def _enabled(base: str) -> bool:
         if base in disabled:
             return False
-        if enabled_tools is not None and base not in enabled_tools:
-            return False
-        return True
+        return not (enabled_tools is not None and base not in enabled_tools)
 
-    def _tool(base: str, *, cap: Optional[Capability] = None, write: bool = False, available: bool = True):
+    def _tool(base: str, *, cap: Capability | None = None, write: bool = False, available: bool = True):
         """Register the decorated function as an MCP tool when all gates pass.
 
         The gates are evaluated up-front so disabled tools are never
@@ -123,11 +121,11 @@ def _register_backend_tools(
 
     @_tool("read_channel_history")
     async def read_channel_history(
-        channel: ChannelRef = Field(description="Channel to read messages from."),
+        channel: ChannelRef = Field(description="Channel to read messages from."),  # noqa: B008
         limit: int = Field(default=50, description="Maximum messages, newest first (1-200).", ge=1, le=200),
-        last_minutes: Optional[int] = Field(default=None, description="Only messages from the last N minutes (e.g. 30).", ge=1),
-        after: Optional[str] = Field(default=None, description="Only messages at/after this ISO-8601 UTC timestamp."),
-        before: Optional[str] = Field(default=None, description="Only messages at/before this ISO-8601 UTC timestamp."),
+        last_minutes: int | None = Field(default=None, description="Only messages from the last N minutes (e.g. 30).", ge=1),
+        after: str | None = Field(default=None, description="Only messages at/after this ISO-8601 UTC timestamp."),
+        before: str | None = Field(default=None, description="Only messages at/before this ISO-8601 UTC timestamp."),
     ) -> list[dict[str, Any]]:
         """Read message history from a chat channel, newest-first."""
         after_dt, before_dt = resolve_history_bounds(after, before, last_minutes)
@@ -137,7 +135,7 @@ def _register_backend_tools(
     @_tool("search_messages", cap=Capability.MESSAGE_SEARCH)
     async def search_messages(
         query: str = Field(description="Search query string."),
-        channel: Optional[ChannelRef] = Field(default=None, description="Optional channel to limit search to."),
+        channel: ChannelRef | None = Field(default=None, description="Optional channel to limit search to."),  # noqa: B008
         limit: int = Field(default=20, description="Maximum results (1-100).", ge=1, le=100),
     ) -> list[dict[str, Any]]:
         """Search for messages matching a text query."""
@@ -147,8 +145,8 @@ def _register_backend_tools(
 
     @_tool("lookup_user")
     async def lookup_user(
-        user: UserRef = Field(description="User to look up. Provide at least one identifier."),
-    ) -> Optional[dict[str, Any]]:
+        user: UserRef = Field(description="User to look up. Provide at least one identifier."),  # noqa: B008
+    ) -> dict[str, Any] | None:
         """Look up a chat user by ID, name, email, or handle."""
         u = user.to_user()
         result = await backend.lookup_user(
@@ -161,8 +159,8 @@ def _register_backend_tools(
 
     @_tool("lookup_channel")
     async def lookup_channel(
-        channel: ChannelRef = Field(description="Channel to look up."),
-    ) -> Optional[dict[str, Any]]:
+        channel: ChannelRef = Field(description="Channel to look up."),  # noqa: B008
+    ) -> dict[str, Any] | None:
         """Look up a channel by ID or name."""
         ch = channel.to_channel()
         result = await backend.lookup_channel(id=ch.id or None, name=ch.name or None)
@@ -170,14 +168,14 @@ def _register_backend_tools(
 
     @_tool("get_channel_members")
     async def get_channel_members(
-        channel: ChannelRef = Field(description="Channel to get members for."),
+        channel: ChannelRef = Field(description="Channel to get members for."),  # noqa: B008
     ) -> list[dict[str, Any]]:
         """Get the list of members in a channel."""
         members = await backend.fetch_channel_members(channel.to_channel())
         return _serialize(members)
 
     @_tool("get_bot_info")
-    async def get_bot_info() -> Optional[dict[str, Any]]:
+    async def get_bot_info() -> dict[str, Any] | None:
         """Get the bot's own user profile (id, name, handle).
 
         Useful for self-identification — e.g. checking whether a message
@@ -187,15 +185,15 @@ def _register_backend_tools(
 
     @_tool("get_presence", cap=Capability.PRESENCE)
     async def get_presence(
-        user: UserRef = Field(description="User to look up presence for. Provide at least one identifier."),
-    ) -> Optional[dict[str, Any]]:
+        user: UserRef = Field(description="User to look up presence for. Provide at least one identifier."),  # noqa: B008
+    ) -> dict[str, Any] | None:
         """Get a user's presence/status (online, away, etc.)."""
         u = user.to_user()
         return _serialize(await backend.get_presence(u.id or u))
 
     @_tool("list_recent_attachments", available=_attachments_ok)
     async def list_recent_attachments(
-        channel: ChannelRef = Field(description="Channel to scan for attachments."),
+        channel: ChannelRef = Field(description="Channel to scan for attachments."),  # noqa: B008
         limit: int = Field(default=20, description="Number of recent messages to scan (1-100).", ge=1, le=100),
     ) -> list[dict[str, Any]]:
         """List files, images, and documents on recent messages in a channel.
@@ -222,8 +220,8 @@ def _register_backend_tools(
     @_tool("download_attachment", available=_attachments_ok)
     async def download_attachment(
         attachment_id: str = Field(description="ID of the attachment (from list_recent_attachments)."),
-        channel: ChannelRef = Field(description="Channel the attachment was posted in."),
-        message_id: Optional[str] = Field(default=None, description="Message ID the attachment belongs to (required by some backends)."),
+        channel: ChannelRef = Field(description="Channel the attachment was posted in."),  # noqa: B008
+        message_id: str | None = Field(default=None, description="Message ID the attachment belongs to (required by some backends)."),
         max_bytes: int = Field(default=5_000_000, description="Maximum bytes to return (1-20MB).", ge=1, le=20_000_000),
     ) -> dict[str, Any]:
         """Download an attachment's content, returned base64-encoded."""
@@ -259,7 +257,7 @@ def _register_backend_tools(
 
     @_tool("send_message", write=True)
     async def send_message(
-        channel: ChannelRef = Field(description="Channel to send the message to."),
+        channel: ChannelRef = Field(description="Channel to send the message to."),  # noqa: B008
         content: str = Field(description="Message content to send."),
     ) -> dict[str, Any]:
         """Send a message to a channel."""
@@ -270,7 +268,7 @@ def _register_backend_tools(
     async def edit_message(
         message_id: str = Field(description="ID of the message to edit."),
         content: str = Field(description="New message content."),
-        channel: ChannelRef = Field(description="Channel containing the message."),
+        channel: ChannelRef = Field(description="Channel containing the message."),  # noqa: B008
     ) -> dict[str, Any]:
         """Edit an existing message."""
         result = await backend.edit_message(
@@ -284,7 +282,7 @@ def _register_backend_tools(
     async def add_reaction(
         message_id: str = Field(description="ID of the message to react to."),
         emoji: str = Field(description="Emoji name or unicode character."),
-        channel: ChannelRef = Field(description="Channel containing the message."),
+        channel: ChannelRef = Field(description="Channel containing the message."),  # noqa: B008
     ) -> dict[str, str]:
         """Add an emoji reaction to a message."""
         await backend.add_reaction(
@@ -298,7 +296,7 @@ def _register_backend_tools(
     async def remove_reaction(
         message_id: str = Field(description="ID of the message to remove a reaction from."),
         emoji: str = Field(description="Emoji name or unicode character to remove."),
-        channel: ChannelRef = Field(description="Channel containing the message."),
+        channel: ChannelRef = Field(description="Channel containing the message."),  # noqa: B008
     ) -> dict[str, str]:
         """Remove an emoji reaction previously added to a message."""
         await backend.remove_reaction(
@@ -311,7 +309,7 @@ def _register_backend_tools(
     @_tool("delete_message", cap=Capability.DELETING, write=True)
     async def delete_message(
         message_id: str = Field(description="ID of the message to delete."),
-        channel: ChannelRef = Field(description="Channel containing the message."),
+        channel: ChannelRef = Field(description="Channel containing the message."),  # noqa: B008
     ) -> dict[str, str]:
         """Delete a message. Irreversible — disabled by default."""
         await backend.delete_message(message=message_id, channel=channel.to_channel())
@@ -328,7 +326,7 @@ def _register_backend_tools(
 
     @_tool("upload_file", write=True, available=_attachments_ok)
     async def upload_file(
-        channel: ChannelRef = Field(description="Channel to upload the file to."),
+        channel: ChannelRef = Field(description="Channel to upload the file to."),  # noqa: B008
         filename: str = Field(description="Name of the file including extension (e.g. 'chart.png')."),
         data_base64: str = Field(description="The file content, base64-encoded."),
         content_type: str = Field(default="", description="MIME type. Inferred from filename if omitted."),
@@ -364,8 +362,8 @@ def build_mcp_server(
     *,
     name: str = "chatom",
     read_only: bool = False,
-    enabled_tools: Optional[set[str]] = None,
-    disabled_tools: Optional[set[str]] = None,
+    enabled_tools: set[str] | None = None,
+    disabled_tools: set[str] | None = None,
 ) -> FastMCP:
     """Build a FastMCP server from one or more chatom backends.
 

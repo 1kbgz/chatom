@@ -13,14 +13,14 @@ from .testing import MockTelegramBackend
 from .user import TelegramUser
 
 __all__ = (
+    "MockTelegramBackend",
     "TelegramBackend",
-    "TelegramConfig",
-    "TelegramUser",
     "TelegramChannel",
     "TelegramChatType",
+    "TelegramConfig",
     "TelegramMessage",
     "TelegramPresence",
-    "MockTelegramBackend",
-    "mention_user",
+    "TelegramUser",
     "mention_channel",
+    "mention_user",
 )

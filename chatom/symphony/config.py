@@ -9,7 +9,7 @@ import logging
 import os
 import tempfile
 import threading
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from pydantic import Field, SecretStr, model_validator
 
@@ -82,48 +82,48 @@ class SymphonyConfig(BackendConfig):
 
     # Bot authentication (RSA)
     bot_username: str = ""
-    bot_private_key_path: Optional[str] = None
-    bot_private_key_content: Optional[Union[str, SecretStr]] = None
+    bot_private_key_path: str | None = None
+    bot_private_key_content: str | SecretStr | None = None
 
     # Bot authentication (Certificate)
-    bot_certificate_path: Optional[str] = None
-    bot_certificate_content: Optional[Union[str, SecretStr]] = Field(
+    bot_certificate_path: str | None = None
+    bot_certificate_content: str | SecretStr | None = Field(
         default=None,
         description="Direct content of the certificate PEM. If provided without bot_certificate_path, a temp file will be created automatically.",
     )
-    bot_certificate_password: Optional[Union[str, SecretStr]] = None
+    bot_certificate_password: str | SecretStr | None = None
 
     # Internal: Path to temp cert file (created from bot_certificate_content)
-    _temp_cert_path: Optional[str] = None
+    _temp_cert_path: str | None = None
 
     # Application configuration (for extension apps)
-    app_id: Optional[str] = None
-    app_private_key_path: Optional[str] = None
+    app_id: str | None = None
+    app_private_key_path: str | None = None
 
     # Separate agent/keymanager/session auth hosts (optional)
-    pod_host: Optional[str] = None
-    pod_port: Optional[int] = None
-    agent_host: Optional[str] = None
-    agent_port: Optional[int] = None
-    session_auth_host: Optional[str] = None
-    session_auth_port: Optional[int] = None
-    key_manager_host: Optional[str] = None
-    key_manager_port: Optional[int] = None
+    pod_host: str | None = None
+    pod_port: int | None = None
+    agent_host: str | None = None
+    agent_port: int | None = None
+    session_auth_host: str | None = None
+    session_auth_port: int | None = None
+    key_manager_host: str | None = None
+    key_manager_port: int | None = None
 
     # SSL/Trust configuration
-    trust_store_path: Optional[str] = None
+    trust_store_path: str | None = None
 
     # Proxy configuration
-    proxy_host: Optional[str] = None
-    proxy_port: Optional[int] = None
-    proxy_username: Optional[str] = None
-    proxy_password: Optional[SecretStr] = None
+    proxy_host: str | None = None
+    proxy_port: int | None = None
+    proxy_username: str | None = None
+    proxy_password: SecretStr | None = None
 
     # Connection settings
     timeout: int = Field(default=30, description="Request timeout in seconds")
 
     # Error handling and retry configuration
-    error_room: Optional[str] = Field(
+    error_room: str | None = Field(
         None,
         description="A room to direct error messages to, if a message fails to be sent.",
     )
@@ -153,7 +153,7 @@ class SymphonyConfig(BackendConfig):
     )
 
     # SSL configuration
-    ssl_trust_store_path: Optional[str] = Field(
+    ssl_trust_store_path: str | None = Field(
         None,
         description="Path to a custom CA certificate bundle file.",
     )
@@ -209,57 +209,57 @@ class SymphonyConfig(BackendConfig):
 
     # Custom URL overrides (for non-standard Symphony deployments)
     # Use {sid} for stream ID, {datafeed_id} for datafeed ID, {room_id} for room ID
-    message_create_url: Optional[str] = Field(
+    message_create_url: str | None = Field(
         None,
         description="Custom URL for message creation. Template: https://{host}/agent/v4/stream/{sid}/message/create",
     )
-    datafeed_create_url: Optional[str] = Field(
+    datafeed_create_url: str | None = Field(
         None,
         description="Custom URL for datafeed creation. Template: https://{host}/agent/v5/datafeeds",
     )
-    datafeed_delete_url: Optional[str] = Field(
+    datafeed_delete_url: str | None = Field(
         None,
         description="Custom URL for datafeed deletion. Template: https://{host}/agent/v5/datafeeds/{datafeed_id}",
     )
-    datafeed_read_url: Optional[str] = Field(
+    datafeed_read_url: str | None = Field(
         None,
         description="Custom URL for datafeed reading. Template: https://{host}/agent/v5/datafeeds/{datafeed_id}/read",
     )
-    room_search_url: Optional[str] = Field(
+    room_search_url: str | None = Field(
         None,
         description="Custom URL for room search. Template: https://{host}/pod/v3/room/search",
     )
-    room_info_url: Optional[str] = Field(
+    room_info_url: str | None = Field(
         None,
         description="Custom URL for room info. Template: https://{host}/pod/v3/room/{room_id}/info",
     )
-    im_create_url: Optional[str] = Field(
+    im_create_url: str | None = Field(
         None,
         description="Custom URL for IM creation. Template: https://{host}/pod/v1/im/create",
     )
-    room_members_url: Optional[str] = Field(
+    room_members_url: str | None = Field(
         None,
         description="Custom URL for room members. Template: https://{host}/pod/v2/room/{room_id}/membership/list",
     )
-    presence_url: Optional[str] = Field(
+    presence_url: str | None = Field(
         None,
         description="Custom URL for user presence. Template: https://{host}/pod/v2/user/presence",
     )
-    user_detail_url: Optional[str] = Field(
+    user_detail_url: str | None = Field(
         None,
         description="Custom URL for user detail. Template: https://{host}/pod/v2/admin/user/{uid}",
     )
-    user_search_url: Optional[str] = Field(
+    user_search_url: str | None = Field(
         None,
         description="Custom URL for user search. Template: https://{host}/pod/v3/users",
     )
-    user_lookup_url: Optional[str] = Field(
+    user_lookup_url: str | None = Field(
         None,
         description="Custom URL for user lookup by email/username. Template: https://{host}/pod/v3/users",
     )
 
     @property
-    def bot_private_key_str(self) -> Optional[str]:
+    def bot_private_key_str(self) -> str | None:
         """Get the bot private key content as string."""
         if self.bot_private_key_content:
             return (
@@ -270,7 +270,7 @@ class SymphonyConfig(BackendConfig):
         return None
 
     @property
-    def bot_certificate_content_str(self) -> Optional[str]:
+    def bot_certificate_content_str(self) -> str | None:
         """Get the certificate content as string."""
         if self.bot_certificate_content:
             return (
@@ -281,7 +281,7 @@ class SymphonyConfig(BackendConfig):
         return None
 
     @property
-    def bot_certificate_password_str(self) -> Optional[str]:
+    def bot_certificate_password_str(self) -> str | None:
         """Get the certificate password as string."""
         if self.bot_certificate_password:
             return (
@@ -292,7 +292,7 @@ class SymphonyConfig(BackendConfig):
         return None
 
     @property
-    def proxy_password_str(self) -> Optional[str]:
+    def proxy_password_str(self) -> str | None:
         """Get the proxy password as string."""
         if self.proxy_password:
             return self.proxy_password.get_secret_value() if isinstance(self.proxy_password, SecretStr) else self.proxy_password
@@ -336,13 +336,13 @@ class SymphonyConfig(BackendConfig):
             base += f"/{self.context.strip('/')}"
         return base
 
-    def to_bdk_config(self) -> Dict[str, Any]:
+    def to_bdk_config(self) -> dict[str, Any]:
         """Convert to Symphony BDK configuration format.
 
         Returns:
             Dictionary suitable for passing to SymphonyBdk.
         """
-        config: Dict[str, Any] = {
+        config: dict[str, Any] = {
             "host": self.host,
             "port": self.port,
             "scheme": self.scheme,
@@ -350,7 +350,7 @@ class SymphonyConfig(BackendConfig):
         }
 
         # Bot configuration
-        bot_config: Dict[str, Any] = {"username": self.bot_username}
+        bot_config: dict[str, Any] = {"username": self.bot_username}
 
         if self.bot_private_key_path:
             bot_config["privateKey"] = {"path": self.bot_private_key_path}
@@ -358,7 +358,7 @@ class SymphonyConfig(BackendConfig):
             bot_config["privateKey"] = {"content": self.bot_private_key_str}
 
         if self.bot_certificate_path:
-            cert_config: Dict[str, Any] = {"path": self.bot_certificate_path}
+            cert_config: dict[str, Any] = {"path": self.bot_certificate_path}
             if self.bot_certificate_password:
                 cert_config["password"] = self.bot_certificate_password_str
             bot_config["certificate"] = cert_config
@@ -367,7 +367,7 @@ class SymphonyConfig(BackendConfig):
 
         # Pod configuration (only if explicitly set)
         if self.pod_host:
-            pod_config: Dict[str, Any] = {"host": self.pod_host}
+            pod_config: dict[str, Any] = {"host": self.pod_host}
             if self.pod_port:
                 pod_config["port"] = self.pod_port
             config["pod"] = pod_config
@@ -375,7 +375,7 @@ class SymphonyConfig(BackendConfig):
         # Agent configuration
         # Only set if explicitly specified; BDK defaults to main host if not set
         if self.agent_host:
-            agent_config: Dict[str, Any] = {"host": self.agent_host}
+            agent_config: dict[str, Any] = {"host": self.agent_host}
             if self.agent_port:
                 agent_config["port"] = self.agent_port
             config["agent"] = agent_config
@@ -384,21 +384,21 @@ class SymphonyConfig(BackendConfig):
         # Default to session_auth_host if not set (common deployment pattern where KM auth is separate)
         effective_km_host = self.key_manager_host or self.session_auth_host
         if effective_km_host:
-            km_config: Dict[str, Any] = {"host": effective_km_host}
+            km_config: dict[str, Any] = {"host": effective_km_host}
             if self.key_manager_port:
                 km_config["port"] = self.key_manager_port
             config["keyManager"] = km_config
 
         # Session auth configuration (if separate)
         if self.session_auth_host:
-            session_auth_config: Dict[str, Any] = {"host": self.session_auth_host}
+            session_auth_config: dict[str, Any] = {"host": self.session_auth_host}
             if self.session_auth_port:
                 session_auth_config["port"] = self.session_auth_port
             config["sessionAuth"] = session_auth_config
 
         # App configuration
         if self.app_id:
-            app_config: Dict[str, Any] = {"appId": self.app_id}
+            app_config: dict[str, Any] = {"appId": self.app_id}
             if self.app_private_key_path:
                 app_config["privateKey"] = {"path": self.app_private_key_path}
             config["app"] = app_config
@@ -409,7 +409,7 @@ class SymphonyConfig(BackendConfig):
 
         # Proxy configuration
         if self.proxy_host:
-            proxy_config: Dict[str, Any] = {
+            proxy_config: dict[str, Any] = {
                 "host": self.proxy_host,
             }
             if self.proxy_port:
@@ -466,8 +466,8 @@ class SymphonyRoomMapper:
             stream_service: Optional StreamService from SymphonyBdk.
             backend: Optional chatom SymphonyBackend for room resolution.
         """
-        self._name_to_id: Dict[str, str] = {}
-        self._id_to_name: Dict[str, str] = {}
+        self._name_to_id: dict[str, str] = {}
+        self._id_to_name: dict[str, str] = {}
         self._stream_service = stream_service
         self._backend = backend
         self._lock = threading.Lock()
@@ -480,7 +480,7 @@ class SymphonyRoomMapper:
         """Set the chatom backend for room resolution."""
         self._backend = backend
 
-    def get_room_id(self, room_name: str) -> Optional[str]:
+    def get_room_id(self, room_name: str) -> str | None:
         """Get the room ID for a given room name.
 
         Args:
@@ -499,7 +499,7 @@ class SymphonyRoomMapper:
 
             return None
 
-    async def get_room_id_async(self, room_name: str) -> Optional[str]:
+    async def get_room_id_async(self, room_name: str) -> str | None:
         """Get the room ID for a given room name, using async calls if needed.
 
         Args:
@@ -540,12 +540,12 @@ class SymphonyRoomMapper:
                             self._name_to_id[room_name] = room_id
                             self._id_to_name[room_id] = room_name
                         return room_id
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             log.error(f"Error searching for room '{room_name}': {e}")
 
         return None
 
-    def get_room_name(self, room_id: str) -> Optional[str]:
+    def get_room_name(self, room_id: str) -> str | None:
         """Get the room name for a given room ID.
 
         Args:
@@ -557,7 +557,7 @@ class SymphonyRoomMapper:
         with self._lock:
             return self._id_to_name.get(room_id)
 
-    async def get_room_name_async(self, room_id: str) -> Optional[str]:
+    async def get_room_name_async(self, room_id: str) -> str | None:
         """Get the room name for a given room ID, using async calls if needed.
 
         Args:
@@ -592,7 +592,7 @@ class SymphonyRoomMapper:
                     self._name_to_id[room_name] = room_id
                     self._id_to_name[room_id] = room_name
                 return room_name
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             log.error(f"Error getting room info for '{room_id}': {e}")
 
         return None

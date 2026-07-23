@@ -869,7 +869,7 @@ class TestPromoteWithValidationError:
         except ConversionError:
             # This is the expected path
             pass
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             # Some other validation might kick in
             pass
 

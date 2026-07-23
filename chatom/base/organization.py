@@ -40,7 +40,7 @@ class Organization(Identifiable):
         default="",
         description="URL to the organization's icon/logo image.",
     )
-    member_count: Optional[int] = Field(
+    member_count: int | None = Field(
         default=None,
         description="Approximate number of members, if available.",
     )

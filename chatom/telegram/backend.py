@@ -1,9 +1,10 @@
 """Telegram backend implementation for chatom."""
 
 import asyncio
+from collections.abc import AsyncIterator
 from datetime import datetime
 from logging import getLogger
-from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
+from typing import Any, ClassVar
 
 from pydantic import Field
 
@@ -81,27 +82,27 @@ class TelegramBackend(BackendBase):
     channel_class: ClassVar[type] = TelegramChannel
     presence_class: ClassVar[type] = TelegramPresence
 
-    capabilities: Optional[BackendCapabilities] = TELEGRAM_CAPABILITIES
+    capabilities: BackendCapabilities | None = TELEGRAM_CAPABILITIES
     config: TelegramConfig = Field(default_factory=TelegramConfig)
 
     # Internal bot instance (set during connect)
     _bot: Any = None
 
     # Cached bot info
-    _bot_user_id: Optional[str] = None
-    _bot_user_name: Optional[str] = None
+    _bot_user_id: str | None = None
+    _bot_user_name: str | None = None
 
     @property
-    def bot_user_id(self) -> Optional[str]:
+    def bot_user_id(self) -> str | None:
         """Get the bot's user ID."""
         return self._bot_user_id
 
     @property
-    def bot_user_name(self) -> Optional[str]:
+    def bot_user_name(self) -> str | None:
         """Get the bot's username."""
         return self._bot_user_name
 
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = {"arbitrary_types_allowed": True}  # noqa: RUF012
 
     async def connect(self) -> None:
         """Connect to Telegram by initializing the Bot and verifying credentials.
@@ -144,13 +145,13 @@ class TelegramBackend(BackendBase):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a user from Telegram.
 
         Note: Telegram Bot API does not support arbitrary user lookup.
@@ -199,11 +200,11 @@ class TelegramBackend(BackendBase):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a channel (chat) from Telegram.
 
         Uses the getChat API to fetch chat information by ID.
@@ -257,12 +258,12 @@ class TelegramBackend(BackendBase):
                     channel = TelegramChannel.from_telegram_chat(chat)
                     self.channels.add(channel)
                     return channel
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 _log.debug("getChat(@%s) failed: %s", name_stripped, e)
 
         return None
 
-    async def _fetch_channel_by_id(self, chat_id: str) -> Optional[TelegramChannel]:
+    async def _fetch_channel_by_id(self, chat_id: str) -> TelegramChannel | None:
         """Fetch a chat by ID from the Telegram API."""
         try:
             chat = await self._bot.get_chat(chat_id=int(chat_id))
@@ -270,17 +271,17 @@ class TelegramBackend(BackendBase):
                 channel = TelegramChannel.from_telegram_chat(chat)
                 self.channels.add(channel)
                 return channel
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             _log.warning("Error fetching chat %s: %s", chat_id, e)
         return None
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch messages from a Telegram chat.
 
         Note: The Telegram Bot API does not support fetching message history.
@@ -302,7 +303,7 @@ class TelegramBackend(BackendBase):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> TelegramMessage:
@@ -358,7 +359,7 @@ class TelegramBackend(BackendBase):
 
     async def upload_file(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         data: bytes,
         filename: str = "file",
         content_type: str = "",
@@ -395,7 +396,7 @@ class TelegramBackend(BackendBase):
         self,
         attachment: Any,
         *,
-        message: Optional[Message] = None,
+        message: Message | None = None,
     ) -> bytes:
         """Download an attachment's bytes from Telegram.
 
@@ -417,9 +418,9 @@ class TelegramBackend(BackendBase):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> TelegramMessage:
         """Edit a Telegram message.
@@ -451,8 +452,8 @@ class TelegramBackend(BackendBase):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a Telegram message.
 
@@ -469,11 +470,11 @@ class TelegramBackend(BackendBase):
 
     async def forward_message(
         self,
-        message: Union[str, Message],
-        to_channel: Union[str, Channel],
+        message: str | Message,
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> TelegramMessage:
         """Forward a message to another Telegram chat.
@@ -495,7 +496,7 @@ class TelegramBackend(BackendBase):
         self._ensure_connected()
 
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")
+            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")  # noqa: TRY004
 
         dest_chat_id = await self._resolve_channel_id(to_channel)
 
@@ -511,7 +512,7 @@ class TelegramBackend(BackendBase):
                 result.message_type = MessageType.FORWARD
                 result.forwarded_from = message
                 return result
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass  # Fall back to manual forwarding
 
         # Manual forwarding with attribution
@@ -532,9 +533,9 @@ class TelegramBackend(BackendBase):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a reaction to a message.
 
@@ -559,9 +560,9 @@ class TelegramBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a reaction from a message.
 
@@ -611,7 +612,7 @@ class TelegramBackend(BackendBase):
             return _mention_channel(channel)
         return f"#{channel.name}" if channel.name else f"#{channel.id}"
 
-    async def get_bot_info(self) -> Optional[User]:
+    async def get_bot_info(self) -> User | None:
         """Get information about the connected bot.
 
         Returns:
@@ -625,14 +626,14 @@ class TelegramBackend(BackendBase):
             self._bot_user_id = user.id
             self._bot_user_name = user.username or user.handle
             return user
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
         return None
 
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set bot presence.
@@ -646,7 +647,7 @@ class TelegramBackend(BackendBase):
         """
         # Telegram bots don't support presence changes
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get a user's presence.
 
         Note: Telegram bots have very limited access to user presence.
@@ -660,7 +661,7 @@ class TelegramBackend(BackendBase):
         """
         return None
 
-    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_dm(self, users: list[str | User]) -> str | None:
         """Create a DM with a user.
 
         In Telegram, DMs are just private chats identified by the user's ID.
@@ -711,14 +712,14 @@ class TelegramBackend(BackendBase):
                     channel = TelegramChannel.from_telegram_chat(chat)
                     self.channels.add(channel)
                     seen[str(chat.id)] = channel
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             _log.warning("Error discovering chats: %s", e)
 
         return list(seen.values())
 
     async def stream_messages(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[TelegramMessage]:
@@ -736,7 +737,7 @@ class TelegramBackend(BackendBase):
         """
         self._ensure_connected()
 
-        channel_id: Optional[str] = None
+        channel_id: str | None = None
         if channel is not None:
             channel_id = await self._resolve_channel_id(channel)
 
@@ -749,7 +750,7 @@ class TelegramBackend(BackendBase):
                 updates = await self._bot.get_updates(offset=-1, timeout=0)
                 if updates:
                     offset = updates[-1].update_id + 1
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         while True:
@@ -780,6 +781,6 @@ class TelegramBackend(BackendBase):
 
             except asyncio.CancelledError:
                 break
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 _log.warning("Error polling Telegram updates: %s", e)
                 await asyncio.sleep(1)

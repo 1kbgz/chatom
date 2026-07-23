@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -16,10 +15,10 @@ class MessageSummary(BaseModel):
     id: str = ""
     author: str = ""
     content: str = ""
-    timestamp: Optional[datetime] = None
+    timestamp: datetime | None = None
 
     @classmethod
-    def from_message(cls, msg: Message) -> "MessageSummary":
+    def from_message(cls, msg: Message) -> MessageSummary:
         author = ""
         if msg.author:
             author = msg.author.display_name or msg.author.name or msg.author.id or ""
@@ -46,8 +45,8 @@ class ChannelContext(BaseModel):
     channel_id: str = ""
     channel_name: str = ""
     topic: str = ""
-    messages: List[MessageSummary] = Field(default_factory=list)
-    participants: List[str] = Field(default_factory=list)
+    messages: list[MessageSummary] = Field(default_factory=list)
+    participants: list[str] = Field(default_factory=list)
 
     def format_for_llm(self) -> str:
         """Render the context as a human-readable text block.
@@ -72,10 +71,10 @@ class ChannelContext(BaseModel):
 
 async def build_channel_context(
     backend: BackendBase,
-    channel: Union[str, Channel],
+    channel: str | Channel,
     *,
     limit: int = 50,
-    token_budget: Optional[int] = None,
+    token_budget: int | None = None,
 ) -> ChannelContext:
     """Build a :class:`ChannelContext` from a live backend.
 

@@ -27,10 +27,9 @@ import argparse
 import asyncio
 import os
 import sys
-from typing import Optional
 
 
-def get_env(name: str, required: bool = True) -> Optional[str]:
+def get_env(name: str, required: bool = True) -> str | None:
     """Get environment variable."""
     value = os.environ.get(name)
     if required and not value:

@@ -4,7 +4,6 @@ This module provides the Slack-specific Presence class.
 """
 
 from enum import Enum
-from typing import Optional
 
 from chatom.base import Field, Presence, PresenceStatus
 
@@ -70,7 +69,7 @@ class SlackPresence(Presence):
         default=0,
         description="Number of active connections.",
     )
-    last_activity: Optional[int] = Field(
+    last_activity: int | None = Field(
         default=None,
         description="Timestamp of last activity.",
     )

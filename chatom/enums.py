@@ -13,21 +13,7 @@ TELEGRAM = "telegram"
 # WHATSAPP = "whatsapp"
 # ZULIP = "zulip"
 
-BACKEND = Union[
-    Literal["discord"],
-    # Literal[EMAIL],
-    # Literal[IRC],
-    # Literal[MATRIX],
-    # Literal[MATTERMOST],
-    # Literal[MESSENGER],
-    Literal["slack"],
-    Literal["symphony"],
-    # Literal[TEAMS],
-    Literal["telegram"],
-    # Literal[WHATSAPP],
-    # Literal[ZULIP],
-    str,
-]
+BACKEND = Union[Literal["discord", "slack", "symphony", "telegram"], str]  # noqa: UP007
 ALL_BACKENDS = [
     DISCORD,
     # EMAIL,

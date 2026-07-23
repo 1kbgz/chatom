@@ -5,7 +5,7 @@ This module provides the Message class representing a chat message.
 
 from datetime import datetime
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import AliasChoices
 
@@ -21,7 +21,7 @@ from .user import User
 if TYPE_CHECKING:
     from chatom.format import FormattedMessage
 
-__all__ = ("Message", "MessageType", "MessageReference")
+__all__ = ("Message", "MessageReference", "MessageType")
 
 
 class MessageType(str, Enum):
@@ -115,17 +115,17 @@ class Message(Identifiable):
         validation_alias=AliasChoices("content", "text"),
         serialization_alias="text",
     )
-    author: Optional[User] = Field(
+    author: User | None = Field(
         default=None,
         description="User who sent the message.",
         validation_alias=AliasChoices("author", "user"),
         serialization_alias="user",
     )
-    channel: Optional[Channel] = Field(
+    channel: Channel | None = Field(
         default=None,
         description="Channel where the message was sent.",
     )
-    thread: Optional[Thread] = Field(
+    thread: Thread | None = Field(
         default=None,
         description="Thread the message belongs to, if any.",
     )
@@ -137,11 +137,11 @@ class Message(Identifiable):
         default=MessageType.DEFAULT,
         description="Type of message.",
     )
-    created_at: Optional[datetime] = Field(
+    created_at: datetime | None = Field(
         default=None,
         description="When the message was created.",
     )
-    edited_at: Optional[datetime] = Field(
+    edited_at: datetime | None = Field(
         default=None,
         description="When the message was last edited.",
     )
@@ -161,21 +161,21 @@ class Message(Identifiable):
         default=False,
         description="Whether this is a system message.",
     )
-    mentions: List[User] = Field(
+    mentions: list[User] = Field(
         default_factory=list,
         description="Users mentioned in the message.",
         validation_alias=AliasChoices("mentions", "tags"),
         serialization_alias="tags",
     )
-    attachments: List[Attachment] = Field(
+    attachments: list[Attachment] = Field(
         default_factory=list,
         description="File attachments on the message.",
     )
-    embeds: List[Embed] = Field(
+    embeds: list[Embed] = Field(
         default_factory=list,
         description="Rich embeds in the message.",
     )
-    components: Optional[Any] = Field(
+    components: Any | None = Field(
         default=None,
         description=(
             "Interactive UI components attached to the message. "
@@ -184,11 +184,11 @@ class Message(Identifiable):
             "accessor ``FormattedMessage.components`` when possible."
         ),
     )
-    reactions: List[Reaction] = Field(
+    reactions: list[Reaction] = Field(
         default_factory=list,
         description="Reactions on the message.",
     )
-    reference: Optional[MessageReference] = Field(
+    reference: MessageReference | None = Field(
         default=None,
         description="Reference to another message (for replies).",
     )
@@ -204,7 +204,7 @@ class Message(Identifiable):
         default="",
         description="Rich/formatted version of content (HTML, MessageML, etc.).",
     )
-    raw: Optional[Any] = Field(
+    raw: Any | None = Field(
         default=None,
         description="The raw message data from the backend.",
     )
@@ -212,7 +212,7 @@ class Message(Identifiable):
         default="",
         description="The backend this message originated from.",
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional platform-specific data.",
     )
@@ -227,7 +227,7 @@ class Message(Identifiable):
         return self.content
 
     @property
-    def user(self) -> Optional[User]:
+    def user(self) -> User | None:
         """Alias for author for backwards compatibility.
 
         Returns:
@@ -236,7 +236,7 @@ class Message(Identifiable):
         return self.author
 
     @property
-    def tags(self) -> List[User]:
+    def tags(self) -> list[User]:
         """Alias for mentions for backwards compatibility.
 
         Returns:
@@ -245,7 +245,7 @@ class Message(Identifiable):
         return self.mentions
 
     @property
-    def mention_ids(self) -> List[str]:
+    def mention_ids(self) -> list[str]:
         """Get the IDs of mentioned users.
 
         Returns:
@@ -364,7 +364,7 @@ class Message(Identifiable):
             return self.author.name
         return self.metadata.get("author_name", "")
 
-    def get_mentioned_user_ids(self) -> List[str]:
+    def get_mentioned_user_ids(self) -> list[str]:
         """Parse and extract user IDs mentioned in the message content.
 
         This parses the message content using the backend's mention format
@@ -388,7 +388,7 @@ class Message(Identifiable):
             return []
         return extract_mention_ids(self.content, self.backend)
 
-    def get_mentioned_channel_ids(self) -> List[str]:
+    def get_mentioned_channel_ids(self) -> list[str]:
         """Parse and extract channel IDs mentioned in the message content.
 
         This parses the message content using the backend's channel mention
@@ -836,7 +836,7 @@ class Message(Identifiable):
             **kwargs,
         )
 
-    def reply_context(self) -> Dict[str, Any]:
+    def reply_context(self) -> dict[str, Any]:
         """Get context information for creating a reply.
 
         Returns useful objects for manually constructing a reply.

@@ -6,7 +6,7 @@ platform-specific mention strings from User objects.
 
 import re
 from functools import singledispatch
-from typing import TYPE_CHECKING, List, NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from .channel import Channel
 from .user import User
@@ -15,16 +15,16 @@ if TYPE_CHECKING:
     from ..enums import BACKEND
 
 __all__ = (
-    "mention_user",
-    "mention_channel",
-    "mention_user_for_backend",
-    "mention_channel_for_backend",
-    "parse_mentions",
-    "parse_channel_mentions",
-    "extract_mention_ids",
-    "extract_channel_ids",
-    "MentionMatch",
     "ChannelMentionMatch",
+    "MentionMatch",
+    "extract_channel_ids",
+    "extract_mention_ids",
+    "mention_channel",
+    "mention_channel_for_backend",
+    "mention_user",
+    "mention_user_for_backend",
+    "parse_channel_mentions",
+    "parse_mentions",
 )
 
 
@@ -100,12 +100,7 @@ def mention_user_for_backend(user: User, backend: "BACKEND") -> str:
     """
     backend_lower = backend.lower() if isinstance(backend, str) else backend
 
-    if backend_lower == "discord":
-        if user.id:
-            return f"<@{user.id}>"
-        return user.display_name
-
-    elif backend_lower == "slack":
+    if backend_lower == "discord" or backend_lower == "slack":
         if user.id:
             return f"<@{user.id}>"
         return user.display_name
@@ -179,7 +174,7 @@ _MENTION_PATTERNS = {
 }
 
 
-def parse_mentions(content: str, backend: str) -> List[MentionMatch]:
+def parse_mentions(content: str, backend: str) -> list[MentionMatch]:
     """Parse user mentions from message content.
 
     Extracts user mentions from a message based on the backend's
@@ -209,14 +204,14 @@ def parse_mentions(content: str, backend: str) -> List[MentionMatch]:
         >>> mentions[0].user_id
         '123'
     """
-    backend_lower = backend.lower() if isinstance(backend, str) else backend.lower()
+    backend_lower = backend.lower() if isinstance(backend, str) else backend.lower()  # noqa: RUF034
 
     pattern = _MENTION_PATTERNS.get(backend_lower)
     if pattern is None:
         # Unknown backend, return empty list
         return []
 
-    matches: List[MentionMatch] = []
+    matches: list[MentionMatch] = []
 
     for match in pattern.finditer(content):
         if backend_lower == "symphony":
@@ -237,7 +232,7 @@ def parse_mentions(content: str, backend: str) -> List[MentionMatch]:
     return matches
 
 
-def extract_mention_ids(content: str, backend: str) -> List[str]:
+def extract_mention_ids(content: str, backend: str) -> list[str]:
     """Extract just the user IDs from mentions in content.
 
     This is a convenience wrapper around parse_mentions that returns
@@ -283,7 +278,7 @@ _CHANNEL_MENTION_PATTERNS = {
 }
 
 
-def parse_channel_mentions(content: str, backend: str) -> List[ChannelMentionMatch]:
+def parse_channel_mentions(content: str, backend: str) -> list[ChannelMentionMatch]:
     """Parse channel mentions from message content.
 
     Extracts channel mentions from a message based on the backend's
@@ -308,14 +303,14 @@ def parse_channel_mentions(content: str, backend: str) -> List[ChannelMentionMat
         >>> mentions[0].channel_id
         '987654321'
     """
-    backend_lower = backend.lower() if isinstance(backend, str) else backend.lower()
+    backend_lower = backend.lower() if isinstance(backend, str) else backend.lower()  # noqa: RUF034
 
     pattern = _CHANNEL_MENTION_PATTERNS.get(backend_lower)
     if pattern is None:
         # Unknown backend, return empty list
         return []
 
-    matches: List[ChannelMentionMatch] = []
+    matches: list[ChannelMentionMatch] = []
 
     for match in pattern.finditer(content):
         channel_id = match.group(1)
@@ -331,7 +326,7 @@ def parse_channel_mentions(content: str, backend: str) -> List[ChannelMentionMat
     return matches
 
 
-def extract_channel_ids(content: str, backend: str) -> List[str]:
+def extract_channel_ids(content: str, backend: str) -> list[str]:
     """Extract just the channel IDs from mentions in content.
 
     This is a convenience wrapper around parse_channel_mentions that returns

@@ -4,6 +4,8 @@ These tests verify that the mock backends work correctly
 for testing purposes.
 """
 
+from datetime import UTC
+
 import pytest
 from pydantic import SecretStr
 
@@ -1103,7 +1105,7 @@ class TestMockSymphonyBackendAdvanced:
     @pytest.mark.asyncio
     async def test_fetch_messages_with_before(self, backend):
         """Test fetch_messages with before timestamp filter."""
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         await backend.connect()
         # Symphony uses add_mock_stream
@@ -1114,17 +1116,17 @@ class TestMockSymphonyBackendAdvanced:
             stream_id="stream1",
             user_id=12345,
             content="Old message",
-            timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc),
+            timestamp=datetime(2020, 1, 1, tzinfo=UTC),
         )
         backend.add_mock_message(
             stream_id="stream1",
             user_id=12345,
             content="New message",
-            timestamp=datetime(2023, 6, 1, tzinfo=timezone.utc),
+            timestamp=datetime(2023, 6, 1, tzinfo=UTC),
         )
 
         # Filter by before timestamp (2022-01-01 in milliseconds)
-        before_ts = str(int(datetime(2022, 1, 1, tzinfo=timezone.utc).timestamp() * 1000))
+        before_ts = str(int(datetime(2022, 1, 1, tzinfo=UTC).timestamp() * 1000))
         messages = await backend.fetch_messages("stream1", before=before_ts)
         assert len(messages) == 1
         assert messages[0].content == "Old message"
@@ -1132,7 +1134,7 @@ class TestMockSymphonyBackendAdvanced:
     @pytest.mark.asyncio
     async def test_fetch_messages_with_after(self, backend):
         """Test fetch_messages with after timestamp filter."""
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         await backend.connect()
         backend.add_mock_stream(stream_id="stream1", name="Test Stream")
@@ -1141,17 +1143,17 @@ class TestMockSymphonyBackendAdvanced:
             stream_id="stream1",
             user_id=12345,
             content="Old message",
-            timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc),
+            timestamp=datetime(2020, 1, 1, tzinfo=UTC),
         )
         backend.add_mock_message(
             stream_id="stream1",
             user_id=12345,
             content="New message",
-            timestamp=datetime(2023, 6, 1, tzinfo=timezone.utc),
+            timestamp=datetime(2023, 6, 1, tzinfo=UTC),
         )
 
         # Filter by after timestamp
-        after_ts = str(int(datetime(2022, 1, 1, tzinfo=timezone.utc).timestamp() * 1000))
+        after_ts = str(int(datetime(2022, 1, 1, tzinfo=UTC).timestamp() * 1000))
         messages = await backend.fetch_messages("stream1", after=after_ts)
         assert len(messages) == 1
         assert messages[0].content == "New message"
@@ -1423,17 +1425,17 @@ class TestMockSymphonyBackendCoverage:
     @pytest.mark.asyncio
     async def test_fetch_messages_with_before_filter(self, backend):
         """Test fetch_messages with before timestamp filter."""
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         await backend.connect()
         backend.add_mock_stream("stream123", "Test Room")
 
         # Add messages with different timestamps
-        backend.add_mock_message("stream123", 456, "Old message", timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc))
-        backend.add_mock_message("stream123", 456, "New message", timestamp=datetime(2023, 6, 1, tzinfo=timezone.utc))
+        backend.add_mock_message("stream123", 456, "Old message", timestamp=datetime(2020, 1, 1, tzinfo=UTC))
+        backend.add_mock_message("stream123", 456, "New message", timestamp=datetime(2023, 6, 1, tzinfo=UTC))
 
         # Fetch only messages before 2022 (timestamp in ms)
-        before_ts = str(int(datetime(2022, 1, 1, tzinfo=timezone.utc).timestamp() * 1000))
+        before_ts = str(int(datetime(2022, 1, 1, tzinfo=UTC).timestamp() * 1000))
         messages = await backend.fetch_messages("stream123", before=before_ts)
         assert len(messages) == 1
         assert messages[0].content == "Old message"
@@ -1441,17 +1443,17 @@ class TestMockSymphonyBackendCoverage:
     @pytest.mark.asyncio
     async def test_fetch_messages_with_after_filter(self, backend):
         """Test fetch_messages with after timestamp filter."""
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         await backend.connect()
         backend.add_mock_stream("stream123", "Test Room")
 
         # Add messages with different timestamps
-        backend.add_mock_message("stream123", 456, "Old message", timestamp=datetime(2020, 1, 1, tzinfo=timezone.utc))
-        backend.add_mock_message("stream123", 456, "New message", timestamp=datetime(2023, 6, 1, tzinfo=timezone.utc))
+        backend.add_mock_message("stream123", 456, "Old message", timestamp=datetime(2020, 1, 1, tzinfo=UTC))
+        backend.add_mock_message("stream123", 456, "New message", timestamp=datetime(2023, 6, 1, tzinfo=UTC))
 
         # Fetch only messages after 2022 (timestamp in ms)
-        after_ts = str(int(datetime(2022, 1, 1, tzinfo=timezone.utc).timestamp() * 1000))
+        after_ts = str(int(datetime(2022, 1, 1, tzinfo=UTC).timestamp() * 1000))
         messages = await backend.fetch_messages("stream123", after=after_ts)
         assert len(messages) == 1
         assert messages[0].content == "New message"

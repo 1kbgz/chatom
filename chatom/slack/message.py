@@ -4,7 +4,7 @@ This module provides the Slack-specific Message class.
 """
 
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from chatom.base import Field, Message, Organization, Thread, User
 
@@ -72,11 +72,11 @@ class SlackMessage(Message):
         edited: Edit information if message was edited.
     """
 
-    subtype: Optional[SlackMessageSubtype] = Field(
+    subtype: SlackMessageSubtype | None = Field(
         default=None,
         description="The message subtype.",
     )
-    blocks: List[Dict[str, Any]] = Field(
+    blocks: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Slack Block Kit blocks.",
     )
@@ -88,11 +88,11 @@ class SlackMessage(Message):
         default=0,
         description="Number of replies in thread.",
     )
-    latest_reply: Optional[str] = Field(
+    latest_reply: str | None = Field(
         default=None,
         description="Timestamp of latest reply.",
     )
-    reply_users: List[SlackUser] = Field(
+    reply_users: list[SlackUser] = Field(
         default_factory=list,
         description="List of user IDs who replied.",
     )
@@ -104,11 +104,11 @@ class SlackMessage(Message):
         default=False,
         description="Whether user is subscribed to thread.",
     )
-    last_read: Optional[str] = Field(
+    last_read: str | None = Field(
         default=None,
         description="Timestamp of last read message in thread.",
     )
-    files: List[Dict[str, Any]] = Field(
+    files: list[dict[str, Any]] = Field(
         default_factory=list,
         description="List of attached files.",
     )
@@ -120,7 +120,7 @@ class SlackMessage(Message):
         default=False,
         description="Whether to display as bot.",
     )
-    edited: Optional[Dict[str, Any]] = Field(
+    edited: dict[str, Any] | None = Field(
         default=None,
         description="Edit information if message was edited.",
     )
@@ -128,12 +128,12 @@ class SlackMessage(Message):
     # Backend-compatibility properties
 
     @property
-    def ts(self) -> Optional[str]:
+    def ts(self) -> str | None:
         """Get the message timestamp (ts)."""
         return self.id or None
 
     @property
-    def thread_ts(self) -> Optional[str]:
+    def thread_ts(self) -> str | None:
         """Get the thread timestamp (thread_ts).
 
         Returns the thread's id if this message is in a thread,
@@ -142,17 +142,17 @@ class SlackMessage(Message):
         return self.thread.id if self.thread else None
 
     @property
-    def team(self) -> Optional[Organization]:
+    def team(self) -> Organization | None:
         """Get the team/workspace ID."""
         return self.organization if self.organization else None
 
     @property
-    def sender_id(self) -> Optional[str]:
+    def sender_id(self) -> str | None:
         """Get sender ID (deprecated - use author_id instead)."""
         return self.author_id or None
 
     @property
-    def bot_id(self) -> Optional[str]:
+    def bot_id(self) -> str | None:
         """Get bot ID from author if author is a bot.
 
         For bots, the bot_id is the same as the author's id.
@@ -162,7 +162,7 @@ class SlackMessage(Message):
         return None
 
     @property
-    def app_id(self) -> Optional[str]:
+    def app_id(self) -> str | None:
         """Get app ID from author if available."""
         if self.author:
             return self.author.app_id
@@ -228,7 +228,7 @@ class SlackMessage(Message):
         return False
 
     @property
-    def permalink(self) -> Optional[str]:
+    def permalink(self) -> str | None:
         """Get the message permalink if channel_id and ts are available."""
         if self.channel:
             # Note: This is a simplified permalink format
@@ -313,7 +313,7 @@ class SlackMessage(Message):
         )
 
     @classmethod
-    def from_api_response(cls, data: Dict[str, Any]) -> "SlackMessage":
+    def from_api_response(cls, data: dict[str, Any]) -> "SlackMessage":
         """Create a SlackMessage from a Slack API response.
 
         Args:

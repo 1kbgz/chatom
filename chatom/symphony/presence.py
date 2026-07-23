@@ -4,7 +4,6 @@ This module provides the Symphony-specific Presence class.
 """
 
 from enum import Enum
-from typing import Optional
 
 from chatom.base import Field, Presence, PresenceStatus
 
@@ -42,7 +41,7 @@ class SymphonyPresence(Presence):
         default="",
         description="Presence category.",
     )
-    timestamp: Optional[int] = Field(
+    timestamp: int | None = Field(
         default=None,
         description="When the presence was last updated (epoch ms).",
     )

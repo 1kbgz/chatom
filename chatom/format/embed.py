@@ -6,7 +6,7 @@ It renders a text fallback for all formats and exposes per-backend structured
 payloads via to_discord_dict(), to_slack_attachment(), and to_symphony_messageml().
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from pydantic import Field
 
@@ -53,7 +53,7 @@ class FormattedEmbed(BaseModel):
         embeds should use the structured-payload methods instead.
         """
         fmt = Format(format) if isinstance(format, str) else format
-        parts: List[str] = []
+        parts: list[str] = []
 
         if self.embed.author:
             parts.append(self._render_author(fmt))
@@ -108,7 +108,7 @@ class FormattedEmbed(BaseModel):
         return name
 
     def _render_fields(self, fmt: Format) -> str:
-        lines: List[str] = []
+        lines: list[str] = []
         for field in self.embed.fields:
             if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN):
                 lines.append(f"**{field.name}**: {field.value}")
@@ -149,10 +149,10 @@ class FormattedEmbed(BaseModel):
         return footer.text
 
     # Structured per-backend payloads
-    def to_discord_dict(self) -> Dict[str, Any]:
+    def to_discord_dict(self) -> dict[str, Any]:
         """Convert to a Discord embed dict suitable for the API."""
         e = self.embed
-        data: Dict[str, Any] = {}
+        data: dict[str, Any] = {}
         if e.title:
             data["title"] = e.title
         if e.description:
@@ -164,7 +164,7 @@ class FormattedEmbed(BaseModel):
         if e.timestamp:
             data["timestamp"] = e.timestamp.isoformat()
         if e.author:
-            author: Dict[str, str] = {}
+            author: dict[str, str] = {}
             if e.author.name:
                 author["name"] = e.author.name
             if e.author.url:
@@ -173,7 +173,7 @@ class FormattedEmbed(BaseModel):
                 author["icon_url"] = e.author.icon_url
             data["author"] = author
         if e.footer:
-            footer: Dict[str, str] = {}
+            footer: dict[str, str] = {}
             if e.footer.text:
                 footer["text"] = e.footer.text
             if e.footer.icon_url:
@@ -187,13 +187,13 @@ class FormattedEmbed(BaseModel):
             data["fields"] = [{"name": f.name, "value": f.value, "inline": f.inline} for f in e.fields]
         return data
 
-    def to_slack_attachment(self) -> Dict[str, Any]:
+    def to_slack_attachment(self) -> dict[str, Any]:
         """Convert to a Slack Block Kit attachment dict."""
         e = self.embed
-        attachment: Dict[str, Any] = {}
+        attachment: dict[str, Any] = {}
         if e.color is not None:
             attachment["color"] = f"#{e.color:06x}"
-        blocks: List[Dict[str, Any]] = []
+        blocks: list[dict[str, Any]] = []
 
         # Title as a section header
         if e.title:
@@ -238,7 +238,7 @@ class FormattedEmbed(BaseModel):
 
         # Footer as context block
         if e.footer:
-            elements: List[Dict[str, Any]] = []
+            elements: list[dict[str, Any]] = []
             if e.footer.icon_url:
                 elements.append({"type": "image", "image_url": e.footer.icon_url, "alt_text": "footer icon"})
             if e.footer.text:
@@ -248,7 +248,7 @@ class FormattedEmbed(BaseModel):
 
         # Author as context block at the top
         if e.author:
-            author_elements: List[Dict[str, Any]] = []
+            author_elements: list[dict[str, Any]] = []
             if e.author.icon_url:
                 author_elements.append({"type": "image", "image_url": e.author.icon_url, "alt_text": "author icon"})
             name = e.author.name
@@ -263,10 +263,10 @@ class FormattedEmbed(BaseModel):
     def to_symphony_messageml(self) -> str:
         """Convert to Symphony MessageML ``<card>`` markup."""
         e = self.embed
-        parts: List[str] = []
+        parts: list[str] = []
 
         # Header
-        header_parts: List[str] = []
+        header_parts: list[str] = []
         if e.title:
             header_parts.append(e.title)
         if e.author and e.author.name:

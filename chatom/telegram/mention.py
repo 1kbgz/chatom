@@ -10,7 +10,7 @@ from chatom.base import mention_channel, mention_user
 from .channel import TelegramChannel
 from .user import TelegramUser
 
-__all__ = ("mention_user", "mention_channel")
+__all__ = ("mention_channel", "mention_user")
 
 
 @mention_user.register

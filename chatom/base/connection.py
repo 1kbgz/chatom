@@ -5,7 +5,7 @@ for looking up users and channels.
 """
 
 from abc import abstractmethod
-from typing import Any, Dict, Generic, List, Optional, TypeVar, cast
+from typing import Any, Generic, TypeVar, cast
 
 from pydantic import Field
 
@@ -14,17 +14,15 @@ from .channel import Channel
 from .user import User
 
 __all__ = (
-    "Connection",
-    "UserRegistry",
     "ChannelRegistry",
+    "Connection",
     "LookupError",
+    "UserRegistry",
 )
 
 
 class LookupError(Exception):
     """Raised when a lookup fails."""
-
-    pass
 
 
 T = TypeVar("T", bound=BaseModel)
@@ -41,10 +39,10 @@ class Registry(BaseModel, Generic[T]):
         _cache_by_name: Internal cache mapping names to entities.
     """
 
-    _cache_by_id: Dict[str, T] = {}
-    _cache_by_name: Dict[str, T] = {}
+    _cache_by_id: dict[str, T] = {}  # noqa: RUF012
+    _cache_by_name: dict[str, T] = {}  # noqa: RUF012
 
-    def model_post_init(self, __context: Any) -> None:
+    def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         """Initialize internal caches."""
         object.__setattr__(self, "_cache_by_id", {})
         object.__setattr__(self, "_cache_by_name", {})
@@ -60,7 +58,7 @@ class Registry(BaseModel, Generic[T]):
         if hasattr(entity, "name") and entity.name:
             self._cache_by_name[cast(str, entity.name)] = entity
 
-    def get_by_id(self, id: str) -> Optional[T]:
+    def get_by_id(self, id: str) -> T | None:
         """Get an entity by ID from cache.
 
         Args:
@@ -71,7 +69,7 @@ class Registry(BaseModel, Generic[T]):
         """
         return self._cache_by_id.get(id)
 
-    def get_by_name(self, name: str) -> Optional[T]:
+    def get_by_name(self, name: str) -> T | None:
         """Get an entity by name from cache.
 
         Args:
@@ -82,7 +80,7 @@ class Registry(BaseModel, Generic[T]):
         """
         return self._cache_by_name.get(name)
 
-    def all(self) -> List[T]:
+    def all(self) -> list[T]:
         """Get all entities in the registry.
 
         Returns:
@@ -109,10 +107,10 @@ class UserRegistry(Registry[User]):
         User(id='123', name='John', ...)
     """
 
-    _cache_by_email: Dict[str, User] = {}
-    _cache_by_handle: Dict[str, User] = {}
+    _cache_by_email: dict[str, User] = {}  # noqa: RUF012
+    _cache_by_handle: dict[str, User] = {}  # noqa: RUF012
 
-    def model_post_init(self, __context: Any) -> None:
+    def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         """Initialize internal caches."""
         super().model_post_init(__context)
         object.__setattr__(self, "_cache_by_email", {})
@@ -130,7 +128,7 @@ class UserRegistry(Registry[User]):
         if entity.handle:
             self._cache_by_handle[entity.handle.lower()] = entity
 
-    def get_by_email(self, email: str) -> Optional[User]:
+    def get_by_email(self, email: str) -> User | None:
         """Get a user by email address.
 
         Args:
@@ -141,7 +139,7 @@ class UserRegistry(Registry[User]):
         """
         return self._cache_by_email.get(email.lower())
 
-    def get_by_handle(self, handle: str) -> Optional[User]:
+    def get_by_handle(self, handle: str) -> User | None:
         """Get a user by handle/username.
 
         Args:
@@ -155,11 +153,11 @@ class UserRegistry(Registry[User]):
     def lookup(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Look up a user by any available identifier.
 
         Args:
@@ -216,7 +214,7 @@ class UserRegistry(Registry[User]):
         """
         return user.display_name
 
-    def user_to_email(self, user: User) -> Optional[str]:
+    def user_to_email(self, user: User) -> str | None:
         """Get the email for a user.
 
         Args:
@@ -301,9 +299,9 @@ class ChannelRegistry(Registry[Channel]):
     def lookup(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Look up a channel by any available identifier.
 
         Args:
@@ -437,7 +435,7 @@ class Connection(BaseModel):
         raise NotImplementedError("Subclass must implement disconnect()")
 
     @abstractmethod
-    async def fetch_user(self, id: str) -> Optional[User]:
+    async def fetch_user(self, id: str) -> User | None:
         """Fetch a user from the backend by ID.
 
         Args:
@@ -449,7 +447,7 @@ class Connection(BaseModel):
         raise NotImplementedError("Subclass must implement fetch_user()")
 
     @abstractmethod
-    async def fetch_channel(self, id: str) -> Optional[Channel]:
+    async def fetch_channel(self, id: str) -> Channel | None:
         """Fetch a channel from the backend by ID.
 
         Args:
@@ -463,11 +461,11 @@ class Connection(BaseModel):
     async def get_user(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Get a user by any identifier, fetching from backend if needed.
 
         First checks the local registry, then fetches from backend if
@@ -499,9 +497,9 @@ class Connection(BaseModel):
     async def get_channel(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Get a channel by any identifier, fetching from backend if needed.
 
         First checks the local registry, then fetches from backend if

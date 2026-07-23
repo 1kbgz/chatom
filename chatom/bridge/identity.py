@@ -5,7 +5,7 @@ Supports manual linking, automatic discovery, and cached resolution.
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Set, Tuple, Union
+from typing import Any
 
 from pydantic import Field
 
@@ -14,7 +14,7 @@ from chatom.base import BaseModel, User
 log = logging.getLogger(__name__)
 
 # Type alias for a backend-qualified user reference
-UserRef = Tuple[str, str]  # (backend_name, user_id)
+UserRef = tuple[str, str]  # (backend_name, user_id)
 
 __all__ = ("IdentityMapper",)
 
@@ -32,27 +32,27 @@ class LinkedIdentity(BaseModel):
     """
 
     email: str = Field(default="", description="Shared email address.")
-    refs: Set[UserRef] = Field(default_factory=set, description="(backend, user_id) pairs.")
-    users: Dict[str, User] = Field(default_factory=dict, description="Cached User objects by backend.")
+    refs: set[UserRef] = Field(default_factory=set, description="(backend, user_id) pairs.")
+    users: dict[str, User] = Field(default_factory=dict, description="Cached User objects by backend.")
 
-    model_config = {"arbitrary_types_allowed": True}
+    model_config = {"arbitrary_types_allowed": True}  # noqa: RUF012
 
     def has_backend(self, backend: str) -> bool:
         """Check if this identity has a mapping for the given backend."""
         return any(b == backend for b, _ in self.refs)
 
-    def get_ref(self, backend: str) -> Optional[str]:
+    def get_ref(self, backend: str) -> str | None:
         """Get the user ID for a specific backend, or None."""
         for b, uid in self.refs:
             if b == backend:
                 return uid
         return None
 
-    def get_user(self, backend: str) -> Optional[User]:
+    def get_user(self, backend: str) -> User | None:
         """Get the cached User object for a backend, or None."""
         return self.users.get(backend)
 
-    def add(self, backend: str, user_id: str, user: Optional[User] = None) -> None:
+    def add(self, backend: str, user_id: str, user: User | None = None) -> None:
         """Add a backend reference to this identity group."""
         self.refs.add((backend, user_id))
         if user is not None:
@@ -84,11 +84,11 @@ class IdentityMapper:
     """
 
     def __init__(self) -> None:
-        self._backends: Dict[str, Any] = {}  # name -> BackendBase
-        self._identities: List[LinkedIdentity] = []
+        self._backends: dict[str, Any] = {}  # name -> BackendBase
+        self._identities: list[LinkedIdentity] = []
         # Fast lookup indexes
-        self._by_ref: Dict[UserRef, LinkedIdentity] = {}  # (backend, uid) -> identity
-        self._by_email: Dict[str, LinkedIdentity] = {}  # email -> identity
+        self._by_ref: dict[UserRef, LinkedIdentity] = {}  # (backend, uid) -> identity
+        self._by_email: dict[str, LinkedIdentity] = {}  # email -> identity
 
     def register_backend(self, name: str, backend: Any) -> None:
         """Register a backend for user lookups.
@@ -100,7 +100,7 @@ class IdentityMapper:
         self._backends[name] = backend
 
     @property
-    def backends(self) -> List[str]:
+    def backends(self) -> list[str]:
         """List of registered backend names."""
         return list(self._backends.keys())
 
@@ -108,7 +108,7 @@ class IdentityMapper:
         self,
         *users: User,
         by: str = "email",
-        backends: Optional[List[str]] = None,
+        backends: list[str] | None = None,
     ) -> LinkedIdentity:
         """Manually link User objects as the same person.
 
@@ -137,7 +137,7 @@ class IdentityMapper:
             names = [self._infer_backend(u) for u in users]
 
         # Find or create identity group
-        identity: Optional[LinkedIdentity] = None
+        identity: LinkedIdentity | None = None
 
         # Check if any user already belongs to a group
         for name, user in zip(names, users):
@@ -166,7 +166,7 @@ class IdentityMapper:
 
         return identity
 
-    async def link_by_email(self, email: str) -> Optional[LinkedIdentity]:
+    async def link_by_email(self, email: str) -> LinkedIdentity | None:
         """Discover and link a user across all registered backends by email.
 
         Queries each registered backend with ``fetch_user(email=...)``.
@@ -213,7 +213,7 @@ class IdentityMapper:
 
         return identity if discovered >= 2 else None
 
-    async def link_all_by_email(self, emails: List[str]) -> List[LinkedIdentity]:
+    async def link_all_by_email(self, emails: list[str]) -> list[LinkedIdentity]:
         """Link multiple users by email in batch.
 
         Args:
@@ -231,11 +231,11 @@ class IdentityMapper:
 
     async def resolve(
         self,
-        user: Union[User, str],
+        user: User | str,
         *,
         source: str = "",
         target: str,
-    ) -> Optional[User]:
+    ) -> User | None:
         """Resolve a user from one backend to another.
 
         Looks up the user's identity group and returns the cached User
@@ -257,14 +257,14 @@ class IdentityMapper:
             # Try to discover by email
             if isinstance(user, User) and user.email:
                 identity = await self.link_by_email(user.email)
-            elif isinstance(user, User) and source:
+            elif isinstance(user, User) and source:  # noqa: SIM102
                 # Fetch full user to get email
                 if source in self._backends:
                     try:
                         full_user = await self._backends[source].fetch_user(user.id)
                         if full_user and full_user.email:
                             identity = await self.link_by_email(full_user.email)
-                    except Exception:
+                    except Exception:  # noqa: BLE001, S110
                         pass
 
         if identity is None:
@@ -283,7 +283,7 @@ class IdentityMapper:
                 if user_obj:
                     identity.users[target] = user_obj
                     return user_obj
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         # Last resort: look up by email on target backend
@@ -294,18 +294,18 @@ class IdentityMapper:
                     identity.add(target, user_obj.id, user_obj)
                     self._by_ref[(target, user_obj.id)] = identity
                     return user_obj
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         return None
 
     def resolve_id(
         self,
-        user: Union[User, str],
+        user: User | str,
         *,
         source: str = "",
         target: str,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Synchronously resolve a user ID on the target backend.
 
         Only uses the local cache — does not make backend calls.
@@ -323,7 +323,7 @@ class IdentityMapper:
             return None
         return identity.get_ref(target)
 
-    def get_identity(self, user: Union[User, str], backend: str = "") -> Optional[LinkedIdentity]:
+    def get_identity(self, user: User | str, backend: str = "") -> LinkedIdentity | None:
         """Get the identity group for a user.
 
         Args:
@@ -336,7 +336,7 @@ class IdentityMapper:
         return self._find_identity(user, backend)
 
     @property
-    def identities(self) -> List[LinkedIdentity]:
+    def identities(self) -> list[LinkedIdentity]:
         """All linked identity groups."""
         return list(self._identities)
 
@@ -346,7 +346,7 @@ class IdentityMapper:
         self._by_ref.clear()
         self._by_email.clear()
 
-    def _find_identity(self, user: Union[User, str], backend: str = "") -> Optional[LinkedIdentity]:
+    def _find_identity(self, user: User | str, backend: str = "") -> LinkedIdentity | None:
         """Find the identity group for a user."""
         if isinstance(user, User):
             # Try by ref with explicit backend

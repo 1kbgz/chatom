@@ -4,8 +4,8 @@ This module provides a generic MockBackendBase that implements common
 mock functionality, reducing duplication across backend-specific mock classes.
 """
 
-from datetime import datetime, timezone
-from typing import Any, Dict, Generic, List, Optional, Type, TypeVar
+from datetime import UTC, datetime
+from typing import Any, Generic, TypeVar
 
 from pydantic import Field, PrivateAttr
 
@@ -39,18 +39,18 @@ class MockDataStore(BaseModel, Generic[UserT, ChannelT, MessageT, PresenceT]):
     """
 
     # Mock data stores
-    mock_users: Dict[str, Any] = Field(default_factory=dict)
-    mock_channels: Dict[str, Any] = Field(default_factory=dict)
-    mock_messages: Dict[str, List[Any]] = Field(default_factory=dict)
-    mock_presence: Dict[str, Any] = Field(default_factory=dict)
+    mock_users: dict[str, Any] = Field(default_factory=dict)
+    mock_channels: dict[str, Any] = Field(default_factory=dict)
+    mock_messages: dict[str, list[Any]] = Field(default_factory=dict)
+    mock_presence: dict[str, Any] = Field(default_factory=dict)
 
     # Tracking stores
-    sent_messages: List[Any] = Field(default_factory=list)
-    edited_messages: List[Any] = Field(default_factory=list)
-    deleted_messages: List[Dict[str, str]] = Field(default_factory=list)
-    reactions_added: List[Dict[str, str]] = Field(default_factory=list)
-    reactions_removed: List[Dict[str, str]] = Field(default_factory=list)
-    presence_updates: List[Dict[str, Any]] = Field(default_factory=list)
+    sent_messages: list[Any] = Field(default_factory=list)
+    edited_messages: list[Any] = Field(default_factory=list)
+    deleted_messages: list[dict[str, str]] = Field(default_factory=list)
+    reactions_added: list[dict[str, str]] = Field(default_factory=list)
+    reactions_removed: list[dict[str, str]] = Field(default_factory=list)
+    presence_updates: list[dict[str, Any]] = Field(default_factory=list)
     message_counter: int = Field(default=0)
 
     def reset(self) -> None:
@@ -90,10 +90,10 @@ class MockBackendMixin:
     """
 
     # Type classes - should be overridden by subclasses
-    _user_class: Type[User] = User
-    _channel_class: Type[Channel] = Channel
-    _message_class: Type[Message] = Message
-    _presence_class: Type[Presence] = Presence
+    _user_class: type[User] = User
+    _channel_class: type[Channel] = Channel
+    _message_class: type[Message] = Message
+    _presence_class: type[Presence] = Presence
 
     # Data store - should be set in __init__
     _data: MockDataStore = PrivateAttr(default_factory=MockDataStore)
@@ -108,7 +108,7 @@ class MockBackendMixin:
         self,
         id: str,
         name: str,
-        handle: Optional[str] = None,
+        handle: str | None = None,
         **extra_fields: Any,
     ) -> User:
         """Add a mock user to the backend.
@@ -167,9 +167,9 @@ class MockBackendMixin:
         self,
         channel_id: str,
         content: str,
-        author_id: Optional[str] = None,
-        message_id: Optional[str] = None,
-        timestamp: Optional[datetime] = None,
+        author_id: str | None = None,
+        message_id: str | None = None,
+        timestamp: datetime | None = None,
         **extra_fields: Any,
     ) -> Message:
         """Add a mock message to a channel.
@@ -195,7 +195,7 @@ class MockBackendMixin:
             "content": content,
             "channel": {"id": channel_id} if channel_id else None,
             "author": {"id": author_id} if author_id else None,
-            "timestamp": timestamp or datetime.now(timezone.utc),
+            "timestamp": timestamp or datetime.now(UTC),
             **extra_fields,
         }
         message = self._message_class.model_validate(message_data)
@@ -246,27 +246,27 @@ class MockBackendMixin:
             self.channels.clear()  # ty: ignore[call-non-callable]
 
     @property
-    def sent_messages_data(self) -> List[Any]:
+    def sent_messages_data(self) -> list[Any]:
         """Get all messages sent through this backend."""
         return self._data.sent_messages
 
     @property
-    def deleted_messages_data(self) -> List[Dict[str, str]]:
+    def deleted_messages_data(self) -> list[dict[str, str]]:
         """Get all deleted message references."""
         return self._data.deleted_messages
 
     @property
-    def reactions_added_data(self) -> List[Dict[str, str]]:
+    def reactions_added_data(self) -> list[dict[str, str]]:
         """Get all reactions added through this backend."""
         return self._data.reactions_added
 
     @property
-    def reactions_removed_data(self) -> List[Dict[str, str]]:
+    def reactions_removed_data(self) -> list[dict[str, str]]:
         """Get all reactions removed through this backend."""
         return self._data.reactions_removed
 
     @property
-    def presence_updates_data(self) -> List[Dict[str, Any]]:
+    def presence_updates_data(self) -> list[dict[str, Any]]:
         """Get all presence updates made through this backend."""
         return self._data.presence_updates
 
@@ -282,7 +282,7 @@ class MockBackendMixin:
         if hasattr(self, "connected"):
             self.connected = False
 
-    async def _mock_fetch_user(self, id: str) -> Optional[User]:
+    async def _mock_fetch_user(self, id: str) -> User | None:
         """Fetch a mock user by ID.
 
         Args:
@@ -293,7 +293,7 @@ class MockBackendMixin:
         """
         return self._data.mock_users.get(id)
 
-    async def _mock_fetch_channel(self, id: str) -> Optional[Channel]:
+    async def _mock_fetch_channel(self, id: str) -> Channel | None:
         """Fetch a mock channel by ID.
 
         Args:
@@ -308,9 +308,9 @@ class MockBackendMixin:
         self,
         channel_id: str,
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-    ) -> List[Message]:
+        before: str | None = None,
+        after: str | None = None,
+    ) -> list[Message]:
         """Fetch mock messages from a channel.
 
         Args:
@@ -330,7 +330,7 @@ class MockBackendMixin:
         self,
         channel_id: str,
         content: str,
-        message_id: Optional[str] = None,
+        message_id: str | None = None,
         **kwargs: Any,
     ) -> Message:
         """Send a mock message.
@@ -353,7 +353,7 @@ class MockBackendMixin:
             "id": message_id,
             "content": content,
             "channel": {"id": channel_id},
-            "timestamp": datetime.now(timezone.utc),
+            "timestamp": datetime.now(UTC),
             **kwargs,
         }
         message = self._message_class.model_validate(message_data)
@@ -432,7 +432,7 @@ class MockBackendMixin:
     async def _mock_set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set mock presence.
@@ -450,7 +450,7 @@ class MockBackendMixin:
             }
         )
 
-    async def _mock_get_presence(self, user_id: str) -> Optional[Presence]:
+    async def _mock_get_presence(self, user_id: str) -> Presence | None:
         """Get mock presence for a user.
 
         Args:

@@ -5,18 +5,15 @@ This module provides the base class that all backends must implement.
 
 import asyncio
 from abc import abstractmethod
+from collections.abc import AsyncIterator, Callable
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from functools import cached_property
+from re import Pattern
 from threading import Lock
 from typing import (
     Any,
-    AsyncIterator,
-    Callable,
     ClassVar,
-    List,
-    Optional,
-    Pattern,
     TypeVar,
     Union,
     cast,
@@ -73,8 +70,8 @@ class SyncHelper:
             backend: The backend instance to wrap.
         """
         self._backend = backend
-        self._executor: Optional[ThreadPoolExecutor] = None
-        self._loop: Optional[asyncio.AbstractEventLoop] = None
+        self._executor: ThreadPoolExecutor | None = None
+        self._loop: asyncio.AbstractEventLoop | None = None
         self._lock = Lock()
 
     def _get_loop(self) -> asyncio.AbstractEventLoop:
@@ -141,7 +138,7 @@ class SyncHelper:
 
         # Check if it's a callable
         if not callable(method):
-            raise AttributeError(f"'{name}' is not a method on '{type(self._backend).__name__}'")
+            raise AttributeError(f"'{name}' is not a method on '{type(self._backend).__name__}'")  # noqa: TRY004
 
         # Return a wrapper that runs the coroutine synchronously
         def sync_wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -201,10 +198,10 @@ class BackendBase(BaseModel):
     # backend does not embed user IDs inline (e.g. Telegram uses
     # MessageEntity rather than inline markers), and mention translation
     # should be skipped.
-    mention_pattern: ClassVar[Optional[Pattern[str]]] = None
+    mention_pattern: ClassVar[Pattern[str] | None] = None
 
     # Instance attributes
-    capabilities: Optional[BackendCapabilities] = Field(
+    capabilities: BackendCapabilities | None = Field(
         default=None,
         description="The capabilities supported by this backend.",
     )
@@ -220,14 +217,14 @@ class BackendBase(BaseModel):
         default_factory=ChannelRegistry,
         description="Registry of cached channels.",
     )
-    config: Optional[Any] = Field(
+    config: Any | None = Field(
         default=None,
         description="Backend-specific configuration. Subclasses override with their config type.",
     )
 
-    _sync: Optional[SyncHelper] = None
+    _sync: SyncHelper | None = None
     _presence_heartbeat_running: bool = False
-    _presence_heartbeat_task: Optional[asyncio.Task[None]] = None
+    _presence_heartbeat_task: asyncio.Task[None] | None = None
 
     @cached_property
     def sync(self) -> SyncHelper:
@@ -296,11 +293,11 @@ class BackendBase(BaseModel):
     async def lookup_user(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Look up a user by any identifier.
 
         First checks the local cache, then fetches from the backend
@@ -333,13 +330,13 @@ class BackendBase(BaseModel):
     @abstractmethod
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a user from the backend.
 
         This method accepts flexible input types for convenience:
@@ -375,9 +372,9 @@ class BackendBase(BaseModel):
     async def lookup_channel(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Look up a channel by any identifier.
 
         First checks the local cache, then fetches from the backend
@@ -408,9 +405,9 @@ class BackendBase(BaseModel):
     async def lookup_room(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Look up a room by any identifier.
 
         This is an alias for lookup_channel. Use whichever terminology
@@ -428,11 +425,11 @@ class BackendBase(BaseModel):
     @abstractmethod
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a channel from the backend.
 
         This method accepts flexible input types for convenience:
@@ -462,11 +459,11 @@ class BackendBase(BaseModel):
 
     async def fetch_room(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a room from the backend.
 
         This is an alias for fetch_channel. Use whichever terminology
@@ -586,11 +583,11 @@ class BackendBase(BaseModel):
 
     async def fetch_organization(
         self,
-        identifier: Optional[Union[str, Organization]] = None,
+        identifier: str | Organization | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Organization]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Organization | None:
         """Fetch an organization from the backend.
 
         An organization is the top-level container (guild, workspace, pod, etc.).
@@ -608,7 +605,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support organizations")
 
-    async def list_organizations(self) -> List[Organization]:
+    async def list_organizations(self) -> list[Organization]:
         """List all organizations the bot has access to.
 
         Returns:
@@ -621,11 +618,11 @@ class BackendBase(BaseModel):
 
     async def fetch_channel_members(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> List[User]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> list[User]:
         """Fetch members of a channel.
 
         Retrieves the list of users who are members of the specified channel.
@@ -661,11 +658,11 @@ class BackendBase(BaseModel):
 
     async def fetch_room_members(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> List[User]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> list[User]:
         """Fetch members of a room.
 
         This is an alias for fetch_channel_members. Use whichever terminology
@@ -713,7 +710,7 @@ class BackendBase(BaseModel):
 
     # Message methods
 
-    async def _resolve_channel_id(self, channel: Union[str, Channel]) -> str:
+    async def _resolve_channel_id(self, channel: str | Channel) -> str:
         """Helper to resolve a channel argument to an ID string.
 
         Handles string IDs, complete Channel objects, and incomplete
@@ -737,7 +734,7 @@ class BackendBase(BaseModel):
 
         # Handle DM channels with users - create/get the DM
         if channel.users and channel.is_dm:
-            dm_channel_id = await self.create_dm(cast(List[Union[str, User]], channel.users))
+            dm_channel_id = await self.create_dm(cast(list[str | User], channel.users))
             if dm_channel_id:
                 return dm_channel_id
             raise ValueError(f"Failed to create DM channel with users: {[u.id for u in channel.users]}")
@@ -746,7 +743,7 @@ class BackendBase(BaseModel):
         resolved = await self.resolve_channel(channel)
         return resolved.id
 
-    async def _resolve_user_id(self, user: Union[str, User]) -> str:
+    async def _resolve_user_id(self, user: str | User) -> str:
         """Helper to resolve a user argument to an ID string.
 
         Handles string IDs, complete User objects, and incomplete
@@ -771,7 +768,7 @@ class BackendBase(BaseModel):
         resolved = await self.resolve_user(user)
         return resolved.id
 
-    async def _resolve_message_id(self, message: Union[str, Message], channel: Optional[Union[str, Channel]] = None) -> tuple[str, str]:
+    async def _resolve_message_id(self, message: str | Message, channel: str | Channel | None = None) -> tuple[str, str]:
         """Helper to resolve a message argument to (channel_id, message_id).
 
         Handles string message IDs (requires channel), complete Message objects,
@@ -806,11 +803,11 @@ class BackendBase(BaseModel):
     @abstractmethod
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, "Message", datetime]] = None,
-        after: Optional[Union[str, "Message", datetime]] = None,
-    ) -> List[Message]:
+        before: Union[str, "Message", datetime] | None = None,
+        after: Union[str, "Message", datetime] | None = None,
+    ) -> list[Message]:
         """Fetch messages from a channel, newest-first.
 
         Returns up to ``limit`` messages, ordered newest-to-oldest. ``before``
@@ -847,10 +844,10 @@ class BackendBase(BaseModel):
     async def search_messages(
         self,
         query: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         limit: int = 50,
         **kwargs: Any,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Search for messages matching a query.
 
         Searches message content across channels. Requires the MESSAGE_SEARCH
@@ -887,9 +884,9 @@ class BackendBase(BaseModel):
 
     async def fetch_new_messages(
         self,
-        channel: Union[str, Channel],
-        after: Optional[str] = None,
-    ) -> List[Message]:
+        channel: str | Channel,
+        after: str | None = None,
+    ) -> list[Message]:
         """Fetch new messages from a channel.
 
         This is a convenience method that fetches messages after a
@@ -905,7 +902,7 @@ class BackendBase(BaseModel):
         return await self.fetch_messages(channel=channel, after=after)
 
     @staticmethod
-    def _extract_thread_id(thread: Any) -> Optional[str]:
+    def _extract_thread_id(thread: Any) -> str | None:
         """Extract a thread ID from a ``thread=`` kwarg value.
 
         Accepts ``None``, a ``str`` ID, a :class:`chatom.base.Thread`, or any
@@ -931,7 +928,7 @@ class BackendBase(BaseModel):
         return str(getattr(thread, "id", thread)) or None
 
     @staticmethod
-    def _extract_reply_to_id(reply_to: Any) -> Optional[str]:
+    def _extract_reply_to_id(reply_to: Any) -> str | None:
         """Extract a message ID from a ``reply_to=`` kwarg value.
 
         Accepts ``None``, a ``str`` ID, or a :class:`chatom.base.Message`.
@@ -949,7 +946,7 @@ class BackendBase(BaseModel):
     @abstractmethod
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -991,9 +988,9 @@ class BackendBase(BaseModel):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> Message:
         """Edit an existing message.
@@ -1020,7 +1017,7 @@ class BackendBase(BaseModel):
 
     async def upload_file(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         data: bytes,
         filename: str = "file",
         content_type: str = "",
@@ -1055,7 +1052,7 @@ class BackendBase(BaseModel):
         self,
         attachment: Attachment,
         *,
-        message: Optional[Message] = None,
+        message: Message | None = None,
     ) -> bytes:
         """Download the binary content of an attachment.
 
@@ -1097,7 +1094,7 @@ class BackendBase(BaseModel):
             f"{self.__class__.__name__} cannot download attachment {attachment.id or attachment.filename!r}: no data or url available"
         )
 
-    async def _download_url(self, url: str, headers: Optional[dict] = None) -> bytes:
+    async def _download_url(self, url: str, headers: dict | None = None) -> bytes:
         """Download bytes from an ``http(s)`` URL in a worker thread.
 
         Only ``http`` and ``https`` schemes are allowed to avoid local-file
@@ -1119,7 +1116,7 @@ class BackendBase(BaseModel):
 
         def _get() -> bytes:
             req = urllib.request.Request(url, headers=headers or {})
-            with urllib.request.urlopen(req, timeout=30) as resp:  # noqa: S310 - scheme validated above
+            with urllib.request.urlopen(req, timeout=30) as resp:
                 return resp.read()
 
         loop = asyncio.get_event_loop()
@@ -1127,8 +1124,8 @@ class BackendBase(BaseModel):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a message.
 
@@ -1192,7 +1189,7 @@ class BackendBase(BaseModel):
             raise ValueError("Cannot reply: message has no channel information")
 
         # Use channel object if available, otherwise use channel_id
-        target_channel: Union[str, Channel] = channel if channel else message.channel_id
+        target_channel: str | Channel = channel if channel else message.channel_id
 
         return await self.send_message(
             channel=target_channel,
@@ -1204,10 +1201,10 @@ class BackendBase(BaseModel):
     async def forward_message(
         self,
         message: Message,
-        to_channel: Union[str, Channel],
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> Message:
         """Forward a message to another channel.
@@ -1264,7 +1261,7 @@ class BackendBase(BaseModel):
 
     async def listen(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         skip_own: bool = True,
     ) -> AsyncIterator[Message]:
         """Listen for incoming messages in real-time.
@@ -1303,7 +1300,7 @@ class BackendBase(BaseModel):
 
     async def stream_messages(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[Message]:
@@ -1350,7 +1347,7 @@ class BackendBase(BaseModel):
 
     async def stream_interactions(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> AsyncIterator[Interaction]:
         """Stream incoming component interactions in real-time.
 
@@ -1382,10 +1379,10 @@ class BackendBase(BaseModel):
 
     async def read_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
+        before: str | None = None,
+        after: str | None = None,
     ) -> AsyncIterator[Message]:
         """Read message history from a channel as an async iterator.
 
@@ -1417,7 +1414,7 @@ class BackendBase(BaseModel):
 
     async def read_thread(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         thread_id: str,
         limit: int = 100,
     ) -> AsyncIterator[Message]:
@@ -1449,7 +1446,7 @@ class BackendBase(BaseModel):
 
     async def create_thread(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         message_id: str,
         name: str,
         **kwargs: Any,
@@ -1490,7 +1487,7 @@ class BackendBase(BaseModel):
 
     async def reply_to_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         message_id: str,
         content: str,
         **kwargs: Any,
@@ -1533,7 +1530,7 @@ class BackendBase(BaseModel):
         )
         return await self.reply_in_thread(message, content, **kwargs)
 
-    async def get_bot_info(self) -> Optional[User]:
+    async def get_bot_info(self) -> User | None:
         """Get information about the connected bot user.
 
         Returns the User object representing the bot/service account
@@ -1557,7 +1554,7 @@ class BackendBase(BaseModel):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set the current user's presence status.
@@ -1572,7 +1569,7 @@ class BackendBase(BaseModel):
         """
         raise NotImplementedError("This backend does not support presence")
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get a user's presence status.
 
         Args:
@@ -1596,7 +1593,7 @@ class BackendBase(BaseModel):
         self,
         interval_seconds: int = 60,
         status: str = "online",
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
     ) -> None:
         """Start an automatic presence heartbeat.
 
@@ -1627,7 +1624,7 @@ class BackendBase(BaseModel):
             while self._presence_heartbeat_running:
                 try:
                     await self.set_presence(status, status_text)
-                except Exception:
+                except Exception:  # noqa: BLE001, S110
                     # Ignore errors, just keep trying
                     pass
                 await asyncio.sleep(interval_seconds)
@@ -1662,9 +1659,9 @@ class BackendBase(BaseModel):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a reaction to a message.
 
@@ -1686,9 +1683,9 @@ class BackendBase(BaseModel):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a reaction from a message.
 
@@ -1712,8 +1709,8 @@ class BackendBase(BaseModel):
 
     async def create_dm(
         self,
-        users: List[Union[str, User]],
-    ) -> Optional[str]:
+        users: list[str | User],
+    ) -> str | None:
         """Create a direct message (DM) or instant message (IM) channel.
 
         Creates a private conversation with one or more users.
@@ -1741,8 +1738,8 @@ class BackendBase(BaseModel):
 
     async def create_im(
         self,
-        users: List[Union[str, User]],
-    ) -> Optional[str]:
+        users: list[str | User],
+    ) -> str | None:
         """Create an instant message (IM) channel.
 
         This is an alias for create_dm. Use whichever terminology
@@ -1758,7 +1755,7 @@ class BackendBase(BaseModel):
 
     async def send_dm(
         self,
-        user: Union[str, User],
+        user: str | User,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -1813,7 +1810,7 @@ class BackendBase(BaseModel):
         description: str = "",
         public: bool = True,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a new channel.
 
         Creates a channel/room for group communication.
@@ -1841,7 +1838,7 @@ class BackendBase(BaseModel):
         description: str = "",
         public: bool = True,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a new room.
 
         This is an alias for create_channel. Use whichever terminology
@@ -1860,7 +1857,7 @@ class BackendBase(BaseModel):
 
     async def join_channel(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         **kwargs: Any,
     ) -> None:
         """Join a channel.
@@ -1886,7 +1883,7 @@ class BackendBase(BaseModel):
 
     async def join_room(
         self,
-        room: Union[str, Channel],
+        room: str | Channel,
         **kwargs: Any,
     ) -> None:
         """Join a room.
@@ -1902,7 +1899,7 @@ class BackendBase(BaseModel):
 
     async def leave_channel(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         **kwargs: Any,
     ) -> None:
         """Leave a channel.
@@ -1927,7 +1924,7 @@ class BackendBase(BaseModel):
 
     async def leave_room(
         self,
-        room: Union[str, Channel],
+        room: str | Channel,
         **kwargs: Any,
     ) -> None:
         """Leave a room.
@@ -1945,7 +1942,7 @@ class BackendBase(BaseModel):
 
     async def send_action(
         self,
-        target: Union[str, Channel, User],
+        target: str | Channel | User,
         action: str,
     ) -> None:
         """Send an action/emote message.
@@ -1971,7 +1968,7 @@ class BackendBase(BaseModel):
 
     async def send_notice(
         self,
-        target: Union[str, Channel, User],
+        target: str | Channel | User,
         text: str,
     ) -> None:
         """Send a notice message.
@@ -2022,7 +2019,7 @@ class BackendBase(BaseModel):
 
         return mention_channel_for_backend(channel, self.__class__.name)
 
-    def channel_link(self, channel: Union[str, Channel]) -> str:
+    def channel_link(self, channel: str | Channel) -> str:
         """Generate a clickable channel link/mention for this backend.
 
         This is a convenience method that accepts either a channel ID string

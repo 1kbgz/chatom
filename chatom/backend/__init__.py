@@ -17,11 +17,11 @@ __all__ = (
     # Backend base class and alias
     "Backend",
     "BackendBase",
-    "SyncHelper",
     # Configuration
     "BackendConfig",
     # Registry
     "BackendRegistry",
+    "SyncHelper",
     "get_backend",
     "get_backend_format",
     "list_backends",

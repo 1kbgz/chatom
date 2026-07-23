@@ -5,7 +5,6 @@ to chatom TextNode trees for multi-format rendering.
 """
 
 import re
-from typing import List
 
 import mistune
 from pydantic import Field
@@ -33,7 +32,7 @@ from .text import (
 )
 from .variant import FORMAT, Format
 
-__all__ = ("parse_markdown", "convert_format")
+__all__ = ("convert_format", "parse_markdown")
 
 # Singleton mistune parser with table + strikethrough support
 _md = mistune.create_markdown(renderer="ast", plugins=["table", "strikethrough"])
@@ -50,7 +49,7 @@ class _TableNode(TextNode):
 
 def _convert_inline(nodes: list) -> TextNode:
     """Convert a list of mistune inline AST nodes to a single TextNode."""
-    result: List[TextNode] = []
+    result: list[TextNode] = []
     for node in nodes:
         result.append(_convert_node(node))
     if len(result) == 1:
@@ -115,8 +114,7 @@ def _convert_block(node: dict) -> TextNode:
         language = node.get("attrs", {}).get("info", "") or ""
         raw = node.get("raw", "")
         # mistune includes trailing newline in raw; strip it
-        if raw.endswith("\n"):
-            raw = raw[:-1]
+        raw = raw.removesuffix("\n")
         return CodeBlock(content=raw, language=language)
 
     if t == "block_quote":
@@ -133,7 +131,7 @@ def _convert_block(node: dict) -> TextNode:
 
     if t == "list":
         ordered = node.get("attrs", {}).get("ordered", False)
-        items: List[ListItem] = []
+        items: list[ListItem] = []
         for child in node.get("children", []):
             if child["type"] == "list_item":
                 item_children = child.get("children", [])
@@ -141,9 +139,7 @@ def _convert_block(node: dict) -> TextNode:
                     # list_item contains block_text or paragraphs
                     inner_nodes = []
                     for ic in item_children:
-                        if ic["type"] == "block_text":
-                            inner_nodes.append(_convert_inline(ic["children"]))
-                        elif ic["type"] == "paragraph":
+                        if ic["type"] == "block_text" or ic["type"] == "paragraph":
                             inner_nodes.append(_convert_inline(ic["children"]))
                         else:
                             inner_nodes.append(_convert_block(ic))
@@ -157,7 +153,7 @@ def _convert_block(node: dict) -> TextNode:
 
     if t == "table":
         headers_node = None
-        rows: List[TableRow] = []
+        rows: list[TableRow] = []
         for child in node.get("children", []):
             if child["type"] == "table_head":
                 cells = [_render_inline_text(cell.get("children", [])) for cell in child.get("children", [])]
@@ -176,13 +172,9 @@ def _render_inline_text(nodes: list) -> str:
     """Render inline AST nodes to plain text (for table cells)."""
     parts = []
     for node in nodes:
-        if node["type"] == "text":
+        if node["type"] == "text" or node["type"] == "codespan":
             parts.append(node.get("raw", ""))
-        elif node["type"] == "codespan":
-            parts.append(node.get("raw", ""))
-        elif node["type"] == "strong":
-            parts.append(_render_inline_text(node.get("children", [])))
-        elif node["type"] == "emphasis":
+        elif node["type"] == "strong" or node["type"] == "emphasis":
             parts.append(_render_inline_text(node.get("children", [])))
         elif node["type"] == "link":
             children = node.get("children", [])
