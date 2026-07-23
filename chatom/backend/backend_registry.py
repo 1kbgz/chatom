@@ -3,18 +3,12 @@
 This module provides the central registry for backend implementations.
 """
 
+from collections.abc import Callable, Iterator
 from importlib.metadata import entry_points
 from threading import Lock
 from typing import (
     Any,
-    Callable,
     ClassVar,
-    Dict,
-    Iterator,
-    List,
-    Optional,
-    Type,
-    Union,
 )
 
 from ..base import (
@@ -50,18 +44,18 @@ class BackendRegistry:
         ...     print(name)
     """
 
-    _backends: ClassVar[Dict[str, Type[BackendBase]]] = {}
-    _format_map: ClassVar[Dict[str, Format]] = {}
-    _instances: ClassVar[Dict[str, BackendBase]] = {}
+    _backends: ClassVar[dict[str, type[BackendBase]]] = {}
+    _format_map: ClassVar[dict[str, Format]] = {}
+    _instances: ClassVar[dict[str, BackendBase]] = {}
     _loaded: ClassVar[bool] = False
     _lock: ClassVar[Lock] = Lock()
 
     @classmethod
     def register(
         cls,
-        backend_class: Type[BackendBase],
-        name: Optional[str] = None,
-    ) -> Type[BackendBase]:
+        backend_class: type[BackendBase],
+        name: str | None = None,
+    ) -> type[BackendBase]:
         """Register a backend class.
 
         Args:
@@ -86,7 +80,7 @@ class BackendRegistry:
         return backend_class
 
     @classmethod
-    def get(cls, name: str) -> Type[BackendBase]:
+    def get(cls, name: str) -> type[BackendBase]:
         """Get a backend class by name.
 
         Args:
@@ -139,7 +133,7 @@ class BackendRegistry:
         return cls._format_map.get(name.lower(), Format.MARKDOWN)
 
     @classmethod
-    def list(cls) -> List[str]:
+    def list(cls) -> list[str]:
         """List all registered backend names.
 
         Returns:
@@ -149,7 +143,7 @@ class BackendRegistry:
         return list(cls._backends.keys())
 
     @classmethod
-    def items(cls) -> Iterator[tuple[str, Type[BackendBase]]]:
+    def items(cls) -> Iterator[tuple[str, type[BackendBase]]]:
         """Iterate over all registered backends.
 
         Yields:
@@ -182,10 +176,10 @@ class BackendRegistry:
                     backend_class = ep.load()
                     if isinstance(backend_class, type) and issubclass(backend_class, BackendBase):
                         cls.register(backend_class, name=ep.name)
-                except Exception:
+                except Exception:  # noqa: BLE001, S110
                     # Log but don't fail on individual entry point errors
                     pass
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             # Entry points may not be available in all environments
             pass
 
@@ -218,17 +212,17 @@ class BackendRegistry:
                     register_backend_type(backend_name, Channel, channel_class)
                 if presence_class is not None:
                     register_backend_type(backend_name, Presence, presence_class)
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 # Skip backends that fail to register
                 pass
 
 
 # Convenience functions
 def register_backend(
-    backend_class: Optional[Type[BackendBase]] = None,
+    backend_class: type[BackendBase] | None = None,
     *,
-    name: Optional[str] = None,
-) -> Union[Type[BackendBase], Callable[[Type[BackendBase]], Type[BackendBase]]]:
+    name: str | None = None,
+) -> type[BackendBase] | Callable[[type[BackendBase]], type[BackendBase]]:
     """Register a backend class with the registry.
 
     Can be used as a decorator with or without arguments.
@@ -251,7 +245,7 @@ def register_backend(
     """
     if backend_class is None:
         # Called with arguments: @register_backend(name="...")
-        def decorator(cls: Type[BackendBase]) -> Type[BackendBase]:
+        def decorator(cls: type[BackendBase]) -> type[BackendBase]:
             return BackendRegistry.register(cls, name=name)
 
         return decorator
@@ -260,7 +254,7 @@ def register_backend(
         return BackendRegistry.register(backend_class, name=name)
 
 
-def get_backend(name: str) -> Type[BackendBase]:
+def get_backend(name: str) -> type[BackendBase]:
     """Get a backend class by name.
 
     Args:
@@ -287,7 +281,7 @@ def get_backend_format(name: str) -> Format:
     return BackendRegistry.get_format(name)
 
 
-def list_backends() -> List[str]:
+def list_backends() -> list[str]:
     """List all available backend names.
 
     Returns:

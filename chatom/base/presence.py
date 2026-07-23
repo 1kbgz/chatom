@@ -5,12 +5,11 @@ This module provides the Presence class representing a user's online status.
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from .base import BaseModel, Field
 from .user import User
 
-__all__ = ("Presence", "PresenceStatus", "Activity", "ActivityType")
+__all__ = ("Activity", "ActivityType", "Presence", "PresenceStatus")
 
 
 class PresenceStatus(str, Enum):
@@ -84,7 +83,7 @@ class Activity(BaseModel):
         default="",
         description="URL associated with the activity.",
     )
-    started_at: Optional[datetime] = Field(
+    started_at: datetime | None = Field(
         default=None,
         description="When the activity started.",
     )
@@ -102,7 +101,7 @@ class Presence(BaseModel):
         is_mobile: Whether the user is on a mobile device.
     """
 
-    user: Optional[User] = Field(
+    user: User | None = Field(
         default=None,
         description="The user this presence belongs to.",
     )
@@ -114,11 +113,11 @@ class Presence(BaseModel):
         default="",
         description="Custom status text/message.",
     )
-    activity: Optional[Activity] = Field(
+    activity: Activity | None = Field(
         default=None,
         description="Current activity, if any.",
     )
-    last_seen: Optional[datetime] = Field(
+    last_seen: datetime | None = Field(
         default=None,
         description="When the user was last active.",
     )

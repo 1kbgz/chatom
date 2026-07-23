@@ -53,7 +53,7 @@ class TelegramConfig(BackendConfig):
                 try:
                     with open(v) as f:
                         v = f.read().strip()
-                except (OSError, IOError):
+                except OSError:
                     pass
             return SecretStr(v) if not isinstance(v, SecretStr) else v
         return v

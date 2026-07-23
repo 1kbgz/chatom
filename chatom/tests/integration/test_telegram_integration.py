@@ -204,7 +204,7 @@ class TestTelegramMessaging:
 
             try:
                 await backend.delete_message(message=message.id, channel=channel.id)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 pytest.skip(f"Telegram message deletion unavailable: {str(e)[:100]}")
 
     @pytest.mark.asyncio
@@ -250,7 +250,7 @@ class TestTelegramReactions:
                     channel=channel.id,
                     emoji="👍",
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 pytest.skip(f"Telegram reactions unavailable: {str(e)[:100]}")
 
 

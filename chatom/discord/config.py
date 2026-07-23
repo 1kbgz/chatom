@@ -4,7 +4,6 @@ This module provides configuration classes for the Discord backend.
 """
 
 from pathlib import Path
-from typing import Optional, Union
 
 from pydantic import Field, SecretStr, field_validator
 
@@ -35,7 +34,7 @@ class DiscordConfig(BackendConfig):
         >>> backend = DiscordBackend(config=config)
     """
 
-    token: Union[str, SecretStr] = Field(
+    token: str | SecretStr = Field(
         default=SecretStr(""),
         description="Discord bot token from Developer Portal (can be a file path).",
     )
@@ -55,11 +54,11 @@ class DiscordConfig(BackendConfig):
         default="!",
         description="Prefix for bot commands.",
     )
-    shard_id: Optional[int] = Field(
+    shard_id: int | None = Field(
         default=None,
         description="Shard ID for sharded bots.",
     )
-    shard_count: Optional[int] = Field(
+    shard_count: int | None = Field(
         default=None,
         description="Total number of shards.",
     )

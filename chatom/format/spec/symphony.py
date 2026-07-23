@@ -16,13 +16,12 @@ assertPreformattedOrPhrasingContent().
 from __future__ import annotations
 
 import re
-from typing import FrozenSet
 
 # Phrasing content (inline elements allowed inside <b>, <i>, <h1>-<h6>, <pre>)
 # Corresponds to Element.java PHRASING_TYPES:
 #   TextNode, Link, Chime, Bold, Italic, Image, LineBreak, Span,
 #   Emoji, HashTag, CashTag, Mention, Subscript, Superscript
-PHRASING_TAGS: FrozenSet[str] = frozenset(
+PHRASING_TAGS: frozenset[str] = frozenset(
     {
         "a",  # Link
         "b",  # Bold
@@ -38,7 +37,7 @@ PHRASING_TAGS: FrozenSet[str] = frozenset(
 )
 
 # Elements that call assertPhrasingContent() — only allow PHRASING_TAGS children
-PHRASING_CONTENT_PARENTS: FrozenSet[str] = frozenset(
+PHRASING_CONTENT_PARENTS: frozenset[str] = frozenset(
     {
         "b",  # Bold.validate()
         "i",  # Italic.validate()
@@ -54,14 +53,14 @@ PHRASING_CONTENT_PARENTS: FrozenSet[str] = frozenset(
 
 # Elements that call assertPreformattedOrPhrasingContent()
 # Allows PHRASING_TAGS + "pre" as children
-PREFORMATTED_OR_PHRASING_PARENTS: FrozenSet[str] = frozenset(
+PREFORMATTED_OR_PHRASING_PARENTS: frozenset[str] = frozenset(
     {
         "code",  # Code.validate()
     }
 )
 
 # Tags that are NOT phrasing (forbidden inside bold/italic/headings/pre)
-NON_PHRASING_TAGS: FrozenSet[str] = frozenset(
+NON_PHRASING_TAGS: frozenset[str] = frozenset(
     {
         "code",  # Code
         "pre",  # Preformatted
@@ -88,7 +87,7 @@ NON_PHRASING_TAGS: FrozenSet[str] = frozenset(
 )
 
 # Tags that are NOT valid MessageML elements at all (will cause parse error)
-INVALID_MESSAGEML_TAGS: FrozenSet[str] = frozenset(
+INVALID_MESSAGEML_TAGS: frozenset[str] = frozenset(
     {
         "blockquote",  # Not in MessageMLParser.createElement() switch
         "s",  # Not in MessageMLParser.createElement() switch
@@ -98,7 +97,7 @@ INVALID_MESSAGEML_TAGS: FrozenSet[str] = frozenset(
 
 # Elements with no child content restriction (accept any child)
 # These elements either don't override validate() or only check parent/attrs
-FLOW_CONTENT_PARENTS: FrozenSet[str] = frozenset(
+FLOW_CONTENT_PARENTS: frozenset[str] = frozenset(
     {
         "td",  # TableCell — no content model assertion
         "th",  # TableHeaderCell — no content model assertion
@@ -110,9 +109,9 @@ FLOW_CONTENT_PARENTS: FrozenSet[str] = frozenset(
 )
 
 # Table structure rules
-TABLE_CHILDREN: FrozenSet[str] = frozenset({"thead", "tbody", "tfoot"})
-TABLE_ROW_PARENTS: FrozenSet[str] = frozenset({"thead", "tbody", "tfoot"})
-TABLE_CELL_PARENTS: FrozenSet[str] = frozenset({"tr"})
+TABLE_CHILDREN: frozenset[str] = frozenset({"thead", "tbody", "tfoot"})
+TABLE_ROW_PARENTS: frozenset[str] = frozenset({"thead", "tbody", "tfoot"})
+TABLE_CELL_PARENTS: frozenset[str] = frozenset({"tr"})
 
 # Standard XML escaping required in MessageML
 XML_ESCAPE_MAP = {
@@ -223,6 +222,5 @@ def _check_allowed(parent: str, child: str, violations: list[str]) -> None:
     if parent in PHRASING_CONTENT_PARENTS:
         if child not in PHRASING_TAGS and child != parent:
             violations.append(f'Element "{child}" is not allowed in "{parent}"')
-    elif parent in PREFORMATTED_OR_PHRASING_PARENTS:
-        if child not in PHRASING_TAGS and child != "pre":
-            violations.append(f'Element "{child}" is not allowed in "{parent}"')
+    elif parent in PREFORMATTED_OR_PHRASING_PARENTS and child not in PHRASING_TAGS and child != "pre":
+        violations.append(f'Element "{child}" is not allowed in "{parent}"')

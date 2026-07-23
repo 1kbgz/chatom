@@ -20,19 +20,19 @@ from .testing import MockSlackBackend
 from .user import SlackUser
 
 __all__ = (
+    "MockSlackBackend",
     "SlackBackend",
-    "SlackConfig",
-    "SlackUser",
     "SlackChannel",
+    "SlackConfig",
     "SlackMessage",
     "SlackMessageSubtype",
     "SlackPresence",
     "SlackPresenceStatus",
-    "MockSlackBackend",
-    "mention_user",
+    "SlackUser",
     "mention_channel",
-    "mention_user_group",
-    "mention_here",
     "mention_channel_all",
     "mention_everyone",
+    "mention_here",
+    "mention_user",
+    "mention_user_group",
 )

@@ -18,28 +18,28 @@ Example usage:
     >>> base_user = demote(discord_user)
 """
 
-from typing import Any, Dict, List, Optional, Type, TypeVar, cast
+from typing import Any, TypeVar, cast
 
 from pydantic import ValidationError
 
 from .base import BaseModel
 
 __all__ = (
+    "BackendNotFoundError",
+    # Exceptions
+    "ConversionError",
+    # Validation result
+    "ValidationResult",
     # Core functions
     "can_promote",
-    "promote",
     "demote",
-    "validate_for_backend",
-    # Registry functions
-    "register_backend_type",
     "get_backend_type",
     "get_base_type",
     "list_backends_for_type",
-    # Validation result
-    "ValidationResult",
-    # Exceptions
-    "ConversionError",
-    "BackendNotFoundError",
+    "promote",
+    # Registry functions
+    "register_backend_type",
+    "validate_for_backend",
 )
 
 
@@ -49,13 +49,9 @@ T = TypeVar("T", bound=BaseModel)
 class ConversionError(Exception):
     """Raised when a type conversion fails."""
 
-    pass
-
 
 class BackendNotFoundError(ConversionError):
     """Raised when a backend or backend type is not found."""
-
-    pass
 
 
 class ValidationResult:
@@ -71,9 +67,9 @@ class ValidationResult:
     def __init__(
         self,
         valid: bool = True,
-        missing_required: Optional[List[str]] = None,
-        invalid_fields: Optional[Dict[str, str]] = None,
-        warnings: Optional[List[str]] = None,
+        missing_required: list[str] | None = None,
+        invalid_fields: dict[str, str] | None = None,
+        warnings: list[str] | None = None,
     ):
         self.valid = valid
         self.missing_required = missing_required or []
@@ -94,10 +90,10 @@ class ValidationResult:
 
 
 # Registry mapping: base_type_name -> backend -> backend_type_class
-_TYPE_REGISTRY: Dict[str, Dict[str, Type[BaseModel]]] = {}
+_TYPE_REGISTRY: dict[str, dict[str, type[BaseModel]]] = {}
 
 # Mapping from backend type class to its base type class
-_BASE_TYPE_MAP: Dict[Type[BaseModel], Type[BaseModel]] = {}
+_BASE_TYPE_MAP: dict[type[BaseModel], type[BaseModel]] = {}
 
 # Flag to track if types have been registered
 _TYPES_REGISTERED: bool = False
@@ -118,8 +114,8 @@ def _ensure_types_registered() -> None:
 
 def register_backend_type(
     backend: str,
-    base_type: Type[BaseModel],
-    backend_type: Type[BaseModel],
+    base_type: type[BaseModel],
+    backend_type: type[BaseModel],
 ) -> None:
     """Register a backend-specific type for a base type.
 
@@ -139,9 +135,9 @@ def register_backend_type(
 
 
 def get_backend_type(
-    base_type: Type[T],
+    base_type: type[T],
     backend: str,
-) -> Optional[Type[BaseModel]]:
+) -> type[BaseModel] | None:
     """Get the backend-specific type for a base type.
 
     Args:
@@ -156,7 +152,7 @@ def get_backend_type(
     return _TYPE_REGISTRY.get(base_name, {}).get(backend)
 
 
-def get_base_type(backend_type: Type[BaseModel]) -> Optional[Type[BaseModel]]:
+def get_base_type(backend_type: type[BaseModel]) -> type[BaseModel] | None:
     """Get the base type for a backend-specific type.
 
     Args:
@@ -169,7 +165,7 @@ def get_base_type(backend_type: Type[BaseModel]) -> Optional[Type[BaseModel]]:
     return _BASE_TYPE_MAP.get(backend_type)
 
 
-def list_backends_for_type(base_type: Type[BaseModel]) -> List[str]:
+def list_backends_for_type(base_type: type[BaseModel]) -> list[str]:
     """List all backends that have a registered type for the given base type.
 
     Args:
@@ -205,7 +201,7 @@ def validate_for_backend(
     _ensure_types_registered()
 
     # Get the backend type
-    base_type: Type[BaseModel] = type(instance)
+    base_type: type[BaseModel] = type(instance)
 
     # Walk up the inheritance chain to find the base type
     while base_type.__name__ not in _TYPE_REGISTRY:
@@ -305,7 +301,7 @@ def promote(
     _ensure_types_registered()
 
     # Get the backend type
-    base_type: Type[BaseModel] = type(instance)
+    base_type: type[BaseModel] = type(instance)
 
     # If the instance is already a backend type, get its base type
     registered_base = _BASE_TYPE_MAP.get(base_type)
@@ -372,7 +368,7 @@ def demote(instance: BaseModel) -> BaseModel:
         # Check parent classes
         for parent in instance_type.__mro__:
             if parent in _BASE_TYPE_MAP:
-                base_type = _BASE_TYPE_MAP[cast(Type[BaseModel], parent)]
+                base_type = _BASE_TYPE_MAP[cast(type[BaseModel], parent)]
                 break
             if parent.__name__ in _TYPE_REGISTRY:
                 # It's a base type

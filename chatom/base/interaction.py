@@ -6,7 +6,7 @@ select menu choice, modal submit, etc.). Platform-agnostic.
 
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .base import Field, Identifiable
 from .channel import Channel
@@ -69,15 +69,15 @@ class Interaction(Identifiable):
         default="",
         description="Action identifier from the source component.",
     )
-    values: List[str] = Field(
+    values: list[str] = Field(
         default_factory=list,
         description="Selected/submitted values.",
     )
-    user: Optional[User] = Field(
+    user: User | None = Field(
         default=None,
         description="The user who triggered the interaction.",
     )
-    channel: Optional[Channel] = Field(
+    channel: Channel | None = Field(
         default=None,
         description="The channel containing the source message.",
     )
@@ -89,11 +89,11 @@ class Interaction(Identifiable):
         default="",
         description="Short-lived token for replying to this interaction.",
     )
-    created_at: Optional[datetime] = Field(
+    created_at: datetime | None = Field(
         default=None,
         description="When the interaction happened.",
     )
-    raw: Optional[Any] = Field(
+    raw: Any | None = Field(
         default=None,
         description="Raw event payload from the backend.",
     )
@@ -101,7 +101,7 @@ class Interaction(Identifiable):
         default="",
         description="Backend that produced this interaction.",
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Additional platform-specific data.",
     )

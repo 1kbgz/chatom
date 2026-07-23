@@ -197,7 +197,7 @@ class _CapturingBackend(BackendBase):
     display_name = "Capturing"
 
     # class-level capture list so the test sees what the writer thread sent
-    captured: list = []
+    captured: list = []  # noqa: RUF012
 
     async def connect(self) -> None:
         self.connected = True
@@ -275,5 +275,5 @@ def _close_loops():
             pending = [t for t in asyncio.all_tasks(loop) if not t.done()]
             for t in pending:
                 t.cancel()
-    except Exception:
+    except Exception:  # noqa: BLE001, S110
         pass

@@ -3,7 +3,7 @@
 This module provides the Discord-specific User class.
 """
 
-from typing import Any, Optional, Self
+from typing import Any, Self
 
 from pydantic import model_validator
 
@@ -27,7 +27,7 @@ class DiscordUser(User):
         default="0",
         description="The user's 4-digit discriminator (legacy).",
     )
-    global_name: Optional[str] = Field(
+    global_name: str | None = Field(
         default=None,
         description="The user's global display name.",
     )
@@ -35,7 +35,7 @@ class DiscordUser(User):
         default=False,
         description="Whether this is a Discord system user.",
     )
-    accent_color: Optional[int] = Field(
+    accent_color: int | None = Field(
         default=None,
         description="The user's banner color.",
     )

@@ -5,7 +5,7 @@ data structures inherit from. It uses Pydantic for data validation
 and serialization.
 """
 
-from typing import Any, Dict, Self, TypeVar
+from typing import Any, Self, TypeVar
 
 from pydantic import BaseModel as PydanticBaseModel, ConfigDict, Field, PrivateAttr, model_validator
 
@@ -63,7 +63,7 @@ class BaseModel(PydanticBaseModel):
         """
         self._incomplete = False
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert model to dictionary representation.
 
         Returns:
@@ -71,7 +71,7 @@ class BaseModel(PydanticBaseModel):
         """
         return self.model_dump(exclude_none=True)
 
-    def copy_with(self: T, **kwargs: Any) -> T:
+    def copy_with(self, **kwargs: Any) -> Self:
         """Create a copy of the model with updated fields.
 
         Args:

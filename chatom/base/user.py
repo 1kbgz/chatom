@@ -3,7 +3,7 @@
 This module provides the base User class representing a chat platform user.
 """
 
-from typing import Optional, Self
+from typing import Self
 
 from pydantic import model_validator
 
@@ -57,7 +57,7 @@ class User(Identifiable):
         default="",
         description="Email address of the user, if available.",
     )
-    avatar: Optional[Avatar] = Field(
+    avatar: Avatar | None = Field(
         default=None,
         description="User's Avatar",
     )
@@ -65,7 +65,7 @@ class User(Identifiable):
         default=False,
         description="Whether the user is a bot.",
     )
-    app_id: Optional[str] = Field(
+    app_id: str | None = Field(
         default=None,
         description="App ID associated with the bot (for bot users).",
     )

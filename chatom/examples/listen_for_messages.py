@@ -24,10 +24,9 @@ import argparse
 import asyncio
 import os
 import sys
-from typing import Optional
 
 
-def get_env(name: str, required: bool = True) -> Optional[str]:
+def get_env(name: str, required: bool = True) -> str | None:
     """Get environment variable."""
     value = os.environ.get(name)
     if required and not value:
@@ -108,7 +107,7 @@ async def listen_slack(timeout: int) -> bool:
 
     try:
         await asyncio.wait_for(listen_with_timeout(), timeout=timeout)
-    except asyncio.TimeoutError:
+    except TimeoutError:
         pass
     except KeyboardInterrupt:
         print("\n⛔ Interrupted by user")
@@ -178,7 +177,7 @@ async def listen_symphony(timeout: int) -> bool:
 
     try:
         await asyncio.wait_for(listen_with_timeout(), timeout=timeout)
-    except asyncio.TimeoutError:
+    except TimeoutError:
         pass
     except KeyboardInterrupt:
         print("\n⛔ Interrupted by user")

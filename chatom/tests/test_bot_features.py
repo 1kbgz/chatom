@@ -188,7 +188,7 @@ class TestReactionEvent:
             user=User(id="U789"),
             emoji=emoji,
             event_type=ReactionEventType.ADDED,
-            timestamp=datetime.now(),
+            timestamp=datetime.now(),  # noqa: DTZ005
         )
 
         assert event.message_id == "M123"

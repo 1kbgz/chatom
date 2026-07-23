@@ -5,8 +5,8 @@ that doesn't require actual Symphony servers.
 """
 
 import uuid
-from datetime import datetime, timezone
-from typing import Any, ClassVar, Dict, List, Optional, Union
+from datetime import UTC, datetime
+from typing import Any, ClassVar
 
 from pydantic import Field
 
@@ -63,22 +63,22 @@ class MockSymphonyBackend(BackendBase):
     display_name: ClassVar[str] = "Symphony (Mock)"
     format: ClassVar[Format] = Format.SYMPHONY_MESSAGEML
 
-    capabilities: Optional[BackendCapabilities] = SYMPHONY_CAPABILITIES
+    capabilities: BackendCapabilities | None = SYMPHONY_CAPABILITIES
     config: SymphonyConfig = Field(default_factory=SymphonyConfig)
 
     # Mock data stores
-    mock_users: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
-    mock_streams: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
-    mock_messages: Dict[str, List[Dict[str, Any]]] = Field(default_factory=dict)
-    mock_presence: Dict[str, SymphonyPresenceStatus] = Field(default_factory=dict)
+    mock_users: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    mock_streams: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    mock_messages: dict[str, list[dict[str, Any]]] = Field(default_factory=dict)
+    mock_presence: dict[str, SymphonyPresenceStatus] = Field(default_factory=dict)
 
     # Tracking for verification
-    sent_messages: List[Dict[str, Any]] = Field(default_factory=list)
-    edited_messages: List[Dict[str, Any]] = Field(default_factory=list)
-    deleted_messages: List[str] = Field(default_factory=list)
-    presence_changes: List[Dict[str, Any]] = Field(default_factory=list)
-    created_ims: List[List[int]] = Field(default_factory=list)
-    created_rooms: List[Dict[str, Any]] = Field(default_factory=list)
+    sent_messages: list[dict[str, Any]] = Field(default_factory=list)
+    edited_messages: list[dict[str, Any]] = Field(default_factory=list)
+    deleted_messages: list[str] = Field(default_factory=list)
+    presence_changes: list[dict[str, Any]] = Field(default_factory=list)
+    created_ims: list[list[int]] = Field(default_factory=list)
+    created_rooms: list[dict[str, Any]] = Field(default_factory=list)
 
     # Mock bot info
     _mock_bot_user_id: int = 999999999
@@ -93,7 +93,7 @@ class MockSymphonyBackend(BackendBase):
         user_id: int,
         display_name: str,
         username: str,
-        email: Optional[str] = None,
+        email: str | None = None,
     ) -> None:
         """Add a mock user.
 
@@ -136,8 +136,8 @@ class MockSymphonyBackend(BackendBase):
         stream_id: str,
         user_id: int,
         content: str,
-        message_id: Optional[str] = None,
-        timestamp: Optional[datetime] = None,
+        message_id: str | None = None,
+        timestamp: datetime | None = None,
     ) -> str:
         """Add a mock message to a stream.
 
@@ -158,7 +158,7 @@ class MockSymphonyBackend(BackendBase):
             message_id = str(uuid.uuid4())
 
         if timestamp is None:
-            timestamp = datetime.now(timezone.utc)
+            timestamp = datetime.now(UTC)
 
         msg = {
             "message_id": message_id,
@@ -196,13 +196,13 @@ class MockSymphonyBackend(BackendBase):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a mock user by ID or other attributes.
 
         Args:
@@ -261,11 +261,11 @@ class MockSymphonyBackend(BackendBase):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a mock channel (stream) by ID or name.
 
         Args:
@@ -313,11 +313,11 @@ class MockSymphonyBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch messages from a mock stream.
 
         Args:
@@ -337,10 +337,10 @@ class MockSymphonyBackend(BackendBase):
 
         def _to_dt(value):
             if isinstance(value, datetime):
-                return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+                return value if value.tzinfo else value.replace(tzinfo=UTC)
             if isinstance(value, Message):
                 return value.created_at
-            return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc)
+            return datetime.fromtimestamp(int(value) / 1000, tz=UTC)
 
         # Filter by timestamp if specified
         filtered = messages_data
@@ -355,7 +355,7 @@ class MockSymphonyBackend(BackendBase):
         filtered = sorted(filtered, key=lambda m: m["timestamp"], reverse=True)
         filtered = filtered[:limit]
 
-        messages: List[Message] = []
+        messages: list[Message] = []
         for raw in filtered:
             message = SymphonyMessage(
                 id=raw["message_id"],
@@ -370,7 +370,7 @@ class MockSymphonyBackend(BackendBase):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -392,7 +392,7 @@ class MockSymphonyBackend(BackendBase):
         kwargs.pop("reply_to", None)
 
         message_id = str(uuid.uuid4())
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(UTC)
 
         # Track sent message
         sent = {
@@ -428,9 +428,9 @@ class MockSymphonyBackend(BackendBase):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a mock message.
@@ -452,7 +452,7 @@ class MockSymphonyBackend(BackendBase):
             message_id = message
             channel_id = channel.id if isinstance(channel, Channel) else (channel or "")
 
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(UTC)
 
         # Track edit
         self.edited_messages.append(
@@ -481,8 +481,8 @@ class MockSymphonyBackend(BackendBase):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete (suppress) a mock message.
 
@@ -506,11 +506,11 @@ class MockSymphonyBackend(BackendBase):
 
     async def forward_message(
         self,
-        message: Union[str, Message],
-        to_channel: Union[str, Channel],
+        message: str | Message,
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> SymphonyMessage:
         """Forward a mock message to another stream.
@@ -526,7 +526,7 @@ class MockSymphonyBackend(BackendBase):
             The forwarded message in the destination stream.
         """
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID.")
+            raise ValueError("forward_message requires a Message object, not just a message ID.")  # noqa: TRY004
 
         # Resolve destination channel ID
         if isinstance(to_channel, Channel):
@@ -553,7 +553,7 @@ class MockSymphonyBackend(BackendBase):
 
         # Create the forwarded message
         message_id = str(uuid.uuid4())
-        timestamp = datetime.now(timezone.utc)
+        timestamp = datetime.now(UTC)
 
         forwarded_msg = SymphonyMessage(
             id=message_id,
@@ -595,7 +595,7 @@ class MockSymphonyBackend(BackendBase):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set mock presence.
@@ -630,7 +630,7 @@ class MockSymphonyBackend(BackendBase):
         # Update bot's presence
         self.mock_presence[str(self._mock_bot_user_id)] = mapped_status
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get mock presence for a user.
 
         Args:
@@ -668,9 +668,9 @@ class MockSymphonyBackend(BackendBase):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a reaction.
 
@@ -683,9 +683,9 @@ class MockSymphonyBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a reaction.
 
@@ -722,7 +722,7 @@ class MockSymphonyBackend(BackendBase):
             return channel.name or channel.stream_id or channel.id
         return channel.name or channel.id
 
-    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_dm(self, users: list[str | User]) -> str | None:
         """Create a mock DM/IM.
 
         Args:
@@ -739,7 +739,7 @@ class MockSymphonyBackend(BackendBase):
         self.add_mock_stream(stream_id, f"IM with {len(users)} users", "IM")
         return stream_id
 
-    async def create_im(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_im(self, users: list[str | User]) -> str | None:
         """Create a mock IM.
 
         This is an alias for create_dm.
@@ -758,7 +758,7 @@ class MockSymphonyBackend(BackendBase):
         description: str = "",
         public: bool = False,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a mock channel/room.
 
         Args:
@@ -790,7 +790,7 @@ class MockSymphonyBackend(BackendBase):
         description: str = "",
         public: bool = False,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a mock room.
 
         This is an alias for create_channel.

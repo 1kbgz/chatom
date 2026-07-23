@@ -6,7 +6,7 @@ It allows defining policies for what users can do in different channels.
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Any, Dict, List, Optional, Set
+from typing import Any
 
 from .base import BaseModel, Field
 from .channel import Channel
@@ -14,10 +14,10 @@ from .user import User
 
 __all__ = (
     "AuthorizationPolicy",
-    "SimpleAuthorizationPolicy",
-    "Permission",
-    "is_user_authorized",
     "AuthorizationResult",
+    "Permission",
+    "SimpleAuthorizationPolicy",
+    "is_user_authorized",
 )
 
 
@@ -76,11 +76,11 @@ class AuthorizationResult(BaseModel):
         default="",
         description="Human-readable reason for the result.",
     )
-    required_permissions: List[str] = Field(
+    required_permissions: list[str] = Field(
         default_factory=list,
         description="Permissions that were required.",
     )
-    missing_permissions: List[str] = Field(
+    missing_permissions: list[str] = Field(
         default_factory=list,
         description="Permissions that the user lacks.",
     )
@@ -118,7 +118,7 @@ class AuthorizationPolicy(ABC):
         self,
         user: User,
         permission: str,
-        channel: Optional[Channel] = None,
+        channel: Channel | None = None,
         **context: Any,
     ) -> AuthorizationResult:
         """Check if a user is authorized for a permission.
@@ -138,8 +138,8 @@ class AuthorizationPolicy(ABC):
     async def check_permissions(
         self,
         user: User,
-        permissions: List[str],
-        channel: Optional[Channel] = None,
+        permissions: list[str],
+        channel: Channel | None = None,
         require_all: bool = True,
         **context: Any,
     ) -> AuthorizationResult:
@@ -156,8 +156,8 @@ class AuthorizationPolicy(ABC):
         Returns:
             AuthorizationResult with missing permissions listed.
         """
-        missing: List[str] = []
-        granted: List[str] = []
+        missing: list[str] = []
+        granted: list[str] = []
 
         for perm in permissions:
             result = await self.is_authorized(user, perm, channel, **context)
@@ -219,8 +219,8 @@ class SimpleAuthorizationPolicy(AuthorizationPolicy):
 
     def __init__(
         self,
-        admin_users: Optional[List[str]] = None,
-        admin_channels: Optional[List[str]] = None,
+        admin_users: list[str] | None = None,
+        admin_channels: list[str] | None = None,
         default_authorized: bool = False,
     ):
         """Initialize the policy.
@@ -230,18 +230,18 @@ class SimpleAuthorizationPolicy(AuthorizationPolicy):
             admin_channels: List of channel IDs where default is to allow.
             default_authorized: Default authorization when no specific rule matches.
         """
-        self._admin_users: Set[str] = set(admin_users or [])
-        self._admin_channels: Set[str] = set(admin_channels or [])
+        self._admin_users: set[str] = set(admin_users or [])
+        self._admin_channels: set[str] = set(admin_channels or [])
         self._default_authorized = default_authorized
 
         # permission -> set of user IDs
-        self._permission_users: Dict[str, Set[str]] = {}
+        self._permission_users: dict[str, set[str]] = {}
 
         # channel_id -> permission -> set of user IDs (channel-specific overrides)
-        self._channel_permissions: Dict[str, Dict[str, Set[str]]] = {}
+        self._channel_permissions: dict[str, dict[str, set[str]]] = {}
 
         # permission -> set of channel IDs where it's blocked
-        self._blocked_channels: Dict[str, Set[str]] = {}
+        self._blocked_channels: dict[str, set[str]] = {}
 
     def add_admin(self, user_id: str) -> None:
         """Add a user as a global admin.
@@ -262,8 +262,8 @@ class SimpleAuthorizationPolicy(AuthorizationPolicy):
     def allow_permission(
         self,
         permission: str,
-        user_ids: List[str],
-        channel_id: Optional[str] = None,
+        user_ids: list[str],
+        channel_id: str | None = None,
     ) -> None:
         """Allow specific users to have a permission.
 
@@ -288,7 +288,7 @@ class SimpleAuthorizationPolicy(AuthorizationPolicy):
     def block_permission_in_channel(
         self,
         permission: str,
-        channel_ids: List[str],
+        channel_ids: list[str],
     ) -> None:
         """Block a permission in specific channels.
 
@@ -305,7 +305,7 @@ class SimpleAuthorizationPolicy(AuthorizationPolicy):
         self,
         user: User,
         permission: str,
-        channel: Optional[Channel] = None,
+        channel: Channel | None = None,
         **context: Any,
     ) -> AuthorizationResult:
         """Check if a user is authorized for a permission.
@@ -331,34 +331,31 @@ class SimpleAuthorizationPolicy(AuthorizationPolicy):
             )
 
         # Check if permission is blocked in this channel
-        if channel_id and perm_str in self._blocked_channels:
-            if channel_id in self._blocked_channels[perm_str]:
-                return AuthorizationResult(
-                    authorized=False,
-                    reason=f"Permission '{perm_str}' is blocked in this channel",
-                    required_permissions=[perm_str],
-                    missing_permissions=[perm_str],
-                )
+        if channel_id and perm_str in self._blocked_channels and channel_id in self._blocked_channels[perm_str]:
+            return AuthorizationResult(
+                authorized=False,
+                reason=f"Permission '{perm_str}' is blocked in this channel",
+                required_permissions=[perm_str],
+                missing_permissions=[perm_str],
+            )
 
         # Check channel-specific permissions first
         if channel_id and channel_id in self._channel_permissions:
             channel_perms = self._channel_permissions[channel_id]
-            if perm_str in channel_perms:
-                if user.id in channel_perms[perm_str]:
-                    return AuthorizationResult(
-                        authorized=True,
-                        reason="User has channel-specific permission",
-                        required_permissions=[perm_str],
-                    )
-
-        # Check global permission list
-        if perm_str in self._permission_users:
-            if user.id in self._permission_users[perm_str]:
+            if perm_str in channel_perms and user.id in channel_perms[perm_str]:
                 return AuthorizationResult(
                     authorized=True,
-                    reason="User has global permission",
+                    reason="User has channel-specific permission",
                     required_permissions=[perm_str],
                 )
+
+        # Check global permission list
+        if perm_str in self._permission_users and user.id in self._permission_users[perm_str]:
+            return AuthorizationResult(
+                authorized=True,
+                reason="User has global permission",
+                required_permissions=[perm_str],
+            )
 
         # Check if channel is an admin channel (allows everything by default)
         if channel_id and channel_id in self._admin_channels:
@@ -381,7 +378,7 @@ async def is_user_authorized(
     user: User,
     permission: str,
     policy: AuthorizationPolicy,
-    channel: Optional[Channel] = None,
+    channel: Channel | None = None,
     **context: Any,
 ) -> bool:
     """Convenience function to check user authorization.

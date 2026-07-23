@@ -10,8 +10,9 @@ import contextlib
 import importlib
 import logging
 import re
-from datetime import datetime, timedelta, timezone
-from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
+from collections.abc import AsyncIterator
+from datetime import UTC, datetime, timedelta
+from typing import Any, ClassVar
 
 from pydantic import Field
 
@@ -86,7 +87,7 @@ PRESENCE_MAP = {
 }
 
 
-def _symphony_attachments(attachments_info: Any, stream_id: str, message_id: str) -> List[Attachment]:
+def _symphony_attachments(attachments_info: Any, stream_id: str, message_id: str) -> list[Attachment]:
     """Convert Symphony ``V4AttachmentInfo`` objects into chatom attachments.
 
     Symphony has no public download URL; bytes are fetched via the BDK
@@ -97,7 +98,7 @@ def _symphony_attachments(attachments_info: Any, stream_id: str, message_id: str
     """
     import mimetypes
 
-    result: List[Attachment] = []
+    result: list[Attachment] = []
     for info in attachments_info or []:
         att_id = getattr(info, "id", "") or ""
         name = getattr(info, "name", "") or "file"
@@ -156,28 +157,28 @@ class SymphonyBackend(BackendBase):
     name: ClassVar[str] = "symphony"
     display_name: ClassVar[str] = "Symphony"
     format: ClassVar[Format] = Format.SYMPHONY_MESSAGEML
-    mention_pattern: ClassVar[Optional[re.Pattern]] = re.compile(r'<mention\s+uid="(\d+)"\s*/>')
+    mention_pattern: ClassVar[re.Pattern | None] = re.compile(r'<mention\s+uid="(\d+)"\s*/>')
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = SymphonyUser
     channel_class: ClassVar[type] = SymphonyChannel
     presence_class: ClassVar[type] = SymphonyPresence
 
-    capabilities: Optional[BackendCapabilities] = SYMPHONY_CAPABILITIES
+    capabilities: BackendCapabilities | None = SYMPHONY_CAPABILITIES
     config: SymphonyConfig = Field(default_factory=SymphonyConfig)
 
     # SDK instance
     _bdk: Any = None
-    _bot_user_id_int: Optional[int] = None
-    _bot_user_name_cached: Optional[str] = None
+    _bot_user_id_int: int | None = None
+    _bot_user_name_cached: str | None = None
 
     @property
-    def bot_user_id(self) -> Optional[str]:
+    def bot_user_id(self) -> str | None:
         """Get the bot's user ID as a string (cached from connect)."""
         return str(self._bot_user_id_int) if self._bot_user_id_int else None
 
     @property
-    def bot_user_name(self) -> Optional[str]:
+    def bot_user_name(self) -> str | None:
         """Get the bot's username (from config or cached from connect)."""
         return self._bot_user_name_cached or self.config.bot_username
 
@@ -250,7 +251,7 @@ class SymphonyBackend(BackendBase):
         if self._bdk is not None:
             try:
                 await self._bdk.close_clients()
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
             self._bdk = None
 
@@ -260,13 +261,13 @@ class SymphonyBackend(BackendBase):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a user from Symphony.
 
         Accepts flexible inputs:
@@ -323,7 +324,7 @@ class SymphonyBackend(BackendBase):
                         result = self._build_user_from_data(user_data)
                         if result:
                             return result
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         # Try to look up by username (handle)
@@ -340,7 +341,7 @@ class SymphonyBackend(BackendBase):
                         result = self._build_user_from_data(user_data)
                         if result:
                             return result
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         # Search by display name
@@ -358,12 +359,12 @@ class SymphonyBackend(BackendBase):
                     # If no exact match, return first result
                     if results.users:
                         return await self._fetch_user_by_id(str(results.users[0].id))
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
         return None
 
-    def _build_user_from_data(self, user_data: Union[dict, Any]) -> Optional[SymphonyUser]:
+    def _build_user_from_data(self, user_data: dict | Any) -> SymphonyUser | None:
         """Build a SymphonyUser from API response data (dict or object)."""
         try:
             if isinstance(user_data, dict):
@@ -392,10 +393,10 @@ class SymphonyBackend(BackendBase):
             )
             self.users.add(user)
             return user
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
-    async def _fetch_user_by_id(self, user_id: str) -> Optional[SymphonyUser]:
+    async def _fetch_user_by_id(self, user_id: str) -> SymphonyUser | None:
         """Fetch a user by ID from the Symphony API."""
         try:
             user_service = self._bdk.users()
@@ -431,16 +432,16 @@ class SymphonyBackend(BackendBase):
             )
             self.users.add(user)
             return user
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a channel (stream/room) from Symphony.
 
         Accepts flexible inputs:
@@ -507,7 +508,7 @@ class SymphonyBackend(BackendBase):
 
         return None
 
-    async def _fetch_channel_by_id(self, stream_id: str) -> Optional[SymphonyChannel]:
+    async def _fetch_channel_by_id(self, stream_id: str) -> SymphonyChannel | None:
         """Fetch a channel by stream ID from the Symphony API."""
         try:
             stream_service = self._bdk.streams()
@@ -519,16 +520,16 @@ class SymphonyBackend(BackendBase):
             )
             self.channels.add(channel)
             return channel
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
     async def fetch_channel_members(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> List[User]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> list[User]:
         """Fetch members of a Symphony room.
 
         Args:
@@ -566,7 +567,7 @@ class SymphonyBackend(BackendBase):
         try:
             stream_service = self._bdk.streams()
             membership_list = await stream_service.list_room_members(channel_id)
-            members: List[User] = []
+            members: list[User] = []
             if membership_list and membership_list.value:
                 for member in membership_list.value:
                     members.append(SymphonyUser(id=str(member.id)))
@@ -577,11 +578,11 @@ class SymphonyBackend(BackendBase):
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch messages from a Symphony stream, newest-first.
 
         Returns up to *limit* messages ordered newest-to-oldest. ``after`` and
@@ -610,12 +611,12 @@ class SymphonyBackend(BackendBase):
         return await self._fetch_range(channel_id, limit, since_ms, until_ms)
 
     @staticmethod
-    def _to_epoch_ms(value: Optional[Union[str, Message, datetime]]) -> Optional[int]:
+    def _to_epoch_ms(value: str | Message | datetime | None) -> int | None:
         """Coerce a range bound to a millisecond epoch, or None."""
         if value is None:
             return None
         if isinstance(value, datetime):
-            dt = value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+            dt = value if value.tzinfo else value.replace(tzinfo=UTC)
             return int(dt.timestamp() * 1000)
         if isinstance(value, Message):
             return int(value.created_at.timestamp() * 1000) if value.created_at else None
@@ -625,9 +626,9 @@ class SymphonyBackend(BackendBase):
         self,
         channel_id: str,
         limit: int,
-        since_ms: Optional[int],
-        until_ms: Optional[int],
-    ) -> List[Message]:
+        since_ms: int | None,
+        until_ms: int | None,
+    ) -> list[Message]:
         """Collect every message in the ``[since_ms, until_ms]`` range, then
         return the most recent *limit* of them, newest-first.
 
@@ -637,7 +638,7 @@ class SymphonyBackend(BackendBase):
         ``after`` bound.
         """
         message_service = self._bdk.messages()
-        now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+        now_ms = int(datetime.now(UTC).timestamp() * 1000)
         page_limit = 500  # Symphony API max per request
         max_backstop_ms = now_ms - int(timedelta(days=90).total_seconds() * 1000)
 
@@ -671,8 +672,7 @@ class SymphonyBackend(BackendBase):
             raw = []
             while True:
                 start = now_ms - int(window_hours * 3600 * 1000)
-                if start < max_backstop_ms:
-                    start = max_backstop_ms
+                start = max(start, max_backstop_ms)
                 raw = await page_from(start)
                 if len(raw) >= limit or start <= max_backstop_ms:
                     break
@@ -683,18 +683,18 @@ class SymphonyBackend(BackendBase):
             messages = [m for m in messages if m.created_at and int(m.created_at.timestamp() * 1000) >= since_ms]
         if until_ms is not None:
             messages = [m for m in messages if m.created_at and int(m.created_at.timestamp() * 1000) <= until_ms]
-        messages.sort(key=lambda m: m.created_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+        messages.sort(key=lambda m: m.created_at or datetime.min.replace(tzinfo=UTC), reverse=True)
         return messages[:limit]
 
-    def _convert_messages(self, messages_data: list, channel_id: str) -> List[Message]:
+    def _convert_messages(self, messages_data: list, channel_id: str) -> list[Message]:
         """Convert raw V4Message objects to SymphonyMessage instances."""
-        messages: List[Message] = []
+        messages: list[Message] = []
         for msg in messages_data:
             messages.append(
                 SymphonyMessage(
                     id=msg.message_id,
                     content=msg.message,
-                    created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
+                    created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=UTC),
                     author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
                     channel=SymphonyChannel(id=channel_id),
                     attachments=_symphony_attachments(getattr(msg, "attachments", None), channel_id, msg.message_id),
@@ -705,10 +705,10 @@ class SymphonyBackend(BackendBase):
     async def search_messages(
         self,
         query: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         limit: int = 50,
         **kwargs: Any,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Search for messages matching a query.
 
         Uses Symphony's message search API.
@@ -753,13 +753,13 @@ class SymphonyBackend(BackendBase):
             # Use Symphony search API
             messages_data = await message_service.search_messages(**search_params)
 
-            messages: List[Message] = []
+            messages: list[Message] = []
             for msg in messages_data:
                 stream_id = getattr(msg, "stream_id", "") or ""
                 message = SymphonyMessage(
                     id=msg.message_id,
                     content=msg.message,
-                    created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=timezone.utc),
+                    created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=UTC),
                     author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
                     channel=SymphonyChannel(id=stream_id) if stream_id else None,
                 )
@@ -772,7 +772,7 @@ class SymphonyBackend(BackendBase):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -820,7 +820,7 @@ class SymphonyBackend(BackendBase):
             return SymphonyMessage(
                 id=result.message_id,
                 content=content,
-                created_at=datetime.fromtimestamp(result.timestamp / 1000, tz=timezone.utc),
+                created_at=datetime.fromtimestamp(result.timestamp / 1000, tz=UTC),
                 author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
                 channel=SymphonyChannel(id=channel_id),
             )
@@ -830,7 +830,7 @@ class SymphonyBackend(BackendBase):
 
     async def upload_file(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         data: bytes,
         filename: str = "file",
         content_type: str = "",
@@ -872,7 +872,7 @@ class SymphonyBackend(BackendBase):
             return SymphonyMessage(
                 id=result.message_id,
                 content=body,
-                created_at=datetime.fromtimestamp(result.timestamp / 1000, tz=timezone.utc),
+                created_at=datetime.fromtimestamp(result.timestamp / 1000, tz=UTC),
                 author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
                 channel=SymphonyChannel(id=channel_id),
             )
@@ -886,7 +886,7 @@ class SymphonyBackend(BackendBase):
         self,
         attachment: Any,
         *,
-        message: Optional[Message] = None,
+        message: Message | None = None,
     ) -> bytes:
         """Download a Symphony attachment's bytes.
 
@@ -927,9 +927,9 @@ class SymphonyBackend(BackendBase):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a Symphony message.
@@ -969,7 +969,7 @@ class SymphonyBackend(BackendBase):
             return SymphonyMessage(
                 id=result.message_id,
                 content=content,
-                created_at=datetime.now(timezone.utc),
+                created_at=datetime.now(UTC),
                 author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
                 channel=SymphonyChannel(id=channel_id),
             )
@@ -979,8 +979,8 @@ class SymphonyBackend(BackendBase):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete (suppress) a Symphony message.
 
@@ -1006,11 +1006,11 @@ class SymphonyBackend(BackendBase):
 
     async def forward_message(
         self,
-        message: Union[str, Message],
-        to_channel: Union[str, Channel],
+        message: str | Message,
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> SymphonyMessage:
         """Forward a message to another Symphony room/stream.
@@ -1033,7 +1033,7 @@ class SymphonyBackend(BackendBase):
 
         # Resolve the source message if it's just an ID
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")
+            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")  # noqa: TRY004
 
         # Resolve destination channel/stream
         dest_channel_id = await self._resolve_channel_id(to_channel)
@@ -1073,10 +1073,8 @@ class SymphonyBackend(BackendBase):
             if message.formatted_content:
                 # Strip any outer messageML tags if present
                 msg_content = message.formatted_content
-                if msg_content.startswith("<messageML>"):
-                    msg_content = msg_content[11:]
-                if msg_content.endswith("</messageML>"):
-                    msg_content = msg_content[:-12]
+                msg_content = msg_content.removeprefix("<messageML>")
+                msg_content = msg_content.removesuffix("</messageML>")
                 # Use plain content if available, otherwise use the formatted content directly
                 # Don't wrap in <p> if formatted_content already contains markup
                 if message.content:
@@ -1104,7 +1102,7 @@ class SymphonyBackend(BackendBase):
                 id=result.id if hasattr(result, "id") else str(result),
                 content=message.content,
                 formatted_content=forwarded_content,
-                created_at=datetime.now(timezone.utc),
+                created_at=datetime.now(UTC),
                 author=SymphonyUser(id=str(self._bot_user_id_int)) if self._bot_user_id_int else None,
                 channel=SymphonyChannel(id=dest_channel_id),
                 message_type=MessageType.FORWARD,
@@ -1119,7 +1117,7 @@ class SymphonyBackend(BackendBase):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set user presence on Symphony.
@@ -1152,7 +1150,7 @@ class SymphonyBackend(BackendBase):
         except Exception as e:
             raise RuntimeError(f"Failed to set presence: {e}") from e
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get a user's presence on Symphony.
 
         Args:
@@ -1206,14 +1204,14 @@ class SymphonyBackend(BackendBase):
                 symphony_status=symphony_status,
             )
 
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a reaction to a message.
 
@@ -1232,9 +1230,9 @@ class SymphonyBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a reaction from a message.
 
@@ -1313,7 +1311,7 @@ class SymphonyBackend(BackendBase):
 
     # Additional Symphony-specific methods
 
-    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_dm(self, users: list[str | User]) -> str | None:
         """Create a direct message (IM) or multi-party IM.
 
         Args:
@@ -1330,7 +1328,7 @@ class SymphonyBackend(BackendBase):
             stream_service = self._bdk.streams()
 
             # Resolve user IDs
-            user_ids: List[str] = []
+            user_ids: list[str] = []
             for user in users:
                 if isinstance(user, User):
                     if user.is_incomplete:
@@ -1357,7 +1355,7 @@ class SymphonyBackend(BackendBase):
         except Exception as e:
             raise RuntimeError(f"Failed to create DM: {e}") from e
 
-    async def create_im(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_im(self, users: list[str | User]) -> str | None:
         """Create an instant message (IM) or multi-party IM.
 
         This is an alias for create_dm, using Symphony's terminology.
@@ -1376,7 +1374,7 @@ class SymphonyBackend(BackendBase):
         description: str = "",
         public: bool = False,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a room (chat room).
 
         Args:
@@ -1417,7 +1415,7 @@ class SymphonyBackend(BackendBase):
         description: str = "",
         public: bool = False,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a room (chat room).
 
         This is an alias for create_channel, using Symphony's terminology.
@@ -1434,7 +1432,7 @@ class SymphonyBackend(BackendBase):
         """
         return await self.create_channel(name, description, public, **kwargs)
 
-    async def get_bot_info(self) -> Optional[User]:
+    async def get_bot_info(self) -> User | None:
         """Get information about the connected bot user.
 
         Returns:
@@ -1451,12 +1449,12 @@ class SymphonyBackend(BackendBase):
                 handle=session.username or str(session.id),
                 email=getattr(session, "email_address", None) or "",
             )
-        except Exception:
+        except Exception:  # noqa: BLE001
             return None
 
     async def stream_messages(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> "AsyncIterator[Message]":
@@ -1477,7 +1475,7 @@ class SymphonyBackend(BackendBase):
             raise RuntimeError("Symphony not connected")
 
         # Resolve channel ID if provided
-        channel_id: Optional[str] = None
+        channel_id: str | None = None
         if channel is not None:
             channel_id = await self._resolve_channel_id(channel)
 
@@ -1489,10 +1487,10 @@ class SymphonyBackend(BackendBase):
         bot_user_id = str(bot_info.id) if bot_info else None
 
         # Track when the stream started for skip_history
-        stream_start_time = datetime.now(tz=timezone.utc)
+        stream_start_time = datetime.now(tz=UTC)
 
         # Create a queue for messages
-        message_queue: "asyncio.Queue[Message]" = asyncio.Queue()
+        message_queue: asyncio.Queue[Message] = asyncio.Queue()
         stop_event = asyncio.Event()
 
         class MessageCollector(RealTimeEventListener):
@@ -1501,8 +1499,8 @@ class SymphonyBackend(BackendBase):
             def __init__(
                 self,
                 queue: "asyncio.Queue[Message]",
-                filter_channel: Optional[str],
-                bot_id: Optional[str],
+                filter_channel: str | None,
+                bot_id: str | None,
                 backend: "SymphonyBackend",
                 start_time: datetime,
                 do_skip_own: bool,
@@ -1545,7 +1543,7 @@ class SymphonyBackend(BackendBase):
                         mention_users.append(SymphonyUser(id=str(uid)))
 
                 # Parse message timestamp
-                msg_timestamp = datetime.fromtimestamp(int(msg.timestamp) / 1000, tz=timezone.utc) if msg.timestamp else datetime.now(tz=timezone.utc)
+                msg_timestamp = datetime.fromtimestamp(int(msg.timestamp) / 1000, tz=UTC) if msg.timestamp else datetime.now(tz=UTC)
 
                 # Skip messages from before the stream started
                 if self._skip_history and msg_timestamp < self._start_time:
@@ -1625,7 +1623,7 @@ class SymphonyBackend(BackendBase):
                     # Wait for messages with a timeout to allow checking stop_event
                     message = await asyncio.wait_for(message_queue.get(), timeout=1.0)
                     yield message
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     continue
         finally:
             # Clean up

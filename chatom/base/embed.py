@@ -4,11 +4,10 @@ This module provides the Embed class for rich message embeds.
 """
 
 from datetime import datetime
-from typing import List, Optional
 
 from .base import BaseModel, Field
 
-__all__ = ("Embed", "EmbedField", "EmbedAuthor", "EmbedFooter", "EmbedMedia")
+__all__ = ("Embed", "EmbedAuthor", "EmbedField", "EmbedFooter", "EmbedMedia")
 
 
 class EmbedMedia(BaseModel):
@@ -29,11 +28,11 @@ class EmbedMedia(BaseModel):
         default="",
         description="Proxy URL of the media.",
     )
-    width: Optional[int] = Field(
+    width: int | None = Field(
         default=None,
         description="Width in pixels.",
     )
-    height: Optional[int] = Field(
+    height: int | None = Field(
         default=None,
         description="Height in pixels.",
     )
@@ -135,35 +134,35 @@ class Embed(BaseModel):
         default="",
         description="URL the title links to.",
     )
-    color: Optional[int] = Field(
+    color: int | None = Field(
         default=None,
         description="Color of the embed sidebar (as hex integer).",
     )
-    timestamp: Optional[datetime] = Field(
+    timestamp: datetime | None = Field(
         default=None,
         description="Timestamp to display.",
     )
-    author: Optional[EmbedAuthor] = Field(
+    author: EmbedAuthor | None = Field(
         default=None,
         description="Author information.",
     )
-    footer: Optional[EmbedFooter] = Field(
+    footer: EmbedFooter | None = Field(
         default=None,
         description="Footer information.",
     )
-    thumbnail: Optional[EmbedMedia] = Field(
+    thumbnail: EmbedMedia | None = Field(
         default=None,
         description="Thumbnail image.",
     )
-    image: Optional[EmbedMedia] = Field(
+    image: EmbedMedia | None = Field(
         default=None,
         description="Main image.",
     )
-    video: Optional[EmbedMedia] = Field(
+    video: EmbedMedia | None = Field(
         default=None,
         description="Video content.",
     )
-    fields: List[EmbedField] = Field(
+    fields: list[EmbedField] = Field(
         default_factory=list,
         description="List of embed fields.",
     )

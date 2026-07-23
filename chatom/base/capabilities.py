@@ -4,17 +4,16 @@ This module defines the capabilities that different chat backends support.
 """
 
 from enum import Enum
-from typing import FrozenSet
 
 from .base import BaseModel, Field
 
 __all__ = (
-    "Capability",
-    "BackendCapabilities",
     "DISCORD_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
     "TELEGRAM_CAPABILITIES",
+    "BackendCapabilities",
+    "Capability",
 )
 
 
@@ -136,7 +135,7 @@ class BackendCapabilities(BaseModel):
         max_reactions: Maximum reactions per message.
     """
 
-    capabilities: FrozenSet[Capability] = Field(
+    capabilities: frozenset[Capability] = Field(
         default_factory=lambda: frozenset(),
         description="Set of supported capabilities.",
     )

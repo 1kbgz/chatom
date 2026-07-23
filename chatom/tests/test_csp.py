@@ -9,7 +9,6 @@ import asyncio
 import threading
 from datetime import datetime, timedelta
 from queue import Queue
-from typing import List, Optional
 
 import pytest
 
@@ -27,14 +26,12 @@ from chatom.csp.nodes import MessageReaderPushAdapterImpl, _send_messages_thread
 class MockBackendConfig:
     """Mock config for MockBackendForCSP."""
 
-    pass
-
 
 # Class-level storage for tracking messages across all MockBackendForCSP instances
 # This is needed because CSP nodes create new backend instances per thread
-_mock_sent_messages: List[Message] = []
-_mock_sent_kwargs: List[dict] = []
-_mock_presence_updates: List[str] = []
+_mock_sent_messages: list[Message] = []
+_mock_sent_kwargs: list[dict] = []
+_mock_presence_updates: list[str] = []
 
 
 def reset_mock_tracking():
@@ -56,17 +53,17 @@ class MockBackendForCSP:
         self.config = config or MockBackendConfig()
         self.connected = False
         self._channels = {}
-        self._messages_to_stream: List[Message] = []
+        self._messages_to_stream: list[Message] = []
         self._stream_delay = 0.01
         self._bot_user_id = "bot123"
 
     @property
-    def sent_messages(self) -> List[Message]:
+    def sent_messages(self) -> list[Message]:
         """Get all sent messages (class-level for cross-instance tracking)."""
         return _mock_sent_messages
 
     @property
-    def presence_updates(self) -> List[str]:
+    def presence_updates(self) -> list[str]:
         """Get all presence updates (class-level for cross-instance tracking)."""
         return _mock_presence_updates
 
@@ -96,11 +93,11 @@ class MockBackendForCSP:
 
     async def fetch_channel(
         self,
-        identifier: Optional[str] = None,
+        identifier: str | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a channel by ID or name."""
         channel_id = id or identifier
         if channel_id and channel_id in self._channels:
@@ -115,13 +112,13 @@ class MockBackendForCSP:
         """Add a mock channel."""
         self._channels[id] = Channel(id=id, name=name)
 
-    def add_messages_to_stream(self, messages: List[Message]):
+    def add_messages_to_stream(self, messages: list[Message]):
         """Add messages that will be returned by stream_messages."""
         self._messages_to_stream.extend(messages)
 
     async def stream_messages(
         self,
-        channel_id: Optional[str] = None,
+        channel_id: str | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ):
@@ -212,7 +209,7 @@ class TestMessageReaderPushAdapterImpl:
         mocker.patch.object(impl, "push_tick")
         # Mock _run to prevent thread from doing async work
         mocker.patch.object(impl, "_run")
-        impl.start(datetime.now(), datetime.now() + timedelta(hours=1))
+        impl.start(datetime.now(), datetime.now() + timedelta(hours=1))  # noqa: DTZ005
 
         assert impl._running_event.is_set() is True
         assert impl._thread is not None
@@ -230,7 +227,7 @@ class TestMessageReaderPushAdapterImpl:
         mocker.patch.object(impl, "push_tick")
         # Mock _run to prevent thread from doing async work
         mocker.patch.object(impl, "_run")
-        impl.start(datetime.now(), datetime.now() + timedelta(hours=1))
+        impl.start(datetime.now(), datetime.now() + timedelta(hours=1))  # noqa: DTZ005
         impl.stop()
 
         assert impl._running_event.is_set() is False
@@ -452,7 +449,7 @@ class TestCSPGraphExecution:
 
         csp.run(
             test_graph,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.5),
             realtime=True,
         )
@@ -496,7 +493,7 @@ class TestCSPGraphExecution:
 
         csp.run(
             test_graph,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.5),
             realtime=True,
         )
@@ -518,7 +515,7 @@ class TestCSPGraphExecution:
 
         csp.run(
             test_graph,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.5),
             realtime=True,
         )
@@ -569,7 +566,7 @@ class TestMessageWriterNode:
 
         csp.run(
             test_graph,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.5),
             realtime=True,
         )
@@ -634,7 +631,7 @@ class TestEdgeCases:
         # Should complete without error (non-realtime to avoid event loop issues)
         csp.run(
             test_graph,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.1),
         )
         # No messages expected since backend has nothing to stream
@@ -651,7 +648,7 @@ class TestEdgeCases:
         # Non-realtime to avoid event loop issues in CI
         csp.run(
             test_graph,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.1),
         )
 
@@ -691,7 +688,7 @@ class TestIntegrationScenarios:
 
         csp.run(
             publish_bot,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.5),
             realtime=True,
         )
@@ -733,7 +730,7 @@ class TestIntegrationScenarios:
 
         csp.run(
             scheduled_bot,
-            starttime=datetime.now(),
+            starttime=datetime.now(),  # noqa: DTZ005
             endtime=timedelta(seconds=0.5),
             realtime=True,
         )

@@ -4,7 +4,7 @@ This module provides the Discord-specific Message class.
 """
 
 from enum import IntEnum
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any
 
 from chatom.base import Field, Message, Organization, User
 from chatom.discord.user import DiscordUser
@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 __all__ = (
     "DiscordMessage",
-    "DiscordMessageType",
     "DiscordMessageFlags",
+    "DiscordMessageType",
 )
 
 
@@ -108,11 +108,11 @@ class DiscordMessage(Message):
         default=DiscordMessageType.DEFAULT,
         description="The Discord message type.",
     )
-    guild: Optional[Organization] = Field(
+    guild: Organization | None = Field(
         default=None,
         description="The guild/server this message was sent in.",
     )
-    member: Optional[Dict[str, Any]] = Field(
+    member: dict[str, Any] | None = Field(
         default=None,
         description="Guild member data for the author.",
     )
@@ -120,15 +120,15 @@ class DiscordMessage(Message):
         default=False,
         description="Whether @everyone was mentioned.",
     )
-    mention_roles: List[str] = Field(
+    mention_roles: list[str] = Field(
         default_factory=list,
         description="List of mentioned role IDs.",
     )
-    mention_channels: List[str] = Field(
+    mention_channels: list[str] = Field(
         default_factory=list,
         description="List of mentioned channel IDs.",
     )
-    nonce: Optional[str] = Field(
+    nonce: str | None = Field(
         default=None,
         description="Used for message send verification.",
     )
@@ -136,7 +136,7 @@ class DiscordMessage(Message):
         default=False,
         description="Whether the message is pinned.",
     )
-    webhook_id: Optional[str] = Field(
+    webhook_id: str | None = Field(
         default=None,
         description="Webhook ID if sent by a webhook.",
     )
@@ -144,19 +144,19 @@ class DiscordMessage(Message):
         default=0,
         description="Message flags.",
     )
-    interaction: Optional[Dict[str, Any]] = Field(
+    interaction: dict[str, Any] | None = Field(
         default=None,
         description="Interaction data if from an interaction.",
     )
-    components: List[Dict[str, Any]] = Field(
+    components: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Message components (buttons, select menus, etc.).",
     )
-    sticker_items: List[Dict[str, Any]] = Field(
+    sticker_items: list[dict[str, Any]] = Field(
         default_factory=list,
         description="Stickers in the message.",
     )
-    position: Optional[int] = Field(
+    position: int | None = Field(
         default=None,
         description="Position in thread.",
     )
@@ -291,7 +291,7 @@ class DiscordMessage(Message):
         )
 
     @classmethod
-    def from_api_response(cls, data: Dict[str, Any]) -> "DiscordMessage":
+    def from_api_response(cls, data: dict[str, Any]) -> "DiscordMessage":
         """Create a DiscordMessage from a Discord API response.
 
         Args:
@@ -317,7 +317,7 @@ class DiscordMessage(Message):
         channel = DiscordChannel(id=channel_id) if channel_id else None
 
         # Extract mention IDs and create User objects
-        mention_users: List[User] = [
+        mention_users: list[User] = [
             DiscordUser(
                 id=m.get("id", ""),
                 handle=m.get("username", ""),

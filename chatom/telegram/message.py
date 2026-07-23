@@ -3,7 +3,8 @@
 This module provides the Telegram-specific Message class.
 """
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from datetime import UTC
+from typing import TYPE_CHECKING, Any
 
 from chatom.base import Attachment, AttachmentType, Field, Image, Message, User
 from chatom.telegram.channel import TelegramChannel
@@ -15,7 +16,7 @@ if TYPE_CHECKING:
 __all__ = ("TelegramMessage",)
 
 
-def _telegram_attachments(msg: Any) -> List[Attachment]:
+def _telegram_attachments(msg: Any) -> list[Attachment]:
     """Extract chatom attachments from a python-telegram-bot Message.
 
     Telegram does not expose download URLs directly — each media object
@@ -23,7 +24,7 @@ def _telegram_attachments(msg: Any) -> List[Attachment]:
     ``file_id`` is stored as the attachment ``id`` so
     :meth:`TelegramBackend.download_attachment` can fetch the bytes.
     """
-    attachments: List[Attachment] = []
+    attachments: list[Attachment] = []
 
     photos = getattr(msg, "photo", None)
     if photos:
@@ -115,19 +116,19 @@ class TelegramMessage(Message):
         default="",
         description="The chat ID this message belongs to.",
     )
-    message_thread_id: Optional[int] = Field(
+    message_thread_id: int | None = Field(
         default=None,
         description="Thread (topic) ID in a forum supergroup.",
     )
-    reply_to_message_id: Optional[int] = Field(
+    reply_to_message_id: int | None = Field(
         default=None,
         description="ID of the message being replied to.",
     )
-    forward_origin: Optional[Dict[str, Any]] = Field(
+    forward_origin: dict[str, Any] | None = Field(
         default=None,
         description="Information about the original forwarded message.",
     )
-    entities: List[Dict[str, Any]] = Field(
+    entities: list[dict[str, Any]] = Field(
         default_factory=list,
         description="List of message entities from the API.",
     )
@@ -195,7 +196,7 @@ class TelegramMessage(Message):
         )
 
     @classmethod
-    def from_api_response(cls, data: Dict[str, Any]) -> "TelegramMessage":
+    def from_api_response(cls, data: dict[str, Any]) -> "TelegramMessage":
         """Create a TelegramMessage from a Telegram API response dict.
 
         Args:
@@ -204,7 +205,7 @@ class TelegramMessage(Message):
         Returns:
             A TelegramMessage instance.
         """
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         from_data = data.get("from", {})
         author = (
@@ -234,10 +235,10 @@ class TelegramMessage(Message):
 
         msg_id = data.get("message_id", 0)
         date = data.get("date")
-        created_at = datetime.fromtimestamp(date, tz=timezone.utc) if isinstance(date, (int, float)) else None
+        created_at = datetime.fromtimestamp(date, tz=UTC) if isinstance(date, (int, float)) else None
 
         # Extract mention entities
-        mention_users: List[User] = []
+        mention_users: list[User] = []
         for entity in data.get("entities", []):
             if entity.get("type") == "text_mention" and entity.get("user"):
                 u = entity["user"]
@@ -278,13 +279,12 @@ class TelegramMessage(Message):
         Returns:
             A TelegramMessage instance.
         """
-        from datetime import timezone
 
         author = TelegramUser.from_telegram_user(msg.from_user) if msg.from_user else None
         channel = TelegramChannel.from_telegram_chat(msg.chat) if msg.chat else None
 
         # Extract mention entities
-        mention_users: List[User] = []
+        mention_users: list[User] = []
         if msg.entities:
             for entity in msg.entities:
                 if entity.type == "text_mention" and entity.user:
@@ -298,7 +298,7 @@ class TelegramMessage(Message):
             channel=channel,
             author=author,
             is_bot=author.is_bot if author else False,
-            created_at=msg.date.replace(tzinfo=timezone.utc) if msg.date and msg.date.tzinfo is None else msg.date,
+            created_at=msg.date.replace(tzinfo=UTC) if msg.date and msg.date.tzinfo is None else msg.date,
             is_edited=msg.edit_date is not None,
             message_thread_id=msg.message_thread_id,
             reply_to_message_id=msg.reply_to_message.message_id if msg.reply_to_message else None,

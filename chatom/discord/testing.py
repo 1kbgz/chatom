@@ -4,8 +4,8 @@ This module provides a mock implementation of the Discord backend
 for use in testing without requiring an actual Discord connection.
 """
 
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Union
+from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import PrivateAttr
 
@@ -37,17 +37,17 @@ class MockDiscordBackend(DiscordBackend):
     """
 
     # Mock data stores (private attributes)
-    _mock_users: Dict[str, DiscordUser] = PrivateAttr(default_factory=dict)
-    _mock_channels: Dict[str, DiscordChannel] = PrivateAttr(default_factory=dict)
-    _mock_messages: Dict[str, List[DiscordMessage]] = PrivateAttr(default_factory=dict)
-    _mock_presence: Dict[str, DiscordPresence] = PrivateAttr(default_factory=dict)
+    _mock_users: dict[str, DiscordUser] = PrivateAttr(default_factory=dict)
+    _mock_channels: dict[str, DiscordChannel] = PrivateAttr(default_factory=dict)
+    _mock_messages: dict[str, list[DiscordMessage]] = PrivateAttr(default_factory=dict)
+    _mock_presence: dict[str, DiscordPresence] = PrivateAttr(default_factory=dict)
 
     # Tracking stores (private attributes)
-    _sent_messages: List[DiscordMessage] = PrivateAttr(default_factory=list)
-    _edited_messages: List[DiscordMessage] = PrivateAttr(default_factory=list)
-    _deleted_messages: List[Dict[str, str]] = PrivateAttr(default_factory=list)
-    _reactions: List[Dict[str, str]] = PrivateAttr(default_factory=list)
-    _presence_updates: List[Dict[str, Any]] = PrivateAttr(default_factory=list)
+    _sent_messages: list[DiscordMessage] = PrivateAttr(default_factory=list)
+    _edited_messages: list[DiscordMessage] = PrivateAttr(default_factory=list)
+    _deleted_messages: list[dict[str, str]] = PrivateAttr(default_factory=list)
+    _reactions: list[dict[str, str]] = PrivateAttr(default_factory=list)
+    _presence_updates: list[dict[str, Any]] = PrivateAttr(default_factory=list)
     _message_counter: int = PrivateAttr(default=0)
 
     def __init__(self, **data: Any) -> None:
@@ -63,7 +63,7 @@ class MockDiscordBackend(DiscordBackend):
         self._deleted_messages = []
         self._reactions = []
         self._presence_updates = []
-        self._created_dms: List[List[str]] = []
+        self._created_dms: list[list[str]] = []
         self._dm_counter = 0
         self._message_counter = 0
 
@@ -75,7 +75,7 @@ class MockDiscordBackend(DiscordBackend):
         *,
         avatar_url: str = "",
         discriminator: str = "0",
-        global_name: Optional[str] = None,
+        global_name: str | None = None,
         is_bot: bool = False,
         is_system: bool = False,
     ) -> DiscordUser:
@@ -118,7 +118,7 @@ class MockDiscordBackend(DiscordBackend):
         guild_id: str = "",
         position: int = 0,
         nsfw: bool = False,
-        discord_type: Optional[DiscordChannelType] = None,
+        discord_type: DiscordChannelType | None = None,
     ) -> DiscordChannel:
         """Add a mock channel for testing.
 
@@ -167,8 +167,8 @@ class MockDiscordBackend(DiscordBackend):
         user_id: str,
         content: str,
         *,
-        message_id: Optional[str] = None,
-        timestamp: Optional[datetime] = None,
+        message_id: str | None = None,
+        timestamp: datetime | None = None,
         guild_id: str = "",
         edited: bool = False,
     ) -> str:
@@ -193,7 +193,7 @@ class MockDiscordBackend(DiscordBackend):
         message = DiscordMessage(
             id=message_id,
             content=content,
-            created_at=timestamp or datetime.now(timezone.utc),
+            created_at=timestamp or datetime.now(UTC),
             author=DiscordUser(id=user_id),
             channel=DiscordChannel(id=channel_id),
             guild=Organization(id=guild_id) if guild_id else None,
@@ -209,7 +209,7 @@ class MockDiscordBackend(DiscordBackend):
         user_id: str,
         status: PresenceStatus = PresenceStatus.ONLINE,
         *,
-        activities: Optional[List[Dict[str, Any]]] = None,
+        activities: list[dict[str, Any]] | None = None,
         desktop_status: PresenceStatus = PresenceStatus.OFFLINE,
         mobile_status: PresenceStatus = PresenceStatus.OFFLINE,
         web_status: PresenceStatus = PresenceStatus.OFFLINE,
@@ -242,7 +242,7 @@ class MockDiscordBackend(DiscordBackend):
         return presence
 
     @property
-    def sent_messages(self) -> List[DiscordMessage]:
+    def sent_messages(self) -> list[DiscordMessage]:
         """Get all messages sent through this backend.
 
         Returns:
@@ -251,7 +251,7 @@ class MockDiscordBackend(DiscordBackend):
         return self._sent_messages
 
     @property
-    def edited_messages(self) -> List[DiscordMessage]:
+    def edited_messages(self) -> list[DiscordMessage]:
         """Get all messages edited through this backend.
 
         Returns:
@@ -260,7 +260,7 @@ class MockDiscordBackend(DiscordBackend):
         return self._edited_messages
 
     @property
-    def deleted_messages(self) -> List[Dict[str, str]]:
+    def deleted_messages(self) -> list[dict[str, str]]:
         """Get all message IDs deleted through this backend.
 
         Returns:
@@ -268,7 +268,7 @@ class MockDiscordBackend(DiscordBackend):
         """
         return self._deleted_messages
 
-    def get_sent_messages(self) -> List[DiscordMessage]:
+    def get_sent_messages(self) -> list[DiscordMessage]:
         """Get all messages sent through this backend.
 
         Returns:
@@ -276,7 +276,7 @@ class MockDiscordBackend(DiscordBackend):
         """
         return self._sent_messages.copy()
 
-    def get_edited_messages(self) -> List[DiscordMessage]:
+    def get_edited_messages(self) -> list[DiscordMessage]:
         """Get all messages edited through this backend.
 
         Returns:
@@ -284,7 +284,7 @@ class MockDiscordBackend(DiscordBackend):
         """
         return self._edited_messages.copy()
 
-    def get_deleted_messages(self) -> List[Dict[str, str]]:
+    def get_deleted_messages(self) -> list[dict[str, str]]:
         """Get all messages deleted through this backend.
 
         Returns:
@@ -292,7 +292,7 @@ class MockDiscordBackend(DiscordBackend):
         """
         return self._deleted_messages.copy()
 
-    def get_reactions(self) -> List[Dict[str, str]]:
+    def get_reactions(self) -> list[dict[str, str]]:
         """Get all reactions added/removed through this backend.
 
         Returns:
@@ -300,7 +300,7 @@ class MockDiscordBackend(DiscordBackend):
         """
         return self._reactions.copy()
 
-    def get_presence_updates(self) -> List[Dict[str, Any]]:
+    def get_presence_updates(self) -> list[dict[str, Any]]:
         """Get all presence updates made through this backend.
 
         Returns:
@@ -334,13 +334,13 @@ class MockDiscordBackend(DiscordBackend):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a mock user by ID or other attributes.
 
         Args:
@@ -381,11 +381,11 @@ class MockDiscordBackend(DiscordBackend):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a mock channel by ID or name.
 
         Args:
@@ -423,11 +423,11 @@ class MockDiscordBackend(DiscordBackend):
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch mock messages from a channel.
 
         Args:
@@ -465,7 +465,7 @@ class MockDiscordBackend(DiscordBackend):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -496,7 +496,7 @@ class MockDiscordBackend(DiscordBackend):
         message = DiscordMessage(
             id=message_id,
             content=content,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
             author=DiscordUser(id="bot_user"),
             channel=DiscordChannel(id=channel_id),
             guild=Organization(id=kwargs.get("guild_id", "")) if kwargs.get("guild_id") else None,
@@ -509,9 +509,9 @@ class MockDiscordBackend(DiscordBackend):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a mock message.
@@ -536,7 +536,7 @@ class MockDiscordBackend(DiscordBackend):
         edited_msg = DiscordMessage(
             id=message_id,
             content=content,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
             author=DiscordUser(id="bot_user"),
             channel=DiscordChannel(id=channel_id) if channel_id else None,
             is_edited=True,
@@ -546,8 +546,8 @@ class MockDiscordBackend(DiscordBackend):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a mock message.
 
@@ -570,11 +570,11 @@ class MockDiscordBackend(DiscordBackend):
 
     async def forward_message(
         self,
-        message: Union[str, Message],
-        to_channel: Union[str, Channel],
+        message: str | Message,
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> DiscordMessage:
         """Forward a mock message to another channel.
@@ -590,7 +590,7 @@ class MockDiscordBackend(DiscordBackend):
             The forwarded message in the destination channel.
         """
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID.")
+            raise ValueError("forward_message requires a Message object, not just a message ID.")  # noqa: TRY004
 
         # Resolve destination channel ID
         if isinstance(to_channel, Channel):
@@ -617,7 +617,7 @@ class MockDiscordBackend(DiscordBackend):
         forwarded_msg = DiscordMessage(
             id=message_id,
             content=forwarded_content,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
             author=DiscordUser(id="bot_user"),
             channel=DiscordChannel(id=dest_channel_id),
             message_type=MessageType.FORWARD,
@@ -635,7 +635,7 @@ class MockDiscordBackend(DiscordBackend):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set mock presence.
@@ -653,7 +653,7 @@ class MockDiscordBackend(DiscordBackend):
             }
         )
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get mock presence for a user.
 
         Args:
@@ -667,9 +667,9 @@ class MockDiscordBackend(DiscordBackend):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a mock reaction.
 
@@ -697,9 +697,9 @@ class MockDiscordBackend(DiscordBackend):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a mock reaction.
 
@@ -726,7 +726,7 @@ class MockDiscordBackend(DiscordBackend):
         )
 
     @property
-    def created_dms(self) -> List[List[str]]:
+    def created_dms(self) -> list[list[str]]:
         """Get all DMs created through this backend.
 
         Returns:
@@ -736,8 +736,8 @@ class MockDiscordBackend(DiscordBackend):
 
     async def create_dm(
         self,
-        users: List[Union[str, User]],
-    ) -> Optional[str]:
+        users: list[str | User],
+    ) -> str | None:
         """Create a mock DM channel with the specified users.
 
         Args:

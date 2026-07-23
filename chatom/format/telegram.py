@@ -2,7 +2,6 @@
 
 from html import escape
 from html.parser import HTMLParser
-from typing import List, Optional
 
 __all__ = ("sanitize_telegram_html",)
 
@@ -50,13 +49,13 @@ class _TelegramHTMLSanitizer(HTMLParser):
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
-        self._parts: List[str] = []
-        self._open_tags: List[Optional[str]] = []
+        self._parts: list[str] = []
+        self._open_tags: list[str | None] = []
 
     def render(self) -> str:
         return "".join(self._parts).strip()
 
-    def handle_starttag(self, tag: str, attrs: List[tuple[str, Optional[str]]]) -> None:
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         tag = tag.lower()
         rendered = self._render_start_tag(tag, attrs)
         if rendered is not None:
@@ -72,7 +71,7 @@ class _TelegramHTMLSanitizer(HTMLParser):
         elif tag.lower() in _TELEGRAM_SPACE_TAGS:
             self._append_space()
 
-    def handle_startendtag(self, tag: str, attrs: List[tuple[str, Optional[str]]]) -> None:
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         tag = tag.lower()
         if tag in _TELEGRAM_VOID_LINE_TAGS:
             self._append_line()
@@ -87,7 +86,7 @@ class _TelegramHTMLSanitizer(HTMLParser):
     def handle_data(self, data: str) -> None:
         self._parts.append(escape(data, quote=False))
 
-    def _render_start_tag(self, tag: str, attrs: List[tuple[str, Optional[str]]]) -> Optional[str]:
+    def _render_start_tag(self, tag: str, attrs: list[tuple[str, str | None]]) -> str | None:
         if tag in _TELEGRAM_HEADING_TAGS:
             self._append_line()
             return "<b>"
@@ -112,7 +111,7 @@ class _TelegramHTMLSanitizer(HTMLParser):
             self._append_space()
         return None
 
-    def _closing_tag(self, tag: str, rendered: Optional[str]) -> Optional[str]:
+    def _closing_tag(self, tag: str, rendered: str | None) -> str | None:
         if rendered is None:
             return None
         if tag in _TELEGRAM_HEADING_TAGS:
@@ -128,7 +127,7 @@ class _TelegramHTMLSanitizer(HTMLParser):
             self._parts.append(" ")
 
     @staticmethod
-    def _attr(attrs: List[tuple[str, Optional[str]]], name: str) -> Optional[str]:
+    def _attr(attrs: list[tuple[str, str | None]], name: str) -> str | None:
         for attr_name, value in attrs:
             if attr_name.lower() == name:
                 return value

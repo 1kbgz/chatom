@@ -3,8 +3,6 @@
 This module provides the Slack-specific Channel class.
 """
 
-from typing import Optional
-
 from pydantic import model_validator
 
 from chatom.base import Channel, ChannelType, Field, User
@@ -64,7 +62,7 @@ class SlackChannel(Channel):
         default=False,
         description="Whether this channel is shared org-wide.",
     )
-    creator: Optional[User] = Field(
+    creator: User | None = Field(
         default=None,
         description="The user who created the channel.",
     )
@@ -72,7 +70,7 @@ class SlackChannel(Channel):
         default="",
         description="Channel purpose text.",
     )
-    num_members: Optional[int] = Field(
+    num_members: int | None = Field(
         default=None,
         description="Number of members in the channel.",
     )

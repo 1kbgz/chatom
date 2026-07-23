@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
-from typing import Any, Optional, Set, cast
+from datetime import UTC, datetime, timedelta
+from typing import Any, cast
 
 from pydantic import BaseModel as PydanticBaseModel, Field, TypeAdapter
 from pydantic_ai._run_context import RunContext
@@ -21,7 +21,7 @@ def resolve_history_bounds(
     after: Any = None,
     before: Any = None,
     last_minutes: Any = None,
-) -> "tuple[Optional[datetime], Optional[datetime]]":
+) -> tuple[datetime | None, datetime | None]:
     """Resolve history-range args to an ``(after, before)`` datetime pair.
 
     ``after``/``before`` may be ISO-8601 strings (``Z`` accepted); ``last_minutes``
@@ -30,18 +30,18 @@ def resolve_history_bounds(
     identical range semantics.
     """
 
-    def _parse(value: Any) -> Optional[datetime]:
+    def _parse(value: Any) -> datetime | None:
         if not value:
             return None
         if isinstance(value, datetime):
-            return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
-        dt = datetime.fromisoformat(str(value).strip().replace("Z", "+00:00"))
-        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+            return value if value.tzinfo else value.replace(tzinfo=UTC)
+        dt = datetime.fromisoformat(str(value).strip())
+        return dt if dt.tzinfo else dt.replace(tzinfo=UTC)
 
     after_dt = _parse(after)
     before_dt = _parse(before)
     if last_minutes:
-        window_start = datetime.now(timezone.utc) - timedelta(minutes=int(last_minutes))
+        window_start = datetime.now(UTC) - timedelta(minutes=int(last_minutes))
         after_dt = window_start if after_dt is None else max(after_dt, window_start)
     return after_dt, before_dt
 
@@ -49,13 +49,9 @@ def resolve_history_bounds(
 class AccessDeniedError(Exception):
     """Raised when a tool call is denied by the access policy."""
 
-    pass
-
 
 class ToolBudgetExceededError(Exception):
     """Raised when a tool call exceeds the per-run or per-tool call budget."""
-
-    pass
 
 
 @dataclass
@@ -91,22 +87,22 @@ class AccessPolicy:
             call, preventing bulk data extraction.
     """
 
-    requesting_user: Optional[User] = None
-    invoking_channel_id: Optional[str] = None
+    requesting_user: User | None = None
+    invoking_channel_id: str | None = None
     restrict_to_invoking_channel: bool = False
     require_membership: bool = False
     block_dm_reads: bool = False
-    allowed_channel_ids: Optional[Set[str]] = None
-    blocked_channel_ids: Set[str] = field(default_factory=set)
-    history_visible_since: Optional[datetime] = None
+    allowed_channel_ids: set[str] | None = None
+    blocked_channel_ids: set[str] = field(default_factory=set)
+    history_visible_since: datetime | None = None
     max_messages_per_request: int = 200
 
 
 class ChannelRef(PydanticBaseModel):
     """Partial channel reference.  Provide at least ``id`` or ``name``."""
 
-    id: Optional[str] = Field(default=None, description="Channel ID.")
-    name: Optional[str] = Field(default=None, description="Channel name.")
+    id: str | None = Field(default=None, description="Channel ID.")
+    name: str | None = Field(default=None, description="Channel name.")
 
     def to_channel(self) -> Channel:
         """Construct a chatom :class:`Channel` for backend resolution."""
@@ -116,10 +112,10 @@ class ChannelRef(PydanticBaseModel):
 class UserRef(PydanticBaseModel):
     """Partial user reference.  Provide at least one identifier."""
 
-    id: Optional[str] = Field(default=None, description="User ID.")
-    name: Optional[str] = Field(default=None, description="User display name.")
-    email: Optional[str] = Field(default=None, description="User email address.")
-    handle: Optional[str] = Field(default=None, description="User handle / username.")
+    id: str | None = Field(default=None, description="User ID.")
+    name: str | None = Field(default=None, description="User display name.")
+    email: str | None = Field(default=None, description="User email address.")
+    handle: str | None = Field(default=None, description="User handle / username.")
 
     def to_user(self) -> User:
         """Construct a chatom :class:`User` for backend resolution."""
@@ -136,16 +132,16 @@ class ReadChannelHistoryParams(PydanticBaseModel):
 
     channel: ChannelRef = Field(description="Channel to read messages from. Provide at least channel ID or name.")
     limit: int = Field(default=50, description="Maximum number of messages to return, newest first (1-200).", ge=1, le=200)
-    last_minutes: Optional[int] = Field(
+    last_minutes: int | None = Field(
         default=None,
         description="Only messages from the last N minutes (e.g. 30 for the last half hour). Use this for recency without needing the current time.",
         ge=1,
     )
-    after: Optional[str] = Field(
+    after: str | None = Field(
         default=None,
         description="Only messages at or after this ISO-8601 UTC timestamp (e.g. '2026-07-17T18:51:00Z'). Lower bound of a range.",
     )
-    before: Optional[str] = Field(
+    before: str | None = Field(
         default=None,
         description="Only messages at or before this ISO-8601 UTC timestamp. Upper bound of a range.",
     )
@@ -155,7 +151,7 @@ class SearchMessagesParams(PydanticBaseModel):
     """Parameters for searching messages."""
 
     query: str = Field(description="Search query string.")
-    channel: Optional[ChannelRef] = Field(default=None, description="Optional channel to limit search to.")
+    channel: ChannelRef | None = Field(default=None, description="Optional channel to limit search to.")
     limit: int = Field(default=20, description="Maximum number of results (1-100).", ge=1, le=100)
 
 
@@ -212,7 +208,7 @@ class DownloadAttachmentParams(PydanticBaseModel):
 
     attachment_id: str = Field(description="ID of the attachment to download (from list_recent_attachments).")
     channel: ChannelRef = Field(description="Channel the attachment was posted in.")
-    message_id: Optional[str] = Field(
+    message_id: str | None = Field(
         default=None,
         description="ID of the message the attachment belongs to. Required by some backends (e.g. Symphony).",
     )
@@ -452,10 +448,10 @@ class BackendToolset(AbstractToolset[Any]):
         *,
         read_only: bool = False,
         max_retries: int = 1,
-        access_policy: Optional[AccessPolicy] = None,
-        disabled_tools: Optional[set[str]] = None,
+        access_policy: AccessPolicy | None = None,
+        disabled_tools: set[str] | None = None,
         max_tool_calls: int = 0,
-        per_tool_limits: Optional[dict[str, int]] = None,
+        per_tool_limits: dict[str, int] | None = None,
     ) -> None:
         self._backend = backend
         self._read_only = read_only
@@ -558,10 +554,7 @@ class BackendToolset(AbstractToolset[Any]):
         if desc["write"] and self._read_only:
             return False
         cap = desc.get("capability")
-        if cap is not None and self._backend.capabilities:
-            if not self._backend.capabilities.supports(cap):
-                return False
-        return True
+        return not (cap is not None and self._backend.capabilities and not self._backend.capabilities.supports(cap))
 
     @staticmethod
     def _channel(args: dict[str, Any], key: str = "channel") -> Channel:
@@ -607,7 +600,7 @@ class BackendToolset(AbstractToolset[Any]):
             return
 
         # 3. Restrict to invoking channel
-        if policy.restrict_to_invoking_channel and policy.invoking_channel_id:
+        if policy.restrict_to_invoking_channel and policy.invoking_channel_id:  # noqa: SIM102
             if channel_id and norm_id != normalize(policy.invoking_channel_id):
                 raise AccessDeniedError(f"Access restricted to the invoking channel. Cannot read from channel '{channel.name or channel_id}'.")
 
@@ -647,7 +640,7 @@ class BackendToolset(AbstractToolset[Any]):
                 if cache_key:
                     self._channel_cache[cache_key] = resolved
                 return resolved
-        except (NotImplementedError, Exception):
+        except (NotImplementedError, Exception):  # noqa: BLE001, S110
             pass
         return channel
 
@@ -667,7 +660,7 @@ class BackendToolset(AbstractToolset[Any]):
             )
             if looked_up and hasattr(looked_up, "channel_type"):
                 return looked_up.channel_type
-        except (NotImplementedError, Exception):
+        except (NotImplementedError, Exception):  # noqa: BLE001, S110
             pass
         return ChannelType.UNKNOWN
 
@@ -706,7 +699,7 @@ class BackendToolset(AbstractToolset[Any]):
             )
             self._membership_cache[channel_id] = False
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(
                 "Error checking membership for channel '%s': %s. Denying access.",
                 channel_id,
@@ -736,9 +729,9 @@ class BackendToolset(AbstractToolset[Any]):
             # Normalize to aware datetime for comparison
             if isinstance(ts, datetime):
                 if ts.tzinfo is None:
-                    ts = ts.replace(tzinfo=timezone.utc)
+                    ts = ts.replace(tzinfo=UTC)
                 if cutoff.tzinfo is None:
-                    cutoff = cutoff.replace(tzinfo=timezone.utc)
+                    cutoff = cutoff.replace(tzinfo=UTC)
                 if ts >= cutoff:
                     filtered.append(msg)
             else:

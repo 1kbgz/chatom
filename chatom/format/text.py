@@ -5,7 +5,7 @@ that can be rendered to different output formats (Markdown, HTML, etc.).
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import Union
 
 from pydantic import Field
 
@@ -14,29 +14,29 @@ from chatom.base import BaseModel
 from .variant import FORMAT, Format
 
 __all__ = (
-    "TextNode",
-    "Text",
-    "Raw",
     "Bold",
-    "Italic",
-    "Strikethrough",
-    "Underline",
+    "ChannelMention",
     "Code",
     "CodeBlock",
-    "Link",
-    "Quote",
-    "Paragraph",
-    "LineBreak",
-    "HorizontalRule",
-    "ListItem",
-    "UnorderedList",
-    "OrderedList",
-    "Heading",
-    "UserMention",
-    "ChannelMention",
-    "Emoji",
-    "Span",
     "Document",
+    "Emoji",
+    "Heading",
+    "HorizontalRule",
+    "Italic",
+    "LineBreak",
+    "Link",
+    "ListItem",
+    "OrderedList",
+    "Paragraph",
+    "Quote",
+    "Raw",
+    "Span",
+    "Strikethrough",
+    "Text",
+    "TextNode",
+    "Underline",
+    "UnorderedList",
+    "UserMention",
 )
 
 
@@ -329,7 +329,7 @@ class Paragraph(TextNode):
         children: The content nodes within the paragraph.
     """
 
-    children: List["TextNode"] = Field(
+    children: list["TextNode"] = Field(
         default_factory=list,
         description="Content nodes within the paragraph.",
     )
@@ -364,11 +364,7 @@ class HorizontalRule(TextNode):
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         fmt = Format(format) if isinstance(format, str) else format
 
-        if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN):
-            return "\n---\n"
-        elif fmt == Format.SLACK_MARKDOWN:
-            return "\n---\n"
-        elif fmt == Format.TELEGRAM_HTML:
+        if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN) or fmt == Format.SLACK_MARKDOWN or fmt == Format.TELEGRAM_HTML:
             return "\n---\n"
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             return "<hr/>"
@@ -395,7 +391,7 @@ class UnorderedList(TextNode):
         items: List items.
     """
 
-    items: List[ListItem] = Field(
+    items: list[ListItem] = Field(
         default_factory=list,
         description="List items.",
     )
@@ -403,10 +399,7 @@ class UnorderedList(TextNode):
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         fmt = Format(format) if isinstance(format, str) else format
 
-        if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN):
-            lines = [f"- {item.render(format)}" for item in self.items]
-            return "\n".join(lines)
-        elif fmt == Format.TELEGRAM_HTML:
+        if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN) or fmt == Format.TELEGRAM_HTML:
             lines = [f"- {item.render(format)}" for item in self.items]
             return "\n".join(lines)
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
@@ -425,7 +418,7 @@ class OrderedList(TextNode):
         start: Starting number.
     """
 
-    items: List[ListItem] = Field(
+    items: list[ListItem] = Field(
         default_factory=list,
         description="List items.",
     )
@@ -434,10 +427,7 @@ class OrderedList(TextNode):
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         fmt = Format(format) if isinstance(format, str) else format
 
-        if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN):
-            lines = [f"{i + self.start}. {item.render(format)}" for i, item in enumerate(self.items)]
-            return "\n".join(lines)
-        elif fmt == Format.TELEGRAM_HTML:
+        if fmt in (Format.MARKDOWN, Format.DISCORD_MARKDOWN, Format.SLACK_MARKDOWN) or fmt == Format.TELEGRAM_HTML:
             lines = [f"{i + self.start}. {item.render(format)}" for i, item in enumerate(self.items)]
             return "\n".join(lines)
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
@@ -490,9 +480,7 @@ class UserMention(TextNode):
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         fmt = Format(format) if isinstance(format, str) else format
 
-        if fmt == Format.DISCORD_MARKDOWN:
-            return f"<@{self.user_id}>"
-        elif fmt == Format.SLACK_MARKDOWN:
+        if fmt == Format.DISCORD_MARKDOWN or fmt == Format.SLACK_MARKDOWN:
             return f"<@{self.user_id}>"
         elif fmt == Format.SYMPHONY_MESSAGEML:
             return f'<mention uid="{self.user_id}"/>'
@@ -517,9 +505,7 @@ class ChannelMention(TextNode):
     def render(self, format: FORMAT = Format.MARKDOWN) -> str:
         fmt = Format(format) if isinstance(format, str) else format
 
-        if fmt == Format.DISCORD_MARKDOWN:
-            return f"<#{self.channel_id}>"
-        elif fmt == Format.SLACK_MARKDOWN:
+        if fmt == Format.DISCORD_MARKDOWN or fmt == Format.SLACK_MARKDOWN:
             return f"<#{self.channel_id}>"
         elif fmt == Format.TELEGRAM_HTML:
             return f"#{self.display_name or self.channel_id}"
@@ -552,9 +538,7 @@ class Emoji(TextNode):
             if self.custom_id:
                 return f"<:{self.name}:{self.custom_id}>"
             return f":{self.name}:"
-        elif fmt == Format.SLACK_MARKDOWN:
-            return f":{self.name}:"
-        elif fmt == Format.TELEGRAM_HTML:
+        elif fmt == Format.SLACK_MARKDOWN or fmt == Format.TELEGRAM_HTML:
             return f":{self.name}:"
         elif fmt in (Format.HTML, Format.SYMPHONY_MESSAGEML):
             if self.unicode:
@@ -570,7 +554,7 @@ class Span(TextNode):
         children: The child nodes.
     """
 
-    children: List["TextNode"] = Field(
+    children: list["TextNode"] = Field(
         default_factory=list,
         description="Child nodes.",
     )
@@ -591,7 +575,7 @@ class Document(TextNode):
         children: The document content nodes.
     """
 
-    children: List["TextNode"] = Field(
+    children: list["TextNode"] = Field(
         default_factory=list,
         description="Document content nodes.",
     )
@@ -623,14 +607,14 @@ def text(content: str) -> Text:
     return Text(content=content)
 
 
-def bold(content: Union[str, TextNode]) -> Bold:
+def bold(content: str | TextNode) -> Bold:
     """Create a Bold node."""
     if isinstance(content, str):
         content = Text(content=content)
     return Bold(child=content)
 
 
-def italic(content: Union[str, TextNode]) -> Italic:
+def italic(content: str | TextNode) -> Italic:
     """Create an Italic node."""
     if isinstance(content, str):
         content = Text(content=content)

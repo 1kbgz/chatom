@@ -1,7 +1,6 @@
 """Tests for interactive component publishing and interaction handling."""
 
 import asyncio
-from typing import List
 
 import pytest
 
@@ -153,7 +152,7 @@ class TestInteractionModel:
 class TestInteractionRegistry:
     def test_register_and_dispatch(self):
         r = InteractionRegistry()
-        seen: List[str] = []
+        seen: list[str] = []
 
         def handle(ev: Interaction) -> str:
             seen.append(ev.value)
@@ -187,7 +186,7 @@ class TestInteractionRegistry:
 
     def test_multiple_handlers_run_in_order(self):
         r = InteractionRegistry()
-        order: List[int] = []
+        order: list[int] = []
         r.register("x", lambda e: order.append(1))
         r.register("x", lambda e: order.append(2))
         r.register("x", lambda e: order.append(3))
@@ -196,7 +195,7 @@ class TestInteractionRegistry:
 
     def test_handler_exception_is_isolated(self):
         r = InteractionRegistry()
-        results: List[str] = []
+        results: list[str] = []
 
         def bad(ev):
             raise RuntimeError("boom")
@@ -214,7 +213,7 @@ class TestInteractionRegistry:
 
     def test_default_handler_for_unmatched(self):
         r = InteractionRegistry()
-        seen: List[str] = []
+        seen: list[str] = []
 
         r.register_default(lambda e: seen.append(f"default:{e.action_id}"))
         r.register("known", lambda e: seen.append("known"))
@@ -226,7 +225,7 @@ class TestInteractionRegistry:
 
     def test_specific_overrides_default(self):
         r = InteractionRegistry()
-        calls: List[str] = []
+        calls: list[str] = []
         r.register_default(lambda e: calls.append("default"))
         r.register("hit", lambda e: calls.append("specific"))
         _run(r.dispatch(Interaction(id="e", action_id="hit")))

@@ -5,7 +5,7 @@ to different output formats.
 """
 
 from html import escape
-from typing import Any, List, Optional
+from typing import Any
 
 from pydantic import Field
 
@@ -13,7 +13,7 @@ from chatom.base import BaseModel
 
 from .variant import FORMAT, Format
 
-__all__ = ("Table", "TableRow", "TableCell", "TableAlignment")
+__all__ = ("Table", "TableAlignment", "TableCell", "TableRow")
 
 
 class TableAlignment:
@@ -50,11 +50,11 @@ class TableRow(BaseModel):
         is_header: Whether this is a header row.
     """
 
-    cells: List[TableCell] = Field(default_factory=list, description="Cells in the row.")
+    cells: list[TableCell] = Field(default_factory=list, description="Cells in the row.")
     is_header: bool = Field(default=False, description="Whether this is a header row.")
 
     @classmethod
-    def from_values(cls, values: List[str], is_header: bool = False) -> "TableRow":
+    def from_values(cls, values: list[str], is_header: bool = False) -> "TableRow":
         """Create a row from a list of string values.
 
         Args:
@@ -80,18 +80,18 @@ class Table(BaseModel):
         alignments: Column alignments.
     """
 
-    headers: Optional[TableRow] = Field(default=None, description="Header row.")
-    rows: List[TableRow] = Field(default_factory=list, description="Data rows.")
+    headers: TableRow | None = Field(default=None, description="Header row.")
+    rows: list[TableRow] = Field(default_factory=list, description="Data rows.")
     caption: str = Field(default="", description="Table caption.")
-    alignments: List[str] = Field(default_factory=list, description="Column alignments.")
+    alignments: list[str] = Field(default_factory=list, description="Column alignments.")
 
     @classmethod
     def from_data(
         cls,
-        data: List[List[Any]],
-        headers: Optional[List[str]] = None,
+        data: list[list[Any]],
+        headers: list[str] | None = None,
         caption: str = "",
-        alignments: Optional[List[str]] = None,
+        alignments: list[str] | None = None,
     ) -> "Table":
         """Create a table from a 2D list of data.
 
@@ -120,8 +120,8 @@ class Table(BaseModel):
     @classmethod
     def from_dict_list(
         cls,
-        data: List[dict],
-        columns: Optional[List[str]] = None,
+        data: list[dict],
+        columns: list[str] | None = None,
         caption: str = "",
     ) -> "Table":
         """Create a table from a list of dictionaries.
@@ -170,7 +170,7 @@ class Table(BaseModel):
         else:
             return self._render_plaintext()
 
-    def _get_column_widths(self) -> List[int]:
+    def _get_column_widths(self) -> list[int]:
         """Calculate the width of each column."""
         all_rows = []
         if self.headers:
@@ -312,7 +312,7 @@ class Table(BaseModel):
         widths = self._get_column_widths()
         lines = []
 
-        def format_row(cells: List[TableCell]) -> str:
+        def format_row(cells: list[TableCell]) -> str:
             parts = []
             for i, cell in enumerate(cells):
                 width = widths[i] if i < len(widths) else len(cell.content)

@@ -5,7 +5,7 @@ conversion and mention translation via an IdentityMapper.
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from chatom.base import Message
 from chatom.format import FormattedMessage, Text, UserMention
@@ -50,8 +50,8 @@ class MessageBridge:
         *,
         source_name: str = "",
         dest_name: str = "",
-        identity_mapper: Optional[IdentityMapper] = None,
-        channels: Optional[Dict[str, str]] = None,
+        identity_mapper: IdentityMapper | None = None,
+        channels: dict[str, str] | None = None,
         attribution: bool = True,
         attribution_format: str = "📨 {name} (via {source}):\n",
     ) -> None:
@@ -81,9 +81,9 @@ class MessageBridge:
         self,
         message: Message,
         *,
-        to_channel: Optional[str] = None,
+        to_channel: str | None = None,
         include_attachments: bool = True,
-    ) -> Optional[Message]:
+    ) -> Message | None:
         """Forward a message from source to dest.
 
         1. Resolves the target channel
@@ -114,7 +114,7 @@ class MessageBridge:
         # Send via dest backend
         rendered = fm.render_for(self.dest_name)
 
-        kwargs: Dict[str, Any] = {}
+        kwargs: dict[str, Any] = {}
         if fm.attachments:
             kwargs["attachments"] = [_fa_to_base_attachment(a) for a in fm.attachments]
         if fm.embeds:
@@ -134,11 +134,11 @@ class MessageBridge:
 
     async def forward_many(
         self,
-        messages: List[Message],
+        messages: list[Message],
         *,
-        to_channel: Optional[str] = None,
+        to_channel: str | None = None,
         include_attachments: bool = True,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Forward multiple messages in order.
 
         Args:
@@ -276,7 +276,7 @@ class MessageBridge:
             user = await self.source.fetch_user(user_id)
             if user:
                 return user.best_display_name
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
         return user_id
 

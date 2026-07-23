@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import pytest
 from fastmcp import Client
@@ -25,10 +25,10 @@ class _MockBackend:
 
     def __init__(
         self,
-        capabilities: Optional[BackendCapabilities] = None,
-        users: Optional[Dict[str, User]] = None,
-        channels: Optional[Dict[str, Channel]] = None,
-        messages: Optional[Dict[str, List[Message]]] = None,
+        capabilities: BackendCapabilities | None = None,
+        users: dict[str, User] | None = None,
+        channels: dict[str, Channel] | None = None,
+        messages: dict[str, list[Message]] | None = None,
     ) -> None:
         self.capabilities = capabilities or SLACK_CAPABILITIES
         self._users = users or {}
@@ -43,21 +43,21 @@ class _MockBackend:
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[str] = None,
-        after: Optional[str] = None,
-    ) -> List[Message]:
+        before: str | None = None,
+        after: str | None = None,
+    ) -> list[Message]:
         ch_id = channel if isinstance(channel, str) else channel.id
         return self._messages.get(ch_id, [])[:limit]
 
     async def search_messages(
         self,
         query: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         limit: int = 50,
         **kwargs: Any,
-    ) -> List[Message]:
+    ) -> list[Message]:
         results: list[Message] = []
         for ch_msgs in self._messages.values():
             for m in ch_msgs:
@@ -68,11 +68,11 @@ class _MockBackend:
     async def lookup_user(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         if id:
             return self._users.get(id)
         for u in self._users.values():
@@ -83,9 +83,9 @@ class _MockBackend:
     async def lookup_channel(
         self,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         if id:
             return self._channels.get(id)
         for c in self._channels.values():
@@ -95,16 +95,16 @@ class _MockBackend:
 
     async def fetch_channel_members(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> List[User]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> list[User]:
         return list(self._users.values())
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -114,9 +114,9 @@ class _MockBackend:
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> Message:
         msg_id = message if isinstance(message, str) else message.id
@@ -124,9 +124,9 @@ class _MockBackend:
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         msg_id = message if isinstance(message, str) else message.id
         ch_id = channel if isinstance(channel, str) else (channel.id if channel else "")
@@ -134,7 +134,7 @@ class _MockBackend:
 
     async def upload_file(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         data: bytes,
         filename: str = "file",
         content_type: str = "",
@@ -146,23 +146,23 @@ class _MockBackend:
         self.uploaded.append({"channel": ch_id, "data": data, "filename": filename, "content_type": content_type})
         return Message(id="uploaded_1", content=content, channel=Channel(id=ch_id))
 
-    async def download_attachment(self, attachment: Any, *, message: Optional[Message] = None) -> bytes:
+    async def download_attachment(self, attachment: Any, *, message: Message | None = None) -> bytes:
         if attachment.data is not None:
             return attachment.data
         return f"bytes:{getattr(attachment, 'id', '')}".encode()
 
-    async def get_bot_info(self) -> Optional[User]:
+    async def get_bot_info(self) -> User | None:
         return User(id="BOT1", name="Test Bot", handle="testbot")
 
-    async def get_presence(self, user: Union[str, User]) -> Any:
+    async def get_presence(self, user: str | User) -> Any:
         uid = user if isinstance(user, str) else user.id
         return {"user_id": uid, "status": "available"}
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         msg_id = message if isinstance(message, str) else message.id
         ch_id = channel if isinstance(channel, str) else (channel.id if channel else "")
@@ -170,14 +170,14 @@ class _MockBackend:
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         msg_id = message if isinstance(message, str) else message.id
         ch_id = channel if isinstance(channel, str) else (channel.id if channel else "")
         self.deleted.append({"message_id": msg_id, "channel": ch_id})
 
-    async def set_presence(self, status: str, status_text: Optional[str] = None, **kwargs: Any) -> None:
+    async def set_presence(self, status: str, status_text: str | None = None, **kwargs: Any) -> None:
         self.presence_set.append({"status": status, "status_text": status_text})
 
 
@@ -192,27 +192,27 @@ def general() -> Channel:
 
 
 @pytest.fixture
-def sample_messages(alice: User, general: Channel) -> List[Message]:
+def sample_messages(alice: User, general: Channel) -> list[Message]:
     return [
         Message(
             id="m1",
             content="Hello world",
             author=alice,
             channel=general,
-            timestamp=datetime(2026, 3, 23, 10, 0),
+            timestamp=datetime(2026, 3, 23, 10, 0),  # noqa: DTZ001
         ),
         Message(
             id="m2",
             content="How is everyone?",
             author=alice,
             channel=general,
-            timestamp=datetime(2026, 3, 23, 10, 5),
+            timestamp=datetime(2026, 3, 23, 10, 5),  # noqa: DTZ001
         ),
     ]
 
 
 @pytest.fixture
-def mock_backend(alice: User, general: Channel, sample_messages: List[Message]) -> _MockBackend:
+def mock_backend(alice: User, general: Channel, sample_messages: list[Message]) -> _MockBackend:
     return _MockBackend(
         users={"U1": alice},
         channels={"C1": general},

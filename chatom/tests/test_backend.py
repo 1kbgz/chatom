@@ -127,12 +127,11 @@ class TestBackendConfigHasField:
 
     def test_has_field_with_empty_list(self):
         """Test has_field returns False for empty list."""
-        from typing import List
 
         from pydantic import Field
 
         class TestConfig(BackendConfig):
-            items: List[str] = Field(default_factory=list)
+            items: list[str] = Field(default_factory=list)
 
         config = TestConfig()
         assert config.has_field("items") is False

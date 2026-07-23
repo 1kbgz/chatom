@@ -2,7 +2,6 @@
 
 import asyncio
 import re
-from typing import List, Optional
 
 import pytest
 
@@ -33,10 +32,10 @@ def _platform_id(backend: str, n: int) -> str:
 class FakeBackend:
     """Minimal backend stub for testing."""
 
-    def __init__(self, name: str = "fake", users: Optional[dict] = None):
+    def __init__(self, name: str = "fake", users: dict | None = None):
         self.name = name
         self._users = users or {}  # id -> User  OR  email -> User
-        self.sent: List[dict] = []
+        self.sent: list[dict] = []
         self.mention_pattern = _MENTION_PATTERNS.get(name)
 
     async def fetch_user(
@@ -47,7 +46,7 @@ class FakeBackend:
         name=None,
         email=None,
         handle=None,
-    ) -> Optional[User]:
+    ) -> User | None:
         uid = identifier or id
         if uid and uid in self._users:
             return self._users[uid]

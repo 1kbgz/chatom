@@ -3,7 +3,7 @@
 Tests for MockDataStore and MockBackendMixin classes used in backend testing.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 
@@ -150,7 +150,7 @@ class TestMockBackendMixin:
 
     def test_add_mock_message_data_with_timestamp(self, backend):
         """Test adding a mock message with a custom timestamp."""
-        custom_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        custom_time = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
         message = backend.add_mock_message_data(
             channel_id="C123",
             content="Hello",

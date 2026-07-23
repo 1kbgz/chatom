@@ -6,7 +6,6 @@ In Symphony, channels are called "streams" or "rooms".
 
 from datetime import datetime
 from enum import Enum
-from typing import Optional
 
 from pydantic import model_validator
 
@@ -69,11 +68,11 @@ class SymphonyChannel(Channel):
         default=False,
         description="Whether the stream is public.",
     )
-    creation_date: Optional[datetime] = Field(
+    creation_date: datetime | None = Field(
         default=None,
         description="When the stream was created.",
     )
-    last_message_date: Optional[datetime] = Field(
+    last_message_date: datetime | None = Field(
         default=None,
         description="When the last message was sent.",
     )

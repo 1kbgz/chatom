@@ -1,7 +1,7 @@
 """Tests for Symphony backend fetch_messages range + pagination logic."""
 
 import asyncio
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -68,7 +68,7 @@ class TestFetchRange:
     """_fetch_range: newest-first results, range bounds, full pagination."""
 
     def test_returns_most_recent_limit_newest_first(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(minutes=30)), _ms(now - timedelta(minutes=1)), 200)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
 
@@ -80,7 +80,7 @@ class TestFetchRange:
         assert {m.id for m in result} == {m.message_id for m in all_messages[-50:]}
 
     def test_no_lower_bound_widens_window(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         old = _make_messages_in_range(_ms(now - timedelta(days=3, hours=12)), _ms(now - timedelta(days=3)), 20)
         mock_list_messages.side_effect = _make_side_effect(old)
 
@@ -91,7 +91,7 @@ class TestFetchRange:
         assert ts == sorted(ts, reverse=True)
 
     def test_since_lower_bound(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 120)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
         since = _ms(now - timedelta(minutes=30))
@@ -102,7 +102,7 @@ class TestFetchRange:
         assert all(_ms(m.created_at) >= since for m in result)
 
     def test_until_upper_bound(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 120)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
         until = _ms(now - timedelta(minutes=30))
@@ -113,7 +113,7 @@ class TestFetchRange:
         assert all(_ms(m.created_at) <= until for m in result)
 
     def test_range_between_bounds(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 120)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
         since = _ms(now - timedelta(minutes=90))
@@ -125,7 +125,7 @@ class TestFetchRange:
         assert all(since <= _ms(m.created_at) <= until for m in result)
 
     def test_full_pagination_no_duplicates(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(minutes=30)), _ms(now - timedelta(minutes=1)), 800)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
 
@@ -154,15 +154,15 @@ class TestToEpochMs:
         assert SymphonyBackend._to_epoch_ms(None) is None
 
     def test_aware_datetime(self):
-        dt = datetime(2026, 7, 17, 18, 51, tzinfo=timezone.utc)
+        dt = datetime(2026, 7, 17, 18, 51, tzinfo=UTC)
         assert SymphonyBackend._to_epoch_ms(dt) == int(dt.timestamp() * 1000)
 
     def test_naive_datetime_assumed_utc(self):
-        dt = datetime(2026, 7, 17, 18, 51)
-        assert SymphonyBackend._to_epoch_ms(dt) == int(dt.replace(tzinfo=timezone.utc).timestamp() * 1000)
+        dt = datetime(2026, 7, 17, 18, 51)  # noqa: DTZ001
+        assert SymphonyBackend._to_epoch_ms(dt) == int(dt.replace(tzinfo=UTC).timestamp() * 1000)
 
     def test_message_uses_created_at(self):
-        created = datetime(2026, 7, 17, 18, 51, tzinfo=timezone.utc)
+        created = datetime(2026, 7, 17, 18, 51, tzinfo=UTC)
         msg = Message(id="x", content="hi", created_at=created)
         assert SymphonyBackend._to_epoch_ms(msg) == int(created.timestamp() * 1000)
 
@@ -174,7 +174,7 @@ class TestFetchMessagesDispatch:
     """The public fetch_messages resolves bounds and returns newest-first."""
 
     def test_after_datetime_sets_lower_bound(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(hours=2)), _ms(now - timedelta(minutes=1)), 60)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
         cutoff = now - timedelta(minutes=30)
@@ -188,7 +188,7 @@ class TestFetchMessagesDispatch:
         assert ts == sorted(ts, reverse=True)
 
     def test_default_returns_recent_newest_first(self, backend, mock_list_messages):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         all_messages = _make_messages_in_range(_ms(now - timedelta(minutes=20)), _ms(now - timedelta(minutes=1)), 40)
         mock_list_messages.side_effect = _make_side_effect(all_messages)
 

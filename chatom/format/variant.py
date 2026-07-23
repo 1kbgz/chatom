@@ -7,15 +7,15 @@ from enum import Enum
 from typing import Literal, Union
 
 __all__ = (
-    "Format",
-    "FORMAT",
-    "PLAINTEXT",
-    "MARKDOWN",
-    "SLACK_MARKDOWN",
     "DISCORD_MARKDOWN",
+    "FORMAT",
     "HTML",
-    "TELEGRAM_HTML",
+    "MARKDOWN",
+    "PLAINTEXT",
+    "SLACK_MARKDOWN",
     "SYMPHONY_MESSAGEML",
+    "TELEGRAM_HTML",
+    "Format",
 )
 
 # String constants for backwards compatibility
@@ -56,14 +56,4 @@ class Format(str, Enum):
 
 
 # Type alias for format specification
-FORMAT = Union[
-    Literal["plaintext"],
-    Literal["markdown"],
-    Literal["slack-markdown"],
-    Literal["discord-markdown"],
-    Literal["html"],
-    Literal["telegram-html"],
-    Literal["symphony-messageml"],
-    Format,
-    str,
-]
+FORMAT = Union[Literal["plaintext", "markdown", "slack-markdown", "discord-markdown", "html", "telegram-html", "symphony-messageml"], Format, str]  # noqa: UP007

@@ -3,8 +3,6 @@
 This module provides the Symphony-specific User class.
 """
 
-from typing import List
-
 from chatom.base import Field, User
 
 __all__ = ("SymphonyUser",)
@@ -67,7 +65,7 @@ class SymphonyUser(User):
         default="",
         description="The type of Symphony account.",
     )
-    roles: List[str] = Field(
+    roles: list[str] = Field(
         default_factory=list,
         description="List of user roles.",
     )

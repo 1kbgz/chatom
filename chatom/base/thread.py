@@ -29,7 +29,7 @@ class Thread(Identifiable):
         last_message_at: When the last message was posted.
     """
 
-    parent_channel: Optional[Channel] = Field(
+    parent_channel: Channel | None = Field(
         default=None,
         description="The channel this thread belongs to.",
     )
@@ -45,11 +45,11 @@ class Thread(Identifiable):
         default=False,
         description="Whether the thread is locked from new messages.",
     )
-    created_at: Optional[datetime] = Field(
+    created_at: datetime | None = Field(
         default=None,
         description="When the thread was created.",
     )
-    last_message_at: Optional[datetime] = Field(
+    last_message_at: datetime | None = Field(
         default=None,
         description="When the last message was posted.",
     )

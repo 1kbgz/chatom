@@ -48,7 +48,6 @@ import sys
 import tempfile
 import traceback
 from datetime import datetime
-from typing import List, Optional, Tuple, Union
 
 from chatom.base import Channel, User
 from chatom.discord import (
@@ -77,7 +76,7 @@ from chatom.symphony import (
 from chatom.telegram import TelegramBackend, TelegramConfig
 
 
-def get_env(name: str, required: bool = True) -> Optional[str]:
+def get_env(name: str, required: bool = True) -> str | None:
     """Get environment variable with validation."""
     value = os.environ.get(name)
     if required and not value:
@@ -148,7 +147,7 @@ class SlackE2ETest:
             self.log(f"Failed to connect: {e}", success=False)
             raise
 
-    async def lookup_channel_by_name(self, name: str) -> Optional[str]:
+    async def lookup_channel_by_name(self, name: str) -> str | None:
         """Look up a channel ID by name."""
         self.section("Lookup: Channel by Name")
 
@@ -163,11 +162,11 @@ class SlackE2ETest:
             self.log(f"Channel '{name}' not found", success=False)
             return None
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to lookup channel: {e}", success=False)
             return None
 
-    async def lookup_user_by_name(self, name: str) -> Optional[str]:
+    async def lookup_user_by_name(self, name: str) -> str | None:
         """Look up a user ID by name or display name."""
         self.section("Lookup: User by Name")
 
@@ -184,7 +183,7 @@ class SlackE2ETest:
             self.log(f"User '{name}' not found", success=False)
             return None
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to lookup user: {e}", success=False)
             return None
 
@@ -193,7 +192,7 @@ class SlackE2ETest:
         self.section("Test: Send Plain Message")
 
         try:
-            timestamp = datetime.now().strftime("%H:%M:%S")
+            timestamp = datetime.now().strftime("%H:%M:%S")  # noqa: DTZ005
             # Use format system to build message
             msg = FormattedMessage().add_text(f"🧪 [E2E Test] Plain message sent at {timestamp}")
             content = msg.render(Format.SLACK_MARKDOWN)
@@ -206,7 +205,7 @@ class SlackE2ETest:
                 # Return the ts string for use in reactions test
                 return result.ts if hasattr(result, "ts") else result
             return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send plain message: {e}", success=False)
             return None
 
@@ -236,7 +235,7 @@ class SlackE2ETest:
             self.log("Sent formatted message with bold, italic, code (mrkdwn)")
 
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send formatted message: {e}", success=False)
             return None
 
@@ -259,7 +258,7 @@ class SlackE2ETest:
             else:
                 self.log(f"User not found: {self.user_id}", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch user: {e}", success=False)
             return None
 
@@ -281,7 +280,7 @@ class SlackE2ETest:
             else:
                 self.log(f"Channel not found: {self.channel_id}", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch channel: {e}", success=False)
             return None
 
@@ -320,10 +319,10 @@ class SlackE2ETest:
             await self.backend.send_message(self.channel_id, msg.render(Format.SLACK_MARKDOWN))
             self.log("Sent message with user and channel mentions")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test mentions: {e}", success=False)
 
-    async def test_reactions(self, message_ts: Optional[str]):
+    async def test_reactions(self, message_ts: str | None):
         """Test adding and removing reactions."""
         self.section("Test: Reactions")
 
@@ -351,7 +350,7 @@ class SlackE2ETest:
             await self.backend.remove_reaction(message_ts, "thumbsdown", self.channel_id)
             self.log("Removed :thumbsdown: reaction")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test reactions: {e}", success=False)
 
     async def test_threads(self):
@@ -388,7 +387,7 @@ class SlackE2ETest:
             else:
                 self.log("Failed to send thread parent message", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test threads: {e}", success=False)
 
     async def test_rich_content(self):
@@ -416,7 +415,7 @@ class SlackE2ETest:
             await self.backend.send_message(self.channel_id, content)
             self.log("Sent rich content with table")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test rich content: {e}", success=False)
 
     async def test_fetch_messages(self):
@@ -447,7 +446,7 @@ class SlackE2ETest:
 
             return messages
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch messages: {e}", success=False)
             return []
 
@@ -483,7 +482,7 @@ class SlackE2ETest:
                 else:
                     raise
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test presence: {e}", success=False)
 
     async def test_channel_creation(self):
@@ -509,7 +508,7 @@ class SlackE2ETest:
                 msg = (
                     FormattedMessage()
                     .add_text("🧪 [E2E Test] DM via Channel.dm_to() convenience\n")
-                    .add_text(f"Created at: {datetime.now().isoformat()}")
+                    .add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                 )
                 _result = await self.backend.send_message(dm_channel, msg.render(Format.SLACK_MARKDOWN))
                 self.log("Sent DM using Channel.dm_to() - resolved channel")
@@ -521,7 +520,7 @@ class SlackE2ETest:
                     self.log(f"Created DM channel via create_dm(): {dm_channel_id}")
 
                     # Send a test message to the DM
-                    msg = FormattedMessage().add_text("🧪 [E2E Test] DM via create_dm()\n").add_text(f"Created at: {datetime.now().isoformat()}")
+                    msg = FormattedMessage().add_text("🧪 [E2E Test] DM via create_dm()\n").add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                     await self.backend.send_message(dm_channel_id, msg.render(Format.SLACK_MARKDOWN))
                     self.log("Sent message to DM")
                 else:
@@ -533,7 +532,7 @@ class SlackE2ETest:
             print("\n  Skipping public/private channel creation test to avoid creating test channels.")
             print("  To test, uncomment the code in this method.")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test room/DM creation: {e}", success=False)
             traceback.print_exc()
 
@@ -574,7 +573,7 @@ class SlackE2ETest:
                 dm_message = source_message.as_dm_to_author(
                     f"🧪 [E2E Test] DM reply via as_dm_to_author()\n"
                     f"This is a response to your message in #{self.channel_name}.\n"
-                    f"Created at: {datetime.now().isoformat()}"
+                    f"Created at: {datetime.now().isoformat()}"  # noqa: DTZ005
                 )
 
                 print(f"  DM message channel type: {dm_message.channel.channel_type}")
@@ -589,7 +588,7 @@ class SlackE2ETest:
                 print("  No non-bot message found to test with")
                 self.log("as_dm_to_author test skipped - no source message")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test as_dm_to_author: {e}", success=False)
             traceback.print_exc()
 
@@ -623,7 +622,7 @@ class SlackE2ETest:
             else:
                 self.log("Failed to send original message for reply test", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test replies: {e}", success=False)
             traceback.print_exc()
 
@@ -652,7 +651,7 @@ class SlackE2ETest:
             else:
                 self.log("No messages found to forward", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test forwarding: {e}", success=False)
             traceback.print_exc()
 
@@ -677,12 +676,11 @@ class SlackE2ETest:
                 seen_ids = {self.user_id}
 
                 for msg in messages:
-                    if msg.author and msg.author.id not in seen_ids:
-                        if not getattr(msg.author, "is_bot", False):
-                            other_users.append(msg.author)
-                            seen_ids.add(msg.author.id)
-                            if len(other_users) >= 1:
-                                break
+                    if msg.author and msg.author.id not in seen_ids and not getattr(msg.author, "is_bot", False):
+                        other_users.append(msg.author)
+                        seen_ids.add(msg.author.id)
+                        if len(other_users) >= 1:
+                            break
 
                 if other_users:
                     # Create group DM with test_user and other_user
@@ -699,7 +697,7 @@ class SlackE2ETest:
                     msg = (
                         FormattedMessage()
                         .add_text("🧪 [E2E Test] Group DM via Channel.group_dm_to()\n")
-                        .add_text(f"Created at: {datetime.now().isoformat()}")
+                        .add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                     )
                     _result = await self.backend.send_message(group_dm, msg.render(Format.SLACK_MARKDOWN))
                     self.log("Sent group DM using Channel.group_dm_to()")
@@ -710,7 +708,7 @@ class SlackE2ETest:
                 print("  Skipping group DM test - no user available")
                 self.log("Group DM test skipped - no user", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test group DM: {e}", success=False)
             traceback.print_exc()
 
@@ -722,7 +720,7 @@ class SlackE2ETest:
             # Create a temporary text file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
                 f.write("This is a test file created by the chatom E2E test suite.\n")
-                f.write(f"Created at: {datetime.now().isoformat()}\n")
+                f.write(f"Created at: {datetime.now().isoformat()}\n")  # noqa: DTZ005
                 f.write("This file can be safely deleted.\n")
                 temp_file_path = f.name
 
@@ -749,7 +747,7 @@ class SlackE2ETest:
                 # Clean up temp file
                 os.unlink(temp_file_path)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             if "missing_scope" in str(e) and "files:write" in str(e):
                 self.log("File attachment test skipped (Slack app missing files:write scope)")
                 return
@@ -815,7 +813,7 @@ class SlackE2ETest:
             # Wait for message with timeout
             try:
                 await asyncio.wait_for(receive_task, timeout=30.0)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 receive_task.cancel()
                 try:
                     await receive_task
@@ -849,7 +847,7 @@ class SlackE2ETest:
             else:
                 self.log("Message received but was None", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test inbound messages: {e}", success=False)
             traceback.print_exc()
 
@@ -954,13 +952,13 @@ class SlackE2ETest:
                     bot_user_id = bot_info.id
                     bot_name = bot_info.name or "bot"
                     print(f"\n  Bot info: {bot_name} ({bot_user_id})")
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
             if bot_user_id:
                 await self.test_inbound_messages(bot_user_id, bot_name)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"\n❌ Test suite failed with error: {e}")
             traceback.print_exc()
 
@@ -1055,12 +1053,12 @@ class DiscordE2ETest:
             self.log(f"Guild '{self.guild_name}' not found", success=False)
             return None
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to resolve guild: {e}", success=False)
             traceback.print_exc()
             return None
 
-    async def lookup_channel_by_name(self, name: str) -> Optional[str]:
+    async def lookup_channel_by_name(self, name: str) -> str | None:
         """Look up a channel ID by name."""
         self.section("Lookup: Channel by Name")
 
@@ -1076,12 +1074,12 @@ class DiscordE2ETest:
             self.log(f"Channel '{name}' not found", success=False)
             return None
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to lookup channel: {e}", success=False)
             traceback.print_exc()
             return None
 
-    async def lookup_user_by_name(self, name: str) -> Optional[str]:
+    async def lookup_user_by_name(self, name: str) -> str | None:
         """Look up a user ID by name or display name."""
         self.section("Lookup: User by Name")
 
@@ -1113,7 +1111,7 @@ class DiscordE2ETest:
                                 if author_name == search_name or author_handle == search_name:
                                     self.log(f"Found user '{name}' via message history -> {author.id}")
                                     return author.id
-                except Exception as msg_err:
+                except Exception as msg_err:  # noqa: BLE001
                     print(f"  Could not search message history: {msg_err}")
 
             self.log(f"User '{name}' not found", success=False)
@@ -1121,7 +1119,7 @@ class DiscordE2ETest:
             print("  Enable it in Discord Developer Portal > Bot > Privileged Gateway Intents")
             return None
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             error_msg = str(e)
             if "members" in error_msg.lower() or "intents" in error_msg.lower():
                 print("  Note: User lookup requires Server Members Intent (privileged intent)")
@@ -1137,7 +1135,7 @@ class DiscordE2ETest:
         self.section("Test: Send Plain Message")
 
         try:
-            timestamp = datetime.now().strftime("%H:%M:%S")
+            timestamp = datetime.now().strftime("%H:%M:%S")  # noqa: DTZ005
             # Use format system to build message
             msg = FormattedMessage().add_text(f"🧪 [E2E Test] Plain message sent at {timestamp}")
             content = msg.render(Format.DISCORD_MARKDOWN)
@@ -1149,7 +1147,7 @@ class DiscordE2ETest:
                 print(f"  Message ID: {result.id}")
                 return result.id
             return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send plain message: {e}", success=False)
             traceback.print_exc()
             return None
@@ -1180,7 +1178,7 @@ class DiscordE2ETest:
             self.log("Sent formatted message with bold, italic, code")
 
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send formatted message: {e}", success=False)
             traceback.print_exc()
             return None
@@ -1208,7 +1206,7 @@ class DiscordE2ETest:
             else:
                 self.log(f"User not found: {self.user_id}", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch user: {e}", success=False)
             traceback.print_exc()
             return None
@@ -1231,7 +1229,7 @@ class DiscordE2ETest:
             else:
                 self.log(f"Channel not found: {self.channel_id}", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch channel: {e}", success=False)
             traceback.print_exc()
             return None
@@ -1271,11 +1269,11 @@ class DiscordE2ETest:
             await self.backend.send_message(self.channel_id, msg.render(Format.DISCORD_MARKDOWN))
             self.log("Sent message with user and channel mentions")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test mentions: {e}", success=False)
             traceback.print_exc()
 
-    async def test_reactions(self, message_id: Optional[str]):
+    async def test_reactions(self, message_id: str | None):
         """Test adding and removing reactions."""
         self.section("Test: Reactions")
 
@@ -1303,7 +1301,7 @@ class DiscordE2ETest:
             await self.backend.remove_reaction(message_id, "👎", channel=self.channel_id)
             self.log("Removed 👎 reaction")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test reactions: {e}", success=False)
             traceback.print_exc()
 
@@ -1340,7 +1338,7 @@ class DiscordE2ETest:
             else:
                 self.log("Failed to send thread parent message", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test threads: {e}", success=False)
             traceback.print_exc()
 
@@ -1369,7 +1367,7 @@ class DiscordE2ETest:
             await self.backend.send_message(self.channel_id, content)
             self.log("Sent rich content with table")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test rich content: {e}", success=False)
             traceback.print_exc()
 
@@ -1400,7 +1398,7 @@ class DiscordE2ETest:
 
             return messages
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch messages: {e}", success=False)
             traceback.print_exc()
             return []
@@ -1436,7 +1434,7 @@ class DiscordE2ETest:
             )
             self.log("Reset bot presence to online")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test presence: {e}", success=False)
             traceback.print_exc()
 
@@ -1465,7 +1463,7 @@ class DiscordE2ETest:
                             test_user = msg.author
                             print(f"    Found user from message history: {test_user.display_name}")
                             break
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     print(f"    Failed to get user from history: {e}")
 
             if test_user:
@@ -1481,7 +1479,7 @@ class DiscordE2ETest:
                 msg = (
                     FormattedMessage()
                     .add_text("🧪 [E2E Test] DM via Channel.dm_to() convenience\n")
-                    .add_text(f"Created at: {datetime.now().isoformat()}")
+                    .add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                 )
                 result = await self.backend.send_message(dm_channel, msg.render(Format.DISCORD_MARKDOWN))
                 self.log(f"Sent DM using Channel.dm_to() - resolved to: {result.channel.id if result else 'N/A'}")
@@ -1498,7 +1496,7 @@ class DiscordE2ETest:
                 print("  Skipping DM test - no user available")
                 print("  (Enable Server Members Intent to allow user lookup by name)")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             if "Unknown User" in str(e):
                 self.log("DM creation skipped (Discord could not DM configured user)")
                 return
@@ -1529,7 +1527,7 @@ class DiscordE2ETest:
                 dm_message = source_message.as_dm_to_author(
                     f"🧪 [E2E Test] DM reply via as_dm_to_author()\n"
                     f"This is a response to your message in #{self.channel_name}.\n"
-                    f"Created at: {datetime.now().isoformat()}"
+                    f"Created at: {datetime.now().isoformat()}"  # noqa: DTZ005
                 )
 
                 print(f"  DM message channel type: {dm_message.channel.channel_type}")
@@ -1544,7 +1542,7 @@ class DiscordE2ETest:
                 print("  No non-bot message found to test with")
                 self.log("as_dm_to_author test skipped - no source message", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test as_dm_to_author: {e}", success=False)
             traceback.print_exc()
 
@@ -1578,7 +1576,7 @@ class DiscordE2ETest:
             else:
                 self.log("Failed to send original message for reply test", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test replies: {e}", success=False)
             traceback.print_exc()
 
@@ -1607,7 +1605,7 @@ class DiscordE2ETest:
             else:
                 self.log("No messages found to forward", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test forwarding: {e}", success=False)
             traceback.print_exc()
 
@@ -1658,11 +1656,11 @@ class DiscordE2ETest:
                         msg = (
                             FormattedMessage()
                             .add_text("🧪 [E2E Test] Group DM via Channel.group_dm_to()\n")
-                            .add_text(f"Created at: {datetime.now().isoformat()}")
+                            .add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                         )
                         _result = await self.backend.send_message(group_dm, msg.render(Format.DISCORD_MARKDOWN))
                         self.log("Sent group DM using Channel.group_dm_to()")
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001
                         print(f"  Group DM send failed (Discord restriction): {e}")
                         self.log("Group DM API demonstrated (Discord may restrict group DM creation)")
                 else:
@@ -1672,7 +1670,7 @@ class DiscordE2ETest:
                 print("  Skipping group DM test - no user available")
                 self.log("Group DM test skipped - no user", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test group DM: {e}", success=False)
             traceback.print_exc()
 
@@ -1689,7 +1687,7 @@ class DiscordE2ETest:
             # Create a temporary text file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
                 f.write("This is a test file created by the chatom E2E test suite.\n")
-                f.write(f"Created at: {datetime.now().isoformat()}\n")
+                f.write(f"Created at: {datetime.now().isoformat()}\n")  # noqa: DTZ005
                 f.write("This file can be safely deleted.\n")
                 temp_file_path = f.name
 
@@ -1716,7 +1714,7 @@ class DiscordE2ETest:
                 # Clean up temp file
                 temp_os.unlink(temp_file_path)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test file attachment: {e}", success=False)
             traceback.print_exc()
 
@@ -1768,7 +1766,7 @@ class DiscordE2ETest:
             # Wait for message with timeout
             try:
                 await asyncio.wait_for(receive_task, timeout=30.0)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 receive_task.cancel()
                 try:
                     await receive_task
@@ -1805,7 +1803,7 @@ class DiscordE2ETest:
             else:
                 self.log("Message received but was None", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test inbound messages: {e}", success=False)
             traceback.print_exc()
 
@@ -1913,7 +1911,7 @@ class DiscordE2ETest:
             else:
                 print("\n  Could not get bot info, skipping inbound message test")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"\n❌ Test suite failed with error: {e}")
             traceback.print_exc()
 
@@ -2146,7 +2144,7 @@ class SymphonyE2ETest:
         self.section("Test: Send Plain Message")
 
         try:
-            timestamp = datetime.now().strftime("%H:%M:%S")
+            timestamp = datetime.now().strftime("%H:%M:%S")  # noqa: DTZ005
             # Use format system to build message
             msg = FormattedMessage().add_text(f"🧪 [E2E Test] Plain message sent at {timestamp}")
             content = msg.render(Format.SYMPHONY_MESSAGEML)
@@ -2157,7 +2155,7 @@ class SymphonyE2ETest:
             if result:
                 print(f"  Message ID: {result}")
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send plain message: {e}", success=False)
             return None
 
@@ -2186,7 +2184,7 @@ class SymphonyE2ETest:
             self.log("Sent MessageML formatted message")
 
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send MessageML message: {e}", success=False)
             return None
 
@@ -2214,7 +2212,7 @@ class SymphonyE2ETest:
             self.log("Sent formatted message via Format system")
 
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send formatted message: {e}", success=False)
             return None
 
@@ -2236,7 +2234,7 @@ class SymphonyE2ETest:
             else:
                 self.log(f"User not found: {self.user_id}", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch user: {e}", success=False)
             return None
 
@@ -2271,7 +2269,7 @@ class SymphonyE2ETest:
             await self.backend.send_message(self.stream_id, content)
             self.log("Sent message with user mention")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test mentions: {e}", success=False)
 
     async def test_hashtags_cashtags(self):
@@ -2301,7 +2299,7 @@ class SymphonyE2ETest:
             await self.backend.send_message(self.stream_id, content)
             self.log("Sent message with hashtag and cashtag")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test hashtags/cashtags: {e}", success=False)
 
     async def test_rich_content(self):
@@ -2329,10 +2327,10 @@ class SymphonyE2ETest:
             await self.backend.send_message(self.stream_id, content)
             self.log("Sent rich content with table")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test rich content: {e}", success=False)
 
-    async def test_reactions(self, message_id: Optional[str] = None):
+    async def test_reactions(self, message_id: str | None = None):
         """Test adding and removing reactions."""
         self.section("Test: Reactions")
 
@@ -2361,7 +2359,7 @@ class SymphonyE2ETest:
             await self.backend.remove_reaction(message_id, ":thumbsdown:", channel=self.stream_id)
             self.log("Removed :thumbsdown: reaction")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test reactions: {e}", success=False)
             traceback.print_exc()
 
@@ -2404,7 +2402,7 @@ class SymphonyE2ETest:
 
             return messages
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch messages: {e}", success=False)
             return []
 
@@ -2433,7 +2431,7 @@ class SymphonyE2ETest:
             await self.backend.set_presence(status="AVAILABLE")
             self.log("Reset bot presence to AVAILABLE")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test presence: {e}", success=False)
 
     async def test_room_creation(self):
@@ -2462,7 +2460,7 @@ class SymphonyE2ETest:
                 )
                 _result = await self.backend.send_message(dm_channel, dm_msg.render(Format.SYMPHONY_MESSAGEML))
                 self.log("Sent DM using Channel.dm_to() convenience")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.log(f"Failed to use Channel.dm_to: {e}", success=False)
 
         # Test 2: Use create_im directly (legacy approach)
@@ -2479,7 +2477,7 @@ class SymphonyE2ETest:
                 self.log("Sent message to DM")
             else:
                 self.log("DM creation returned no ID", success=False)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to create DM: {e}", success=False)
 
         # Test 3: Create a multi-party IM (MIM) using Channel.group_dm_to()
@@ -2494,12 +2492,12 @@ class SymphonyE2ETest:
                 print("    Example: group_dm = Channel.group_dm_to([user1, user2])")
                 print("    Skipping actual MIM creation (need 2+ real users)")
                 self.log("Group DM API demonstrated (Channel.group_dm_to)")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to demonstrate group DM: {e}", success=False)
 
         # Test 4: Create a private room with unique timestamp
         try:
-            room_name = f"E2E Test Room {datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            room_name = f"E2E Test Room {datetime.now().strftime('%Y%m%d_%H%M%S')}"  # noqa: DTZ005
             print(f"\n  Creating private room: {room_name}")
             room_id = await self.backend.create_room(
                 name=room_name,
@@ -2527,7 +2525,7 @@ class SymphonyE2ETest:
                 print(f"  ℹ️  Room '{room_name}' created. Delete it manually after verifying.")
             else:
                 self.log("Room creation returned no ID", success=False)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to create room: {e}", success=False)
 
     async def test_dm_reply_convenience(self):
@@ -2543,7 +2541,7 @@ class SymphonyE2ETest:
             try:
                 bot_info = await self.backend.get_bot_info()
                 bot_user_id = str(bot_info.id) if bot_info else None
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
             # Find a message from a non-bot user
@@ -2561,7 +2559,7 @@ class SymphonyE2ETest:
                 dm_message = source_message.as_dm_to_author(
                     f"🧪 [E2E Test] DM reply via as_dm_to_author()\n"
                     f"This is a response to your message in {self.room_name}.\n"
-                    f"Created at: {datetime.now().isoformat()}"
+                    f"Created at: {datetime.now().isoformat()}"  # noqa: DTZ005
                 )
 
                 print(f"  DM message channel type: {dm_message.channel.channel_type}")
@@ -2578,7 +2576,7 @@ class SymphonyE2ETest:
                 print("  No non-bot message found to test with")
                 self.log("as_dm_to_author test skipped - no source message", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test as_dm_to_author: {e}", success=False)
             traceback.print_exc()
 
@@ -2610,7 +2608,7 @@ class SymphonyE2ETest:
 
                 # Get author info for the reply header
                 bot_name = self.backend.bot_user_name or "Bot"
-                timestamp = datetime.now().strftime("%H:%M:%S")
+                timestamp = datetime.now().strftime("%H:%M:%S")  # noqa: DTZ005
 
                 # Create a reply format resembling Symphony's native reply UI:
                 # Uses a card with the "In reply to:" label, author, timestamp
@@ -2635,7 +2633,7 @@ class SymphonyE2ETest:
             else:
                 self.log("Failed to send original message for reply test", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test replies: {e}", success=False)
             traceback.print_exc()
 
@@ -2703,7 +2701,7 @@ class SymphonyE2ETest:
                 self.log("Forwarded message with attribution")
                 print(f"  Forwarded message ID: {forwarded.id}")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test forwarding: {e}", success=False)
             traceback.print_exc()
 
@@ -2728,7 +2726,7 @@ class SymphonyE2ETest:
                 try:
                     bot_info = await self.backend.get_bot_info()
                     bot_user_id = str(bot_info.id) if bot_info else None
-                except Exception:
+                except Exception:  # noqa: BLE001, S110
                     pass
 
                 other_users = []
@@ -2758,7 +2756,7 @@ class SymphonyE2ETest:
                     msg = (
                         FormattedMessage()
                         .add_text("🧪 [E2E Test] MIM via Channel.group_dm_to()\n")
-                        .add_text(f"Created at: {datetime.now().isoformat()}")
+                        .add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                     )
                     _result = await self.backend.send_message(group_dm, msg.render(Format.SYMPHONY_MESSAGEML))
                     self.log("Sent MIM using Channel.group_dm_to()")
@@ -2769,7 +2767,7 @@ class SymphonyE2ETest:
                 print("  Skipping MIM test - no user available")
                 self.log("MIM test skipped - no user", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test group DM/MIM: {e}", success=False)
             traceback.print_exc()
 
@@ -2781,7 +2779,7 @@ class SymphonyE2ETest:
             # Create a temporary text file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
                 f.write("This is a test file created by the chatom E2E test suite.\n")
-                f.write(f"Created at: {datetime.now().isoformat()}\n")
+                f.write(f"Created at: {datetime.now().isoformat()}\n")  # noqa: DTZ005
                 f.write("This file can be safely deleted.\n")
                 temp_file_path = f.name
 
@@ -2789,7 +2787,7 @@ class SymphonyE2ETest:
 
             try:
                 # Symphony BDK expects file-like objects with the 'attachments' parameter
-                with open(temp_file_path, "rb") as file_obj:
+                with open(temp_file_path, "rb") as file_obj:  # noqa: ASYNC230
                     msg = FormattedMessage().add_text("🧪 [E2E Test] File attachment test")
                     result = await self.backend.send_message(
                         self.stream_id,
@@ -2807,7 +2805,7 @@ class SymphonyE2ETest:
                 # Clean up temp file
                 os.unlink(temp_file_path)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test file attachment: {e}", success=False)
             traceback.print_exc()
 
@@ -2856,7 +2854,7 @@ class SymphonyE2ETest:
                         received_message = message
                         break
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 self.log("Timeout waiting for inbound message (30s)", success=require_interactive_e2e() is False)
                 timeout_msg = FormattedMessage().add_text("⏰ ").add_bold("[E2E Test] Timeout").add_text(" - No message received within 30 seconds.")
                 await self.backend.send_message(self.stream_id, timeout_msg.render(Format.SYMPHONY_MESSAGEML))
@@ -2889,7 +2887,7 @@ class SymphonyE2ETest:
             else:
                 self.log("Message received but was None", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test inbound messages: {e}", success=False)
             traceback.print_exc()
 
@@ -2954,7 +2952,7 @@ class SymphonyE2ETest:
             )
             await self.backend.send_message(self.stream_id, confirm_msg.render(Format.SYMPHONY_MESSAGEML))
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to process with format system: {e}", success=False)
             traceback.print_exc()
 
@@ -3043,7 +3041,7 @@ class SymphonyE2ETest:
             # Test inbound messages (interactive - prompts user)
             await self.test_inbound_messages()
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"\n❌ Test suite failed with error: {e}")
             traceback.print_exc()
 
@@ -3123,7 +3121,7 @@ class TelegramE2ETest:
             self.log(f"Failed to connect: {e}", success=False)
             raise
 
-    async def lookup_chat(self) -> Optional[str]:
+    async def lookup_chat(self) -> str | None:
         """Look up the chat by name or ID and return the resolved chat ID."""
         self.section("Lookup: Chat")
 
@@ -3134,7 +3132,7 @@ class TelegramE2ETest:
                 if channel:
                     self.log(f"Found chat by ID: {channel.name} ({channel.id})")
                     return channel.id
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.log(f"Chat ID {self.chat_id} lookup failed: {e}", success=False)
 
         # Look up by name (tries @username via getChat API)
@@ -3145,7 +3143,7 @@ class TelegramE2ETest:
                     self.log(f"Found chat '{self.chat_name}' -> {channel.name} ({channel.id})")
                     return channel.id
                 self.log(f"Chat '{self.chat_name}' not found via @username lookup", success=False)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 self.log(f"Chat name lookup failed: {e}", success=False)
 
         # As a last resort, discover chats from recent updates
@@ -3198,7 +3196,7 @@ class TelegramE2ETest:
             else:
                 self.log(f"Chat not found: {self.chat_id}", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch chat: {e}", success=False)
             traceback.print_exc()
             return None
@@ -3236,7 +3234,7 @@ class TelegramE2ETest:
                 print("  User will be discovered from inbound messages later.")
                 self.log("User not found in cache (Telegram API limitation)")
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch user: {e}", success=False)
             traceback.print_exc()
             return None
@@ -3246,7 +3244,7 @@ class TelegramE2ETest:
         self.section("Test: Send Plain Message")
 
         try:
-            timestamp = datetime.now().strftime("%H:%M:%S")
+            timestamp = datetime.now().strftime("%H:%M:%S")  # noqa: DTZ005
             # Send without parse_mode for plain text
             content = f"🧪 [E2E Test] Plain message sent at {timestamp}"
 
@@ -3258,7 +3256,7 @@ class TelegramE2ETest:
                 print(f"  Chat ID: {result.chat_id}")
                 return result
             return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send plain message: {e}", success=False)
             traceback.print_exc()
             return None
@@ -3289,7 +3287,7 @@ class TelegramE2ETest:
             self.log("Sent formatted message with bold, italic, code (HTML)")
 
             return result
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to send formatted message: {e}", success=False)
             traceback.print_exc()
             return None
@@ -3328,7 +3326,7 @@ class TelegramE2ETest:
             await self.backend.send_message(self.chat_id, msg.render(Format.HTML))
             self.log("Sent message with user and channel mentions")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test mentions: {e}", success=False)
             traceback.print_exc()
 
@@ -3357,7 +3355,7 @@ class TelegramE2ETest:
                     await self.backend.add_reaction(message, emoji, self.chat_id)
                     print(f"  Added reaction: {emoji}")
                     await asyncio.sleep(0.5)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001
                     print(f"  Failed to add {emoji}: {e}")
 
             self.log(f"Attempted {len(reactions)} reactions")
@@ -3367,11 +3365,11 @@ class TelegramE2ETest:
             try:
                 await self.backend.remove_reaction(message, "👍", self.chat_id)
                 self.log("Removed reactions (set empty list)")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 print(f"  Remove reaction failed: {e}")
                 self.log("Remove reaction attempted (may not be supported in this chat)")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test reactions: {e}", success=False)
             traceback.print_exc()
 
@@ -3419,7 +3417,7 @@ class TelegramE2ETest:
             else:
                 self.log("Failed to send original message for reply test", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test replies: {e}", success=False)
             traceback.print_exc()
 
@@ -3446,7 +3444,7 @@ class TelegramE2ETest:
             await self.backend.send_message(self.chat_id, content)
             self.log("Sent rich content with table")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test rich content: {e}", success=False)
             traceback.print_exc()
 
@@ -3468,7 +3466,7 @@ class TelegramE2ETest:
                     content_preview = (msg.content or "")[:50].replace("\n", " ")
                     print(f"  - [{msg.id}] {content_preview}...")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to fetch messages: {e}", success=False)
             traceback.print_exc()
 
@@ -3498,7 +3496,7 @@ class TelegramE2ETest:
             print("  set_presence() called (no-op for Telegram bots)")
             self.log("Set presence called (no-op for Telegram - expected)")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test presence: {e}", success=False)
             traceback.print_exc()
 
@@ -3527,7 +3525,7 @@ class TelegramE2ETest:
                 msg = (
                     FormattedMessage()
                     .add_text("🧪 [E2E Test] DM via Channel.dm_to() convenience\n")
-                    .add_text(f"Created at: {datetime.now().isoformat()}")
+                    .add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                 )
                 await self.backend.send_message(dm_channel, msg.render(Format.HTML))
                 self.log("Sent DM using Channel.dm_to()")
@@ -3540,7 +3538,7 @@ class TelegramE2ETest:
                     print(f"  Note: In Telegram, DM chat_id = user_id ({dm_chat_id})")
 
                     # Send a message to the DM
-                    msg2 = FormattedMessage().add_text("🧪 [E2E Test] DM via create_dm()\n").add_text(f"Created at: {datetime.now().isoformat()}")
+                    msg2 = FormattedMessage().add_text("🧪 [E2E Test] DM via create_dm()\n").add_text(f"Created at: {datetime.now().isoformat()}")  # noqa: DTZ005
                     await self.backend.send_message(dm_chat_id, msg2.render(Format.HTML))
                     self.log("Sent message to DM")
                 else:
@@ -3550,7 +3548,7 @@ class TelegramE2ETest:
                 print("  Set TELEGRAM_TEST_USER_ID to a user who has messaged the bot")
                 self.log("DM test skipped (no user ID)")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test DM creation: {e}", success=False)
             traceback.print_exc()
 
@@ -3584,7 +3582,7 @@ class TelegramE2ETest:
 
                 # Use as_dm_to_author()
                 dm_message = source_message.as_dm_to_author(
-                    f"🧪 [E2E Test] DM reply via as_dm_to_author()\nThis is a response to your message.\nCreated at: {datetime.now().isoformat()}"
+                    f"🧪 [E2E Test] DM reply via as_dm_to_author()\nThis is a response to your message.\nCreated at: {datetime.now().isoformat()}"  # noqa: DTZ005
                 )
 
                 print(f"  DM message channel type: {dm_message.channel.channel_type}")
@@ -3598,7 +3596,7 @@ class TelegramE2ETest:
                 print("  Skipping as_dm_to_author test - no user ID")
                 self.log("as_dm_to_author test skipped (no user ID)")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test as_dm_to_author: {e}", success=False)
             traceback.print_exc()
 
@@ -3632,7 +3630,7 @@ class TelegramE2ETest:
             else:
                 self.log("No source message to forward", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test forwarding: {e}", success=False)
             traceback.print_exc()
 
@@ -3667,7 +3665,7 @@ class TelegramE2ETest:
             else:
                 self.log("Failed to send original message for edit test", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test edit: {e}", success=False)
             traceback.print_exc()
 
@@ -3692,7 +3690,7 @@ class TelegramE2ETest:
             else:
                 self.log("Failed to send message for delete test", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test delete: {e}", success=False)
             traceback.print_exc()
 
@@ -3729,7 +3727,7 @@ class TelegramE2ETest:
             else:
                 self.log("Group DM test skipped (no user ID)")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test group DM: {e}", success=False)
             traceback.print_exc()
 
@@ -3741,7 +3739,7 @@ class TelegramE2ETest:
             # Create a temporary text file
             with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False) as f:
                 f.write("This is a test file created by the chatom Telegram E2E test suite.\n")
-                f.write(f"Created at: {datetime.now().isoformat()}\n")
+                f.write(f"Created at: {datetime.now().isoformat()}\n")  # noqa: DTZ005
                 f.write("This file can be safely deleted.\n")
                 temp_file_path = f.name
 
@@ -3749,7 +3747,7 @@ class TelegramE2ETest:
 
             try:
                 # Use Telegram's sendDocument API
-                with open(temp_file_path, "rb") as doc:
+                with open(temp_file_path, "rb") as doc:  # noqa: ASYNC230
                     result = await self.backend._bot.send_document(
                         chat_id=int(self.chat_id),
                         document=doc,
@@ -3766,7 +3764,7 @@ class TelegramE2ETest:
             finally:
                 os.unlink(temp_file_path)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test file attachment: {e}", success=False)
             traceback.print_exc()
 
@@ -3815,7 +3813,7 @@ class TelegramE2ETest:
             # Wait for message with timeout
             try:
                 await asyncio.wait_for(receive_task, timeout=30.0)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 receive_task.cancel()
                 try:
                     await receive_task
@@ -3862,7 +3860,7 @@ class TelegramE2ETest:
             else:
                 self.log("Message received but was None", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to test inbound messages: {e}", success=False)
             traceback.print_exc()
 
@@ -3882,7 +3880,7 @@ class TelegramE2ETest:
             else:
                 self.log("Failed to get bot info", success=False)
                 return None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed to get bot info: {e}", success=False)
             traceback.print_exc()
             return None
@@ -3989,7 +3987,7 @@ class TelegramE2ETest:
             # Test group DM concept
             await self.test_group_dm()
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"\n❌ Test suite failed with error: {e}")
             traceback.print_exc()
 
@@ -4055,32 +4053,32 @@ class CombinedE2ETest:
         self.slack_user_id = None
 
         # Backends
-        self.symphony_backend: Optional[SymphonyBackend] = None
-        self.slack_backend: Optional[SlackBackend] = None
+        self.symphony_backend: SymphonyBackend | None = None
+        self.slack_backend: SlackBackend | None = None
 
         self.results = []
 
-    async def _find_slack_user_by_email(self, email: str) -> Optional[str]:
+    async def _find_slack_user_by_email(self, email: str) -> str | None:
         """Find a Slack user ID by their email address."""
         try:
             user = await self.slack_backend.fetch_user(email=email)
             if user:
                 return user.id
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
         return None
 
-    async def _find_symphony_user_by_email(self, email: str) -> Optional[str]:
+    async def _find_symphony_user_by_email(self, email: str) -> str | None:
         """Find a Symphony user ID by their email address."""
         try:
             user = await self.symphony_backend.fetch_user(email=email)
             if user:
                 return str(user.id)
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
         return None
 
-    async def _parse_slack_mentions(self, text: str) -> List[Tuple[str, Union[str, Tuple[str, str]]]]:
+    async def _parse_slack_mentions(self, text: str) -> list[tuple[str, str | tuple[str, str]]]:
         """Parse Slack text and return segments with mentions resolved to Symphony.
 
         Returns a list of tuples: ('text', 'content') or ('mention', (user_id, display_name))
@@ -4107,7 +4105,7 @@ class CombinedE2ETest:
                     # Try to find the user in Symphony by email
                     if slack_user.email:
                         symphony_user_id = await self._find_symphony_user_by_email(slack_user.email)
-            except Exception:
+            except Exception:  # noqa: BLE001, S110
                 pass
 
             if symphony_user_id:
@@ -4123,7 +4121,7 @@ class CombinedE2ETest:
 
         return segments if segments else [("text", text)]
 
-    async def _parse_symphony_mentions(self, text: str, mentions: list = None) -> List[Tuple[str, Union[str, Tuple[str, str]]]]:
+    async def _parse_symphony_mentions(self, text: str, mentions: list | None = None) -> list[tuple[str, str | tuple[str, str]]]:
         """Parse Symphony text and return segments with mentions resolved to Slack.
 
         Returns a list of tuples: ('text', 'content') or ('mention', (user_id, display_name))
@@ -4156,7 +4154,7 @@ class CombinedE2ETest:
                                 slack_user_id = await self._find_slack_user_by_email(symphony_user.email)
                                 if slack_user_id:
                                     mention_map[display_name] = slack_user_id
-                    except Exception:
+                    except Exception:  # noqa: BLE001, S110
                         pass
 
         # Search for known mentions from the map directly in the text
@@ -4198,9 +4196,7 @@ class CombinedE2ETest:
 
         return segments if segments else [("text", text)]
 
-    def _build_message_with_segments(
-        self, segments: List[Tuple[str, Union[str, Tuple[str, str]]]], target_format: str = "symphony"
-    ) -> FormattedMessage:
+    def _build_message_with_segments(self, segments: list[tuple[str, str | tuple[str, str]]], target_format: str = "symphony") -> FormattedMessage:
         """Build a FormattedMessage from parsed segments.
 
         Args:
@@ -4460,7 +4456,7 @@ class CombinedE2ETest:
                         if seg_type == "text":
                             forward_msg.add_text(content)
                         elif seg_type == "mention":
-                            user_id, display_name = content
+                            user_id, _display_name = content
                             forward_msg.add_text(f"<@{user_id}>")
                     await self.slack_backend.send_message(
                         self.slack_channel_id,
@@ -4470,10 +4466,10 @@ class CombinedE2ETest:
                 else:
                     self.log("No message received", success=False)
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 self.log("Timeout waiting for Symphony message (60s)", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed Symphony → Slack test: {e}", success=False)
             traceback.print_exc()
 
@@ -4579,10 +4575,10 @@ class CombinedE2ETest:
                 else:
                     self.log("No message received", success=False)
 
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 self.log("Timeout waiting for Slack message (60s)", success=False)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             self.log(f"Failed Slack → Symphony test: {e}", success=False)
             traceback.print_exc()
 
@@ -4635,7 +4631,7 @@ class CombinedE2ETest:
             # Then test Symphony → Slack
             await self.test_symphony_to_slack()
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             print(f"\n❌ Test suite failed with error: {e}")
             traceback.print_exc()
 
@@ -4657,11 +4653,11 @@ def _env_is_set(name: str) -> bool:
     return bool(os.environ.get(name))
 
 
-def _missing_env(names: Tuple[str, ...]) -> List[str]:
+def _missing_env(names: tuple[str, ...]) -> list[str]:
     return [name for name in names if not _env_is_set(name)]
 
 
-def _missing_slack_env() -> List[str]:
+def _missing_slack_env() -> list[str]:
     return _missing_env(
         (
             "SLACK_BOT_TOKEN",
@@ -4672,7 +4668,7 @@ def _missing_slack_env() -> List[str]:
     )
 
 
-def _missing_discord_env() -> List[str]:
+def _missing_discord_env() -> list[str]:
     return _missing_env(
         (
             "DISCORD_TOKEN",
@@ -4683,7 +4679,7 @@ def _missing_discord_env() -> List[str]:
     )
 
 
-def _missing_symphony_env() -> List[str]:
+def _missing_symphony_env() -> list[str]:
     missing = _missing_env(
         (
             "SYMPHONY_HOST",
@@ -4697,7 +4693,7 @@ def _missing_symphony_env() -> List[str]:
     return missing
 
 
-def _missing_telegram_env() -> List[str]:
+def _missing_telegram_env() -> list[str]:
     missing = _missing_env(
         (
             "TELEGRAM_TOKEN",
@@ -4709,11 +4705,11 @@ def _missing_telegram_env() -> List[str]:
     return missing
 
 
-def _dedupe(items: List[str]) -> List[str]:
+def _dedupe(items: list[str]) -> list[str]:
     return list(dict.fromkeys(items))
 
 
-def _missing_bridge_env() -> List[str]:
+def _missing_bridge_env() -> list[str]:
     return _dedupe(_missing_slack_env() + _missing_symphony_env())
 
 
@@ -4737,7 +4733,7 @@ def configured_e2e_suites():
     return suites, skipped
 
 
-def configured_e2e_suite_names() -> List[str]:
+def configured_e2e_suite_names() -> list[str]:
     """Return names for suites whose full-coverage env is present."""
     suites, _ = configured_e2e_suites()
     return [name for name, _ in suites]
@@ -4780,7 +4776,7 @@ class ConfiguredE2ERunner:
                 success = exc.code == 0
                 if not success:
                     print(f"{name} exited with status {exc.code}")
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 success = False
                 print(f"{name} failed with error: {exc}")
                 traceback.print_exc()

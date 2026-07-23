@@ -4,8 +4,8 @@ This module provides a mock implementation of the Telegram backend
 for use in testing without requiring an actual Telegram connection.
 """
 
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Union
+from datetime import UTC, datetime
+from typing import Any
 
 from pydantic import PrivateAttr
 
@@ -36,17 +36,17 @@ class MockTelegramBackend(TelegramBackend):
     """
 
     # Mock data stores
-    _mock_users: Dict[str, TelegramUser] = PrivateAttr(default_factory=dict)
-    _mock_channels: Dict[str, TelegramChannel] = PrivateAttr(default_factory=dict)
-    _mock_messages: Dict[str, List[TelegramMessage]] = PrivateAttr(default_factory=dict)
-    _mock_presence: Dict[str, TelegramPresence] = PrivateAttr(default_factory=dict)
+    _mock_users: dict[str, TelegramUser] = PrivateAttr(default_factory=dict)
+    _mock_channels: dict[str, TelegramChannel] = PrivateAttr(default_factory=dict)
+    _mock_messages: dict[str, list[TelegramMessage]] = PrivateAttr(default_factory=dict)
+    _mock_presence: dict[str, TelegramPresence] = PrivateAttr(default_factory=dict)
 
     # Tracking stores
-    _sent_messages: List[TelegramMessage] = PrivateAttr(default_factory=list)
-    _edited_messages: List[TelegramMessage] = PrivateAttr(default_factory=list)
-    _deleted_messages: List[Dict[str, str]] = PrivateAttr(default_factory=list)
-    _reactions: List[Dict[str, str]] = PrivateAttr(default_factory=list)
-    _presence_updates: List[Dict[str, Any]] = PrivateAttr(default_factory=list)
+    _sent_messages: list[TelegramMessage] = PrivateAttr(default_factory=list)
+    _edited_messages: list[TelegramMessage] = PrivateAttr(default_factory=list)
+    _deleted_messages: list[dict[str, str]] = PrivateAttr(default_factory=list)
+    _reactions: list[dict[str, str]] = PrivateAttr(default_factory=list)
+    _presence_updates: list[dict[str, Any]] = PrivateAttr(default_factory=list)
     _message_counter: int = PrivateAttr(default=0)
 
     def __init__(self, **data: Any) -> None:
@@ -61,7 +61,7 @@ class MockTelegramBackend(TelegramBackend):
         self._deleted_messages = []
         self._reactions = []
         self._presence_updates = []
-        self._created_dms: List[List[str]] = []
+        self._created_dms: list[list[str]] = []
         self._dm_counter = 0
         self._message_counter = 0
 
@@ -117,7 +117,7 @@ class MockTelegramBackend(TelegramBackend):
         *,
         topic: str = "",
         description: str = "",
-        chat_type: Optional[TelegramChatType] = None,
+        chat_type: TelegramChatType | None = None,
         is_forum: bool = False,
     ) -> TelegramChannel:
         """Add a mock channel for testing.
@@ -161,8 +161,8 @@ class MockTelegramBackend(TelegramBackend):
         user_id: str,
         content: str,
         *,
-        message_id: Optional[str] = None,
-        timestamp: Optional[datetime] = None,
+        message_id: str | None = None,
+        timestamp: datetime | None = None,
         edited: bool = False,
     ) -> str:
         """Add a mock message for testing.
@@ -187,7 +187,7 @@ class MockTelegramBackend(TelegramBackend):
             content=content,
             message_id=int(message_id),
             chat_id=channel_id,
-            created_at=timestamp or datetime.now(timezone.utc),
+            created_at=timestamp or datetime.now(UTC),
             author=TelegramUser(id=user_id),
             channel=TelegramChannel(id=channel_id),
             is_edited=edited,
@@ -224,42 +224,42 @@ class MockTelegramBackend(TelegramBackend):
         return presence
 
     @property
-    def sent_messages(self) -> List[TelegramMessage]:
+    def sent_messages(self) -> list[TelegramMessage]:
         """Get all messages sent through this backend."""
         return self._sent_messages
 
     @property
-    def edited_messages(self) -> List[TelegramMessage]:
+    def edited_messages(self) -> list[TelegramMessage]:
         """Get all messages edited through this backend."""
         return self._edited_messages
 
     @property
-    def deleted_messages(self) -> List[Dict[str, str]]:
+    def deleted_messages(self) -> list[dict[str, str]]:
         """Get all message IDs deleted through this backend."""
         return self._deleted_messages
 
-    def get_sent_messages(self) -> List[TelegramMessage]:
+    def get_sent_messages(self) -> list[TelegramMessage]:
         """Get all messages sent through this backend (copy)."""
         return self._sent_messages.copy()
 
-    def get_edited_messages(self) -> List[TelegramMessage]:
+    def get_edited_messages(self) -> list[TelegramMessage]:
         """Get all messages edited through this backend (copy)."""
         return self._edited_messages.copy()
 
-    def get_deleted_messages(self) -> List[Dict[str, str]]:
+    def get_deleted_messages(self) -> list[dict[str, str]]:
         """Get all messages deleted through this backend (copy)."""
         return self._deleted_messages.copy()
 
-    def get_reactions(self) -> List[Dict[str, str]]:
+    def get_reactions(self) -> list[dict[str, str]]:
         """Get all reactions added/removed through this backend (copy)."""
         return self._reactions.copy()
 
-    def get_presence_updates(self) -> List[Dict[str, Any]]:
+    def get_presence_updates(self) -> list[dict[str, Any]]:
         """Get all presence updates (copy)."""
         return self._presence_updates.copy()
 
     @property
-    def created_dms(self) -> List[List[str]]:
+    def created_dms(self) -> list[list[str]]:
         """Get all DMs created through this backend."""
         return self._created_dms
 
@@ -293,13 +293,13 @@ class MockTelegramBackend(TelegramBackend):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a mock user."""
         if isinstance(identifier, TelegramUser):
             return identifier
@@ -325,11 +325,11 @@ class MockTelegramBackend(TelegramBackend):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a mock channel."""
         if isinstance(identifier, TelegramChannel):
             return identifier
@@ -354,11 +354,11 @@ class MockTelegramBackend(TelegramBackend):
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch mock messages from a channel."""
         channel_id = channel.id if isinstance(channel, Channel) else str(channel)
         messages = self._mock_messages.get(channel_id, [])
@@ -381,7 +381,7 @@ class MockTelegramBackend(TelegramBackend):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> TelegramMessage:
@@ -402,7 +402,7 @@ class MockTelegramBackend(TelegramBackend):
             content=content,
             message_id=int(message_id),
             chat_id=channel_id,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
             author=TelegramUser(id="bot_user"),
             channel=TelegramChannel(id=channel_id),
             thread=Thread(id=thread_val) if thread_val else None,
@@ -414,9 +414,9 @@ class MockTelegramBackend(TelegramBackend):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> TelegramMessage:
         """Edit a mock message."""
@@ -432,7 +432,7 @@ class MockTelegramBackend(TelegramBackend):
             content=content,
             message_id=int(message_id),
             chat_id=channel_id,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
             author=TelegramUser(id="bot_user"),
             channel=TelegramChannel(id=channel_id) if channel_id else None,
             is_edited=True,
@@ -442,8 +442,8 @@ class MockTelegramBackend(TelegramBackend):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a mock message."""
         if isinstance(message, Message):
@@ -459,16 +459,16 @@ class MockTelegramBackend(TelegramBackend):
 
     async def forward_message(
         self,
-        message: Union[str, Message],
-        to_channel: Union[str, Channel],
+        message: str | Message,
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> TelegramMessage:
         """Forward a mock message."""
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID.")
+            raise ValueError("forward_message requires a Message object, not just a message ID.")  # noqa: TRY004
 
         dest_channel_id = to_channel.id if isinstance(to_channel, Channel) else str(to_channel)
 
@@ -491,7 +491,7 @@ class MockTelegramBackend(TelegramBackend):
             content=forwarded_content,
             message_id=int(message_id),
             chat_id=dest_channel_id,
-            created_at=datetime.now(timezone.utc),
+            created_at=datetime.now(UTC),
             author=TelegramUser(id="bot_user"),
             channel=TelegramChannel(id=dest_channel_id),
             message_type=MessageType.FORWARD,
@@ -509,7 +509,7 @@ class MockTelegramBackend(TelegramBackend):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set mock presence."""
@@ -521,16 +521,16 @@ class MockTelegramBackend(TelegramBackend):
             }
         )
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get mock presence for a user."""
         user_id = user.id if isinstance(user, User) else user
         return self._mock_presence.get(user_id)
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a mock reaction."""
         if isinstance(message, Message):
@@ -551,9 +551,9 @@ class MockTelegramBackend(TelegramBackend):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a mock reaction."""
         if isinstance(message, Message):
@@ -574,8 +574,8 @@ class MockTelegramBackend(TelegramBackend):
 
     async def create_dm(
         self,
-        users: List[Union[str, User]],
-    ) -> Optional[str]:
+        users: list[str | User],
+    ) -> str | None:
         """Create a mock DM channel."""
         user_ids: list[str] = []
         for user in users:

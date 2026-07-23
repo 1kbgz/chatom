@@ -7,7 +7,7 @@ from enum import Enum
 
 from chatom.base import Activity, Field, Presence, PresenceStatus
 
-__all__ = ("DiscordPresence", "DiscordActivityType")
+__all__ = ("DiscordActivityType", "DiscordPresence")
 
 
 class DiscordActivityType(str, Enum):

@@ -6,9 +6,10 @@ This module provides the Discord backend using the discord.py library.
 import asyncio
 import importlib
 import re
-from datetime import datetime, timezone
+from collections.abc import AsyncIterator
+from datetime import UTC, datetime
 from logging import getLogger
-from typing import Any, AsyncIterator, ClassVar, List, Optional, Union
+from typing import Any, ClassVar
 
 from pydantic import Field
 
@@ -43,14 +44,14 @@ __all__ = ("DiscordBackend",)
 _log = getLogger(__name__)
 
 
-def _discord_attachments(msg: Any) -> List[Attachment]:
+def _discord_attachments(msg: Any) -> list[Attachment]:
     """Extract chatom attachments from a discord.py Message.
 
     Discord attachment URLs are publicly downloadable (signed CDN links),
     so the base :meth:`BackendBase.download_attachment` works without an
     override.
     """
-    attachments: List[Attachment] = []
+    attachments: list[Attachment] = []
     for att in getattr(msg, "attachments", None) or []:
         content_type = getattr(att, "content_type", "") or ""
         att_type = Attachment.from_content_type(content_type) if content_type else AttachmentType.FILE
@@ -210,7 +211,7 @@ class DiscordBackend(BackendBase):
     name: ClassVar[str] = "discord"
     display_name: ClassVar[str] = "Discord"
     format: ClassVar[Format] = Format.DISCORD_MARKDOWN
-    mention_pattern: ClassVar[Optional[re.Pattern]] = re.compile(r"<@!?(\d+)>")
+    mention_pattern: ClassVar[re.Pattern | None] = re.compile(r"<@!?(\d+)>")
 
     # Type classes for this backend (used by conversion module)
     user_class: ClassVar[type] = DiscordUser
@@ -218,23 +219,23 @@ class DiscordBackend(BackendBase):
     presence_class: ClassVar[type] = DiscordPresence
     guild_class: ClassVar[type] = DiscordGuild
 
-    capabilities: Optional[BackendCapabilities] = DISCORD_CAPABILITIES
+    capabilities: BackendCapabilities | None = DISCORD_CAPABILITIES
     config: DiscordConfig = Field(default_factory=DiscordConfig)
 
     # Discord.py client instance
     _client: Any = None
 
     # Cached bot info (set during connect or on first get_bot_info call)
-    _bot_user_id: Optional[str] = None
-    _bot_user_name: Optional[str] = None
+    _bot_user_id: str | None = None
+    _bot_user_name: str | None = None
 
     @property
-    def bot_user_id(self) -> Optional[str]:
+    def bot_user_id(self) -> str | None:
         """Get the bot's user ID (cached from connect/get_bot_info)."""
         return self._bot_user_id
 
     @property
-    def bot_user_name(self) -> Optional[str]:
+    def bot_user_name(self) -> str | None:
         """Get the bot's username (cached from connect/get_bot_info)."""
         return self._bot_user_name
 
@@ -287,13 +288,13 @@ class DiscordBackend(BackendBase):
 
     async def fetch_user(
         self,
-        identifier: Optional[Union[str, User]] = None,
+        identifier: str | User | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-        email: Optional[str] = None,
-        handle: Optional[str] = None,
-    ) -> Optional[User]:
+        id: str | None = None,
+        name: str | None = None,
+        email: str | None = None,
+        handle: str | None = None,
+    ) -> User | None:
         """Fetch a user from Discord.
 
         Accepts flexible inputs:
@@ -368,11 +369,11 @@ class DiscordBackend(BackendBase):
 
     async def fetch_channel(
         self,
-        identifier: Optional[Union[str, Channel]] = None,
+        identifier: str | Channel | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Channel]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Channel | None:
         """Fetch a channel from Discord.
 
         Accepts flexible inputs:
@@ -434,19 +435,18 @@ class DiscordBackend(BackendBase):
         # Name search - check cache only
         if name:
             for cached_channel in self.channels.all():
-                if isinstance(cached_channel, DiscordChannel):
-                    if cached_channel.name.lower() == name.lower():
-                        return cached_channel
+                if isinstance(cached_channel, DiscordChannel) and cached_channel.name.lower() == name.lower():
+                    return cached_channel
 
         return None
 
     async def fetch_messages(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         limit: int = 100,
-        before: Optional[Union[str, Message, datetime]] = None,
-        after: Optional[Union[str, Message, datetime]] = None,
-    ) -> List[Message]:
+        before: str | Message | datetime | None = None,
+        after: str | Message | datetime | None = None,
+    ) -> list[Message]:
         """Fetch messages from a Discord channel, newest-first.
 
         Args:
@@ -480,12 +480,12 @@ class DiscordBackend(BackendBase):
             if after_bound is not None:
                 kwargs["after"] = after_bound
 
-            messages: List[Message] = []
+            messages: list[Message] = []
             async for msg in discord_channel.history(**kwargs):
                 message = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
-                    created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    created_at=msg.created_at.replace(tzinfo=UTC) if msg.created_at else datetime.now(UTC),
                     author=DiscordUser(id=str(msg.author.id)),
                     channel=DiscordChannel(id=str(msg.channel.id)),
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
@@ -494,28 +494,28 @@ class DiscordBackend(BackendBase):
                 )
                 messages.append(message)
 
-            messages.sort(key=lambda m: m.created_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+            messages.sort(key=lambda m: m.created_at or datetime.min.replace(tzinfo=UTC), reverse=True)
             return messages[:limit]
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to fetch messages: {e}") from e
 
     @staticmethod
-    def _discord_bound(value: Optional[Union[str, Message, datetime]]) -> Any:
+    def _discord_bound(value: str | Message | datetime | None) -> Any:
         """Coerce a range bound to a value ``history()`` accepts, or None."""
         if value is None:
             return None
         if isinstance(value, datetime):
-            return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+            return value if value.tzinfo else value.replace(tzinfo=UTC)
         message_id = value.id if isinstance(value, Message) else value
         return discord.Object(id=int(message_id))
 
     async def search_messages(
         self,
         query: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         limit: int = 50,
         **kwargs: Any,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """Search for messages matching a query.
 
         Note: Discord's API doesn't have a direct message search endpoint for bots.
@@ -549,7 +549,7 @@ class DiscordBackend(BackendBase):
             if discord_channel is None:
                 return []
 
-            messages: List[Message] = []
+            messages: list[Message] = []
             # Fetch more messages than limit to account for filtering
             fetch_limit = min(limit * 5, 500)
 
@@ -565,7 +565,7 @@ class DiscordBackend(BackendBase):
                 message = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
-                    created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    created_at=msg.created_at.replace(tzinfo=UTC) if msg.created_at else datetime.now(UTC),
                     author=DiscordUser(id=str(msg.author.id)),
                     channel=DiscordChannel(id=str(msg.channel.id)),
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
@@ -583,7 +583,7 @@ class DiscordBackend(BackendBase):
 
     async def send_message(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         content: str,
         **kwargs: Any,
     ) -> Message:
@@ -639,7 +639,7 @@ class DiscordBackend(BackendBase):
             return DiscordMessage(
                 id=str(msg.id),
                 content=msg.content,
-                created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                created_at=msg.created_at.replace(tzinfo=UTC) if msg.created_at else datetime.now(UTC),
                 author=DiscordUser(id=str(msg.author.id)),
                 channel=DiscordChannel(id=str(msg.channel.id)),
                 guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
@@ -649,7 +649,7 @@ class DiscordBackend(BackendBase):
 
     async def upload_file(
         self,
-        channel: Union[str, Channel],
+        channel: str | Channel,
         data: bytes,
         filename: str = "file",
         content_type: str = "",
@@ -679,7 +679,7 @@ class DiscordBackend(BackendBase):
             return DiscordMessage(
                 id=str(msg.id),
                 content=msg.content or "",
-                created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                created_at=msg.created_at.replace(tzinfo=UTC) if msg.created_at else datetime.now(UTC),
                 author=DiscordUser(id=str(msg.author.id)),
                 channel=DiscordChannel(id=str(msg.channel.id)),
                 guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
@@ -689,9 +689,9 @@ class DiscordBackend(BackendBase):
 
     async def edit_message(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         content: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         **kwargs: Any,
     ) -> Message:
         """Edit a Discord message.
@@ -722,7 +722,7 @@ class DiscordBackend(BackendBase):
             return DiscordMessage(
                 id=str(edited_msg.id),
                 content=edited_msg.content,
-                created_at=edited_msg.created_at.replace(tzinfo=timezone.utc) if edited_msg.created_at else datetime.now(timezone.utc),
+                created_at=edited_msg.created_at.replace(tzinfo=UTC) if edited_msg.created_at else datetime.now(UTC),
                 author=DiscordUser(id=str(edited_msg.author.id)),
                 channel=DiscordChannel(id=str(edited_msg.channel.id)),
                 guild=Organization(id=str(edited_msg.guild.id)) if edited_msg.guild else None,
@@ -733,8 +733,8 @@ class DiscordBackend(BackendBase):
 
     async def delete_message(
         self,
-        message: Union[str, Message],
-        channel: Optional[Union[str, Channel]] = None,
+        message: str | Message,
+        channel: str | Channel | None = None,
     ) -> None:
         """Delete a Discord message.
 
@@ -760,11 +760,11 @@ class DiscordBackend(BackendBase):
 
     async def forward_message(
         self,
-        message: Union[str, Message],
-        to_channel: Union[str, Channel],
+        message: str | Message,
+        to_channel: str | Channel,
         *,
         include_attribution: bool = True,
-        prefix: Optional[str] = None,
+        prefix: str | None = None,
         **kwargs: Any,
     ) -> DiscordMessage:
         """Forward a message to another Discord channel.
@@ -787,7 +787,7 @@ class DiscordBackend(BackendBase):
 
         # Resolve the source message if it's just an ID
         if isinstance(message, str):
-            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")
+            raise ValueError("forward_message requires a Message object, not just a message ID. Use fetch_messages() to get the full message first.")  # noqa: TRY004
 
         # Resolve destination channel
         dest_channel_id = await self._resolve_channel_id(to_channel)
@@ -822,7 +822,7 @@ class DiscordBackend(BackendBase):
             forwarded_msg = DiscordMessage(
                 id=str(sent_msg.id),
                 content=sent_msg.content,
-                created_at=sent_msg.created_at.replace(tzinfo=timezone.utc) if sent_msg.created_at else datetime.now(timezone.utc),
+                created_at=sent_msg.created_at.replace(tzinfo=UTC) if sent_msg.created_at else datetime.now(UTC),
                 author=DiscordUser(id=str(sent_msg.author.id)),
                 channel=DiscordChannel(id=str(sent_msg.channel.id)),
                 guild=Organization(id=str(sent_msg.guild.id)) if sent_msg.guild else None,
@@ -837,7 +837,7 @@ class DiscordBackend(BackendBase):
     async def set_presence(
         self,
         status: str,
-        status_text: Optional[str] = None,
+        status_text: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Set the bot's presence on Discord.
@@ -879,7 +879,7 @@ class DiscordBackend(BackendBase):
 
         await self._client.change_presence(status=discord_status, activity=activity)
 
-    async def get_presence(self, user: Union[str, User]) -> Optional[Presence]:
+    async def get_presence(self, user: str | User) -> Presence | None:
         """Get a user's presence on Discord.
 
         Note: This requires the GUILD_PRESENCES intent and caching.
@@ -929,9 +929,9 @@ class DiscordBackend(BackendBase):
 
     async def add_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Add a reaction to a message.
 
@@ -958,9 +958,9 @@ class DiscordBackend(BackendBase):
 
     async def remove_reaction(
         self,
-        message: Union[str, Message],
+        message: str | Message,
         emoji: str,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
     ) -> None:
         """Remove a reaction from a message.
 
@@ -1028,7 +1028,7 @@ class DiscordBackend(BackendBase):
         """
         return "@everyone"
 
-    async def get_bot_info(self) -> Optional[User]:
+    async def get_bot_info(self) -> User | None:
         """Get information about the connected bot user.
 
         Returns:
@@ -1054,12 +1054,12 @@ class DiscordBackend(BackendBase):
                 self._bot_user_id = user.id
                 self._bot_user_name = user.name or user.handle
                 return user
-        except Exception:
+        except Exception:  # noqa: BLE001, S110
             pass
 
         return None
 
-    async def create_dm(self, users: List[Union[str, User]]) -> Optional[str]:
+    async def create_dm(self, users: list[str | User]) -> str | None:
         """Create a DM channel with a user.
 
         Note: Discord only supports 1:1 DMs from bots, so only the first
@@ -1095,9 +1095,9 @@ class DiscordBackend(BackendBase):
         name: str,
         description: str = "",
         public: bool = True,
-        guild_id: Optional[str] = None,
+        guild_id: str | None = None,
         **kwargs: Any,
-    ) -> Optional[str]:
+    ) -> str | None:
         """Create a new guild text channel.
 
         Note: This requires the bot to have MANAGE_CHANNELS permission
@@ -1147,8 +1147,8 @@ class DiscordBackend(BackendBase):
     async def fetch_channel_by_name(
         self,
         name: str,
-        guild_id: Optional[str] = None,
-    ) -> Optional[Channel]:
+        guild_id: str | None = None,
+    ) -> Channel | None:
         """Fetch a channel by name from a guild.
 
         This method searches through the guild's channels to find one
@@ -1167,9 +1167,8 @@ class DiscordBackend(BackendBase):
 
         # Check cache first
         for cached_channel in self.channels.all():
-            if isinstance(cached_channel, DiscordChannel):
-                if cached_channel.name.lower() == name.lower():
-                    return cached_channel
+            if isinstance(cached_channel, DiscordChannel) and cached_channel.name.lower() == name.lower():
+                return cached_channel
 
         # Resolve guild ID
         target_guild_id = guild_id or self.config.guild_id
@@ -1205,8 +1204,8 @@ class DiscordBackend(BackendBase):
     async def fetch_user_by_name(
         self,
         name: str,
-        guild_id: Optional[str] = None,
-    ) -> Optional[User]:
+        guild_id: str | None = None,
+    ) -> User | None:
         """Fetch a user by username from a guild.
 
         This method searches through the guild's members to find one
@@ -1306,11 +1305,11 @@ class DiscordBackend(BackendBase):
 
     async def fetch_organization(
         self,
-        identifier: Optional[Union[str, Organization]] = None,
+        identifier: str | Organization | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Organization]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Organization | None:
         """Fetch a guild (organization) from Discord.
 
         Args:
@@ -1374,7 +1373,7 @@ class DiscordBackend(BackendBase):
 
         return None
 
-    async def list_organizations(self) -> List[Organization]:
+    async def list_organizations(self) -> list[Organization]:
         """List all guilds the bot has access to.
 
         Returns:
@@ -1406,18 +1405,18 @@ class DiscordBackend(BackendBase):
     # Aliases for Discord terminology
     async def fetch_guild(
         self,
-        identifier: Optional[Union[str, Organization]] = None,
+        identifier: str | Organization | None = None,
         *,
-        id: Optional[str] = None,
-        name: Optional[str] = None,
-    ) -> Optional[Organization]:
+        id: str | None = None,
+        name: str | None = None,
+    ) -> Organization | None:
         """Fetch a guild from Discord.
 
         This is an alias for fetch_organization using Discord terminology.
         """
         return await self.fetch_organization(identifier, id=id, name=name)
 
-    async def list_guilds(self) -> List[Organization]:
+    async def list_guilds(self) -> list[Organization]:
         """List all guilds the bot has access to.
 
         This is an alias for list_organizations using Discord terminology.
@@ -1426,7 +1425,7 @@ class DiscordBackend(BackendBase):
 
     async def stream_messages(
         self,
-        channel: Optional[Union[str, Channel]] = None,
+        channel: str | Channel | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ) -> AsyncIterator[DiscordMessage]:
@@ -1452,7 +1451,7 @@ class DiscordBackend(BackendBase):
             raise RuntimeError("discord.py is not installed")
 
         # Resolve channel ID if provided
-        channel_id: Optional[str] = None
+        channel_id: str | None = None
         if channel is not None:
             channel_id = await self._resolve_channel_id(channel)
 
@@ -1460,7 +1459,7 @@ class DiscordBackend(BackendBase):
         bot_user_id = str(self._client.user.id) if self._client.user else None
 
         # Track when the stream started for skip_history
-        stream_start_time = datetime.now(timezone.utc)
+        stream_start_time = datetime.now(UTC)
 
         # Create a queue for messages
         message_queue: asyncio.Queue[DiscordMessage] = asyncio.Queue()
@@ -1491,7 +1490,7 @@ class DiscordBackend(BackendBase):
 
                 # Skip messages from before the stream started
                 if skip_history:
-                    msg_time = msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc)
+                    msg_time = msg.created_at.replace(tzinfo=UTC) if msg.created_at else datetime.now(UTC)
                     if msg_time < stream_start_time:
                         _log.debug("stream_messages on_message: Skipping old message: %s < %s", msg_time, stream_start_time)
                         return
@@ -1499,7 +1498,7 @@ class DiscordBackend(BackendBase):
                 _log.debug("stream_messages on_message: Creating DiscordMessage and queueing...")
 
                 # Create DiscordUser objects for mentions
-                mention_users: List[User] = [
+                mention_users: list[User] = [
                     DiscordUser(
                         id=str(u.id),
                         name=u.name,
@@ -1516,7 +1515,7 @@ class DiscordBackend(BackendBase):
                 discord_msg = DiscordMessage(
                     id=str(msg.id),
                     content=msg.content,
-                    created_at=msg.created_at.replace(tzinfo=timezone.utc) if msg.created_at else datetime.now(timezone.utc),
+                    created_at=msg.created_at.replace(tzinfo=UTC) if msg.created_at else datetime.now(UTC),
                     author=DiscordUser(id=str(msg.author.id)),
                     channel=channel,
                     guild=Organization(id=str(msg.guild.id)) if msg.guild else None,
@@ -1535,10 +1534,9 @@ class DiscordBackend(BackendBase):
                 await message_queue.put(discord_msg)
                 _log.debug("stream_messages on_message: Queued message, queue size now: %d", message_queue.qsize())
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 # Log errors for debugging
                 _log.warning("stream_messages on_message exception: %s", e)
-                pass
 
         # Register the message handler
         self._client.event(on_message)
@@ -1570,7 +1568,7 @@ class DiscordBackend(BackendBase):
                     message = await asyncio.wait_for(message_queue.get(), timeout=1.0)
                     _log.debug("stream_messages: Yielding message %s", message.id)
                     yield message
-                except asyncio.TimeoutError:
+                except TimeoutError:
                     continue
         finally:
             # Clean up
