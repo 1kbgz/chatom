@@ -258,7 +258,8 @@
 <span class="sd">This module provides the Telegram-specific Message class.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Attachment</span><span class="p">,</span> <span class="n">AttachmentType</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Image</span><span class="p">,</span> <span class="n">Message</span><span class="p">,</span> <span class="n">User</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.telegram.channel</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelegramChannel</span>
@@ -270,7 +271,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TelegramMessage&quot;</span><span class="p">,)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_telegram_attachments</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Attachment</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_telegram_attachments</span><span class="p">(</span><span class="n">msg</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Attachment</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract chatom attachments from a python-telegram-bot Message.</span>
 
 <span class="sd">    Telegram does not expose download URLs directly — each media object</span>
@@ -278,7 +279,7 @@
 <span class="sd">    ``file_id`` is stored as the attachment ``id`` so</span>
 <span class="sd">    :meth:`TelegramBackend.download_attachment` can fetch the bytes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">attachments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Attachment</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">attachments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Attachment</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="n">photos</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;photo&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">photos</span><span class="p">:</span>
@@ -372,19 +373,19 @@
         <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The chat ID this message belongs to.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">message_thread_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">message_thread_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Thread (topic) ID in a forum supergroup.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">reply_to_message_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">reply_to_message_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the message being replied to.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">forward_origin</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">forward_origin</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Information about the original forwarded message.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">entities</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of message entities from the API.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -460,7 +461,7 @@
 <div class="viewcode-block" id="TelegramMessage.from_api_response">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.message.TelegramMessage.from_api_response">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;TelegramMessage&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;TelegramMessage&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a TelegramMessage from a Telegram API response dict.</span>
 
 <span class="sd">        Args:</span>
@@ -469,7 +470,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A TelegramMessage instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
         <span class="n">from_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from&quot;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">author</span> <span class="o">=</span> <span class="p">(</span>
@@ -499,10 +500,10 @@
 
         <span class="n">msg_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message_id&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">date</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
-        <span class="n">created_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">created_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="c1"># Extract mention entities</span>
-        <span class="n">mention_users</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mention_users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;entities&quot;</span><span class="p">,</span> <span class="p">[]):</span>
             <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;text_mention&quot;</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">):</span>
                 <span class="n">u</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
@@ -546,13 +547,12 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            A TelegramMessage instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timezone</span>
 
         <span class="n">author</span> <span class="o">=</span> <span class="n">TelegramUser</span><span class="o">.</span><span class="n">from_telegram_user</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">from_user</span><span class="p">)</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">from_user</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="n">TelegramChannel</span><span class="o">.</span><span class="n">from_telegram_chat</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">chat</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="c1"># Extract mention entities</span>
-        <span class="n">mention_users</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mention_users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;text_mention&quot;</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
@@ -566,7 +566,7 @@
             <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
             <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
             <span class="n">is_bot</span><span class="o">=</span><span class="n">author</span><span class="o">.</span><span class="n">is_bot</span> <span class="k">if</span> <span class="n">author</span> <span class="k">else</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">created_at</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">date</span> <span class="ow">and</span> <span class="n">msg</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">msg</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
+            <span class="n">created_at</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="n">UTC</span><span class="p">)</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">date</span> <span class="ow">and</span> <span class="n">msg</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">tzinfo</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">msg</span><span class="o">.</span><span class="n">date</span><span class="p">,</span>
             <span class="n">is_edited</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">edit_date</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">message_thread_id</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">message_thread_id</span><span class="p">,</span>
             <span class="n">reply_to_message_id</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">reply_to_message</span><span class="o">.</span><span class="n">message_id</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">reply_to_message</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>

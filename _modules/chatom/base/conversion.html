@@ -273,28 +273,28 @@
 <span class="sd">    &gt;&gt;&gt; base_user = demote(discord_user)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;BackendNotFoundError&quot;</span><span class="p">,</span>
+    <span class="c1"># Exceptions</span>
+    <span class="s2">&quot;ConversionError&quot;</span><span class="p">,</span>
+    <span class="c1"># Validation result</span>
+    <span class="s2">&quot;ValidationResult&quot;</span><span class="p">,</span>
     <span class="c1"># Core functions</span>
     <span class="s2">&quot;can_promote&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;promote&quot;</span><span class="p">,</span>
     <span class="s2">&quot;demote&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;validate_for_backend&quot;</span><span class="p">,</span>
-    <span class="c1"># Registry functions</span>
-    <span class="s2">&quot;register_backend_type&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_backend_type&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_base_type&quot;</span><span class="p">,</span>
     <span class="s2">&quot;list_backends_for_type&quot;</span><span class="p">,</span>
-    <span class="c1"># Validation result</span>
-    <span class="s2">&quot;ValidationResult&quot;</span><span class="p">,</span>
-    <span class="c1"># Exceptions</span>
-    <span class="s2">&quot;ConversionError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;BackendNotFoundError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;promote&quot;</span><span class="p">,</span>
+    <span class="c1"># Registry functions</span>
+    <span class="s2">&quot;register_backend_type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;validate_for_backend&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -304,18 +304,14 @@
 <div class="viewcode-block" id="ConversionError">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.ConversionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConversionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a type conversion fails.&quot;&quot;&quot;</span>
-
-    <span class="k">pass</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a type conversion fails.&quot;&quot;&quot;</span></div>
 
 
 
 <div class="viewcode-block" id="BackendNotFoundError">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.BackendNotFoundError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendNotFoundError</span><span class="p">(</span><span class="n">ConversionError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a backend or backend type is not found.&quot;&quot;&quot;</span>
-
-    <span class="k">pass</span></div>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a backend or backend type is not found.&quot;&quot;&quot;</span></div>
 
 
 
@@ -334,9 +330,9 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">valid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">missing_required</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">invalid_fields</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">warnings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">missing_required</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">invalid_fields</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">warnings</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="n">valid</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">missing_required</span> <span class="o">=</span> <span class="n">missing_required</span> <span class="ow">or</span> <span class="p">[]</span>
@@ -358,10 +354,10 @@
 
 
 <span class="c1"># Registry mapping: base_type_name -&gt; backend -&gt; backend_type_class</span>
-<span class="n">_TYPE_REGISTRY</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_TYPE_REGISTRY</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="c1"># Mapping from backend type class to its base type class</span>
-<span class="n">_BASE_TYPE_MAP</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_BASE_TYPE_MAP</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
 <span class="c1"># Flag to track if types have been registered</span>
 <span class="n">_TYPES_REGISTERED</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -384,8 +380,8 @@
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.register_backend_type">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">register_backend_type</span><span class="p">(</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">base_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
-    <span class="n">backend_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
+    <span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
+    <span class="n">backend_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a backend-specific type for a base type.</span>
 
@@ -408,9 +404,9 @@
 <div class="viewcode-block" id="get_backend_type">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.get_backend_type">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_backend_type</span><span class="p">(</span>
-    <span class="n">base_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
+    <span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the backend-specific type for a base type.</span>
 
 <span class="sd">    Args:</span>
@@ -428,7 +424,7 @@
 
 <div class="viewcode-block" id="get_base_type">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.get_base_type">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_base_type</span><span class="p">(</span><span class="n">backend_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_base_type</span><span class="p">(</span><span class="n">backend_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the base type for a backend-specific type.</span>
 
 <span class="sd">    Args:</span>
@@ -444,7 +440,7 @@
 
 <div class="viewcode-block" id="list_backends_for_type">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.list_backends_for_type">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">list_backends_for_type</span><span class="p">(</span><span class="n">base_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_backends_for_type</span><span class="p">(</span><span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List all backends that have a registered type for the given base type.</span>
 
 <span class="sd">    Args:</span>
@@ -483,7 +479,7 @@
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
 
     <span class="c1"># Get the backend type</span>
-    <span class="n">base_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+    <span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
 
     <span class="c1"># Walk up the inheritance chain to find the base type</span>
     <span class="k">while</span> <span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_TYPE_REGISTRY</span><span class="p">:</span>
@@ -589,7 +585,7 @@
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
 
     <span class="c1"># Get the backend type</span>
-    <span class="n">base_type</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+    <span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
 
     <span class="c1"># If the instance is already a backend type, get its base type</span>
     <span class="n">registered_base</span> <span class="o">=</span> <span class="n">_BASE_TYPE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_type</span><span class="p">)</span>
@@ -659,7 +655,7 @@
         <span class="c1"># Check parent classes</span>
         <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">instance_type</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">_BASE_TYPE_MAP</span><span class="p">:</span>
-                <span class="n">base_type</span> <span class="o">=</span> <span class="n">_BASE_TYPE_MAP</span><span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="n">parent</span><span class="p">)]</span>
+                <span class="n">base_type</span> <span class="o">=</span> <span class="n">_BASE_TYPE_MAP</span><span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="n">parent</span><span class="p">)]</span>
                 <span class="k">break</span>
             <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">_TYPE_REGISTRY</span><span class="p">:</span>
                 <span class="c1"># It&#39;s a base type</span>

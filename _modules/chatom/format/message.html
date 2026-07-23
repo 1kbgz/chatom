@@ -259,7 +259,7 @@
 <span class="sd">between different chat platform formats.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
 
@@ -296,12 +296,12 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base.embed</span><span class="w"> </span><span class="kn">import</span> <span class="n">Embed</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;BACKEND_FORMAT_MAP&quot;</span><span class="p">,</span>
     <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">,</span>
     <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;render_message&quot;</span><span class="p">,</span>
     <span class="s2">&quot;format_message&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;BACKEND_FORMAT_MAP&quot;</span><span class="p">,</span>
     <span class="s2">&quot;get_format_for_backend&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;render_message&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -358,23 +358,23 @@
 <span class="sd">        metadata: Additional platform-specific metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">TextNode</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">FormattedImage</span><span class="p">,</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="n">FormattedEmbed</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">content</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TextNode</span> <span class="o">|</span> <span class="n">Table</span> <span class="o">|</span> <span class="n">FormattedImage</span> <span class="o">|</span> <span class="n">FormattedAttachment</span> <span class="o">|</span> <span class="n">FormattedEmbed</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Content nodes.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">attachments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FormattedAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">attachments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FormattedAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;File attachments.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">embeds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FormattedEmbed</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">embeds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FormattedEmbed</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Rich embeds (rendered natively on supported backends).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">components</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ComponentContainer</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">components</span><span class="p">:</span> <span class="n">ComponentContainer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Interactive components (buttons, menus, etc.).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific metadata.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -427,7 +427,7 @@
 
 <div class="viewcode-block" id="FormattedMessage.append">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.FormattedMessage.append">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TextNode</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">FormattedImage</span><span class="p">,</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="n">TextNode</span> <span class="o">|</span> <span class="n">Table</span> <span class="o">|</span> <span class="n">FormattedImage</span> <span class="o">|</span> <span class="n">FormattedAttachment</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Append content to the message.</span>
 
 <span class="sd">        Args:</span>
@@ -619,8 +619,8 @@
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">style</span><span class="p">:</span> <span class="n">ButtonStyle</span> <span class="o">=</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">,</span>
-        <span class="n">url</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an interactive button to the message.</span>
 
@@ -661,7 +661,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_select</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SelectOption</span><span class="p">],</span>
+        <span class="n">options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SelectOption</span><span class="p">],</span>
         <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Select an option&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a select menu to the message.</span>
@@ -718,11 +718,11 @@
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.FormattedMessage.add_embed">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_embed</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">embed</span><span class="p">:</span> <span class="s2">&quot;Optional[Embed]&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">embed</span><span class="p">:</span> <span class="s2">&quot;Embed | None&quot;</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">color</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">color</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
         <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
@@ -756,7 +756,7 @@
 
 <div class="viewcode-block" id="FormattedMessage.get_embeds">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.FormattedMessage.get_embeds">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_embeds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_embeds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get structured embed payloads for the specified format.</span>
 
 <span class="sd">        Returns a list of dicts suitable for passing to the backend API.</span>
@@ -770,7 +770,7 @@
 <span class="sd">            List of backend-specific embed dicts.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
-        <span class="n">result</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">result</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">fe</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">embeds</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
                 <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fe</span><span class="o">.</span><span class="n">to_discord_dict</span><span class="p">())</span>
@@ -785,7 +785,7 @@
 
 <div class="viewcode-block" id="FormattedMessage.get_embeds_for">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.FormattedMessage.get_embeds_for">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_embeds_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_embeds_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get structured embed payloads for a specific backend.</span>
 
 <span class="sd">        Args:</span>
@@ -800,7 +800,7 @@
 
 <div class="viewcode-block" id="FormattedMessage.get_components">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.FormattedMessage.get_components">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get rendered components for the specified format.</span>
 
 <span class="sd">        Args:</span>
@@ -834,10 +834,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_content</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">TextNode</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">FormattedImage</span><span class="p">,</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="n">FormattedEmbed</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_attachments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FormattedAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_embeds</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">FormattedEmbed</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_content</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TextNode</span> <span class="o">|</span> <span class="n">Table</span> <span class="o">|</span> <span class="n">FormattedImage</span> <span class="o">|</span> <span class="n">FormattedAttachment</span> <span class="o">|</span> <span class="n">FormattedEmbed</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attachments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FormattedAttachment</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_embeds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FormattedEmbed</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="MessageBuilder.text">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.MessageBuilder.text">[docs]</a>
@@ -929,7 +929,7 @@
 
 <div class="viewcode-block" id="MessageBuilder.bullet_list">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.MessageBuilder.bullet_list">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bullet_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a bullet list.&quot;&quot;&quot;</span>
         <span class="n">list_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">ListItem</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">item</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">UnorderedList</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">list_items</span><span class="p">))</span>
@@ -938,7 +938,7 @@
 
 <div class="viewcode-block" id="MessageBuilder.numbered_list">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.MessageBuilder.numbered_list">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">numbered_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">numbered_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a numbered list.&quot;&quot;&quot;</span>
         <span class="n">list_items</span> <span class="o">=</span> <span class="p">[</span><span class="n">ListItem</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">item</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_content</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderedList</span><span class="p">(</span><span class="n">items</span><span class="o">=</span><span class="n">list_items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">))</span>
@@ -949,8 +949,8 @@
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.MessageBuilder.table">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">table</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
-        <span class="n">headers</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
+        <span class="n">headers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a table from data.&quot;&quot;&quot;</span>
@@ -962,8 +962,8 @@
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.message.MessageBuilder.table_from_dicts">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">table_from_dicts</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
-        <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">caption</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;MessageBuilder&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a table from a list of dictionaries.&quot;&quot;&quot;</span>

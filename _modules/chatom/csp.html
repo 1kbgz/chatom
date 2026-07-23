@@ -277,7 +277,7 @@
 
 <span class="c1"># Check if csp is available</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">csp</span>  <span class="c1"># noqa: F401</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">csp</span>
 
     <span class="n">HAS_CSP</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -289,8 +289,8 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">.nodes</span><span class="w"> </span><span class="kn">import</span> <span class="n">message_reader</span><span class="p">,</span> <span class="n">message_writer</span>
 
     <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;BackendAdapter&quot;</span><span class="p">,</span>
         <span class="s2">&quot;HAS_CSP&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BackendAdapter&quot;</span><span class="p">,</span>
         <span class="s2">&quot;interaction_reader&quot;</span><span class="p">,</span>
         <span class="s2">&quot;message_reader&quot;</span><span class="p">,</span>
         <span class="s2">&quot;message_writer&quot;</span><span class="p">,</span>

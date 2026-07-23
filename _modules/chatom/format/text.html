@@ -260,7 +260,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
 
@@ -269,29 +269,29 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.variant</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMAT</span><span class="p">,</span> <span class="n">Format</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;TextNode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Text&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Raw&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Bold&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Italic&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Strikethrough&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Underline&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ChannelMention&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Code&quot;</span><span class="p">,</span>
     <span class="s2">&quot;CodeBlock&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Quote&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Paragraph&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;LineBreak&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;HorizontalRule&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ListItem&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UnorderedList&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;OrderedList&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Heading&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UserMention&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ChannelMention&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Emoji&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Span&quot;</span><span class="p">,</span>
     <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Emoji&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Heading&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HorizontalRule&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Italic&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;LineBreak&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ListItem&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;OrderedList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Paragraph&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Quote&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Raw&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Span&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Strikethrough&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Text&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TextNode&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Underline&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UnorderedList&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;UserMention&quot;</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -652,7 +652,7 @@
 <span class="sd">        children: The content nodes within the paragraph.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Content nodes within the paragraph.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -701,11 +701,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
             <span class="k">return</span> <span class="s2">&quot;&lt;hr/&gt;&quot;</span>
@@ -742,7 +738,7 @@
 <span class="sd">        items: List items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ListItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ListItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List items.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -752,10 +748,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">):</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
             <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
@@ -778,7 +771,7 @@
 <span class="sd">        start: Starting number.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ListItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ListItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List items.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -789,10 +782,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">):</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
             <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
@@ -857,9 +847,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention uid=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
@@ -890,9 +878,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
-        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -931,9 +917,7 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_id</span><span class="p">:</span>
                 <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span>
-        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unicode</span><span class="p">:</span>
@@ -953,7 +937,7 @@
 <span class="sd">        children: The child nodes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Child nodes.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -980,7 +964,7 @@
 <span class="sd">        children: The document content nodes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">children</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Document content nodes.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1019,14 +1003,14 @@
     <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">bold</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Bold</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bold</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">TextNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bold</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Bold node.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Bold</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">italic</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TextNode</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Italic</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">italic</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">TextNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Italic</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an Italic node.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
