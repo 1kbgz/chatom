@@ -1,8 +1,4 @@
-<<<<<<< before updating
 """Smoke tests to verify all imports work correctly."""
-=======
-from chatom import *
->>>>>>> after updating
 
 
 class TestImports:
