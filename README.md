@@ -86,17 +86,6 @@ finally:
 - [Why the unified frontend works](docs/src/concepts.md)
 - [API reference](docs/src/api.md)
 
-## Development
-
-```bash
-git clone https://github.com/1kbgz/chatom.git
-cd chatom
-pip install -e '.[develop]'
-make test
-make lint
-yardang build
-```
-
 ## License
 
 Chatom is licensed under the [Apache License 2.0](LICENSE).
