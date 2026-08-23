@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.discord.testing</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Mock Discord backend for testing.</span>
+<span></span><span class="sd">"""Mock Discord backend for testing.</span>
 
 <span class="sd">This module provides a mock implementation of the Discord backend</span>
 <span class="sd">for use in testing without requiring an actual Discord connection.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -272,26 +272,26 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.presence</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordPresence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordUser</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;MockDiscordBackend&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"MockDiscordBackend"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="MockDiscordBackend">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MockDiscordBackend</span><span class="p">(</span><span class="n">DiscordBackend</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mock Discord backend for testing.</span>
+<span class="w">    </span><span class="sd">"""Mock Discord backend for testing.</span>
 
 <span class="sd">    This class provides a mock implementation of the Discord backend</span>
-<span class="sd">    that doesn&#39;t require an actual Discord connection. It stores all</span>
+<span class="sd">    that doesn't require an actual Discord connection. It stores all</span>
 <span class="sd">    data in memory and provides methods to set up mock data for tests.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; backend = MockDiscordBackend()</span>
-<span class="sd">        &gt;&gt;&gt; backend.add_mock_user(&quot;123&quot;, &quot;TestUser&quot;, &quot;testuser&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; backend.add_mock_channel(&quot;456&quot;, &quot;general&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; backend.add_mock_user("123", "TestUser", "testuser")</span>
+<span class="sd">        &gt;&gt;&gt; backend.add_mock_channel("456", "general")</span>
 <span class="sd">        &gt;&gt;&gt; await backend.connect()</span>
-<span class="sd">        &gt;&gt;&gt; user = await backend.fetch_user(&quot;123&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; assert user.name == &quot;TestUser&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; user = await backend.fetch_user("123")</span>
+<span class="sd">        &gt;&gt;&gt; assert user.name == "TestUser"</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Mock data stores (private attributes)</span>
     <span class="n">_mock_users</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DiscordUser</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
@@ -308,7 +308,7 @@
     <span class="n">_message_counter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the mock backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the mock backend."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="c1"># Initialize mutable default fields</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_users</span> <span class="o">=</span> <span class="p">{}</span>
@@ -332,27 +332,27 @@
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">avatar_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">discriminator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span>
+        <span class="n">avatar_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">discriminator</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"0"</span><span class="p">,</span>
         <span class="n">global_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">is_bot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">is_system</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiscordUser</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock user for testing.</span>
+<span class="w">        </span><span class="sd">"""Add a mock user for testing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The user ID.</span>
-<span class="sd">            name: The user&#39;s display name.</span>
+<span class="sd">            name: The user's display name.</span>
 <span class="sd">            handle: The username.</span>
-<span class="sd">            avatar_url: URL to user&#39;s avatar.</span>
-<span class="sd">            discriminator: Legacy discriminator (e.g., &quot;1234&quot;).</span>
+<span class="sd">            avatar_url: URL to user's avatar.</span>
+<span class="sd">            discriminator: Legacy discriminator (e.g., "1234").</span>
 <span class="sd">            global_name: Global display name.</span>
 <span class="sd">            is_bot: Whether the user is a bot.</span>
-<span class="sd">            is_system: Whether it&#39;s a Discord system user.</span>
+<span class="sd">            is_system: Whether it's a Discord system user.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The created mock user.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">DiscordUser</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
@@ -374,20 +374,20 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">channel_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="n">channel_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"text"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">guild_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">guild_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">nsfw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">discord_type</span><span class="p">:</span> <span class="n">DiscordChannelType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiscordChannel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock channel for testing.</span>
+<span class="w">        </span><span class="sd">"""Add a mock channel for testing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The channel ID.</span>
 <span class="sd">            name: The channel name.</span>
-<span class="sd">            channel_type: The channel type (&quot;text&quot;, &quot;voice&quot;, &quot;dm&quot;, etc.).</span>
+<span class="sd">            channel_type: The channel type ("text", "voice", "dm", etc.).</span>
 <span class="sd">            topic: The channel topic.</span>
 <span class="sd">            guild_id: The guild/server ID.</span>
 <span class="sd">            position: Channel position.</span>
@@ -396,17 +396,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The created mock channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Map string channel type to DiscordChannelType</span>
         <span class="k">if</span> <span class="n">discord_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">type_map</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_TEXT</span><span class="p">,</span>
-                <span class="s2">&quot;voice&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_VOICE</span><span class="p">,</span>
-                <span class="s2">&quot;dm&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">DM</span><span class="p">,</span>
-                <span class="s2">&quot;group_dm&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GROUP_DM</span><span class="p">,</span>
-                <span class="s2">&quot;category&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_CATEGORY</span><span class="p">,</span>
-                <span class="s2">&quot;news&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_ANNOUNCEMENT</span><span class="p">,</span>
-                <span class="s2">&quot;announcement&quot;</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_ANNOUNCEMENT</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_TEXT</span><span class="p">,</span>
+                <span class="s2">"voice"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_VOICE</span><span class="p">,</span>
+                <span class="s2">"dm"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">DM</span><span class="p">,</span>
+                <span class="s2">"group_dm"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GROUP_DM</span><span class="p">,</span>
+                <span class="s2">"category"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_CATEGORY</span><span class="p">,</span>
+                <span class="s2">"news"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_ANNOUNCEMENT</span><span class="p">,</span>
+                <span class="s2">"announcement"</span><span class="p">:</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_ANNOUNCEMENT</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="n">discord_type</span> <span class="o">=</span> <span class="n">type_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel_type</span><span class="p">,</span> <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_TEXT</span><span class="p">)</span>
 
@@ -434,14 +434,14 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">guild_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">guild_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">edited</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock message for testing.</span>
+<span class="w">        </span><span class="sd">"""Add a mock message for testing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel_id: The channel containing the message.</span>
-<span class="sd">            user_id: The author&#39;s user ID.</span>
+<span class="sd">            user_id: The author's user ID.</span>
 <span class="sd">            content: The message content.</span>
 <span class="sd">            message_id: Optional message ID (auto-generated if not provided).</span>
 <span class="sd">            timestamp: Message timestamp (defaults to now).</span>
@@ -450,7 +450,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The message ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">message_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span><span class="p">)</span>
@@ -482,7 +482,7 @@
         <span class="n">mobile_status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
         <span class="n">web_status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiscordPresence</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set mock presence for a user.</span>
+<span class="w">        </span><span class="sd">"""Set mock presence for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user_id: The user ID.</span>
@@ -494,7 +494,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The created mock presence.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordUser</span>
 
         <span class="n">user</span> <span class="o">=</span> <span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
@@ -512,90 +512,90 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">sent_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DiscordMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages sent through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all messages sent through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of sent messages.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sent_messages</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">edited_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DiscordMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages edited through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all messages edited through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of edited messages.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edited_messages</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">deleted_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all message IDs deleted through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all message IDs deleted through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of deleted message IDs.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span>
 
 <div class="viewcode-block" id="MockDiscordBackend.get_sent_messages">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_sent_messages">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_sent_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DiscordMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages sent through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all messages sent through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of sent messages (copy).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sent_messages</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockDiscordBackend.get_edited_messages">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_edited_messages">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_edited_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">DiscordMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages edited through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all messages edited through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of edited messages.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edited_messages</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockDiscordBackend.get_deleted_messages">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_deleted_messages">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_deleted_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages deleted through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all messages deleted through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of deleted message info (channel_id, message_id).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockDiscordBackend.get_reactions">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_reactions">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all reactions added/removed through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all reactions added/removed through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of reaction info (channel_id, message_id, emoji, action).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockDiscordBackend.get_presence_updates">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_presence_updates">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_presence_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all presence updates made through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all presence updates made through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of presence update info.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presence_updates</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockDiscordBackend.clear">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all mock data and tracking stores.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clear all mock data and tracking stores."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_users</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_channels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -614,14 +614,14 @@
 <div class="viewcode-block" id="MockDiscordBackend.connect">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.connect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mock connect - always succeeds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Mock connect - always succeeds."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connected</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="MockDiscordBackend.disconnect">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.disconnect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mock disconnect.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Mock disconnect."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
@@ -636,7 +636,7 @@
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a mock user by ID or other attributes.</span>
+<span class="w">        </span><span class="sd">"""Fetch a mock user by ID or other attributes.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier: A User object or user ID string.</span>
@@ -647,11 +647,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The mock user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Handle User object input</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">DiscordUser</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">identifier</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifier</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="c1"># Resolve identifier to id</span>
@@ -684,7 +684,7 @@
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a mock channel by ID or name.</span>
+<span class="w">        </span><span class="sd">"""Fetch a mock channel by ID or name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier: A Channel object or channel ID string.</span>
@@ -693,11 +693,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The mock channel if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Handle Channel object input</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">DiscordChannel</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">identifier</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifier</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="c1"># Resolve identifier to id</span>
@@ -729,7 +729,7 @@
         <span class="n">before</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span> <span class="o">|</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">after</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span> <span class="o">|</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch mock messages from a channel.</span>
+<span class="w">        </span><span class="sd">"""Fetch mock messages from a channel.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel to fetch from (ID string or Channel object).</span>
@@ -739,7 +739,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of mock messages.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
         <span class="n">messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel_id</span><span class="p">,</span> <span class="p">[])</span>
 
@@ -773,7 +773,7 @@
         <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a mock message.</span>
+<span class="w">        </span><span class="sd">"""Send a mock message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel to send to (ID string or Channel object).</span>
@@ -782,13 +782,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The mock sent message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve channel ID</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
         <span class="c1"># Normalize standardized kwargs (matches production backend)</span>
-        <span class="n">thread_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_thread_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;thread&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-        <span class="n">reply_to_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_reply_to_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reply_to&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">thread_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_thread_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">reply_to_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_reply_to_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"reply_to"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="c1"># In Discord a thread IS a channel, so route the send there.</span>
         <span class="k">if</span> <span class="n">thread_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">channel_id</span> <span class="o">=</span> <span class="n">thread_id</span>
@@ -801,13 +801,13 @@
             <span class="nb">id</span><span class="o">=</span><span class="n">message_id</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;bot_user&quot;</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"bot_user"</span><span class="p">),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">DiscordChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">),</span>
-            <span class="n">guild</span><span class="o">=</span><span class="n">Organization</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;guild_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;guild_id&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">guild</span><span class="o">=</span><span class="n">Organization</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"guild_id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span> <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"guild_id"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">thread</span><span class="o">=</span><span class="n">Thread</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">thread_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">thread_id</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">reply_to_id</span><span class="p">:</span>
-            <span class="n">message</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;reply_to_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reply_to_id</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"reply_to_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">reply_to_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sent_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">message</span></div>
 
@@ -821,7 +821,7 @@
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Edit a mock message.</span>
+<span class="w">        </span><span class="sd">"""Edit a mock message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to edit (ID string or Message object).</span>
@@ -831,20 +831,20 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The mock edited message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve message and channel IDs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="n">edited_msg</span> <span class="o">=</span> <span class="n">DiscordMessage</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">message_id</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;bot_user&quot;</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"bot_user"</span><span class="p">),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">DiscordChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">channel_id</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">is_edited</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
@@ -859,21 +859,21 @@
         <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a mock message.</span>
+<span class="w">        </span><span class="sd">"""Delete a mock message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to delete (ID string or Message object).</span>
 <span class="sd">            channel: The channel containing the message (required if message is a string).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve message and channel IDs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;channel_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span> <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"channel_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span> <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
         <span class="c1"># Remove from mock messages if present</span>
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">message_id</span><span class="p">]</span></div>
@@ -890,7 +890,7 @@
         <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DiscordMessage</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward a mock message to another channel.</span>
+<span class="w">        </span><span class="sd">"""Forward a mock message to another channel.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to forward (DiscordMessage object).</span>
@@ -901,9 +901,9 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The forwarded message in the destination channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;forward_message requires a Message object, not just a message ID.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"forward_message requires a Message object, not just a message ID."</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
 
         <span class="c1"># Resolve destination channel ID</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">):</span>
@@ -916,22 +916,22 @@
         <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
             <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">include_attribution</span><span class="p">:</span>
-            <span class="n">author_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">&quot;Unknown&quot;</span>
-            <span class="n">channel_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">&quot;unknown channel&quot;</span>
-            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;*Forwarded from #</span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">*</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">author_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">"Unknown"</span>
+            <span class="n">channel_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">"unknown channel"</span>
+            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"*Forwarded from #</span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">*</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
-        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content_parts</span><span class="p">)</span>
+        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content_parts</span><span class="p">)</span>
 
         <span class="c1"># Create the forwarded message</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">message_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;mock_msg_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">message_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"mock_msg_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="n">forwarded_msg</span> <span class="o">=</span> <span class="n">DiscordMessage</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">message_id</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">forwarded_content</span><span class="p">,</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;bot_user&quot;</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">DiscordUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"bot_user"</span><span class="p">),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">DiscordChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">dest_channel_id</span><span class="p">),</span>
             <span class="n">message_type</span><span class="o">=</span><span class="n">MessageType</span><span class="o">.</span><span class="n">FORWARD</span><span class="p">,</span>
         <span class="p">)</span>
@@ -954,17 +954,17 @@
         <span class="n">status_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set mock presence.</span>
+<span class="w">        </span><span class="sd">"""Set mock presence.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            status: The status string.</span>
 <span class="sd">            status_text: Activity text.</span>
 <span class="sd">            **kwargs: Additional options.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_presence_updates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
-                <span class="s2">&quot;status_text&quot;</span><span class="p">:</span> <span class="n">status_text</span><span class="p">,</span>
+                <span class="s2">"status"</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="s2">"status_text"</span><span class="p">:</span> <span class="n">status_text</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
@@ -973,14 +973,14 @@
 <div class="viewcode-block" id="MockDiscordBackend.get_presence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_presence">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_presence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Presence</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mock presence for a user.</span>
+<span class="w">        </span><span class="sd">"""Get mock presence for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user ID string or User object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The mock presence if set, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user_id</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span> <span class="k">else</span> <span class="n">user</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_presence</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
 
@@ -993,27 +993,27 @@
         <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock reaction.</span>
+<span class="w">        </span><span class="sd">"""Add a mock reaction.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to react to (ID string or Message object).</span>
 <span class="sd">            emoji: The emoji to add.</span>
 <span class="sd">            channel: The channel containing the message (required if message is a string).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve message and channel IDs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;channel_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;emoji&quot;</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
-                <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
+                <span class="s2">"channel_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"emoji"</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
+                <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"add"</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
@@ -1026,38 +1026,38 @@
         <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a mock reaction.</span>
+<span class="w">        </span><span class="sd">"""Remove a mock reaction.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to remove reaction from (ID string or Message object).</span>
 <span class="sd">            emoji: The emoji to remove.</span>
 <span class="sd">            channel: The channel containing the message (required if message is a string).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve message and channel IDs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;channel_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;emoji&quot;</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
-                <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;remove&quot;</span><span class="p">,</span>
+                <span class="s2">"channel_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"emoji"</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
+                <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"remove"</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">created_dms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all DMs created through this backend.</span>
+<span class="w">        </span><span class="sd">"""Get all DMs created through this backend.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of user ID lists for each created DM.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_created_dms</span>
 
 <div class="viewcode-block" id="MockDiscordBackend.create_dm">
@@ -1066,14 +1066,14 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mock DM channel with the specified users.</span>
+<span class="w">        </span><span class="sd">"""Create a mock DM channel with the specified users.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            users: List of users to include in the DM (ID strings or User objects).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The DM channel ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Extract user IDs</span>
         <span class="n">user_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
@@ -1082,19 +1082,19 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">user</span><span class="p">)))</span>
+                <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">,</span> <span class="n">user</span><span class="p">)))</span>
 
         <span class="c1"># Track the created DM</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_created_dms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span>
 
         <span class="c1"># Generate a DM channel ID</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dm_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">dm_channel_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_counter</span><span class="si">:</span><span class="s2">018d</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">dm_channel_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_dm_counter</span><span class="si">:</span><span class="s2">018d</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="c1"># Create the DM channel in mock channels</span>
         <span class="n">dm_channel</span> <span class="o">=</span> <span class="n">DiscordChannel</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">dm_channel_id</span><span class="p">,</span>
-            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;dm-</span><span class="si">{</span><span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"dm-</span><span class="si">{</span><span class="s1">'-'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
             <span class="n">discord_type</span><span class="o">=</span><span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">DM</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_channels</span><span class="p">[</span><span class="n">dm_channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">dm_channel</span>

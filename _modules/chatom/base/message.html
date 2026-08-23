@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.message</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Message model for chatom.</span>
+<span></span><span class="sd">"""Message model for chatom.</span>
 
 <span class="sd">This module provides the Message class representing a chat message.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -276,68 +276,68 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Message&quot;</span><span class="p">,</span> <span class="s2">&quot;MessageReference&quot;</span><span class="p">,</span> <span class="s2">&quot;MessageType&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Message"</span><span class="p">,</span> <span class="s2">"MessageReference"</span><span class="p">,</span> <span class="s2">"MessageType"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="MessageType">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.MessageType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MessageType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of messages.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Types of messages."""</span>
 
-    <span class="n">DEFAULT</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A normal user message.&quot;&quot;&quot;</span>
+    <span class="n">DEFAULT</span> <span class="o">=</span> <span class="s2">"default"</span>
+<span class="w">    </span><span class="sd">"""A normal user message."""</span>
 
-    <span class="n">REPLY</span> <span class="o">=</span> <span class="s2">&quot;reply&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A reply to another message.&quot;&quot;&quot;</span>
+    <span class="n">REPLY</span> <span class="o">=</span> <span class="s2">"reply"</span>
+<span class="w">    </span><span class="sd">"""A reply to another message."""</span>
 
-    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="s2">&quot;system&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A system-generated message.&quot;&quot;&quot;</span>
+    <span class="n">SYSTEM</span> <span class="o">=</span> <span class="s2">"system"</span>
+<span class="w">    </span><span class="sd">"""A system-generated message."""</span>
 
-    <span class="n">JOIN</span> <span class="o">=</span> <span class="s2">&quot;join&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User joined notification.&quot;&quot;&quot;</span>
+    <span class="n">JOIN</span> <span class="o">=</span> <span class="s2">"join"</span>
+<span class="w">    </span><span class="sd">"""User joined notification."""</span>
 
-    <span class="n">LEAVE</span> <span class="o">=</span> <span class="s2">&quot;leave&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User left notification.&quot;&quot;&quot;</span>
+    <span class="n">LEAVE</span> <span class="o">=</span> <span class="s2">"leave"</span>
+<span class="w">    </span><span class="sd">"""User left notification."""</span>
 
-    <span class="n">PIN</span> <span class="o">=</span> <span class="s2">&quot;pin&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Message pin notification.&quot;&quot;&quot;</span>
+    <span class="n">PIN</span> <span class="o">=</span> <span class="s2">"pin"</span>
+<span class="w">    </span><span class="sd">"""Message pin notification."""</span>
 
-    <span class="n">THREAD_CREATED</span> <span class="o">=</span> <span class="s2">&quot;thread_created&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thread creation notification.&quot;&quot;&quot;</span>
+    <span class="n">THREAD_CREATED</span> <span class="o">=</span> <span class="s2">"thread_created"</span>
+<span class="w">    </span><span class="sd">"""Thread creation notification."""</span>
 
-    <span class="n">FORWARD</span> <span class="o">=</span> <span class="s2">&quot;forward&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A forwarded message.&quot;&quot;&quot;</span>
+    <span class="n">FORWARD</span> <span class="o">=</span> <span class="s2">"forward"</span>
+<span class="w">    </span><span class="sd">"""A forwarded message."""</span>
 
-    <span class="n">CALL</span> <span class="o">=</span> <span class="s2">&quot;call&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Voice/video call notification.&quot;&quot;&quot;</span>
+    <span class="n">CALL</span> <span class="o">=</span> <span class="s2">"call"</span>
+<span class="w">    </span><span class="sd">"""Voice/video call notification."""</span>
 
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unknown message type.&quot;&quot;&quot;</span></div>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">"unknown"</span>
+<span class="w">    </span><span class="sd">"""Unknown message type."""</span></div>
 
 
 
 <div class="viewcode-block" id="MessageReference">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.MessageReference">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MessageReference</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Reference to another message (for replies, forwards, etc.).</span>
+<span class="w">    </span><span class="sd">"""Reference to another message (for replies, forwards, etc.).</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        message_id: ID of the referenced message.</span>
 <span class="sd">        channel_id: ID of the channel containing the message.</span>
 <span class="sd">        guild_id: ID of the guild/server, if applicable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the referenced message.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"ID of the referenced message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the channel containing the message.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"ID of the channel containing the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">guild_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;ID of the guild/server, if applicable.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"ID of the guild/server, if applicable."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -345,7 +345,7 @@
 <div class="viewcode-block" id="Message">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Message</span><span class="p">(</span><span class="n">Identifiable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a message on a chat platform.</span>
+<span class="w">    </span><span class="sd">"""Represents a message on a chat platform.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        id: Platform-specific unique identifier.</span>
@@ -370,269 +370,269 @@
 <span class="sd">        raw: The raw message data from the backend.</span>
 <span class="sd">        backend: The backend this message originated from.</span>
 <span class="sd">        metadata: Additional platform-specific data.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Text content of the message.&quot;</span><span class="p">,</span>
-        <span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">),</span>
-        <span class="n">serialization_alias</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Text content of the message."</span><span class="p">,</span>
+        <span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">"content"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">),</span>
+        <span class="n">serialization_alias</span><span class="o">=</span><span class="s2">"text"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">author</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User who sent the message.&quot;</span><span class="p">,</span>
-        <span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">),</span>
-        <span class="n">serialization_alias</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"User who sent the message."</span><span class="p">,</span>
+        <span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">"author"</span><span class="p">,</span> <span class="s2">"user"</span><span class="p">),</span>
+        <span class="n">serialization_alias</span><span class="o">=</span><span class="s2">"user"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Channel where the message was sent.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Channel where the message was sent."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">thread</span><span class="p">:</span> <span class="n">Thread</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Thread the message belongs to, if any.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Thread the message belongs to, if any."</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">organization</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Organization&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">organization</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"Organization"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Organization the message belongs to, if applicable.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Organization the message belongs to, if applicable."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">message_type</span><span class="p">:</span> <span class="n">MessageType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">MessageType</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Type of message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">created_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the message was created.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the message was created."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">edited_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the message was last edited.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the message was last edited."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_edited</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the message has been edited.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the message has been edited."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_pinned</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the message is pinned.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the message is pinned."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_bot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the message was sent by a bot.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the message was sent by a bot."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_system</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a system message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a system message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">mentions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Users mentioned in the message.&quot;</span><span class="p">,</span>
-        <span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">&quot;mentions&quot;</span><span class="p">,</span> <span class="s2">&quot;tags&quot;</span><span class="p">),</span>
-        <span class="n">serialization_alias</span><span class="o">=</span><span class="s2">&quot;tags&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Users mentioned in the message."</span><span class="p">,</span>
+        <span class="n">validation_alias</span><span class="o">=</span><span class="n">AliasChoices</span><span class="p">(</span><span class="s2">"mentions"</span><span class="p">,</span> <span class="s2">"tags"</span><span class="p">),</span>
+        <span class="n">serialization_alias</span><span class="o">=</span><span class="s2">"tags"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">attachments</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Attachment</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;File attachments on the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"File attachments on the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">embeds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Embed</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Rich embeds in the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Rich embeds in the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">components</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">&quot;Interactive UI components attached to the message. &quot;</span>
-            <span class="s2">&quot;This is a ``chatom.format.ComponentContainer`` but is typed &quot;</span>
-            <span class="s2">&quot;as ``Any`` here to avoid a circular import; use the typed &quot;</span>
-            <span class="s2">&quot;accessor ``FormattedMessage.components`` when possible.&quot;</span>
+            <span class="s2">"Interactive UI components attached to the message. "</span>
+            <span class="s2">"This is a ``chatom.format.ComponentContainer`` but is typed "</span>
+            <span class="s2">"as ``Any`` here to avoid a circular import; use the typed "</span>
+            <span class="s2">"accessor ``FormattedMessage.components`` when possible."</span>
         <span class="p">),</span>
     <span class="p">)</span>
     <span class="n">reactions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Reaction</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Reactions on the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Reactions on the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">reference</span><span class="p">:</span> <span class="n">MessageReference</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Reference to another message (for replies).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Reference to another message (for replies)."</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">reply_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">reply_to</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"Message"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The message this is replying to.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The message this is replying to."</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">forwarded_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;Message&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">forwarded_from</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"Message"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The original message if this is a forwarded message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The original message if this is a forwarded message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">formatted_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Rich/formatted version of content (HTML, MessageML, etc.).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Rich/formatted version of content (HTML, MessageML, etc.)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">raw</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The raw message data from the backend.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The raw message data from the backend."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The backend this message originated from.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The backend this message originated from."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional platform-specific data.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Additional platform-specific data."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for content for backwards compatibility.</span>
+<span class="w">        </span><span class="sd">"""Alias for content for backwards compatibility.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The message content.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">user</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for author for backwards compatibility.</span>
+<span class="w">        </span><span class="sd">"""Alias for author for backwards compatibility.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[User]: The message author.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">tags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for mentions for backwards compatibility.</span>
+<span class="w">        </span><span class="sd">"""Alias for mentions for backwards compatibility.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[User]: The mentioned users.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">mention_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the IDs of mentioned users.</span>
+<span class="w">        </span><span class="sd">"""Get the IDs of mentioned users.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[str]: List of user IDs mentioned in this message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">author_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the author&#39;s ID.</span>
+<span class="w">        </span><span class="sd">"""Get the author's ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The author ID or empty string if no author.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">channel_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the channel&#39;s ID.</span>
+<span class="w">        </span><span class="sd">"""Get the channel's ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The channel ID or empty string if no channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">thread_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the thread&#39;s ID.</span>
+<span class="w">        </span><span class="sd">"""Get the thread's ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The thread ID or empty string if no thread.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">reply_to_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ID of the message this is replying to.</span>
+<span class="w">        </span><span class="sd">"""Get the ID of the message this is replying to.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The reply-to message ID or empty string if not a reply.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is a reply.</span>
+<span class="w">        </span><span class="sd">"""Check if this message is a reply.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a reply to another message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_type</span> <span class="o">==</span> <span class="n">MessageType</span><span class="o">.</span><span class="n">REPLY</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_attachments</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if message has any attachments.</span>
+<span class="w">        </span><span class="sd">"""Check if message has any attachments.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if message has attachments.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attachments</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_embeds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if message has any embeds.</span>
+<span class="w">        </span><span class="sd">"""Check if message has any embeds.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if message has embeds.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embeds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_dm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is from a direct message.</span>
+<span class="w">        </span><span class="sd">"""Check if this message is from a direct message.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if from a DM channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">is_dm</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">is_truthy</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;yes&quot;</span><span class="p">}</span>
+                <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">"1"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">,</span> <span class="s2">"yes"</span><span class="p">}</span>
             <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">is_truthy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;is_dm&quot;</span><span class="p">,</span> <span class="s2">&quot;is_im&quot;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">is_truthy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"is_dm"</span><span class="p">,</span> <span class="s2">"is_im"</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_direct_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for is_dm.</span>
+<span class="w">        </span><span class="sd">"""Alias for is_dm.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if from a DM channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_dm</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">channel_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the channel name.</span>
+<span class="w">        </span><span class="sd">"""Get the channel name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The channel name or empty string if not available.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"channel_name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">author_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the author name.</span>
+<span class="w">        </span><span class="sd">"""Get the author name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The author name or empty string if not available.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author_name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Message.get_mentioned_user_ids">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.get_mentioned_user_ids">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_mentioned_user_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse and extract user IDs mentioned in the message content.</span>
+<span class="w">        </span><span class="sd">"""Parse and extract user IDs mentioned in the message content.</span>
 
-<span class="sd">        This parses the message content using the backend&#39;s mention format</span>
+<span class="sd">        This parses the message content using the backend's mention format</span>
 <span class="sd">        and returns a list of user IDs that were mentioned. This is useful</span>
 <span class="sd">        for detecting when specific users are mentioned in a message.</span>
 
@@ -643,10 +643,10 @@
 <span class="sd">            List[str]: List of user IDs mentioned in the content.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; msg = Message(content=&quot;Hey &lt;@U123&gt; and &lt;@U456&gt;!&quot;, backend=&quot;slack&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; msg = Message(content="Hey &lt;@U123&gt; and &lt;@U456&gt;!", backend="slack")</span>
 <span class="sd">            &gt;&gt;&gt; msg.get_mentioned_user_ids()</span>
-<span class="sd">            [&#39;U123&#39;, &#39;U456&#39;]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            ['U123', 'U456']</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.mention</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_mention_ids</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">:</span>
@@ -657,19 +657,19 @@
 <div class="viewcode-block" id="Message.get_mentioned_channel_ids">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.get_mentioned_channel_ids">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_mentioned_channel_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse and extract channel IDs mentioned in the message content.</span>
+<span class="w">        </span><span class="sd">"""Parse and extract channel IDs mentioned in the message content.</span>
 
-<span class="sd">        This parses the message content using the backend&#39;s channel mention</span>
+<span class="sd">        This parses the message content using the backend's channel mention</span>
 <span class="sd">        format and returns a list of channel IDs that were referenced.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[str]: List of channel IDs mentioned in the content.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; msg = Message(content=&quot;Join &lt;#C123&gt; and &lt;#C456&gt;!&quot;, backend=&quot;slack&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; msg = Message(content="Join &lt;#C123&gt; and &lt;#C456&gt;!", backend="slack")</span>
 <span class="sd">            &gt;&gt;&gt; msg.get_mentioned_channel_ids()</span>
-<span class="sd">            [&#39;C123&#39;, &#39;C456&#39;]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            ['C123', 'C456']</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">.mention</span><span class="w"> </span><span class="kn">import</span> <span class="n">extract_channel_ids</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="p">:</span>
@@ -680,7 +680,7 @@
 <div class="viewcode-block" id="Message.mentions_user">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.mentions_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mentions_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a specific user is mentioned in this message.</span>
+<span class="w">        </span><span class="sd">"""Check if a specific user is mentioned in this message.</span>
 
 <span class="sd">        Checks both the parsed mentions list and parses the content</span>
 <span class="sd">        to find mentions of the given user.</span>
@@ -694,7 +694,7 @@
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; if message.mentions_user(bot_user):</span>
 <span class="sd">            ...     await handle_bot_mention(message)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="c1"># Check pre-parsed mentions first</span>
         <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">:</span>
@@ -706,21 +706,21 @@
 
 <div class="viewcode-block" id="Message.to_formatted">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.to_formatted">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this message to a FormattedMessage.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FormattedMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Convert this message to a FormattedMessage.</span>
 
 <span class="sd">        Creates a FormattedMessage from the message content,</span>
-<span class="sd">        preserving formatting based on the backend&#39;s format.</span>
+<span class="sd">        preserving formatting based on the backend's format.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            FormattedMessage: The formatted message representation.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; msg = Message(content=&quot;Hello **world**&quot;, backend=&quot;discord&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; msg = Message(content="Hello **world**", backend="discord")</span>
 <span class="sd">            &gt;&gt;&gt; formatted = msg.to_formatted()</span>
 <span class="sd">            &gt;&gt;&gt; formatted.render(Format.SLACK_MARKDOWN)</span>
-<span class="sd">            &#39;Hello *world*&#39;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            'Hello *world*'</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="n">FormattedEmbed</span><span class="p">,</span> <span class="n">FormattedMessage</span>
 
         <span class="n">fm</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span>
@@ -754,12 +754,12 @@
             <span class="n">fm</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span>
 
         <span class="c1"># Add metadata</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"source_backend"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;author_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"author_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;channel_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"channel_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span>
 
         <span class="k">return</span> <span class="n">fm</span></div>
 
@@ -769,18 +769,18 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_formatted</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">formatted</span><span class="p">:</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">formatted</span><span class="p">:</span> <span class="s2">"FormattedMessage"</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a Message from a FormattedMessage.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a Message from a FormattedMessage.</span>
 
 <span class="sd">        Renders the FormattedMessage in the appropriate format for the</span>
 <span class="sd">        target backend and creates a Message instance.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            formatted: The FormattedMessage to convert.</span>
-<span class="sd">            backend: The target backend (e.g., &#39;slack&#39;, &#39;discord&#39;).</span>
+<span class="sd">            backend: The target backend (e.g., 'slack', 'discord').</span>
 <span class="sd">            **kwargs: Additional message attributes.</span>
 
 <span class="sd">        Returns:</span>
@@ -788,11 +788,11 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; from chatom.format import MessageBuilder</span>
-<span class="sd">            &gt;&gt;&gt; fm = MessageBuilder().bold(&quot;Hello&quot;).text(&quot; world&quot;).build()</span>
-<span class="sd">            &gt;&gt;&gt; msg = Message.from_formatted(fm, backend=&quot;slack&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; fm = MessageBuilder().bold("Hello").text(" world").build()</span>
+<span class="sd">            &gt;&gt;&gt; msg = Message.from_formatted(fm, backend="slack")</span>
 <span class="sd">            &gt;&gt;&gt; msg.content</span>
-<span class="sd">            &#39;*Hello* world&#39;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            '*Hello* world'</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">Format</span><span class="p">,</span> <span class="n">get_format_for_backend</span>
 
         <span class="c1"># Determine the format for rendering</span>
@@ -835,22 +835,22 @@
 <div class="viewcode-block" id="Message.render_for">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.render_for">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render this message&#39;s content for a specific backend.</span>
+<span class="w">        </span><span class="sd">"""Render this message's content for a specific backend.</span>
 
 <span class="sd">        Converts the message to a FormattedMessage and renders it</span>
-<span class="sd">        for the target backend&#39;s format.</span>
+<span class="sd">        for the target backend's format.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            backend: The target backend (e.g., &#39;slack&#39;, &#39;discord&#39;).</span>
+<span class="sd">            backend: The target backend (e.g., 'slack', 'discord').</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The rendered message content.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; msg = DiscordMessage(content=&quot;Hello **world**&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; msg.render_for(&quot;slack&quot;)</span>
-<span class="sd">            &#39;Hello *world*&#39;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; msg = DiscordMessage(content="Hello **world**")</span>
+<span class="sd">            &gt;&gt;&gt; msg.render_for("slack")</span>
+<span class="sd">            'Hello *world*'</span>
+<span class="sd">        """</span>
         <span class="n">formatted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_formatted</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">formatted</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span></div>
 
@@ -858,7 +858,7 @@
 <div class="viewcode-block" id="Message.is_message_to_user">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.is_message_to_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_message_to_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message mentions or is directed at a specific user.</span>
+<span class="w">        </span><span class="sd">"""Check if this message mentions or is directed at a specific user.</span>
 
 <span class="sd">        This method checks if the given user is mentioned in the message.</span>
 <span class="sd">        It checks both the mentions list (User objects) and the mention_ids</span>
@@ -871,11 +871,11 @@
 <span class="sd">            bool: True if the user is mentioned in this message.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bot_user = User(id=&quot;U123&quot;, name=&quot;MyBot&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; bot_user = User(id="U123", name="MyBot")</span>
 <span class="sd">            &gt;&gt;&gt; if message.is_message_to_user(bot_user):</span>
 <span class="sd">            ...     # This message mentions the bot</span>
 <span class="sd">            ...     await handle_command(message)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Check if user is in the mentions list by ID</span>
         <span class="k">for</span> <span class="n">mentioned</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">mentioned</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
@@ -887,31 +887,31 @@
 <div class="viewcode-block" id="Message.is_in_thread">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.is_in_thread">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_in_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is part of a thread.</span>
+<span class="w">        </span><span class="sd">"""Check if this message is part of a thread.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the message is in a thread.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">thread_id</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_forwarded</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is a forwarded message.</span>
+<span class="w">        </span><span class="sd">"""Check if this message is a forwarded message.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this message was forwarded from another message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_type</span> <span class="o">==</span> <span class="n">MessageType</span><span class="o">.</span><span class="n">FORWARD</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forwarded_from</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">forwarded_from_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ID of the original message if this is a forward.</span>
+<span class="w">        </span><span class="sd">"""Get the ID of the original message if this is a forward.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The original message ID or empty string if not a forward.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forwarded_from</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">forwarded_from</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forwarded_from</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">forwarded_from</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="c1"># Response Convenience Methods</span>
     <span class="c1"># These methods construct new Message instances based on this message.</span>
@@ -919,8 +919,8 @@
 
 <div class="viewcode-block" id="Message.as_reply">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.as_reply">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new message as a reply to this message.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a new message as a reply to this message.</span>
 
 <span class="sd">        Constructs a new message with the same channel, with this message</span>
 <span class="sd">        set as the reply_to reference.</span>
@@ -933,10 +933,10 @@
 <span class="sd">            A new Message instance configured as a reply.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; reply = message.as_reply(&quot;Thanks for letting me know!&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; reply = message.as_reply("Thanks for letting me know!")</span>
 <span class="sd">            &gt;&gt;&gt; reply.reply_to is message</span>
 <span class="sd">            True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
             <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
             <span class="n">channel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
@@ -949,8 +949,8 @@
 
 <div class="viewcode-block" id="Message.as_thread_reply">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.as_thread_reply">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_thread_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new message as a reply in this message&#39;s thread.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_thread_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a new message as a reply in this message's thread.</span>
 
 <span class="sd">        If this message is already in a thread, the new message is placed</span>
 <span class="sd">        in that thread. Otherwise, a new thread is started on this message.</span>
@@ -963,10 +963,10 @@
 <span class="sd">            A new Message instance configured as a thread reply.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; reply = message.as_thread_reply(&quot;Following up on this...&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; reply = message.as_thread_reply("Following up on this...")</span>
 <span class="sd">            &gt;&gt;&gt; reply.thread is not None</span>
 <span class="sd">            True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># If already in a thread, use that thread; otherwise create thread from this message</span>
         <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">else</span> <span class="n">Thread</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">parent_message</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
@@ -989,15 +989,15 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">in_thread</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reply to this message, threading by default when supported.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Reply to this message, threading by default when supported.</span>
 
 <span class="sd">        Convenience wrapper around ``backend.send_message`` that removes</span>
-<span class="sd">        the per-backend branching needed to &quot;reply in the same thread as</span>
-<span class="sd">        the user&#39;s message&quot;.</span>
+<span class="sd">        the per-backend branching needed to "reply in the same thread as</span>
+<span class="sd">        the user's message".</span>
 
 <span class="sd">        - When ``in_thread`` is True (default), passes ``thread=self`` so</span>
-<span class="sd">          the backend posts into this message&#39;s thread (starting one if</span>
+<span class="sd">          the backend posts into this message's thread (starting one if</span>
 <span class="sd">          needed, where the platform supports it).</span>
 <span class="sd">        - When ``in_thread`` is False, passes ``reply_to=self`` so the</span>
 <span class="sd">          backend references this message without forcing a thread.</span>
@@ -1016,27 +1016,27 @@
 <span class="sd">            The sent reply Message.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; reply = await message.reply(&quot;thanks!&quot;, backend=slack)</span>
-<span class="sd">            &gt;&gt;&gt; reply = await message.reply(&quot;ack&quot;, backend=slack, in_thread=False)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; reply = await message.reply("thanks!", backend=slack)</span>
+<span class="sd">            &gt;&gt;&gt; reply = await message.reply("ack", backend=slack, in_thread=False)</span>
+<span class="sd">        """</span>
         <span class="n">channel</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">channel</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot reply: message has no channel information&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot reply: message has no channel information"</span><span class="p">)</span>
 
         <span class="n">send_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">in_thread</span><span class="p">:</span>
             <span class="c1"># Prefer existing thread; otherwise this message is the root.</span>
-            <span class="n">send_kwargs</span><span class="p">[</span><span class="s2">&quot;thread&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="ow">or</span> <span class="bp">self</span>
+            <span class="n">send_kwargs</span><span class="p">[</span><span class="s2">"thread"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="ow">or</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">send_kwargs</span><span class="p">[</span><span class="s2">&quot;reply_to&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="n">send_kwargs</span><span class="p">[</span><span class="s2">"reply_to"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
 
         <span class="k">return</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="o">**</span><span class="n">send_kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Message.as_dm_to_author">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.as_dm_to_author">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_dm_to_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new message as a DM to this message&#39;s author.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_dm_to_author</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a new message as a DM to this message's author.</span>
 
 <span class="sd">        Constructs a new message in an incomplete DM channel that will</span>
 <span class="sd">        be resolved by the backend when sent.</span>
@@ -1049,12 +1049,12 @@
 <span class="sd">            A new Message instance configured for a DM to the author.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; dm = message.as_dm_to_author(&quot;I&#39;ll follow up privately.&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; dm = message.as_dm_to_author("I'll follow up privately.")</span>
 <span class="sd">            &gt;&gt;&gt; dm.channel.users[0] is message.author</span>
 <span class="sd">            True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot create DM: message has no author&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Cannot create DM: message has no author"</span><span class="p">)</span>
 
         <span class="c1"># Create an incomplete DM channel that the backend will resolve</span>
         <span class="n">dm_channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">dm_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
@@ -1069,8 +1069,8 @@
 
 <div class="viewcode-block" id="Message.as_forward">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.as_forward">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new message as a forward of this message to another channel.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a new message as a forward of this message to another channel.</span>
 
 <span class="sd">        Constructs a new message with forwarded content and attribution</span>
 <span class="sd">        to the original author and channel.</span>
@@ -1086,11 +1086,11 @@
 <span class="sd">            &gt;&gt;&gt; forward = message.as_forward(log_channel)</span>
 <span class="sd">            &gt;&gt;&gt; forward.forwarded_from is message</span>
 <span class="sd">            True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Build forwarded content with attribution</span>
-        <span class="n">author_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_name</span> <span class="ow">or</span> <span class="s2">&quot;Unknown&quot;</span>
-        <span class="n">channel_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_name</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">&quot;unknown&quot;</span><span class="p">)</span>
-        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[Forwarded from </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2"> in #</span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2">]</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">author_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_name</span> <span class="ow">or</span> <span class="s2">"Unknown"</span>
+        <span class="n">channel_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_name</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">"unknown"</span><span class="p">)</span>
+        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"[Forwarded from </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2"> in #</span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2">]</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span>
             <span class="n">content</span><span class="o">=</span><span class="n">forwarded_content</span><span class="p">,</span>
@@ -1104,8 +1104,8 @@
 
 <div class="viewcode-block" id="Message.as_quote_reply">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.as_quote_reply">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">as_quote_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Message&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new message that quotes this message.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">as_quote_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Message"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a new message that quotes this message.</span>
 
 <span class="sd">        Constructs a new message with the original content quoted,</span>
 <span class="sd">        followed by the reply content.</span>
@@ -1118,14 +1118,14 @@
 <span class="sd">            A new Message instance with quoted content.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; quote = message.as_quote_reply(&quot;I agree with this point!&quot;)</span>
-<span class="sd">            &gt;&gt;&gt; &quot;&gt; &quot; in quote.content</span>
+<span class="sd">            &gt;&gt;&gt; quote = message.as_quote_reply("I agree with this point!")</span>
+<span class="sd">            &gt;&gt;&gt; "&gt; " in quote.content</span>
 <span class="sd">            True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Build quoted content</span>
-        <span class="n">quoted_lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;&gt; </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)]</span>
-        <span class="n">quoted</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">quoted_lines</span><span class="p">)</span>
-        <span class="n">full_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">quoted</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">quoted_lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"&gt; </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)]</span>
+        <span class="n">quoted</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">quoted_lines</span><span class="p">)</span>
+        <span class="n">full_content</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">quoted</span><span class="si">}</span><span class="se">\n\n</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="c1"># If in a thread, stay in that thread; otherwise create thread from this message</span>
         <span class="n">thread</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">else</span> <span class="n">Thread</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">parent_message</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -1144,7 +1144,7 @@
 <div class="viewcode-block" id="Message.reply_context">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.message.Message.reply_context">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reply_context</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get context information for creating a reply.</span>
+<span class="w">        </span><span class="sd">"""Get context information for creating a reply.</span>
 
 <span class="sd">        Returns useful objects for manually constructing a reply.</span>
 
@@ -1154,16 +1154,16 @@
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; ctx = message.reply_context()</span>
 <span class="sd">            &gt;&gt;&gt; new_msg = Message(</span>
-<span class="sd">            ...     channel=ctx[&quot;channel&quot;],</span>
-<span class="sd">            ...     content=&quot;My reply&quot;,</span>
-<span class="sd">            ...     reply_to=ctx[&quot;message&quot;],</span>
+<span class="sd">            ...     channel=ctx["channel"],</span>
+<span class="sd">            ...     content="My reply",</span>
+<span class="sd">            ...     reply_to=ctx["message"],</span>
 <span class="sd">            ... )</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
-            <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
-            <span class="s2">&quot;thread&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">,</span>
-            <span class="s2">&quot;author&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
+            <span class="s2">"channel"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span>
+            <span class="s2">"message"</span><span class="p">:</span> <span class="bp">self</span><span class="p">,</span>
+            <span class="s2">"thread"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">,</span>
+            <span class="s2">"author"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">,</span>
         <span class="p">}</span></div>
 </div>
 

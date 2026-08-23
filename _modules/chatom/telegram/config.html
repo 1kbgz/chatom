@@ -253,22 +253,22 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.telegram.config</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Telegram-specific configuration.</span>
+<span></span><span class="sd">"""Telegram-specific configuration.</span>
 
 <span class="sd">This module provides the Telegram-specific configuration class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">,</span> <span class="n">field_validator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..backend.backend_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendConfig</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TelegramConfig&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"TelegramConfig"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="TelegramConfig">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.config.TelegramConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TelegramConfig</span><span class="p">(</span><span class="n">BackendConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the Telegram backend.</span>
+<span class="w">    </span><span class="sd">"""Configuration for the Telegram backend.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        bot_token: The Telegram Bot API token (from @BotFather).</span>
@@ -278,35 +278,35 @@
 <span class="sd">        read_timeout: Read timeout in seconds.</span>
 <span class="sd">        write_timeout: Write timeout in seconds.</span>
 <span class="sd">        pool_timeout: Connection pool timeout in seconds.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">bot_token</span><span class="p">:</span> <span class="n">SecretStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Telegram Bot API token from @BotFather.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Telegram Bot API token from @BotFather."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">connect_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Connection timeout in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Connection timeout in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">read_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Read timeout in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Read timeout in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">write_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Write timeout in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Write timeout in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">pool_timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Connection pool timeout in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Connection pool timeout in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;bot_token&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"bot_token"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"before"</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_load_bot_token</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Support loading token from a file path.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Support loading token from a file path."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">))</span> <span class="ow">and</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">"bot"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">))</span> <span class="ow">and</span> <span class="s2">"/"</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                         <span class="n">v</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
@@ -317,12 +317,12 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_token_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bot token as a plain string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the bot token as a plain string."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a bot token is configured.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if a bot token is configured."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_token_str</span><span class="p">)</span></div>
 
 </pre></div>

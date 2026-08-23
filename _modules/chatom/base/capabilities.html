@@ -253,138 +253,138 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.capabilities</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Backend capabilities for chatom.</span>
+<span></span><span class="sd">"""Backend capabilities for chatom.</span>
 
 <span class="sd">This module defines the capabilities that different chat backends support.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;DISCORD_CAPABILITIES&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SLACK_CAPABILITIES&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SYMPHONY_CAPABILITIES&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TELEGRAM_CAPABILITIES&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;BackendCapabilities&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Capability&quot;</span><span class="p">,</span>
+    <span class="s2">"DISCORD_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"SLACK_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"SYMPHONY_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"TELEGRAM_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"BackendCapabilities"</span><span class="p">,</span>
+    <span class="s2">"Capability"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="Capability">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.capabilities.Capability">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Capability</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Capabilities that a chat backend may support.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Capabilities that a chat backend may support."""</span>
 
     <span class="c1"># Text formatting</span>
-    <span class="n">PLAINTEXT</span> <span class="o">=</span> <span class="s2">&quot;plaintext&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports plain text messages.&quot;&quot;&quot;</span>
+    <span class="n">PLAINTEXT</span> <span class="o">=</span> <span class="s2">"plaintext"</span>
+<span class="w">    </span><span class="sd">"""Supports plain text messages."""</span>
 
-    <span class="n">MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;markdown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports standard Markdown formatting.&quot;&quot;&quot;</span>
+    <span class="n">MARKDOWN</span> <span class="o">=</span> <span class="s2">"markdown"</span>
+<span class="w">    </span><span class="sd">"""Supports standard Markdown formatting."""</span>
 
-    <span class="n">RICH_TEXT</span> <span class="o">=</span> <span class="s2">&quot;rich_text&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports rich text formatting.&quot;&quot;&quot;</span>
+    <span class="n">RICH_TEXT</span> <span class="o">=</span> <span class="s2">"rich_text"</span>
+<span class="w">    </span><span class="sd">"""Supports rich text formatting."""</span>
 
-    <span class="n">HTML</span> <span class="o">=</span> <span class="s2">&quot;html&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports HTML formatting.&quot;&quot;&quot;</span>
+    <span class="n">HTML</span> <span class="o">=</span> <span class="s2">"html"</span>
+<span class="w">    </span><span class="sd">"""Supports HTML formatting."""</span>
 
-    <span class="n">CODE_BLOCKS</span> <span class="o">=</span> <span class="s2">&quot;code_blocks&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports code blocks with syntax highlighting.&quot;&quot;&quot;</span>
+    <span class="n">CODE_BLOCKS</span> <span class="o">=</span> <span class="s2">"code_blocks"</span>
+<span class="w">    </span><span class="sd">"""Supports code blocks with syntax highlighting."""</span>
 
     <span class="c1"># Media</span>
-    <span class="n">IMAGES</span> <span class="o">=</span> <span class="s2">&quot;images&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports image attachments.&quot;&quot;&quot;</span>
+    <span class="n">IMAGES</span> <span class="o">=</span> <span class="s2">"images"</span>
+<span class="w">    </span><span class="sd">"""Supports image attachments."""</span>
 
-    <span class="n">FILES</span> <span class="o">=</span> <span class="s2">&quot;files&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports file attachments.&quot;&quot;&quot;</span>
+    <span class="n">FILES</span> <span class="o">=</span> <span class="s2">"files"</span>
+<span class="w">    </span><span class="sd">"""Supports file attachments."""</span>
 
-    <span class="n">EMBEDS</span> <span class="o">=</span> <span class="s2">&quot;embeds&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports rich embeds.&quot;&quot;&quot;</span>
+    <span class="n">EMBEDS</span> <span class="o">=</span> <span class="s2">"embeds"</span>
+<span class="w">    </span><span class="sd">"""Supports rich embeds."""</span>
 
-    <span class="n">VIDEOS</span> <span class="o">=</span> <span class="s2">&quot;videos&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports video attachments.&quot;&quot;&quot;</span>
+    <span class="n">VIDEOS</span> <span class="o">=</span> <span class="s2">"videos"</span>
+<span class="w">    </span><span class="sd">"""Supports video attachments."""</span>
 
-    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">&quot;audio&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports audio attachments.&quot;&quot;&quot;</span>
+    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">"audio"</span>
+<span class="w">    </span><span class="sd">"""Supports audio attachments."""</span>
 
     <span class="c1"># Reactions</span>
-    <span class="n">EMOJI_REACTIONS</span> <span class="o">=</span> <span class="s2">&quot;emoji_reactions&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports emoji reactions on messages.&quot;&quot;&quot;</span>
+    <span class="n">EMOJI_REACTIONS</span> <span class="o">=</span> <span class="s2">"emoji_reactions"</span>
+<span class="w">    </span><span class="sd">"""Supports emoji reactions on messages."""</span>
 
-    <span class="n">CUSTOM_EMOJI</span> <span class="o">=</span> <span class="s2">&quot;custom_emoji&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports custom emoji.&quot;&quot;&quot;</span>
+    <span class="n">CUSTOM_EMOJI</span> <span class="o">=</span> <span class="s2">"custom_emoji"</span>
+<span class="w">    </span><span class="sd">"""Supports custom emoji."""</span>
 
     <span class="c1"># Threading</span>
-    <span class="n">THREADS</span> <span class="o">=</span> <span class="s2">&quot;threads&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports message threads.&quot;&quot;&quot;</span>
+    <span class="n">THREADS</span> <span class="o">=</span> <span class="s2">"threads"</span>
+<span class="w">    </span><span class="sd">"""Supports message threads."""</span>
 
-    <span class="n">REPLIES</span> <span class="o">=</span> <span class="s2">&quot;replies&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports direct replies to messages.&quot;&quot;&quot;</span>
+    <span class="n">REPLIES</span> <span class="o">=</span> <span class="s2">"replies"</span>
+<span class="w">    </span><span class="sd">"""Supports direct replies to messages."""</span>
 
     <span class="c1"># Mentions</span>
-    <span class="n">USER_MENTIONS</span> <span class="o">=</span> <span class="s2">&quot;user_mentions&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports mentioning users.&quot;&quot;&quot;</span>
+    <span class="n">USER_MENTIONS</span> <span class="o">=</span> <span class="s2">"user_mentions"</span>
+<span class="w">    </span><span class="sd">"""Supports mentioning users."""</span>
 
-    <span class="n">CHANNEL_MENTIONS</span> <span class="o">=</span> <span class="s2">&quot;channel_mentions&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports mentioning channels.&quot;&quot;&quot;</span>
+    <span class="n">CHANNEL_MENTIONS</span> <span class="o">=</span> <span class="s2">"channel_mentions"</span>
+<span class="w">    </span><span class="sd">"""Supports mentioning channels."""</span>
 
-    <span class="n">EVERYONE_MENTION</span> <span class="o">=</span> <span class="s2">&quot;everyone_mention&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports mentioning everyone/all.&quot;&quot;&quot;</span>
+    <span class="n">EVERYONE_MENTION</span> <span class="o">=</span> <span class="s2">"everyone_mention"</span>
+<span class="w">    </span><span class="sd">"""Supports mentioning everyone/all."""</span>
 
-    <span class="n">ROLE_MENTIONS</span> <span class="o">=</span> <span class="s2">&quot;role_mentions&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports mentioning roles/groups.&quot;&quot;&quot;</span>
+    <span class="n">ROLE_MENTIONS</span> <span class="o">=</span> <span class="s2">"role_mentions"</span>
+<span class="w">    </span><span class="sd">"""Supports mentioning roles/groups."""</span>
 
     <span class="c1"># Message features</span>
-    <span class="n">EDITING</span> <span class="o">=</span> <span class="s2">&quot;editing&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports editing sent messages.&quot;&quot;&quot;</span>
+    <span class="n">EDITING</span> <span class="o">=</span> <span class="s2">"editing"</span>
+<span class="w">    </span><span class="sd">"""Supports editing sent messages."""</span>
 
-    <span class="n">DELETING</span> <span class="o">=</span> <span class="s2">&quot;deleting&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports deleting messages.&quot;&quot;&quot;</span>
+    <span class="n">DELETING</span> <span class="o">=</span> <span class="s2">"deleting"</span>
+<span class="w">    </span><span class="sd">"""Supports deleting messages."""</span>
 
-    <span class="n">PINNING</span> <span class="o">=</span> <span class="s2">&quot;pinning&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports pinning messages.&quot;&quot;&quot;</span>
+    <span class="n">PINNING</span> <span class="o">=</span> <span class="s2">"pinning"</span>
+<span class="w">    </span><span class="sd">"""Supports pinning messages."""</span>
 
     <span class="c1"># Tables</span>
-    <span class="n">TABLES</span> <span class="o">=</span> <span class="s2">&quot;tables&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports table rendering.&quot;&quot;&quot;</span>
+    <span class="n">TABLES</span> <span class="o">=</span> <span class="s2">"tables"</span>
+<span class="w">    </span><span class="sd">"""Supports table rendering."""</span>
 
     <span class="c1"># Presence</span>
-    <span class="n">PRESENCE</span> <span class="o">=</span> <span class="s2">&quot;presence&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports user presence/status.&quot;&quot;&quot;</span>
+    <span class="n">PRESENCE</span> <span class="o">=</span> <span class="s2">"presence"</span>
+<span class="w">    </span><span class="sd">"""Supports user presence/status."""</span>
 
-    <span class="n">TYPING_INDICATORS</span> <span class="o">=</span> <span class="s2">&quot;typing_indicators&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports typing indicators.&quot;&quot;&quot;</span>
+    <span class="n">TYPING_INDICATORS</span> <span class="o">=</span> <span class="s2">"typing_indicators"</span>
+<span class="w">    </span><span class="sd">"""Supports typing indicators."""</span>
 
     <span class="c1"># Interactive</span>
-    <span class="n">BUTTONS</span> <span class="o">=</span> <span class="s2">&quot;buttons&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports interactive buttons.&quot;&quot;&quot;</span>
+    <span class="n">BUTTONS</span> <span class="o">=</span> <span class="s2">"buttons"</span>
+<span class="w">    </span><span class="sd">"""Supports interactive buttons."""</span>
 
-    <span class="n">FORMS</span> <span class="o">=</span> <span class="s2">&quot;forms&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports forms/dialogs.&quot;&quot;&quot;</span>
+    <span class="n">FORMS</span> <span class="o">=</span> <span class="s2">"forms"</span>
+<span class="w">    </span><span class="sd">"""Supports forms/dialogs."""</span>
 
-    <span class="n">SELECT_MENUS</span> <span class="o">=</span> <span class="s2">&quot;select_menus&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports select menus/dropdowns.&quot;&quot;&quot;</span>
+    <span class="n">SELECT_MENUS</span> <span class="o">=</span> <span class="s2">"select_menus"</span>
+<span class="w">    </span><span class="sd">"""Supports select menus/dropdowns."""</span>
 
     <span class="c1"># Organizations</span>
-    <span class="n">ORGANIZATIONS</span> <span class="o">=</span> <span class="s2">&quot;organizations&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports organization/guild/workspace operations.&quot;&quot;&quot;</span>
+    <span class="n">ORGANIZATIONS</span> <span class="o">=</span> <span class="s2">"organizations"</span>
+<span class="w">    </span><span class="sd">"""Supports organization/guild/workspace operations."""</span>
 
     <span class="c1"># Search</span>
-    <span class="n">MESSAGE_SEARCH</span> <span class="o">=</span> <span class="s2">&quot;message_search&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports searching messages by content.&quot;&quot;&quot;</span>
+    <span class="n">MESSAGE_SEARCH</span> <span class="o">=</span> <span class="s2">"message_search"</span>
+<span class="w">    </span><span class="sd">"""Supports searching messages by content."""</span>
 
     <span class="c1"># Forwarding</span>
-    <span class="n">FORWARDING</span> <span class="o">=</span> <span class="s2">&quot;forwarding&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supports forwarding messages to other channels.&quot;&quot;&quot;</span></div>
+    <span class="n">FORWARDING</span> <span class="o">=</span> <span class="s2">"forwarding"</span>
+<span class="w">    </span><span class="sd">"""Supports forwarding messages to other channels."""</span></div>
 
 
 
 <div class="viewcode-block" id="BackendCapabilities">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendCapabilities</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Describes the capabilities of a chat backend.</span>
+<span class="w">    </span><span class="sd">"""Describes the capabilities of a chat backend.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        capabilities: Set of supported capabilities.</span>
@@ -393,72 +393,72 @@
 <span class="sd">        max_attachments: Maximum number of attachments per message.</span>
 <span class="sd">        max_embeds: Maximum number of embeds per message.</span>
 <span class="sd">        max_reactions: Maximum reactions per message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">capabilities</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="n">Capability</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">(),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Set of supported capabilities.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Set of supported capabilities."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_message_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">4000</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum message length in characters.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum message length in characters."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_attachment_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">25</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># 25 MB</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum attachment size in bytes.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum attachment size in bytes."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_attachments</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of attachments per message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum number of attachments per message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_embeds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum number of embeds per message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum number of embeds per message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_reactions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum reactions per message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum reactions per message."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="BackendCapabilities.supports">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.supports">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">capability</span><span class="p">:</span> <span class="n">Capability</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a capability is supported.</span>
+<span class="w">        </span><span class="sd">"""Check if a capability is supported.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            capability: The capability to check.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the capability is supported.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">capability</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span></div>
 
 
 <div class="viewcode-block" id="BackendCapabilities.supports_all">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.supports_all">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">capabilities</span><span class="p">:</span> <span class="n">Capability</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if all capabilities are supported.</span>
+<span class="w">        </span><span class="sd">"""Check if all capabilities are supported.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            *capabilities: Capabilities to check.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if all capabilities are supported.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">capabilities</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BackendCapabilities.supports_any">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.supports_any">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">supports_any</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">capabilities</span><span class="p">:</span> <span class="n">Capability</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if any capability is supported.</span>
+<span class="w">        </span><span class="sd">"""Check if any capability is supported.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            *capabilities: Capabilities to check.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if any capability is supported.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">capabilities</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">capabilities</span><span class="p">)</span></div>
 </div>
 

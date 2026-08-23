@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.reaction</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Reaction model for chatom.</span>
+<span></span><span class="sd">"""Reaction model for chatom.</span>
 
 <span class="sd">This module provides the Reaction class representing an emoji reaction.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -270,81 +270,81 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.message</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Emoji&quot;</span><span class="p">,</span> <span class="s2">&quot;Reaction&quot;</span><span class="p">,</span> <span class="s2">&quot;ReactionEvent&quot;</span><span class="p">,</span> <span class="s2">&quot;ReactionEventType&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Emoji"</span><span class="p">,</span> <span class="s2">"Reaction"</span><span class="p">,</span> <span class="s2">"ReactionEvent"</span><span class="p">,</span> <span class="s2">"ReactionEventType"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Emoji">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.reaction.Emoji">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Emoji</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents an emoji that can be used in reactions.</span>
+<span class="w">    </span><span class="sd">"""Represents an emoji that can be used in reactions.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        name: The name of the emoji (e.g., &#39;thumbsup&#39;, &#39;smile&#39;).</span>
+<span class="sd">        name: The name of the emoji (e.g., 'thumbsup', 'smile').</span>
 <span class="sd">        id: Platform-specific ID for custom emojis.</span>
 <span class="sd">        unicode: Unicode representation for standard emojis.</span>
 <span class="sd">        is_custom: Whether this is a custom emoji.</span>
 <span class="sd">        url: URL of the emoji image for custom emojis.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The name of the emoji.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The name of the emoji."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific ID for custom emojis.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific ID for custom emojis."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">unicode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unicode representation for standard emojis.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unicode representation for standard emojis."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_custom</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a custom emoji.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a custom emoji."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the emoji image for custom emojis.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL of the emoji image for custom emojis."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return string representation of the emoji.</span>
+<span class="w">        </span><span class="sd">"""Return string representation of the emoji.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: Unicode character or :name: format.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unicode</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unicode</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span></div>
 
 
 
 <div class="viewcode-block" id="Reaction">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.reaction.Reaction">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Reaction</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a reaction to a message.</span>
+<span class="w">    </span><span class="sd">"""Represents a reaction to a message.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        emoji: The emoji used in the reaction.</span>
 <span class="sd">        count: Number of times this reaction was added.</span>
 <span class="sd">        users: List of users who added this reaction.</span>
 <span class="sd">        me: Whether the current user added this reaction.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">emoji</span><span class="p">:</span> <span class="n">Emoji</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The emoji used in the reaction.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The emoji used in the reaction."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of times this reaction was added.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of times this reaction was added."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of users who added this reaction.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of users who added this reaction."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">me</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the current user added this reaction.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the current user added this reaction."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -352,20 +352,20 @@
 <div class="viewcode-block" id="ReactionEventType">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.reaction.ReactionEventType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReactionEventType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of reaction events.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Types of reaction events."""</span>
 
-    <span class="n">ADDED</span> <span class="o">=</span> <span class="s2">&quot;added&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A reaction was added to a message.&quot;&quot;&quot;</span>
+    <span class="n">ADDED</span> <span class="o">=</span> <span class="s2">"added"</span>
+<span class="w">    </span><span class="sd">"""A reaction was added to a message."""</span>
 
-    <span class="n">REMOVED</span> <span class="o">=</span> <span class="s2">&quot;removed&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A reaction was removed from a message.&quot;&quot;&quot;</span></div>
+    <span class="n">REMOVED</span> <span class="o">=</span> <span class="s2">"removed"</span>
+<span class="w">    </span><span class="sd">"""A reaction was removed from a message."""</span></div>
 
 
 
 <div class="viewcode-block" id="ReactionEvent">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.reaction.ReactionEvent">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ReactionEvent</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a reaction event (add or remove) on a message.</span>
+<span class="w">    </span><span class="sd">"""Represents a reaction event (add or remove) on a message.</span>
 
 <span class="sd">    This model is used for handling incoming reaction events from backends.</span>
 <span class="sd">    It provides the information needed to track who reacted to which message</span>
@@ -382,54 +382,54 @@
 <span class="sd">        &gt;&gt;&gt; # Handle a reaction event in a bot</span>
 <span class="sd">        &gt;&gt;&gt; async def on_reaction(event: ReactionEvent):</span>
 <span class="sd">        ...     if event.event_type == ReactionEventType.ADDED:</span>
-<span class="sd">        ...         print(f&quot;User {event.user.id} added {event.emoji}&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        ...         print(f"User {event.user.id} added {event.emoji}")</span>
+<span class="sd">    """</span>
 
     <span class="n">message</span><span class="p">:</span> <span class="n">Message</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The message the reaction is on.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The message the reaction is on."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user who added/removed the reaction.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user who added/removed the reaction."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">emoji</span><span class="p">:</span> <span class="n">Emoji</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The emoji that was added/removed.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The emoji that was added/removed."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">event_type</span><span class="p">:</span> <span class="n">ReactionEventType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the reaction was added or removed.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the reaction was added or removed."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the reaction event occurred.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the reaction event occurred."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">message_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the message ID.</span>
+<span class="w">        </span><span class="sd">"""Get the message ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The message ID, or empty string if not set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">channel_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the channel ID from the message.</span>
+<span class="w">        </span><span class="sd">"""Get the channel ID from the message.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The channel ID, or empty string if not set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">channel_id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">channel_id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">user_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the user ID.</span>
+<span class="w">        </span><span class="sd">"""Get the user ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The user ID, or empty string if not set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span></div>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="k">else</span> <span class="s2">""</span></div>
 
 </pre></div>
         </article>

@@ -253,32 +253,32 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.slack.presence</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Slack-specific Presence model.</span>
+<span></span><span class="sd">"""Slack-specific Presence model.</span>
 
 <span class="sd">This module provides the Slack-specific Presence class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Presence</span><span class="p">,</span> <span class="n">PresenceStatus</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SlackPresence&quot;</span><span class="p">,</span> <span class="s2">&quot;SlackPresenceStatus&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SlackPresence"</span><span class="p">,</span> <span class="s2">"SlackPresenceStatus"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SlackPresenceStatus">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.presence.SlackPresenceStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackPresenceStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack-specific presence statuses.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Slack-specific presence statuses."""</span>
 
-    <span class="n">ACTIVE</span> <span class="o">=</span> <span class="s2">&quot;active&quot;</span>
-    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">&quot;away&quot;</span>
-    <span class="n">AUTO</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
+    <span class="n">ACTIVE</span> <span class="o">=</span> <span class="s2">"active"</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">"away"</span>
+    <span class="n">AUTO</span> <span class="o">=</span> <span class="s2">"auto"</span>
 
 <div class="viewcode-block" id="SlackPresenceStatus.from_base">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.presence.SlackPresenceStatus.from_base">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_base</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">PresenceStatus</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SlackPresenceStatus&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a base PresenceStatus to SlackPresenceStatus.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_base</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">status</span><span class="p">:</span> <span class="n">PresenceStatus</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SlackPresenceStatus"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Convert a base PresenceStatus to SlackPresenceStatus.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            status: The base PresenceStatus to convert.</span>
@@ -289,7 +289,7 @@
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; slack_status = SlackPresenceStatus.from_base(PresenceStatus.ONLINE)</span>
 <span class="sd">            &gt;&gt;&gt; print(slack_status)  # SlackPresenceStatus.ACTIVE</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">status_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">,</span>
             <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">AWAY</span><span class="p">,</span>
@@ -306,7 +306,7 @@
 <div class="viewcode-block" id="SlackPresence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.presence.SlackPresence">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackPresence</span><span class="p">(</span><span class="n">Presence</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack-specific presence.</span>
+<span class="w">    </span><span class="sd">"""Slack-specific presence.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        slack_presence: Slack-specific presence (active/away).</span>
@@ -314,36 +314,36 @@
 <span class="sd">        manual_away: Whether user manually set away.</span>
 <span class="sd">        connection_count: Number of active connections.</span>
 <span class="sd">        last_activity: Timestamp of last activity.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">slack_presence</span><span class="p">:</span> <span class="n">SlackPresenceStatus</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">SlackPresenceStatus</span><span class="o">.</span><span class="n">AWAY</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slack-specific presence.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slack-specific presence."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">auto_away</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether user was automatically marked away.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether user was automatically marked away."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">manual_away</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether user manually set away.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether user manually set away."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">connection_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of active connections.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of active connections."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">last_activity</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timestamp of last activity.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Timestamp of last activity."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">generic_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PresenceStatus</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Slack presence to generic status.</span>
+<span class="w">        </span><span class="sd">"""Convert Slack presence to generic status.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            PresenceStatus: The generic presence status.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack_presence</span> <span class="o">==</span> <span class="n">SlackPresenceStatus</span><span class="o">.</span><span class="n">ACTIVE</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span>
         <span class="k">return</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">IDLE</span></div>

@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.slack.config</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Slack backend configuration.</span>
+<span></span><span class="sd">"""Slack backend configuration.</span>
 
 <span class="sd">This module provides configuration classes for the Slack backend.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ssl</span><span class="w"> </span><span class="kn">import</span> <span class="n">SSLContext</span>
@@ -265,13 +265,13 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendConfig</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SlackConfig&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SlackConfig"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="SlackConfig">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.config.SlackConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackConfig</span><span class="p">(</span><span class="n">BackendConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for Slack backend.</span>
+<span class="w">    </span><span class="sd">"""Configuration for Slack backend.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        bot_token: Slack Bot User OAuth Token (xoxb-...) or path to file.</span>
@@ -284,116 +284,116 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; config = SlackConfig(</span>
-<span class="sd">        ...     bot_token=&quot;xoxb-your-token&quot;,</span>
-<span class="sd">        ...     app_token=&quot;xapp-your-app-token&quot;,  # For Socket Mode</span>
-<span class="sd">        ...     signing_secret=&quot;your-signing-secret&quot;,</span>
+<span class="sd">        ...     bot_token="xoxb-your-token",</span>
+<span class="sd">        ...     app_token="xapp-your-app-token",  # For Socket Mode</span>
+<span class="sd">        ...     signing_secret="your-signing-secret",</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; backend = SlackBackend(config=config)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;arbitrary_types_allowed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># noqa: RUF012</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"arbitrary_types_allowed"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># noqa: RUF012</span>
 
     <span class="n">bot_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slack Bot User OAuth Token (xoxb-...) or path to file.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slack Bot User OAuth Token (xoxb-...) or path to file."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">app_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slack App-Level Token (xapp-...) or path to file.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slack App-Level Token (xapp-...) or path to file."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">signing_secret</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slack signing secret for request verification.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slack signing secret for request verification."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">team_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The Slack workspace/team ID.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The Slack workspace/team ID."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">default_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default channel ID for sending messages.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Default channel ID for sending messages."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">socket_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to use Socket Mode for events.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether to use Socket Mode for events."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">ssl</span><span class="p">:</span> <span class="n">SSLContext</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional SSL context for connections.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Optional SSL context for connections."</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;app_token&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"app_token"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"before"</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_app_token</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SecretStr</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate app token - can be a token string or path to file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Validate app token - can be a token string or path to file."""</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
         <span class="c1"># Extract string value from SecretStr</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>  <span class="c1"># Empty string</span>
-                <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;xapp-&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"xapp-"</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;App token must start with &#39;xapp-&#39; or be a file path&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"App token must start with 'xapp-' or be a file path"</span><span class="p">)</span>
 
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;bot_token&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"bot_token"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"before"</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_bot_token</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SecretStr</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate bot token - can be a token string or path to file.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Validate bot token - can be a token string or path to file."""</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
         <span class="c1"># Extract string value from SecretStr</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">):</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>  <span class="c1"># Empty string</span>
-                <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;xoxb-&quot;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"xoxb-"</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
                 <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Bot token must start with &#39;xoxb-&#39; or be a file path&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Bot token must start with 'xoxb-' or be a file path"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_token_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bot token as a plain string.</span>
+<span class="w">        </span><span class="sd">"""Get the bot token as a plain string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The bot token string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_token</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_token</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">app_token_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the app token as a plain string.</span>
+<span class="w">        </span><span class="sd">"""Get the app token as a plain string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The app token string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_token</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">signing_secret_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the signing secret as a plain string.</span>
+<span class="w">        </span><span class="sd">"""Get the signing secret as a plain string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The signing secret string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signing_secret</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signing_secret</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">signing_secret</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_socket_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if Socket Mode is configured.</span>
+<span class="w">        </span><span class="sd">"""Check if Socket Mode is configured.</span>
 
 <span class="sd">        Returns True if both socket_mode is enabled and app_token is set.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if Socket Mode is configured, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">socket_mode</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_token</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_token</span><span class="p">)</span></div>
 
 </pre></div>

@@ -253,39 +253,39 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.base</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Base model classes for chatom.</span>
+<span></span><span class="sd">"""Base model classes for chatom.</span>
 
 <span class="sd">This module provides the foundational model classes that all chatom</span>
 <span class="sd">data structures inherit from. It uses Pydantic for data validation</span>
 <span class="sd">and serialization.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span><span class="p">,</span> <span class="n">TypeVar</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span> <span class="k">as</span> <span class="n">PydanticBaseModel</span><span class="p">,</span> <span class="n">ConfigDict</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">PrivateAttr</span><span class="p">,</span> <span class="n">model_validator</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;BaseModel&quot;</span><span class="p">,</span> <span class="s2">&quot;Field&quot;</span><span class="p">,</span> <span class="s2">&quot;Identifiable&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"BaseModel"</span><span class="p">,</span> <span class="s2">"Field"</span><span class="p">,</span> <span class="s2">"Identifiable"</span><span class="p">)</span>
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;BaseModel&quot;</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"T"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">"BaseModel"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="BaseModel">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.base.BaseModel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BaseModel</span><span class="p">(</span><span class="n">PydanticBaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base model class for all chatom data structures.</span>
+<span class="w">    </span><span class="sd">"""Base model class for all chatom data structures.</span>
 
 <span class="sd">    Provides common configuration and utilities for all models.</span>
-<span class="sd">    Inherits from Pydantic&#39;s BaseModel for validation and serialization.</span>
+<span class="sd">    Inherits from Pydantic's BaseModel for validation and serialization.</span>
 
-<span class="sd">    Models can be marked as &quot;incomplete&quot; when they have partial information</span>
+<span class="sd">    Models can be marked as "incomplete" when they have partial information</span>
 <span class="sd">    that needs to be resolved by a backend (e.g., a Channel with only a name</span>
 <span class="sd">    but no id). Use `is_incomplete` to check, and `mark_incomplete()` /</span>
 <span class="sd">    `mark_complete()` to change the state.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">model_config</span> <span class="o">=</span> <span class="n">ConfigDict</span><span class="p">(</span>
         <span class="n">frozen</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">extra</span><span class="o">=</span><span class="s2">&quot;allow&quot;</span><span class="p">,</span>
+        <span class="n">extra</span><span class="o">=</span><span class="s2">"allow"</span><span class="p">,</span>
         <span class="n">populate_by_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">validate_assignment</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
@@ -295,59 +295,59 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_incomplete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this object is marked as incomplete.</span>
+<span class="w">        </span><span class="sd">"""Check if this object is marked as incomplete.</span>
 
 <span class="sd">        Incomplete objects have partial information and need to be</span>
 <span class="sd">        resolved by a backend to populate missing fields.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the object is incomplete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_incomplete</span>
 
 <div class="viewcode-block" id="BaseModel.mark_incomplete">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.base.BaseModel.mark_incomplete">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_incomplete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark this object as incomplete.</span>
+<span class="w">        </span><span class="sd">"""Mark this object as incomplete.</span>
 
 <span class="sd">        Call this when the object has partial information that needs</span>
 <span class="sd">        to be resolved by a backend.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_incomplete</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="BaseModel.mark_complete">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.base.BaseModel.mark_complete">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mark_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mark this object as complete.</span>
+<span class="w">        </span><span class="sd">"""Mark this object as complete.</span>
 
 <span class="sd">        Call this after a backend has resolved all missing fields.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_incomplete</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="BaseModel.to_dict">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.base.BaseModel.to_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert model to dictionary representation.</span>
+<span class="w">        </span><span class="sd">"""Convert model to dictionary representation.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict[str, Any]: Dictionary representation of the model.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_dump</span><span class="p">(</span><span class="n">exclude_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BaseModel.copy_with">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.base.BaseModel.copy_with">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy_with</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a copy of the model with updated fields.</span>
+<span class="w">        </span><span class="sd">"""Create a copy of the model with updated fields.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs: Fields to update in the copy.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A new instance with the updated fields.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_copy</span><span class="p">(</span><span class="n">update</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span></div>
 </div>
 
@@ -356,7 +356,7 @@
 <div class="viewcode-block" id="Identifiable">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.base.Identifiable">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Identifiable</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for models with an identifier.</span>
+<span class="w">    </span><span class="sd">"""Base class for models with an identifier.</span>
 
 <span class="sd">    Provides common id and name fields that most chat entities have.</span>
 
@@ -364,48 +364,48 @@
 <span class="sd">    and later resolved by a backend to populate missing fields like id.</span>
 <span class="sd">    Use the `is_complete` property to check if an object has all required</span>
 <span class="sd">    fields populated.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific unique identifier.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific unique identifier."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human-readable name or display name.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Human-readable name or display name."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this object has all required fields populated.</span>
+<span class="w">        </span><span class="sd">"""Check if this object has all required fields populated.</span>
 
 <span class="sd">        An object is considered complete if it has an id. Subclasses may</span>
 <span class="sd">        override this to add additional requirements.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the object is complete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this object has enough info to be resolved by a backend.</span>
+<span class="w">        </span><span class="sd">"""Check if this object has enough info to be resolved by a backend.</span>
 
 <span class="sd">        An object is resolvable if it has at least an id OR a name that</span>
 <span class="sd">        can be used to look it up.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the object can potentially be resolved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_check_completeness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Auto-mark object as incomplete if it has no id but has other info.</span>
+<span class="w">        </span><span class="sd">"""Auto-mark object as incomplete if it has no id but has other info.</span>
 
 <span class="sd">        This allows users to create objects with partial information</span>
-<span class="sd">        (e.g., Channel(name=&quot;general&quot;)) that can later be resolved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        (e.g., Channel(name="general")) that can later be resolved.</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_resolvable</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mark_incomplete</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span></div>

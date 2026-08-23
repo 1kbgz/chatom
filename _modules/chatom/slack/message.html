@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.slack.message</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Slack-specific Message model.</span>
+<span></span><span class="sd">"""Slack-specific Message model.</span>
 
 <span class="sd">This module provides the Slack-specific Message class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
@@ -269,46 +269,46 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;SlackMessage&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SlackMessageSubtype&quot;</span><span class="p">,</span>
+    <span class="s2">"SlackMessage"</span><span class="p">,</span>
+    <span class="s2">"SlackMessageSubtype"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="SlackMessageSubtype">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.message.SlackMessageSubtype">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackMessageSubtype</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack message subtypes.</span>
+<span class="w">    </span><span class="sd">"""Slack message subtypes.</span>
 
 <span class="sd">    Based on Slack API message subtypes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">BOT_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;bot_message&quot;</span>
-    <span class="n">ME_MESSAGE</span> <span class="o">=</span> <span class="s2">&quot;me_message&quot;</span>
-    <span class="n">MESSAGE_CHANGED</span> <span class="o">=</span> <span class="s2">&quot;message_changed&quot;</span>
-    <span class="n">MESSAGE_DELETED</span> <span class="o">=</span> <span class="s2">&quot;message_deleted&quot;</span>
-    <span class="n">MESSAGE_REPLIED</span> <span class="o">=</span> <span class="s2">&quot;message_replied&quot;</span>
-    <span class="n">CHANNEL_JOIN</span> <span class="o">=</span> <span class="s2">&quot;channel_join&quot;</span>
-    <span class="n">CHANNEL_LEAVE</span> <span class="o">=</span> <span class="s2">&quot;channel_leave&quot;</span>
-    <span class="n">CHANNEL_TOPIC</span> <span class="o">=</span> <span class="s2">&quot;channel_topic&quot;</span>
-    <span class="n">CHANNEL_PURPOSE</span> <span class="o">=</span> <span class="s2">&quot;channel_purpose&quot;</span>
-    <span class="n">CHANNEL_NAME</span> <span class="o">=</span> <span class="s2">&quot;channel_name&quot;</span>
-    <span class="n">CHANNEL_ARCHIVE</span> <span class="o">=</span> <span class="s2">&quot;channel_archive&quot;</span>
-    <span class="n">CHANNEL_UNARCHIVE</span> <span class="o">=</span> <span class="s2">&quot;channel_unarchive&quot;</span>
-    <span class="n">FILE_SHARE</span> <span class="o">=</span> <span class="s2">&quot;file_share&quot;</span>
-    <span class="n">FILE_COMMENT</span> <span class="o">=</span> <span class="s2">&quot;file_comment&quot;</span>
-    <span class="n">FILE_MENTION</span> <span class="o">=</span> <span class="s2">&quot;file_mention&quot;</span>
-    <span class="n">PINNED_ITEM</span> <span class="o">=</span> <span class="s2">&quot;pinned_item&quot;</span>
-    <span class="n">UNPINNED_ITEM</span> <span class="o">=</span> <span class="s2">&quot;unpinned_item&quot;</span>
-    <span class="n">THREAD_BROADCAST</span> <span class="o">=</span> <span class="s2">&quot;thread_broadcast&quot;</span>
-    <span class="n">REMINDER_ADD</span> <span class="o">=</span> <span class="s2">&quot;reminder_add&quot;</span>
-    <span class="n">SLACKBOT_RESPONSE</span> <span class="o">=</span> <span class="s2">&quot;slackbot_response&quot;</span></div>
+    <span class="n">BOT_MESSAGE</span> <span class="o">=</span> <span class="s2">"bot_message"</span>
+    <span class="n">ME_MESSAGE</span> <span class="o">=</span> <span class="s2">"me_message"</span>
+    <span class="n">MESSAGE_CHANGED</span> <span class="o">=</span> <span class="s2">"message_changed"</span>
+    <span class="n">MESSAGE_DELETED</span> <span class="o">=</span> <span class="s2">"message_deleted"</span>
+    <span class="n">MESSAGE_REPLIED</span> <span class="o">=</span> <span class="s2">"message_replied"</span>
+    <span class="n">CHANNEL_JOIN</span> <span class="o">=</span> <span class="s2">"channel_join"</span>
+    <span class="n">CHANNEL_LEAVE</span> <span class="o">=</span> <span class="s2">"channel_leave"</span>
+    <span class="n">CHANNEL_TOPIC</span> <span class="o">=</span> <span class="s2">"channel_topic"</span>
+    <span class="n">CHANNEL_PURPOSE</span> <span class="o">=</span> <span class="s2">"channel_purpose"</span>
+    <span class="n">CHANNEL_NAME</span> <span class="o">=</span> <span class="s2">"channel_name"</span>
+    <span class="n">CHANNEL_ARCHIVE</span> <span class="o">=</span> <span class="s2">"channel_archive"</span>
+    <span class="n">CHANNEL_UNARCHIVE</span> <span class="o">=</span> <span class="s2">"channel_unarchive"</span>
+    <span class="n">FILE_SHARE</span> <span class="o">=</span> <span class="s2">"file_share"</span>
+    <span class="n">FILE_COMMENT</span> <span class="o">=</span> <span class="s2">"file_comment"</span>
+    <span class="n">FILE_MENTION</span> <span class="o">=</span> <span class="s2">"file_mention"</span>
+    <span class="n">PINNED_ITEM</span> <span class="o">=</span> <span class="s2">"pinned_item"</span>
+    <span class="n">UNPINNED_ITEM</span> <span class="o">=</span> <span class="s2">"unpinned_item"</span>
+    <span class="n">THREAD_BROADCAST</span> <span class="o">=</span> <span class="s2">"thread_broadcast"</span>
+    <span class="n">REMINDER_ADD</span> <span class="o">=</span> <span class="s2">"reminder_add"</span>
+    <span class="n">SLACKBOT_RESPONSE</span> <span class="o">=</span> <span class="s2">"slackbot_response"</span></div>
 
 
 
 <div class="viewcode-block" id="SlackMessage">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.message.SlackMessage">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackMessage</span><span class="p">(</span><span class="n">Message</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack-specific message with additional Slack fields.</span>
+<span class="w">    </span><span class="sd">"""Slack-specific message with additional Slack fields.</span>
 
 <span class="sd">    Based on the Slack API message structure.</span>
 
@@ -330,138 +330,138 @@
 <span class="sd">        upload: Whether this is a file upload message.</span>
 <span class="sd">        display_as_bot: Whether to display as bot.</span>
 <span class="sd">        edited: Edit information if message was edited.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">subtype</span><span class="p">:</span> <span class="n">SlackMessageSubtype</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The message subtype.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The message subtype."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">blocks</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slack Block Kit blocks.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slack Block Kit blocks."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The message text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The message text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">reply_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of replies in thread.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of replies in thread."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">latest_reply</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timestamp of latest reply.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Timestamp of latest reply."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">reply_users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SlackUser</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of user IDs who replied.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of user IDs who replied."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_locked</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the thread is locked.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the thread is locked."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">subscribed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether user is subscribed to thread.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether user is subscribed to thread."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">last_read</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timestamp of last read message in thread.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Timestamp of last read message in thread."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">files</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of attached files.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of attached files."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">upload</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a file upload message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a file upload message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">display_as_bot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to display as bot.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether to display as bot."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">edited</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Edit information if message was edited.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Edit information if message was edited."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># Backend-compatibility properties</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">ts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the message timestamp (ts).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the message timestamp (ts)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="ow">or</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">thread_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the thread timestamp (thread_ts).</span>
+<span class="w">        </span><span class="sd">"""Get the thread timestamp (thread_ts).</span>
 
-<span class="sd">        Returns the thread&#39;s id if this message is in a thread,</span>
+<span class="sd">        Returns the thread's id if this message is in a thread,</span>
 <span class="sd">        None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">team</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Organization</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the team/workspace ID.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the team/workspace ID."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">organization</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">organization</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">sender_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sender ID (deprecated - use author_id instead).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get sender ID (deprecated - use author_id instead)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span> <span class="ow">or</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get bot ID from author if author is a bot.</span>
+<span class="w">        </span><span class="sd">"""Get bot ID from author if author is a bot.</span>
 
-<span class="sd">        For bots, the bot_id is the same as the author&#39;s id.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        For bots, the bot_id is the same as the author's id.</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">is_bot</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">app_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get app ID from author if available.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get app ID from author if available."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">app_id</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_thread_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is a reply in a thread.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message is a reply in a thread."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_thread_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message started a thread.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message started a thread."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_count</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_bot_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is from a bot.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message is from a bot."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">subtype</span> <span class="o">==</span> <span class="n">SlackMessageSubtype</span><span class="o">.</span><span class="n">BOT_MESSAGE</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_edited</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message was edited.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message was edited."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">edited</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message has Block Kit blocks.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message has Block Kit blocks."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blocks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_files</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message has attached files.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message has attached files."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="SlackMessage.mentions_user">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.message.SlackMessage.mentions_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mentions_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message mentions a specific user.</span>
+<span class="w">        </span><span class="sd">"""Check if this message mentions a specific user.</span>
 
 <span class="sd">        Slack mentions are in the format &lt;@USER_ID&gt; in the message text.</span>
 
@@ -470,9 +470,9 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if the user is mentioned, False otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-        <span class="n">mention_format</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;@</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+        <span class="n">mention_format</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"&lt;@</span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&gt;"</span>
 
         <span class="c1"># Check content field</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="ow">and</span> <span class="n">mention_format</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
@@ -492,25 +492,25 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">permalink</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the message permalink if channel_id and ts are available.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the message permalink if channel_id and ts are available."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
             <span class="c1"># Note: This is a simplified permalink format</span>
             <span class="c1"># Real permalinks require the workspace domain</span>
-            <span class="n">ts_no_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;https://slack.com/archives/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/p</span><span class="si">{</span><span class="n">ts_no_dot</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">ts_no_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"."</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"https://slack.com/archives/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">/p</span><span class="si">{</span><span class="n">ts_no_dot</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">return</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SlackMessage.to_formatted">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.message.SlackMessage.to_formatted">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this Slack message to a FormattedMessage.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FormattedMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Convert this Slack message to a FormattedMessage.</span>
 
 <span class="sd">        Parses Slack mrkdwn formatting and converts to a FormattedMessage</span>
 <span class="sd">        that can be rendered for other backends.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            FormattedMessage: The formatted message representation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="n">FormattedMessage</span>
 
         <span class="n">fm</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span>
@@ -525,25 +525,25 @@
         <span class="k">for</span> <span class="n">file_info</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
             <span class="n">fm</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">FormattedAttachment</span><span class="p">(</span>
-                    <span class="n">filename</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                    <span class="n">url</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url_private&quot;</span><span class="p">,</span> <span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;permalink&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-                    <span class="n">content_type</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mimetype&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                    <span class="n">size</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"url_private"</span><span class="p">,</span> <span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"permalink"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+                    <span class="n">content_type</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mimetype"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">file_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"size"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># Add metadata</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;slack&quot;</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;ts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"source_backend"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"slack"</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"ts"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;author_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"author_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;channel_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"channel_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;thread_ts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"thread_ts"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">organization</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;team_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">organization</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"team_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">organization</span><span class="o">.</span><span class="n">id</span>
 
         <span class="k">return</span> <span class="n">fm</span></div>
 
@@ -553,11 +553,11 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_formatted</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">formatted</span><span class="p">:</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">formatted</span><span class="p">:</span> <span class="s2">"FormattedMessage"</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SlackMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SlackMessage from a FormattedMessage.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SlackMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a SlackMessage from a FormattedMessage.</span>
 
 <span class="sd">        Renders the FormattedMessage in Slack mrkdwn format.</span>
 
@@ -568,7 +568,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            SlackMessage: A new SlackMessage instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">Format</span>
 
         <span class="n">content</span> <span class="o">=</span> <span class="n">formatted</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span>
@@ -584,37 +584,37 @@
 <div class="viewcode-block" id="SlackMessage.from_api_response">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.message.SlackMessage.from_api_response">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;SlackMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SlackMessage from a Slack API response.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"SlackMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a SlackMessage from a Slack API response.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The API response data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A SlackMessage instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack.channel</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackChannel</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackUser</span>
 
         <span class="n">subtype</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="s2">&quot;subtype&quot;</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">"subtype"</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">subtype</span> <span class="o">=</span> <span class="n">SlackMessageSubtype</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;subtype&quot;</span><span class="p">])</span>
+                <span class="n">subtype</span> <span class="o">=</span> <span class="n">SlackMessageSubtype</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"subtype"</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">pass</span>
 
         <span class="c1"># Create author User object with bot info</span>
-        <span class="c1"># For bots, the bot_id from the API becomes the user&#39;s id</span>
-        <span class="n">user_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
-        <span class="n">bot_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bot_id&quot;</span><span class="p">)</span>
-        <span class="n">app_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;app_id&quot;</span><span class="p">)</span>
+        <span class="c1"># For bots, the bot_id from the API becomes the user's id</span>
+        <span class="n">user_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"user"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="n">bot_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"bot_id"</span><span class="p">)</span>
+        <span class="n">app_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"app_id"</span><span class="p">)</span>
         <span class="n">is_bot</span> <span class="o">=</span> <span class="n">bot_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
         <span class="c1"># Use user_id if available, otherwise use bot_id as the id</span>
-        <span class="n">author_id</span> <span class="o">=</span> <span class="n">user_id</span> <span class="ow">or</span> <span class="n">bot_id</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">author_id</span> <span class="o">=</span> <span class="n">user_id</span> <span class="ow">or</span> <span class="n">bot_id</span> <span class="ow">or</span> <span class="s2">""</span>
         <span class="n">author</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">SlackUser</span><span class="p">(</span>
                 <span class="nb">id</span><span class="o">=</span><span class="n">author_id</span><span class="p">,</span>
-                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>  <span class="c1"># Name not available in message data</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>  <span class="c1"># Name not available in message data</span>
                 <span class="n">is_bot</span><span class="o">=</span><span class="n">is_bot</span><span class="p">,</span>
                 <span class="n">app_id</span><span class="o">=</span><span class="n">app_id</span><span class="p">,</span>
             <span class="p">)</span>
@@ -622,41 +622,41 @@
             <span class="k">else</span> <span class="kc">None</span>
         <span class="p">)</span>
 
-        <span class="n">channel_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">channel_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"channel"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="n">SlackChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">channel_id</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="n">organization_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;team&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">organization_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"team"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="n">organization</span> <span class="o">=</span> <span class="n">Organization</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">organization_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">organization_id</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="n">thread_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;thread_ts&quot;</span><span class="p">)</span>
+        <span class="n">thread_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"thread_ts"</span><span class="p">)</span>
         <span class="n">thread</span> <span class="o">=</span> <span class="n">Thread</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">thread_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">thread_id</span> <span class="k">else</span> <span class="kc">None</span>
 
-        <span class="n">reply_user_ids</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reply_users&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">reply_user_ids</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reply_users"</span><span class="p">,</span> <span class="p">[])</span>
         <span class="n">reply_users</span> <span class="o">=</span> <span class="p">[</span><span class="n">SlackUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">uid</span><span class="p">)</span> <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">reply_user_ids</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;ts&quot;</span><span class="p">],</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">"ts"</span><span class="p">],</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
             <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
             <span class="n">organization</span><span class="o">=</span><span class="n">organization</span><span class="p">,</span>
             <span class="n">subtype</span><span class="o">=</span><span class="n">subtype</span><span class="p">,</span>
             <span class="n">is_bot</span><span class="o">=</span><span class="n">is_bot</span><span class="p">,</span>
-            <span class="n">blocks</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;blocks&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="n">text</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">blocks</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"blocks"</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"text"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
             <span class="n">thread</span><span class="o">=</span><span class="n">thread</span><span class="p">,</span>
-            <span class="n">reply_count</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reply_count&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="n">latest_reply</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;latest_reply&quot;</span><span class="p">),</span>
+            <span class="n">reply_count</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"reply_count"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">latest_reply</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"latest_reply"</span><span class="p">),</span>
             <span class="n">reply_users</span><span class="o">=</span><span class="n">reply_users</span><span class="p">,</span>
-            <span class="n">is_locked</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_locked&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">subscribed</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;subscribed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">last_read</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;last_read&quot;</span><span class="p">),</span>
-            <span class="n">files</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;files&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="n">upload</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;upload&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">display_as_bot</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;display_as_bot&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">edited</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;edited&quot;</span><span class="p">),</span>
+            <span class="n">is_locked</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"is_locked"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">subscribed</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"subscribed"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">last_read</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"last_read"</span><span class="p">),</span>
+            <span class="n">files</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"files"</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">upload</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"upload"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">display_as_bot</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"display_as_bot"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">edited</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"edited"</span><span class="p">),</span>
             <span class="n">raw</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;slack&quot;</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">"slack"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 

@@ -253,36 +253,36 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.telegram.presence</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Telegram-specific Presence model.</span>
+<span></span><span class="sd">"""Telegram-specific Presence model.</span>
 
 <span class="sd">This module provides the Telegram-specific Presence class.</span>
 
 <span class="sd">Note: Telegram has very limited presence support. Bots cannot see</span>
-<span class="sd">user online/offline status. Only &quot;last seen&quot; approximations are</span>
+<span class="sd">user online/offline status. Only "last seen" approximations are</span>
 <span class="sd">available for some users, and even that is privacy-controlled.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Presence</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TelegramPresence&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"TelegramPresence"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="TelegramPresence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.presence.TelegramPresence">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TelegramPresence</span><span class="p">(</span><span class="n">Presence</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Telegram-specific presence.</span>
+<span class="w">    </span><span class="sd">"""Telegram-specific presence.</span>
 
 <span class="sd">    Telegram provides limited presence information. Bots can only see</span>
-<span class="sd">    a user&#39;s status if the user has not restricted that in privacy settings.</span>
+<span class="sd">    a user's status if the user has not restricted that in privacy settings.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        last_seen_approximate: Approximate last seen description</span>
-<span class="sd">            (e.g. &quot;recently&quot;, &quot;within a week&quot;, &quot;within a month&quot;, &quot;long time ago&quot;).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">            (e.g. "recently", "within a week", "within a month", "long time ago").</span>
+<span class="sd">    """</span>
 
     <span class="n">last_seen_approximate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Approximate last seen description.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Approximate last seen description."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 </pre></div>

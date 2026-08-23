@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.organization</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Organization model for chatom.</span>
+<span></span><span class="sd">"""Organization model for chatom.</span>
 
 <span class="sd">This module provides the base Organization class representing a chat platform</span>
 <span class="sd">organization (e.g., Discord guild, Slack workspace, Symphony pod).</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Optional</span>
 
@@ -266,13 +266,13 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Organization&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Organization"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="Organization">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.organization.Organization">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Organization</span><span class="p">(</span><span class="n">Identifiable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents an organization on a chat platform.</span>
+<span class="w">    </span><span class="sd">"""Represents an organization on a chat platform.</span>
 
 <span class="sd">    An organization is the top-level container for users and channels.</span>
 <span class="sd">    This maps to different concepts on different platforms:</span>
@@ -284,44 +284,44 @@
 <span class="sd">        id: Platform-specific unique identifier.</span>
 <span class="sd">        name: Display name of the organization.</span>
 <span class="sd">        description: Description or purpose of the organization.</span>
-<span class="sd">        icon_url: URL to the organization&#39;s icon/logo image.</span>
+<span class="sd">        icon_url: URL to the organization's icon/logo image.</span>
 <span class="sd">        member_count: Approximate number of members, if available.</span>
 <span class="sd">        owner: The organization owner, if applicable.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description or purpose of the organization.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Description or purpose of the organization."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">icon_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL to the organization&#39;s icon/logo image.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL to the organization's icon/logo image."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">member_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Approximate number of members, if available.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Approximate number of members, if available."</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;User&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">owner</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"User"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The organization owner, if applicable.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The organization owner, if applicable."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">owner_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the owner&#39;s ID.</span>
+<span class="w">        </span><span class="sd">"""Get the owner's ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The owner ID or empty string if no owner.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the best available display name for the organization.</span>
+<span class="w">        </span><span class="sd">"""Get the best available display name for the organization.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The name or id (in order of preference).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span></div>
 
 </pre></div>

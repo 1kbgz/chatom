@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.authorization</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Authorization utilities for chatom.</span>
+<span></span><span class="sd">"""Authorization utilities for chatom.</span>
 
 <span class="sd">This module provides a simple authorization framework for bot development.</span>
 <span class="sd">It allows defining policies for what users can do in different channels.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -268,85 +268,85 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;AuthorizationPolicy&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;AuthorizationResult&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SimpleAuthorizationPolicy&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;is_user_authorized&quot;</span><span class="p">,</span>
+    <span class="s2">"AuthorizationPolicy"</span><span class="p">,</span>
+    <span class="s2">"AuthorizationResult"</span><span class="p">,</span>
+    <span class="s2">"Permission"</span><span class="p">,</span>
+    <span class="s2">"SimpleAuthorizationPolicy"</span><span class="p">,</span>
+    <span class="s2">"is_user_authorized"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="Permission">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.Permission">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Permission</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Common permissions that can be checked.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Common permissions that can be checked."""</span>
 
     <span class="c1"># Message permissions</span>
-    <span class="n">SEND_MESSAGES</span> <span class="o">=</span> <span class="s2">&quot;send_messages&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can send messages in a channel.&quot;&quot;&quot;</span>
+    <span class="n">SEND_MESSAGES</span> <span class="o">=</span> <span class="s2">"send_messages"</span>
+<span class="w">    </span><span class="sd">"""Can send messages in a channel."""</span>
 
-    <span class="n">READ_MESSAGES</span> <span class="o">=</span> <span class="s2">&quot;read_messages&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can read messages in a channel.&quot;&quot;&quot;</span>
+    <span class="n">READ_MESSAGES</span> <span class="o">=</span> <span class="s2">"read_messages"</span>
+<span class="w">    </span><span class="sd">"""Can read messages in a channel."""</span>
 
-    <span class="n">DELETE_MESSAGES</span> <span class="o">=</span> <span class="s2">&quot;delete_messages&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can delete messages (own or others).&quot;&quot;&quot;</span>
+    <span class="n">DELETE_MESSAGES</span> <span class="o">=</span> <span class="s2">"delete_messages"</span>
+<span class="w">    </span><span class="sd">"""Can delete messages (own or others)."""</span>
 
-    <span class="n">EDIT_MESSAGES</span> <span class="o">=</span> <span class="s2">&quot;edit_messages&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can edit messages.&quot;&quot;&quot;</span>
+    <span class="n">EDIT_MESSAGES</span> <span class="o">=</span> <span class="s2">"edit_messages"</span>
+<span class="w">    </span><span class="sd">"""Can edit messages."""</span>
 
     <span class="c1"># Command permissions</span>
-    <span class="n">EXECUTE_COMMANDS</span> <span class="o">=</span> <span class="s2">&quot;execute_commands&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can execute bot commands.&quot;&quot;&quot;</span>
+    <span class="n">EXECUTE_COMMANDS</span> <span class="o">=</span> <span class="s2">"execute_commands"</span>
+<span class="w">    </span><span class="sd">"""Can execute bot commands."""</span>
 
-    <span class="n">ADMIN_COMMANDS</span> <span class="o">=</span> <span class="s2">&quot;admin_commands&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can execute administrative commands.&quot;&quot;&quot;</span>
+    <span class="n">ADMIN_COMMANDS</span> <span class="o">=</span> <span class="s2">"admin_commands"</span>
+<span class="w">    </span><span class="sd">"""Can execute administrative commands."""</span>
 
     <span class="c1"># Channel permissions</span>
-    <span class="n">MANAGE_CHANNEL</span> <span class="o">=</span> <span class="s2">&quot;manage_channel&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can modify channel settings.&quot;&quot;&quot;</span>
+    <span class="n">MANAGE_CHANNEL</span> <span class="o">=</span> <span class="s2">"manage_channel"</span>
+<span class="w">    </span><span class="sd">"""Can modify channel settings."""</span>
 
-    <span class="n">INVITE_USERS</span> <span class="o">=</span> <span class="s2">&quot;invite_users&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can invite users to channel.&quot;&quot;&quot;</span>
+    <span class="n">INVITE_USERS</span> <span class="o">=</span> <span class="s2">"invite_users"</span>
+<span class="w">    </span><span class="sd">"""Can invite users to channel."""</span>
 
     <span class="c1"># Bot-specific permissions</span>
-    <span class="n">USE_BOT</span> <span class="o">=</span> <span class="s2">&quot;use_bot&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can interact with the bot at all.&quot;&quot;&quot;</span>
+    <span class="n">USE_BOT</span> <span class="o">=</span> <span class="s2">"use_bot"</span>
+<span class="w">    </span><span class="sd">"""Can interact with the bot at all."""</span>
 
-    <span class="n">CONFIGURE_BOT</span> <span class="o">=</span> <span class="s2">&quot;configure_bot&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Can configure bot settings.&quot;&quot;&quot;</span></div>
+    <span class="n">CONFIGURE_BOT</span> <span class="o">=</span> <span class="s2">"configure_bot"</span>
+<span class="w">    </span><span class="sd">"""Can configure bot settings."""</span></div>
 
 
 
 <div class="viewcode-block" id="AuthorizationResult">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.AuthorizationResult">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AuthorizationResult</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of an authorization check.</span>
+<span class="w">    </span><span class="sd">"""Result of an authorization check.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        authorized: Whether the action is authorized.</span>
 <span class="sd">        reason: Human-readable reason for the result.</span>
 <span class="sd">        required_permissions: Permissions that were required.</span>
 <span class="sd">        missing_permissions: Permissions that the user lacks.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">authorized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the action is authorized.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the action is authorized."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">reason</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Human-readable reason for the result.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Human-readable reason for the result."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">required_permissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Permissions that were required.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Permissions that were required."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">missing_permissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Permissions that the user lacks.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Permissions that the user lacks."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow using the result directly in boolean context.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Allow using the result directly in boolean context."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">authorized</span></div>
 
 
@@ -354,7 +354,7 @@
 <div class="viewcode-block" id="AuthorizationPolicy">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.AuthorizationPolicy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AuthorizationPolicy</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for authorization policies.</span>
+<span class="w">    </span><span class="sd">"""Abstract base class for authorization policies.</span>
 
 <span class="sd">    Implement this class to define custom authorization logic</span>
 <span class="sd">    for your bot. The policy can check user permissions, roles,</span>
@@ -372,9 +372,9 @@
 <span class="sd">        ...             return AuthorizationResult(authorized=True)</span>
 <span class="sd">        ...         return AuthorizationResult(</span>
 <span class="sd">        ...             authorized=False,</span>
-<span class="sd">        ...             reason=&quot;Not an admin user&quot;</span>
+<span class="sd">        ...             reason="Not an admin user"</span>
 <span class="sd">        ...         )</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="AuthorizationPolicy.is_authorized">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.AuthorizationPolicy.is_authorized">[docs]</a>
@@ -386,7 +386,7 @@
         <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">context</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a user is authorized for a permission.</span>
+<span class="w">        </span><span class="sd">"""Check if a user is authorized for a permission.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user to check.</span>
@@ -397,8 +397,8 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            AuthorizationResult indicating whether authorized and why.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass must implement is_authorized()&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclass must implement is_authorized()"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="AuthorizationPolicy.check_permissions">
@@ -411,7 +411,7 @@
         <span class="n">require_all</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">context</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check multiple permissions at once.</span>
+<span class="w">        </span><span class="sd">"""Check multiple permissions at once.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user to check.</span>
@@ -423,7 +423,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            AuthorizationResult with missing permissions listed.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">missing</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">granted</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -443,7 +443,7 @@
                     <span class="c1"># Need all but missing one - early exit</span>
                     <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                         <span class="n">authorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                        <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Missing permission: </span><span class="si">{</span><span class="n">perm</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                        <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Missing permission: </span><span class="si">{</span><span class="n">perm</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
                         <span class="n">required_permissions</span><span class="o">=</span><span class="n">permissions</span><span class="p">,</span>
                         <span class="n">missing_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm</span><span class="p">],</span>
                     <span class="p">)</span>
@@ -458,7 +458,7 @@
             <span class="c1"># Got here means we have none of the required permissions</span>
             <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                 <span class="n">authorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Missing all required permissions&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">"Missing all required permissions"</span><span class="p">,</span>
                 <span class="n">required_permissions</span><span class="o">=</span><span class="n">permissions</span><span class="p">,</span>
                 <span class="n">missing_permissions</span><span class="o">=</span><span class="n">missing</span><span class="p">,</span>
             <span class="p">)</span></div>
@@ -469,7 +469,7 @@
 <div class="viewcode-block" id="SimpleAuthorizationPolicy">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.SimpleAuthorizationPolicy">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SimpleAuthorizationPolicy</span><span class="p">(</span><span class="n">AuthorizationPolicy</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple authorization policy based on user/channel allow lists.</span>
+<span class="w">    </span><span class="sd">"""A simple authorization policy based on user/channel allow lists.</span>
 
 <span class="sd">    This policy allows you to define:</span>
 <span class="sd">    - Global admins who can do anything</span>
@@ -479,15 +479,15 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; policy = SimpleAuthorizationPolicy(</span>
-<span class="sd">        ...     admin_users=[&quot;U123&quot;, &quot;U456&quot;],  # These users can do anything</span>
+<span class="sd">        ...     admin_users=["U123", "U456"],  # These users can do anything</span>
 <span class="sd">        ...     default_authorized=False,  # Deny by default</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; # Allow specific users to use commands</span>
-<span class="sd">        &gt;&gt;&gt; policy.allow_permission(&quot;execute_commands&quot;, [&quot;U789&quot;, &quot;U999&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; policy.allow_permission("execute_commands", ["U789", "U999"])</span>
 <span class="sd">        &gt;&gt;&gt;</span>
 <span class="sd">        &gt;&gt;&gt; # Check authorization</span>
-<span class="sd">        &gt;&gt;&gt; result = await policy.is_authorized(user, &quot;execute_commands&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; result = await policy.is_authorized(user, "execute_commands")</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -495,13 +495,13 @@
         <span class="n">admin_channels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">default_authorized</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the policy.</span>
+<span class="w">        </span><span class="sd">"""Initialize the policy.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            admin_users: List of user IDs who have all permissions.</span>
 <span class="sd">            admin_channels: List of channel IDs where default is to allow.</span>
 <span class="sd">            default_authorized: Default authorization when no specific rule matches.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_admin_users</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">admin_users</span> <span class="ow">or</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_admin_channels</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">admin_channels</span> <span class="ow">or</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_default_authorized</span> <span class="o">=</span> <span class="n">default_authorized</span>
@@ -512,28 +512,28 @@
         <span class="c1"># channel_id -&gt; permission -&gt; set of user IDs (channel-specific overrides)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_channel_permissions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="c1"># permission -&gt; set of channel IDs where it&#39;s blocked</span>
+        <span class="c1"># permission -&gt; set of channel IDs where it's blocked</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_blocked_channels</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
 <div class="viewcode-block" id="SimpleAuthorizationPolicy.add_admin">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.SimpleAuthorizationPolicy.add_admin">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_admin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a user as a global admin.</span>
+<span class="w">        </span><span class="sd">"""Add a user as a global admin.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user_id: The user ID to add as admin.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_admin_users</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SimpleAuthorizationPolicy.remove_admin">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.authorization.SimpleAuthorizationPolicy.remove_admin">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">remove_admin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a user from global admins.</span>
+<span class="w">        </span><span class="sd">"""Remove a user from global admins.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user_id: The user ID to remove.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_admin_users</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
 
 
@@ -545,13 +545,13 @@
         <span class="n">user_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
         <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow specific users to have a permission.</span>
+<span class="w">        </span><span class="sd">"""Allow specific users to have a permission.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            permission: The permission to allow.</span>
 <span class="sd">            user_ids: List of user IDs to allow.</span>
 <span class="sd">            channel_id: If provided, only allow in this channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">perm_str</span> <span class="o">=</span> <span class="n">permission</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">Permission</span><span class="p">)</span> <span class="k">else</span> <span class="n">permission</span>
 
         <span class="k">if</span> <span class="n">channel_id</span><span class="p">:</span>
@@ -573,12 +573,12 @@
         <span class="n">permission</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Block a permission in specific channels.</span>
+<span class="w">        </span><span class="sd">"""Block a permission in specific channels.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            permission: The permission to block.</span>
 <span class="sd">            channel_ids: List of channel IDs where to block.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">perm_str</span> <span class="o">=</span> <span class="n">permission</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">Permission</span><span class="p">)</span> <span class="k">else</span> <span class="n">permission</span>
         <span class="k">if</span> <span class="n">perm_str</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocked_channels</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_blocked_channels</span><span class="p">[</span><span class="n">perm_str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -594,7 +594,7 @@
         <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">context</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AuthorizationResult</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a user is authorized for a permission.</span>
+<span class="w">        </span><span class="sd">"""Check if a user is authorized for a permission.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user to check.</span>
@@ -604,7 +604,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            AuthorizationResult indicating whether authorized.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">perm_str</span> <span class="o">=</span> <span class="n">permission</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">Permission</span><span class="p">)</span> <span class="k">else</span> <span class="n">permission</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">channel</span> <span class="k">else</span> <span class="kc">None</span>
 
@@ -612,7 +612,7 @@
         <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_admin_users</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                 <span class="n">authorized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;User is a global admin&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">"User is a global admin"</span><span class="p">,</span>
                 <span class="n">required_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
             <span class="p">)</span>
 
@@ -620,7 +620,7 @@
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">and</span> <span class="n">perm_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocked_channels</span> <span class="ow">and</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocked_channels</span><span class="p">[</span><span class="n">perm_str</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                 <span class="n">authorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Permission &#39;</span><span class="si">{</span><span class="n">perm_str</span><span class="si">}</span><span class="s2">&#39; is blocked in this channel&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Permission '</span><span class="si">{</span><span class="n">perm_str</span><span class="si">}</span><span class="s2">' is blocked in this channel"</span><span class="p">,</span>
                 <span class="n">required_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
                 <span class="n">missing_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
             <span class="p">)</span>
@@ -631,7 +631,7 @@
             <span class="k">if</span> <span class="n">perm_str</span> <span class="ow">in</span> <span class="n">channel_perms</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">channel_perms</span><span class="p">[</span><span class="n">perm_str</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                     <span class="n">authorized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                    <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;User has channel-specific permission&quot;</span><span class="p">,</span>
+                    <span class="n">reason</span><span class="o">=</span><span class="s2">"User has channel-specific permission"</span><span class="p">,</span>
                     <span class="n">required_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
                 <span class="p">)</span>
 
@@ -639,7 +639,7 @@
         <span class="k">if</span> <span class="n">perm_str</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permission_users</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permission_users</span><span class="p">[</span><span class="n">perm_str</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                 <span class="n">authorized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;User has global permission&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">"User has global permission"</span><span class="p">,</span>
                 <span class="n">required_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
             <span class="p">)</span>
 
@@ -647,14 +647,14 @@
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">and</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_admin_channels</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
                 <span class="n">authorized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Channel allows all actions by default&quot;</span><span class="p">,</span>
+                <span class="n">reason</span><span class="o">=</span><span class="s2">"Channel allows all actions by default"</span><span class="p">,</span>
                 <span class="n">required_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
             <span class="p">)</span>
 
         <span class="c1"># Fall back to default</span>
         <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
             <span class="n">authorized</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_authorized</span><span class="p">,</span>
-            <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;No specific rule found, using default&quot;</span><span class="p">,</span>
+            <span class="n">reason</span><span class="o">=</span><span class="s2">"No specific rule found, using default"</span><span class="p">,</span>
             <span class="n">required_permissions</span><span class="o">=</span><span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
             <span class="n">missing_permissions</span><span class="o">=</span><span class="p">[]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_authorized</span> <span class="k">else</span> <span class="p">[</span><span class="n">perm_str</span><span class="p">],</span>
         <span class="p">)</span></div>
@@ -671,7 +671,7 @@
     <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">context</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convenience function to check user authorization.</span>
+<span class="w">    </span><span class="sd">"""Convenience function to check user authorization.</span>
 
 <span class="sd">    This is a simple wrapper that returns just a boolean.</span>
 
@@ -686,10 +686,10 @@
 <span class="sd">        bool: True if authorized, False otherwise.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; policy = SimpleAuthorizationPolicy(admin_users=[&quot;U123&quot;])</span>
+<span class="sd">        &gt;&gt;&gt; policy = SimpleAuthorizationPolicy(admin_users=["U123"])</span>
 <span class="sd">        &gt;&gt;&gt; if await is_user_authorized(user, Permission.ADMIN_COMMANDS, policy):</span>
 <span class="sd">        ...     await handle_admin_command(message)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">policy</span><span class="o">.</span><span class="n">is_authorized</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="o">**</span><span class="n">context</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">authorized</span></div>
 

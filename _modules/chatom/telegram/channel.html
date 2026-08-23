@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.telegram.channel</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Telegram-specific Channel model.</span>
+<span></span><span class="sd">"""Telegram-specific Channel model.</span>
 
 <span class="sd">This module provides the Telegram-specific Channel class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -264,27 +264,27 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">ChannelType</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base.conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_backend_type</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TelegramChannel&quot;</span><span class="p">,</span> <span class="s2">&quot;TelegramChatType&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"TelegramChannel"</span><span class="p">,</span> <span class="s2">"TelegramChatType"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="TelegramChatType">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.channel.TelegramChatType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TelegramChatType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Telegram chat types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Telegram chat types."""</span>
 
-    <span class="n">PRIVATE</span> <span class="o">=</span> <span class="s2">&quot;private&quot;</span>
-    <span class="n">GROUP</span> <span class="o">=</span> <span class="s2">&quot;group&quot;</span>
-    <span class="n">SUPERGROUP</span> <span class="o">=</span> <span class="s2">&quot;supergroup&quot;</span>
-    <span class="n">CHANNEL</span> <span class="o">=</span> <span class="s2">&quot;channel&quot;</span></div>
+    <span class="n">PRIVATE</span> <span class="o">=</span> <span class="s2">"private"</span>
+    <span class="n">GROUP</span> <span class="o">=</span> <span class="s2">"group"</span>
+    <span class="n">SUPERGROUP</span> <span class="o">=</span> <span class="s2">"supergroup"</span>
+    <span class="n">CHANNEL</span> <span class="o">=</span> <span class="s2">"channel"</span></div>
 
 
 
 <div class="viewcode-block" id="TelegramChannel">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TelegramChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Telegram-specific channel (chat) with additional Telegram fields.</span>
+<span class="w">    </span><span class="sd">"""Telegram-specific channel (chat) with additional Telegram fields.</span>
 
-<span class="sd">    In Telegram, &quot;channels&quot; are called &quot;chats&quot; and can be private (1:1),</span>
+<span class="sd">    In Telegram, "channels" are called "chats" and can be private (1:1),</span>
 <span class="sd">    groups, supergroups, or broadcast channels.</span>
 
 <span class="sd">    Attributes:</span>
@@ -293,87 +293,87 @@
 <span class="sd">        invite_link: Primary invite link for the chat.</span>
 <span class="sd">        has_protected_content: Whether messages are protected from forwarding.</span>
 <span class="sd">        is_forum: Whether this supergroup has forum topics enabled.</span>
-<span class="sd">        chat_photo_url: URL of the chat&#39;s photo if available.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        chat_photo_url: URL of the chat's photo if available.</span>
+<span class="sd">    """</span>
 
     <span class="n">chat_type</span><span class="p">:</span> <span class="n">TelegramChatType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">TelegramChatType</span><span class="o">.</span><span class="n">PRIVATE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Telegram chat type.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Telegram chat type."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Chat description/bio.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Chat description/bio."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">invite_link</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Primary invite link for the chat.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Primary invite link for the chat."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">has_protected_content</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether messages are protected from forwarding.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether messages are protected from forwarding."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_forum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this supergroup has forum topics enabled.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this supergroup has forum topics enabled."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">chat_photo_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the chat&#39;s photo if available.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL of the chat's photo if available."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Public @username of the chat (without @), if set.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Public @username of the chat (without @), if set."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_group_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is a group or supergroup chat.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this is a group or supergroup chat."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">TelegramChatType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">,</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">SUPERGROUP</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_broadcast_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is a broadcast channel.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this is a broadcast channel."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_type</span> <span class="o">==</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">CHANNEL</span>
 
 <div class="viewcode-block" id="TelegramChannel.from_telegram_chat">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel.from_telegram_chat">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_telegram_chat</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">chat</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TelegramChannel&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a TelegramChannel from a python-telegram-bot Chat object.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_telegram_chat</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">chat</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"TelegramChannel"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a TelegramChannel from a python-telegram-bot Chat object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            chat: A telegram.Chat object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A TelegramChannel instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Map Telegram chat type to chatom ChannelType</span>
         <span class="n">type_map</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;private&quot;</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">,</span>
-            <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">,</span>
-            <span class="s2">&quot;supergroup&quot;</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">,</span>
-            <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">ANNOUNCEMENT</span><span class="p">,</span>
+            <span class="s2">"private"</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">,</span>
+            <span class="s2">"group"</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">,</span>
+            <span class="s2">"supergroup"</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PUBLIC</span><span class="p">,</span>
+            <span class="s2">"channel"</span><span class="p">:</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">ANNOUNCEMENT</span><span class="p">,</span>
         <span class="p">}</span>
-        <span class="n">chat_type_str</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;private&quot;</span><span class="p">)</span>
+        <span class="n">chat_type_str</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"type"</span><span class="p">,</span> <span class="s2">"private"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">chat</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-            <span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;first_name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">topic</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"first_name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">topic</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
             <span class="n">chat_type</span><span class="o">=</span><span class="n">TelegramChatType</span><span class="p">(</span><span class="n">chat_type_str</span><span class="p">)</span> <span class="k">if</span> <span class="n">chat_type_str</span> <span class="ow">in</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">__members__</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">else</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">PRIVATE</span><span class="p">,</span>
             <span class="n">channel_type</span><span class="o">=</span><span class="n">type_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">chat_type_str</span><span class="p">,</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">),</span>
-            <span class="n">description</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">invite_link</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;invite_link&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">has_protected_content</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;has_protected_content&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">is_forum</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;is_forum&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">username</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">invite_link</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"invite_link"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">has_protected_content</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"has_protected_content"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">is_forum</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"is_forum"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">username</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">chat</span><span class="p">,</span> <span class="s2">"username"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
 
 
 <span class="c1"># Register with conversion system</span>
-<span class="n">register_backend_type</span><span class="p">(</span><span class="s2">&quot;telegram&quot;</span><span class="p">,</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">TelegramChannel</span><span class="p">)</span>
+<span class="n">register_backend_type</span><span class="p">(</span><span class="s2">"telegram"</span><span class="p">,</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">TelegramChannel</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>

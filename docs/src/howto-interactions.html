@@ -267,18 +267,18 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">ButtonStyle</span><span class="p">,</span> <span class="n">SelectOption</span>
 
-<span class="n">message</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">&quot;Deploy release 2.4?&quot;</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">"Deploy release 2.4?"</span><span class="p">)</span>
 <span class="n">message</span><span class="o">.</span><span class="n">add_button</span><span class="p">(</span>
-    <span class="s2">&quot;Deploy&quot;</span><span class="p">,</span>
-    <span class="n">action_id</span><span class="o">=</span><span class="s2">&quot;deploy_release&quot;</span><span class="p">,</span>
+    <span class="s2">"Deploy"</span><span class="p">,</span>
+    <span class="n">action_id</span><span class="o">=</span><span class="s2">"deploy_release"</span><span class="p">,</span>
     <span class="n">style</span><span class="o">=</span><span class="n">ButtonStyle</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">,</span>
-    <span class="n">value</span><span class="o">=</span><span class="s2">&quot;2.4&quot;</span><span class="p">,</span>
+    <span class="n">value</span><span class="o">=</span><span class="s2">"2.4"</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="n">message</span><span class="o">.</span><span class="n">add_select</span><span class="p">(</span>
-    <span class="s2">&quot;target_environment&quot;</span><span class="p">,</span>
+    <span class="s2">"target_environment"</span><span class="p">,</span>
     <span class="p">[</span>
-        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Staging&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">),</span>
-        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Production&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;production&quot;</span><span class="p">),</span>
+        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Staging"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"staging"</span><span class="p">),</span>
+        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Production"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"production"</span><span class="p">),</span>
     <span class="p">],</span>
 <span class="p">)</span>
 
@@ -295,12 +295,12 @@
 
 <span class="n">registry</span> <span class="o">=</span> <span class="n">InteractionRegistry</span><span class="p">()</span>
 
-<span class="nd">@registry</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;deploy_release&quot;</span><span class="p">)</span>
+<span class="nd">@registry</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"deploy_release"</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">deploy</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
     <span class="n">release</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">value</span>
-    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Deploying </span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Deploying </span><span class="si">{</span><span class="n">release</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
-<span class="nd">@registry</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">&quot;target_environment&quot;</span><span class="p">)</span>
+<span class="nd">@registry</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s2">"target_environment"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">select_environment</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">event</span><span class="o">.</span><span class="n">value</span>
 </pre></div>

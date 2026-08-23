@@ -253,97 +253,97 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.slack.user</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Slack-specific User model.</span>
+<span></span><span class="sd">"""Slack-specific User model.</span>
 
 <span class="sd">This module provides the Slack-specific User class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">User</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SlackUser&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SlackUser"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="SlackUser">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.user.SlackUser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackUser</span><span class="p">(</span><span class="n">User</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack-specific user with additional Slack fields.</span>
+<span class="w">    </span><span class="sd">"""Slack-specific user with additional Slack fields.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        real_name: The user&#39;s real name from their profile.</span>
-<span class="sd">        display_name: The user&#39;s display name.</span>
-<span class="sd">        team_id: The ID of the user&#39;s workspace/team.</span>
+<span class="sd">        real_name: The user's real name from their profile.</span>
+<span class="sd">        display_name: The user's display name.</span>
+<span class="sd">        team_id: The ID of the user's workspace/team.</span>
 <span class="sd">        is_admin: Whether the user is a workspace admin.</span>
 <span class="sd">        is_owner: Whether the user is a workspace owner.</span>
 <span class="sd">        is_restricted: Whether the user is a multi-channel guest.</span>
 <span class="sd">        is_ultra_restricted: Whether the user is a single-channel guest.</span>
-<span class="sd">        tz: The user&#39;s timezone identifier.</span>
-<span class="sd">        tz_offset: The user&#39;s timezone offset in seconds.</span>
-<span class="sd">        title: The user&#39;s job title.</span>
-<span class="sd">        phone: The user&#39;s phone number.</span>
-<span class="sd">        status_text: The user&#39;s current status text.</span>
-<span class="sd">        status_emoji: The user&#39;s current status emoji.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        tz: The user's timezone identifier.</span>
+<span class="sd">        tz_offset: The user's timezone offset in seconds.</span>
+<span class="sd">        title: The user's job title.</span>
+<span class="sd">        phone: The user's phone number.</span>
+<span class="sd">        status_text: The user's current status text.</span>
+<span class="sd">        status_emoji: The user's current status emoji.</span>
+<span class="sd">    """</span>
 
     <span class="n">real_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s real name from their profile.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's real name from their profile."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s display name.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's display name."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">team_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The ID of the user&#39;s workspace/team.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The ID of the user's workspace/team."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_admin</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user is a workspace admin.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user is a workspace admin."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_owner</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user is a workspace owner.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user is a workspace owner."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_restricted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user is a multi-channel guest.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user is a multi-channel guest."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_ultra_restricted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user is a single-channel guest.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user is a single-channel guest."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">tz</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s timezone identifier.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's timezone identifier."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">tz_offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s timezone offset in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's timezone offset in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s job title.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's job title."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">phone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s phone number.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's phone number."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">status_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s current status text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's current status text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">status_emoji</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s current status emoji.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's current status emoji."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">mention_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the best name to use when mentioning.</span>
+<span class="w">        </span><span class="sd">"""Get the best name to use when mentioning.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The display name, real name, or handle.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
 
 </pre></div>

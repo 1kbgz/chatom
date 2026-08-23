@@ -253,34 +253,34 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.format.variant</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Format variant definitions for chatom.</span>
+<span></span><span class="sd">"""Format variant definitions for chatom.</span>
 
 <span class="sd">This module defines the different output formats supported by chatom.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;DISCORD_MARKDOWN&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;FORMAT&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;HTML&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;MARKDOWN&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;PLAINTEXT&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SLACK_MARKDOWN&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SYMPHONY_MESSAGEML&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TELEGRAM_HTML&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Format&quot;</span><span class="p">,</span>
+    <span class="s2">"DISCORD_MARKDOWN"</span><span class="p">,</span>
+    <span class="s2">"FORMAT"</span><span class="p">,</span>
+    <span class="s2">"HTML"</span><span class="p">,</span>
+    <span class="s2">"MARKDOWN"</span><span class="p">,</span>
+    <span class="s2">"PLAINTEXT"</span><span class="p">,</span>
+    <span class="s2">"SLACK_MARKDOWN"</span><span class="p">,</span>
+    <span class="s2">"SYMPHONY_MESSAGEML"</span><span class="p">,</span>
+    <span class="s2">"TELEGRAM_HTML"</span><span class="p">,</span>
+    <span class="s2">"Format"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="c1"># String constants for backwards compatibility</span>
-<span class="n">PLAINTEXT</span> <span class="o">=</span> <span class="s2">&quot;plaintext&quot;</span>
-<span class="n">MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;markdown&quot;</span>
-<span class="n">SLACK_MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;slack-markdown&quot;</span>
-<span class="n">DISCORD_MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;discord-markdown&quot;</span>
-<span class="n">HTML</span> <span class="o">=</span> <span class="s2">&quot;html&quot;</span>
-<span class="n">TELEGRAM_HTML</span> <span class="o">=</span> <span class="s2">&quot;telegram-html&quot;</span>
-<span class="n">SYMPHONY_MESSAGEML</span> <span class="o">=</span> <span class="s2">&quot;symphony-messageml&quot;</span>
+<span class="n">PLAINTEXT</span> <span class="o">=</span> <span class="s2">"plaintext"</span>
+<span class="n">MARKDOWN</span> <span class="o">=</span> <span class="s2">"markdown"</span>
+<span class="n">SLACK_MARKDOWN</span> <span class="o">=</span> <span class="s2">"slack-markdown"</span>
+<span class="n">DISCORD_MARKDOWN</span> <span class="o">=</span> <span class="s2">"discord-markdown"</span>
+<span class="n">HTML</span> <span class="o">=</span> <span class="s2">"html"</span>
+<span class="n">TELEGRAM_HTML</span> <span class="o">=</span> <span class="s2">"telegram-html"</span>
+<span class="n">SYMPHONY_MESSAGEML</span> <span class="o">=</span> <span class="s2">"symphony-messageml"</span>
 <span class="c1"># Alias for backwards compatibility</span>
 <span class="n">SYMPHONY_HTML</span> <span class="o">=</span> <span class="n">SYMPHONY_MESSAGEML</span>
 
@@ -288,33 +288,33 @@
 <div class="viewcode-block" id="Format">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.variant.Format">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Format</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Supported output formats.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Supported output formats."""</span>
 
-    <span class="n">PLAINTEXT</span> <span class="o">=</span> <span class="s2">&quot;plaintext&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plain text with no formatting.&quot;&quot;&quot;</span>
+    <span class="n">PLAINTEXT</span> <span class="o">=</span> <span class="s2">"plaintext"</span>
+<span class="w">    </span><span class="sd">"""Plain text with no formatting."""</span>
 
-    <span class="n">MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;markdown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standard CommonMark Markdown.&quot;&quot;&quot;</span>
+    <span class="n">MARKDOWN</span> <span class="o">=</span> <span class="s2">"markdown"</span>
+<span class="w">    </span><span class="sd">"""Standard CommonMark Markdown."""</span>
 
-    <span class="n">SLACK_MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;slack-markdown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack&#39;s mrkdwn format (differs from standard Markdown).&quot;&quot;&quot;</span>
+    <span class="n">SLACK_MARKDOWN</span> <span class="o">=</span> <span class="s2">"slack-markdown"</span>
+<span class="w">    </span><span class="sd">"""Slack's mrkdwn format (differs from standard Markdown)."""</span>
 
-    <span class="n">DISCORD_MARKDOWN</span> <span class="o">=</span> <span class="s2">&quot;discord-markdown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord&#39;s flavor of Markdown.&quot;&quot;&quot;</span>
+    <span class="n">DISCORD_MARKDOWN</span> <span class="o">=</span> <span class="s2">"discord-markdown"</span>
+<span class="w">    </span><span class="sd">"""Discord's flavor of Markdown."""</span>
 
-    <span class="n">HTML</span> <span class="o">=</span> <span class="s2">&quot;html&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standard HTML.&quot;&quot;&quot;</span>
+    <span class="n">HTML</span> <span class="o">=</span> <span class="s2">"html"</span>
+<span class="w">    </span><span class="sd">"""Standard HTML."""</span>
 
-    <span class="n">TELEGRAM_HTML</span> <span class="o">=</span> <span class="s2">&quot;telegram-html&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Telegram Bot API HTML subset.&quot;&quot;&quot;</span>
+    <span class="n">TELEGRAM_HTML</span> <span class="o">=</span> <span class="s2">"telegram-html"</span>
+<span class="w">    </span><span class="sd">"""Telegram Bot API HTML subset."""</span>
 
-    <span class="n">SYMPHONY_MESSAGEML</span> <span class="o">=</span> <span class="s2">&quot;symphony-messageml&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony&#39;s MessageML format (XML-based).&quot;&quot;&quot;</span></div>
+    <span class="n">SYMPHONY_MESSAGEML</span> <span class="o">=</span> <span class="s2">"symphony-messageml"</span>
+<span class="w">    </span><span class="sd">"""Symphony's MessageML format (XML-based)."""</span></div>
 
 
 
 <span class="c1"># Type alias for format specification</span>
-<span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;plaintext&quot;</span><span class="p">,</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span> <span class="s2">&quot;slack-markdown&quot;</span><span class="p">,</span> <span class="s2">&quot;discord-markdown&quot;</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;telegram-html&quot;</span><span class="p">,</span> <span class="s2">&quot;symphony-messageml&quot;</span><span class="p">],</span> <span class="n">Format</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>  <span class="c1"># noqa: UP007</span>
+<span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">"plaintext"</span><span class="p">,</span> <span class="s2">"markdown"</span><span class="p">,</span> <span class="s2">"slack-markdown"</span><span class="p">,</span> <span class="s2">"discord-markdown"</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="s2">"telegram-html"</span><span class="p">,</span> <span class="s2">"symphony-messageml"</span><span class="p">],</span> <span class="n">Format</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>  <span class="c1"># noqa: UP007</span>
 </pre></div>
         </article>
       </div>

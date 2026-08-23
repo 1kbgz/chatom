@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.discord.message</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Discord-specific Message model.</span>
+<span></span><span class="sd">"""Discord-specific Message model.</span>
 
 <span class="sd">This module provides the Discord-specific Message class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Any</span>
@@ -268,19 +268,19 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;DiscordMessage&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DiscordMessageFlags&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;DiscordMessageType&quot;</span><span class="p">,</span>
+    <span class="s2">"DiscordMessage"</span><span class="p">,</span>
+    <span class="s2">"DiscordMessageFlags"</span><span class="p">,</span>
+    <span class="s2">"DiscordMessageType"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="DiscordMessageType">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.message.DiscordMessageType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordMessageType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord message types.</span>
+<span class="w">    </span><span class="sd">"""Discord message types.</span>
 
 <span class="sd">    Based on Discord API message types.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">DEFAULT</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">RECIPIENT_ADD</span> <span class="o">=</span> <span class="mi">1</span>
@@ -319,10 +319,10 @@
 <div class="viewcode-block" id="DiscordMessageFlags">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.message.DiscordMessageFlags">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordMessageFlags</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord message flags.</span>
+<span class="w">    </span><span class="sd">"""Discord message flags.</span>
 
 <span class="sd">    Based on Discord API message flags.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">CROSSPOSTED</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
     <span class="n">IS_CROSSPOST</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
@@ -341,7 +341,7 @@
 <div class="viewcode-block" id="DiscordMessage">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.message.DiscordMessage">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordMessage</span><span class="p">(</span><span class="n">Message</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific message with additional Discord fields.</span>
+<span class="w">    </span><span class="sd">"""Discord-specific message with additional Discord fields.</span>
 
 <span class="sd">    Based on the Discord API message structure.</span>
 
@@ -365,134 +365,134 @@
 <span class="sd">        components: Message components (buttons, etc.).</span>
 <span class="sd">        sticker_items: Stickers in the message.</span>
 <span class="sd">        position: Position in thread.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">discord_type</span><span class="p">:</span> <span class="n">DiscordMessageType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">DiscordMessageType</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The Discord message type.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The Discord message type."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">guild</span><span class="p">:</span> <span class="n">Organization</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The guild/server this message was sent in.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The guild/server this message was sent in."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">member</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Guild member data for the author.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Guild member data for the author."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">mention_everyone</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether @everyone was mentioned.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether @everyone was mentioned."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">mention_roles</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of mentioned role IDs.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of mentioned role IDs."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">mention_channels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of mentioned channel IDs.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of mentioned channel IDs."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">nonce</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Used for message send verification.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Used for message send verification."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">pinned</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the message is pinned.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the message is pinned."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">webhook_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Webhook ID if sent by a webhook.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Webhook ID if sent by a webhook."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Message flags.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Message flags."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">interaction</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Interaction data if from an interaction.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Interaction data if from an interaction."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Message components (buttons, select menus, etc.).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Message components (buttons, select menus, etc.)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">sticker_items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Stickers in the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Stickers in the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Position in thread.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Position in thread."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">guild_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the guild/server ID.</span>
+<span class="w">        </span><span class="sd">"""Get the guild/server ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The guild ID, or empty string if not set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message is a reply.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message is a reply."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discord_type</span> <span class="o">==</span> <span class="n">DiscordMessageType</span><span class="o">.</span><span class="n">REPLY</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">reply_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_ephemeral</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is an ephemeral message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this is an ephemeral message."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">DiscordMessageFlags</span><span class="o">.</span><span class="n">EPHEMERAL</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_crossposted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message was crossposted.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message was crossposted."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">DiscordMessageFlags</span><span class="o">.</span><span class="n">CROSSPOSTED</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message has a thread.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message has a thread."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">DiscordMessageFlags</span><span class="o">.</span><span class="n">HAS_THREAD</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_voice_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is a voice message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this is a voice message."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">DiscordMessageFlags</span><span class="o">.</span><span class="n">IS_VOICE_MESSAGE</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">suppresses_embeds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if embeds are suppressed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if embeds are suppressed."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">DiscordMessageFlags</span><span class="o">.</span><span class="n">SUPPRESS_EMBEDS</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">suppresses_notifications</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if notifications are suppressed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if notifications are suppressed."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">DiscordMessageFlags</span><span class="o">.</span><span class="n">SUPPRESS_NOTIFICATIONS</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DiscordMessage.has_flag">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.message.DiscordMessage.has_flag">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag</span><span class="p">:</span> <span class="n">DiscordMessageFlags</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a specific flag is set.</span>
+<span class="w">        </span><span class="sd">"""Check if a specific flag is set.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            flag: The flag to check.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if the flag is set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">flag</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DiscordMessage.to_formatted">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.message.DiscordMessage.to_formatted">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this Discord message to a FormattedMessage.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FormattedMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Convert this Discord message to a FormattedMessage.</span>
 
 <span class="sd">        Parses Discord markdown formatting and converts to a FormattedMessage</span>
 <span class="sd">        that can be rendered for other backends.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            FormattedMessage: The formatted message representation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="n">FormattedMessage</span>
 
         <span class="n">fm</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span>
@@ -513,18 +513,18 @@
             <span class="p">)</span>
 
         <span class="c1"># Add metadata</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;discord&quot;</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"source_backend"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"discord"</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;author_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"author_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">author_id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;channel_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"channel_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild_id</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;guild_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild_id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"guild_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild_id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mention_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">]</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"mention_ids"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">webhook_id</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;webhook_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">webhook_id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"webhook_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">webhook_id</span>
 
         <span class="k">return</span> <span class="n">fm</span></div>
 
@@ -534,11 +534,11 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_formatted</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">formatted</span><span class="p">:</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">formatted</span><span class="p">:</span> <span class="s2">"FormattedMessage"</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DiscordMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DiscordMessage from a FormattedMessage.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DiscordMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a DiscordMessage from a FormattedMessage.</span>
 
 <span class="sd">        Renders the FormattedMessage in Discord markdown format.</span>
 
@@ -549,14 +549,14 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            DiscordMessage: A new DiscordMessage instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">Format</span>
 
         <span class="n">content</span> <span class="o">=</span> <span class="n">formatted</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;discord&quot;</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">"discord"</span><span class="p">,</span>
             <span class="n">metadata</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">formatted</span><span class="o">.</span><span class="n">metadata</span><span class="p">),</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span></div>
@@ -565,65 +565,65 @@
 <div class="viewcode-block" id="DiscordMessage.from_api_response">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.message.DiscordMessage.from_api_response">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;DiscordMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DiscordMessage from a Discord API response.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"DiscordMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a DiscordMessage from a Discord API response.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The API response data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A DiscordMessage instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord.channel</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordChannel</span>
 
-        <span class="n">author_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;author&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">author_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"author"</span><span class="p">,</span> <span class="p">{})</span>
 
         <span class="c1"># Create author User object</span>
         <span class="n">author</span> <span class="o">=</span> <span class="n">DiscordUser</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">handle</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;global_name&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">is_bot</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bot&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">handle</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"username"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"global_name"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"username"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">is_bot</span><span class="o">=</span><span class="n">author_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"bot"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
         <span class="p">)</span>
 
         <span class="c1"># Create channel object</span>
-        <span class="n">channel_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;channel_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="n">channel_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"channel_id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="n">DiscordChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">channel_id</span> <span class="k">else</span> <span class="kc">None</span>
 
         <span class="c1"># Extract mention IDs and create User objects</span>
         <span class="n">mention_users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">DiscordUser</span><span class="p">(</span>
-                <span class="nb">id</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                <span class="n">handle</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                <span class="n">name</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;global_name&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;username&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                <span class="n">handle</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"username"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"global_name"</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"username"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
             <span class="p">)</span>
-            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mentions&quot;</span><span class="p">,</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mentions"</span><span class="p">,</span> <span class="p">[])</span>
         <span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">discord_type</span><span class="o">=</span><span class="n">DiscordMessageType</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">discord_type</span><span class="o">=</span><span class="n">DiscordMessageType</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
-            <span class="n">guild</span><span class="o">=</span><span class="n">Organization</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;guild_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;guild_id&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">guild</span><span class="o">=</span><span class="n">Organization</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"guild_id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))</span> <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"guild_id"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
             <span class="n">is_bot</span><span class="o">=</span><span class="n">author</span><span class="o">.</span><span class="n">is_bot</span><span class="p">,</span>
-            <span class="n">member</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;member&quot;</span><span class="p">),</span>
-            <span class="n">mention_everyone</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mention_everyone&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">member</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"member"</span><span class="p">),</span>
+            <span class="n">mention_everyone</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mention_everyone"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="n">mentions</span><span class="o">=</span><span class="n">mention_users</span><span class="p">,</span>
-            <span class="n">mention_roles</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mention_roles&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="n">mention_channels</span><span class="o">=</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mention_channels&quot;</span><span class="p">,</span> <span class="p">[])],</span>
-            <span class="n">nonce</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;nonce&quot;</span><span class="p">),</span>
-            <span class="n">pinned</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pinned&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">is_pinned</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pinned&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
-            <span class="n">webhook_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;webhook_id&quot;</span><span class="p">),</span>
-            <span class="n">flags</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;flags&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;interaction&quot;</span><span class="p">),</span>
-            <span class="n">components</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="n">sticker_items</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sticker_items&quot;</span><span class="p">,</span> <span class="p">[]),</span>
-            <span class="n">position</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">),</span>
+            <span class="n">mention_roles</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mention_roles"</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">mention_channels</span><span class="o">=</span><span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"mention_channels"</span><span class="p">,</span> <span class="p">[])],</span>
+            <span class="n">nonce</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"nonce"</span><span class="p">),</span>
+            <span class="n">pinned</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"pinned"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">is_pinned</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"pinned"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="n">webhook_id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"webhook_id"</span><span class="p">),</span>
+            <span class="n">flags</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"flags"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"interaction"</span><span class="p">),</span>
+            <span class="n">components</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"components"</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">sticker_items</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"sticker_items"</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">position</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"position"</span><span class="p">),</span>
             <span class="n">raw</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;discord&quot;</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">"discord"</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 

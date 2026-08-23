@@ -253,7 +253,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.csp</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;CSP (Complex Event Processing) integration for chatom.</span>
+<span></span><span class="sd">"""CSP (Complex Event Processing) integration for chatom.</span>
 
 <span class="sd">This module provides optional CSP integration for chatom backends,</span>
 <span class="sd">allowing real-time message streaming and processing using the csp library.</span>
@@ -264,7 +264,7 @@
 <span class="sd">    &gt;&gt;&gt; from chatom.symphony import SymphonyBackend, SymphonyConfig</span>
 <span class="sd">    &gt;&gt;&gt; from chatom.csp import BackendAdapter</span>
 <span class="sd">    &gt;&gt;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; config = SymphonyConfig(host=&quot;company.symphony.com&quot;, ...)</span>
+<span class="sd">    &gt;&gt;&gt; config = SymphonyConfig(host="company.symphony.com", ...)</span>
 <span class="sd">    &gt;&gt;&gt; backend = SymphonyBackend(config=config)</span>
 <span class="sd">    &gt;&gt;&gt; adapter = BackendAdapter(backend)</span>
 <span class="sd">    &gt;&gt;&gt;</span>
@@ -273,7 +273,7 @@
 <span class="sd">    ...     messages = adapter.subscribe()</span>
 <span class="sd">    ...     # Process messages...</span>
 <span class="sd">    ...     adapter.publish(responses)</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="c1"># Check if csp is available</span>
 <span class="k">try</span><span class="p">:</span>
@@ -289,41 +289,41 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">.nodes</span><span class="w"> </span><span class="kn">import</span> <span class="n">message_reader</span><span class="p">,</span> <span class="n">message_writer</span>
 
     <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="s2">&quot;HAS_CSP&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;BackendAdapter&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;interaction_reader&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;message_reader&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;message_writer&quot;</span><span class="p">,</span>
+        <span class="s2">"HAS_CSP"</span><span class="p">,</span>
+        <span class="s2">"BackendAdapter"</span><span class="p">,</span>
+        <span class="s2">"interaction_reader"</span><span class="p">,</span>
+        <span class="s2">"message_reader"</span><span class="p">,</span>
+        <span class="s2">"message_writer"</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;HAS_CSP&quot;</span><span class="p">,)</span>
+    <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"HAS_CSP"</span><span class="p">,)</span>
 
 <div class="viewcode-block" id="BackendAdapter">
 <a class="viewcode-back" href="../../docs/src/api-integrations.html#chatom.csp.BackendAdapter">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">BackendAdapter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Placeholder when csp is not installed.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;csp is not installed. Install with: pip install csp&quot;</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Placeholder when csp is not installed."""</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"csp is not installed. Install with: pip install csp"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="message_reader">
 <a class="viewcode-back" href="../../docs/src/api-integrations.html#chatom.csp.message_reader">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">message_reader</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Placeholder when csp is not installed.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;csp is not installed. Install with: pip install csp&quot;</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Placeholder when csp is not installed."""</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"csp is not installed. Install with: pip install csp"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="message_writer">
 <a class="viewcode-back" href="../../docs/src/api-integrations.html#chatom.csp.message_writer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">message_writer</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Placeholder when csp is not installed.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;csp is not installed. Install with: pip install csp&quot;</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Placeholder when csp is not installed."""</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"csp is not installed. Install with: pip install csp"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="interaction_reader">
 <a class="viewcode-back" href="../../docs/src/api-integrations.html#chatom.csp.interaction_reader">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">interaction_reader</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Placeholder when csp is not installed.&quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;csp is not installed. Install with: pip install csp&quot;</span><span class="p">)</span></div>
+<span class="w">        </span><span class="sd">"""Placeholder when csp is not installed."""</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"csp is not installed. Install with: pip install csp"</span><span class="p">)</span></div>
 
 </pre></div>
         </article>

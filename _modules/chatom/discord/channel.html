@@ -253,43 +253,43 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.discord.channel</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Discord-specific Channel model.</span>
+<span></span><span class="sd">"""Discord-specific Channel model.</span>
 
 <span class="sd">This module provides the Discord-specific Channel class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Organization</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DiscordChannel&quot;</span><span class="p">,</span> <span class="s2">&quot;DiscordChannelType&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DiscordChannel"</span><span class="p">,</span> <span class="s2">"DiscordChannelType"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DiscordChannelType">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.channel.DiscordChannelType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordChannelType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific channel types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Discord-specific channel types."""</span>
 
-    <span class="n">GUILD_TEXT</span> <span class="o">=</span> <span class="s2">&quot;guild_text&quot;</span>
-    <span class="n">DM</span> <span class="o">=</span> <span class="s2">&quot;dm&quot;</span>
-    <span class="n">GUILD_VOICE</span> <span class="o">=</span> <span class="s2">&quot;guild_voice&quot;</span>
-    <span class="n">GROUP_DM</span> <span class="o">=</span> <span class="s2">&quot;group_dm&quot;</span>
-    <span class="n">GUILD_CATEGORY</span> <span class="o">=</span> <span class="s2">&quot;guild_category&quot;</span>
-    <span class="n">GUILD_ANNOUNCEMENT</span> <span class="o">=</span> <span class="s2">&quot;guild_announcement&quot;</span>
-    <span class="n">ANNOUNCEMENT_THREAD</span> <span class="o">=</span> <span class="s2">&quot;announcement_thread&quot;</span>
-    <span class="n">PUBLIC_THREAD</span> <span class="o">=</span> <span class="s2">&quot;public_thread&quot;</span>
-    <span class="n">PRIVATE_THREAD</span> <span class="o">=</span> <span class="s2">&quot;private_thread&quot;</span>
-    <span class="n">GUILD_STAGE_VOICE</span> <span class="o">=</span> <span class="s2">&quot;guild_stage_voice&quot;</span>
-    <span class="n">GUILD_DIRECTORY</span> <span class="o">=</span> <span class="s2">&quot;guild_directory&quot;</span>
-    <span class="n">GUILD_FORUM</span> <span class="o">=</span> <span class="s2">&quot;guild_forum&quot;</span>
-    <span class="n">GUILD_MEDIA</span> <span class="o">=</span> <span class="s2">&quot;guild_media&quot;</span></div>
+    <span class="n">GUILD_TEXT</span> <span class="o">=</span> <span class="s2">"guild_text"</span>
+    <span class="n">DM</span> <span class="o">=</span> <span class="s2">"dm"</span>
+    <span class="n">GUILD_VOICE</span> <span class="o">=</span> <span class="s2">"guild_voice"</span>
+    <span class="n">GROUP_DM</span> <span class="o">=</span> <span class="s2">"group_dm"</span>
+    <span class="n">GUILD_CATEGORY</span> <span class="o">=</span> <span class="s2">"guild_category"</span>
+    <span class="n">GUILD_ANNOUNCEMENT</span> <span class="o">=</span> <span class="s2">"guild_announcement"</span>
+    <span class="n">ANNOUNCEMENT_THREAD</span> <span class="o">=</span> <span class="s2">"announcement_thread"</span>
+    <span class="n">PUBLIC_THREAD</span> <span class="o">=</span> <span class="s2">"public_thread"</span>
+    <span class="n">PRIVATE_THREAD</span> <span class="o">=</span> <span class="s2">"private_thread"</span>
+    <span class="n">GUILD_STAGE_VOICE</span> <span class="o">=</span> <span class="s2">"guild_stage_voice"</span>
+    <span class="n">GUILD_DIRECTORY</span> <span class="o">=</span> <span class="s2">"guild_directory"</span>
+    <span class="n">GUILD_FORUM</span> <span class="o">=</span> <span class="s2">"guild_forum"</span>
+    <span class="n">GUILD_MEDIA</span> <span class="o">=</span> <span class="s2">"guild_media"</span></div>
 
 
 
 <div class="viewcode-block" id="DiscordChannel">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.channel.DiscordChannel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific channel with additional Discord fields.</span>
+<span class="w">    </span><span class="sd">"""Discord-specific channel with additional Discord fields.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        guild: The guild/server this channel belongs to.</span>
@@ -300,57 +300,57 @@
 <span class="sd">        bitrate: Voice channel bitrate.</span>
 <span class="sd">        user_limit: Voice channel user limit.</span>
 <span class="sd">        rate_limit_per_user: Slowmode rate limit.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">guild</span><span class="p">:</span> <span class="n">Organization</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The guild/server this channel belongs to.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The guild/server this channel belongs to."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Sorting position of the channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Sorting position of the channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">nsfw</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the channel is NSFW.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the channel is NSFW."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">slowmode_delay</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slowmode delay in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slowmode delay in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">discord_type</span><span class="p">:</span> <span class="n">DiscordChannelType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_TEXT</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discord-specific channel type.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Discord-specific channel type."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">bitrate</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Voice channel bitrate.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Voice channel bitrate."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">user_limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Voice channel user limit.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Voice channel user limit."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">rate_limit_per_user</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Slowmode rate limit.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Slowmode rate limit."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">guild_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the guild/server ID.</span>
+<span class="w">        </span><span class="sd">"""Get the guild/server ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The guild ID, or empty string if not set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">guild</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_voice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is a voice channel.</span>
+<span class="w">        </span><span class="sd">"""Check if this is a voice channel.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a voice channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discord_type</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_VOICE</span><span class="p">,</span>
             <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_STAGE_VOICE</span><span class="p">,</span>
@@ -358,11 +358,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_text</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is a text channel.</span>
+<span class="w">        </span><span class="sd">"""Check if this is a text channel.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a text channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discord_type</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_TEXT</span><span class="p">,</span>
             <span class="n">DiscordChannelType</span><span class="o">.</span><span class="n">GUILD_ANNOUNCEMENT</span><span class="p">,</span>

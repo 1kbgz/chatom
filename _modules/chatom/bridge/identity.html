@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.bridge.identity</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Cross-backend user identity mapper.</span>
+<span></span><span class="sd">"""Cross-backend user identity mapper.</span>
 
 <span class="sd">Maps users across chat platforms using email as the primary join key.</span>
 <span class="sd">Supports manual linking, automatic discovery, and cached resolution.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -271,11 +271,11 @@
 <span class="c1"># Type alias for a backend-qualified user reference</span>
 <span class="n">UserRef</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>  <span class="c1"># (backend_name, user_id)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;IdentityMapper&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"IdentityMapper"</span><span class="p">,)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">LinkedIdentity</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A set of linked user identities across backends.</span>
+<span class="w">    </span><span class="sd">"""A set of linked user identities across backends.</span>
 
 <span class="sd">    Each identity group represents the same person on different platforms,</span>
 <span class="sd">    keyed by ``(backend_name, user_id)`` pairs.</span>
@@ -284,31 +284,31 @@
 <span class="sd">        email: The shared email address (if known).</span>
 <span class="sd">        refs: Set of ``(backend, user_id)`` tuples.</span>
 <span class="sd">        users: Cached User objects keyed by backend name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Shared email address.&quot;</span><span class="p">)</span>
-    <span class="n">refs</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">UserRef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">set</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;(backend, user_id) pairs.&quot;</span><span class="p">)</span>
-    <span class="n">users</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cached User objects by backend.&quot;</span><span class="p">)</span>
+    <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Shared email address."</span><span class="p">)</span>
+    <span class="n">refs</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">UserRef</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">set</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"(backend, user_id) pairs."</span><span class="p">)</span>
+    <span class="n">users</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Cached User objects by backend."</span><span class="p">)</span>
 
-    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;arbitrary_types_allowed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># noqa: RUF012</span>
+    <span class="n">model_config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"arbitrary_types_allowed"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>  <span class="c1"># noqa: RUF012</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">has_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this identity has a mapping for the given backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this identity has a mapping for the given backend."""</span>
         <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">b</span> <span class="o">==</span> <span class="n">backend</span> <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the user ID for a specific backend, or None.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the user ID for a specific backend, or None."""</span>
         <span class="k">for</span> <span class="n">b</span><span class="p">,</span> <span class="n">uid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="n">backend</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">uid</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the cached User object for a backend, or None.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the cached User object for a backend, or None."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a backend reference to this identity group.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Add a backend reference to this identity group."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">backend</span><span class="p">,</span> <span class="n">user_id</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="n">backend</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
@@ -319,7 +319,7 @@
 <div class="viewcode-block" id="IdentityMapper">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.IdentityMapper">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IdentityMapper</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Maps user identities across chat backends.</span>
+<span class="w">    </span><span class="sd">"""Maps user identities across chat backends.</span>
 
 <span class="sd">    Uses email as the primary join key.  Backends are registered so</span>
 <span class="sd">    the mapper can perform ``fetch_user(email=...)`` lookups.</span>
@@ -327,18 +327,18 @@
 <span class="sd">    Example::</span>
 
 <span class="sd">        mapper = IdentityMapper()</span>
-<span class="sd">        mapper.register_backend(&quot;slack&quot;, slack_backend)</span>
-<span class="sd">        mapper.register_backend(&quot;symphony&quot;, symphony_backend)</span>
+<span class="sd">        mapper.register_backend("slack", slack_backend)</span>
+<span class="sd">        mapper.register_backend("symphony", symphony_backend)</span>
 
 <span class="sd">        # Auto-discover a user on all backends by email</span>
-<span class="sd">        await mapper.link_by_email(&quot;alice@company.com&quot;)</span>
+<span class="sd">        await mapper.link_by_email("alice@company.com")</span>
 
 <span class="sd">        # Resolve from one backend to another</span>
-<span class="sd">        sym_user = await mapper.resolve(slack_user, target=&quot;symphony&quot;)</span>
+<span class="sd">        sym_user = await mapper.resolve(slack_user, target="symphony")</span>
 
 <span class="sd">        # Manual link</span>
-<span class="sd">        mapper.link(slack_user, symphony_user, by=&quot;email&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        mapper.link(slack_user, symphony_user, by="email")</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_backends</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># name -&gt; BackendBase</span>
@@ -350,18 +350,18 @@
 <div class="viewcode-block" id="IdentityMapper.register_backend">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.IdentityMapper.register_backend">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a backend for user lookups.</span>
+<span class="w">        </span><span class="sd">"""Register a backend for user lookups.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name: Short identifier (e.g. ``&quot;slack&quot;``, ``&quot;symphony&quot;``).</span>
+<span class="sd">            name: Short identifier (e.g. ``"slack"``, ``"symphony"``).</span>
 <span class="sd">            backend: A chatom ``BackendBase`` instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_backends</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">backend</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">backends</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of registered backend names.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""List of registered backend names."""</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_backends</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
 <div class="viewcode-block" id="IdentityMapper.link">
@@ -369,31 +369,31 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">link</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">users</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span>
-        <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;email&quot;</span><span class="p">,</span>
+        <span class="n">by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"email"</span><span class="p">,</span>
         <span class="n">backends</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedIdentity</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manually link User objects as the same person.</span>
+<span class="w">        </span><span class="sd">"""Manually link User objects as the same person.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            *users: Two or more User objects from different backends.</span>
-<span class="sd">            by: The field to use as the join key (currently only ``&quot;email&quot;``).</span>
+<span class="sd">            by: The field to use as the join key (currently only ``"email"``).</span>
 <span class="sd">            backends: Optional list of backend names corresponding to each user.</span>
-<span class="sd">                      If not provided, uses ``user.metadata.get(&quot;backend&quot;)`` or</span>
-<span class="sd">                      the user&#39;s class name as a fallback.</span>
+<span class="sd">                      If not provided, uses ``user.metadata.get("backend")`` or</span>
+<span class="sd">                      the user's class name as a fallback.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The linked identity group.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If fewer than 2 users or join key is missing.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;link() requires at least 2 users&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"link() requires at least 2 users"</span><span class="p">)</span>
 
         <span class="c1"># Determine backend names</span>
         <span class="k">if</span> <span class="n">backends</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">backends</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;backends list must match number of users&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"backends list must match number of users"</span><span class="p">)</span>
             <span class="n">names</span> <span class="o">=</span> <span class="n">backends</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_infer_backend</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span><span class="p">]</span>
@@ -409,7 +409,7 @@
                 <span class="k">break</span>
 
         <span class="c1"># Check by email</span>
-        <span class="k">if</span> <span class="n">identity</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">by</span> <span class="o">==</span> <span class="s2">&quot;email&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">identity</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">by</span> <span class="o">==</span> <span class="s2">"email"</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="ow">and</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_email</span><span class="p">:</span>
                     <span class="n">identity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_email</span><span class="p">[</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">]</span>
@@ -432,7 +432,7 @@
 <div class="viewcode-block" id="IdentityMapper.link_by_email">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.IdentityMapper.link_by_email">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">link_by_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedIdentity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Discover and link a user across all registered backends by email.</span>
+<span class="w">        </span><span class="sd">"""Discover and link a user across all registered backends by email.</span>
 
 <span class="sd">        Queries each registered backend with ``fetch_user(email=...)``.</span>
 <span class="sd">        If found on 2+ backends, links them into an identity group.</span>
@@ -442,7 +442,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The linked identity group, or None if found on fewer than 2 backends.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Check if we already have this email</span>
         <span class="k">if</span> <span class="n">email</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_email</span><span class="p">:</span>
             <span class="n">identity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_email</span><span class="p">[</span><span class="n">email</span><span class="p">]</span>
@@ -460,9 +460,9 @@
                     <span class="n">identity</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_by_ref</span><span class="p">[(</span><span class="n">name</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">identity</span>
                     <span class="n">discovered</span> <span class="o">+=</span> <span class="mi">1</span>
-                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not look up </span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not look up </span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">discovered</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_by_email</span><span class="p">[</span><span class="n">email</span><span class="p">]</span> <span class="o">=</span> <span class="n">identity</span>
@@ -482,14 +482,14 @@
 <div class="viewcode-block" id="IdentityMapper.link_all_by_email">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.IdentityMapper.link_all_by_email">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">link_all_by_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">emails</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinkedIdentity</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Link multiple users by email in batch.</span>
+<span class="w">        </span><span class="sd">"""Link multiple users by email in batch.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            emails: List of email addresses.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of successfully linked identity groups (found on 2+ backends).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">email</span> <span class="ow">in</span> <span class="n">emails</span><span class="p">:</span>
             <span class="n">identity</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">link_by_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
@@ -504,24 +504,24 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve a user from one backend to another.</span>
+<span class="w">        </span><span class="sd">"""Resolve a user from one backend to another.</span>
 
-<span class="sd">        Looks up the user&#39;s identity group and returns the cached User</span>
+<span class="sd">        Looks up the user's identity group and returns the cached User</span>
 <span class="sd">        for the target backend.  If not cached, attempts a backend</span>
 <span class="sd">        lookup by email.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: A User object or user ID string.</span>
 <span class="sd">            source: The backend the user is from (required if user is a string,</span>
-<span class="sd">                    or if the user isn&#39;t already linked).</span>
+<span class="sd">                    or if the user isn't already linked).</span>
 <span class="sd">            target: The backend to resolve to.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The User on the target backend, or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">identity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_identity</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">identity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -577,10 +577,10 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">target</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Synchronously resolve a user ID on the target backend.</span>
+<span class="w">        </span><span class="sd">"""Synchronously resolve a user ID on the target backend.</span>
 
 <span class="sd">        Only uses the local cache — does not make backend calls.</span>
 
@@ -591,7 +591,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user ID on the target backend, or None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">identity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_identity</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">source</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">identity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
@@ -600,8 +600,8 @@
 
 <div class="viewcode-block" id="IdentityMapper.get_identity">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.IdentityMapper.get_identity">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedIdentity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the identity group for a user.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedIdentity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Get the identity group for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: A User object or user ID string.</span>
@@ -609,26 +609,26 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The LinkedIdentity group, or None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_identity</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">identities</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">LinkedIdentity</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;All linked identity groups.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""All linked identity groups."""</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_identities</span><span class="p">)</span>
 
 <div class="viewcode-block" id="IdentityMapper.clear">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.IdentityMapper.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all mappings.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clear all mappings."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_identities</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_by_ref</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_by_email</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_find_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedIdentity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find the identity group for a user.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_find_identity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LinkedIdentity</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Find the identity group for a user."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">):</span>
             <span class="c1"># Try by ref with explicit backend</span>
             <span class="k">if</span> <span class="n">backend</span><span class="p">:</span>
@@ -661,21 +661,21 @@
             <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_infer_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Infer the backend name from a User object.</span>
+<span class="w">        </span><span class="sd">"""Infer the backend name from a User object.</span>
 
 <span class="sd">        Checks, in order:</span>
-<span class="sd">        1. ``user.metadata[&quot;backend&quot;]`` if present.</span>
+<span class="sd">        1. ``user.metadata["backend"]`` if present.</span>
 <span class="sd">        2. The registered backend whose name appears in ``type(user).__name__``</span>
-<span class="sd">           (e.g. ``SlackUser`` -&gt; ``&quot;slack&quot;``).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">backend</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;backend&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="sd">           (e.g. ``SlackUser`` -&gt; ``"slack"``).</span>
+<span class="sd">        """</span>
+        <span class="n">backend</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"metadata"</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"backend"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">backend</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">backend</span>
         <span class="n">cls_name</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">user</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_backends</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">cls_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">name</span>
-        <span class="k">return</span> <span class="s2">&quot;unknown&quot;</span></div>
+        <span class="k">return</span> <span class="s2">"unknown"</span></div>
 
 </pre></div>
         </article>

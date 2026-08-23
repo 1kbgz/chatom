@@ -269,23 +269,23 @@
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_announcement</span><span class="p">():</span>
     <span class="n">backend</span> <span class="o">=</span> <span class="n">MockSlackBackend</span><span class="p">()</span>
-    <span class="n">backend</span><span class="o">.</span><span class="n">add_mock_channel</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="s2">&quot;operations&quot;</span><span class="p">)</span>
+    <span class="n">backend</span><span class="o">.</span><span class="n">add_mock_channel</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="s2">"operations"</span><span class="p">)</span>
 
     <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;operations&quot;</span><span class="p">)</span>
-        <span class="n">sent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;Deployment complete&quot;</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"operations"</span><span class="p">)</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">"Deployment complete"</span><span class="p">)</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
 
-    <span class="k">assert</span> <span class="n">sent</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">&quot;Deployment complete&quot;</span>
+    <span class="k">assert</span> <span class="n">sent</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">"Deployment complete"</span>
     <span class="k">assert</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_sent_messages</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="n">sent</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Equivalent mocks are exported as <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.discord.MockDiscordBackend</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.symphony.MockSymphonyBackend</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.telegram.MockTelegramBackend</span></code>.</p>
 <p>Parameterize a common behavior test to verify frontend portability:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
-    <span class="s2">&quot;backend_factory&quot;</span><span class="p">,</span>
+    <span class="s2">"backend_factory"</span><span class="p">,</span>
     <span class="p">[</span><span class="n">MockSlackBackend</span><span class="p">,</span> <span class="n">MockDiscordBackend</span><span class="p">,</span> <span class="n">MockSymphonyBackend</span><span class="p">,</span> <span class="n">MockTelegramBackend</span><span class="p">],</span>
 <span class="p">)</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>

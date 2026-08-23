@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.connection</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Connection and registry classes for chatom.</span>
+<span></span><span class="sd">"""Connection and registry classes for chatom.</span>
 
 <span class="sd">This module provides base classes for backend connections and registries</span>
 <span class="sd">for looking up users and channels.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Generic</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
@@ -269,25 +269,25 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;ChannelRegistry&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Connection&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;LookupError&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UserRegistry&quot;</span><span class="p">,</span>
+    <span class="s2">"ChannelRegistry"</span><span class="p">,</span>
+    <span class="s2">"Connection"</span><span class="p">,</span>
+    <span class="s2">"LookupError"</span><span class="p">,</span>
+    <span class="s2">"UserRegistry"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="LookupError">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.LookupError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LookupError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a lookup fails.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when a lookup fails."""</span></div>
 
 
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">BaseModel</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"T"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">BaseModel</span><span class="p">)</span>
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">Registry</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">Generic</span><span class="p">[</span><span class="n">T</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base registry for storing and looking up entities.</span>
+<span class="w">    </span><span class="sd">"""Base registry for storing and looking up entities.</span>
 
 <span class="sd">    This is a generic base class for user and channel registries.</span>
 <span class="sd">    Subclasses should override lookup methods for backend-specific behavior.</span>
@@ -295,59 +295,59 @@
 <span class="sd">    Attributes:</span>
 <span class="sd">        _cache_by_id: Internal cache mapping IDs to entities.</span>
 <span class="sd">        _cache_by_name: Internal cache mapping names to entities.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">_cache_by_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># noqa: RUF012</span>
     <span class="n">_cache_by_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">T</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># noqa: RUF012</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">model_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__context</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: PYI063</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize internal caches.&quot;&quot;&quot;</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cache_by_id&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cache_by_name&quot;</span><span class="p">,</span> <span class="p">{})</span>
+<span class="w">        </span><span class="sd">"""Initialize internal caches."""</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_cache_by_id"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_cache_by_name"</span><span class="p">,</span> <span class="p">{})</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an entity to the registry.</span>
+<span class="w">        </span><span class="sd">"""Add an entity to the registry.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            entity: The entity to add.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_id</span><span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">entity</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_name</span><span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">entity</span><span class="o">.</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">entity</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an entity by ID from cache.</span>
+<span class="w">        </span><span class="sd">"""Get an entity by ID from cache.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The entity ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The entity if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_id</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get an entity by name from cache.</span>
+<span class="w">        </span><span class="sd">"""Get an entity by name from cache.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: The entity name.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The entity if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all entities in the registry.</span>
+<span class="w">        </span><span class="sd">"""Get all entities in the registry.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of all entities.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_id</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all cached entities.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clear all cached entities."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_id</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_name</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
@@ -355,35 +355,35 @@
 <div class="viewcode-block" id="UserRegistry">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UserRegistry</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">User</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registry for looking up users by ID, name, or email.</span>
+<span class="w">    </span><span class="sd">"""Registry for looking up users by ID, name, or email.</span>
 
 <span class="sd">    This can be subclassed by backends to provide additional</span>
 <span class="sd">    lookup capabilities like fetching from an API.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; registry = UserRegistry()</span>
-<span class="sd">        &gt;&gt;&gt; registry.add(User(id=&quot;123&quot;, name=&quot;John&quot;, email=&quot;john@example.com&quot;))</span>
-<span class="sd">        &gt;&gt;&gt; registry.get_by_id(&quot;123&quot;)</span>
-<span class="sd">        User(id=&#39;123&#39;, name=&#39;John&#39;, ...)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; registry.add(User(id="123", name="John", email="john@example.com"))</span>
+<span class="sd">        &gt;&gt;&gt; registry.get_by_id("123")</span>
+<span class="sd">        User(id='123', name='John', ...)</span>
+<span class="sd">    """</span>
 
     <span class="n">_cache_by_email</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># noqa: RUF012</span>
     <span class="n">_cache_by_handle</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># noqa: RUF012</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">model_post_init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">__context</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: PYI063</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize internal caches.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize internal caches."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">model_post_init</span><span class="p">(</span><span class="n">__context</span><span class="p">)</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cache_by_email&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cache_by_handle&quot;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_cache_by_email"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_cache_by_handle"</span><span class="p">,</span> <span class="p">{})</span>
 
 <div class="viewcode-block" id="UserRegistry.add">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.add">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a user to the registry.</span>
+<span class="w">        </span><span class="sd">"""Add a user to the registry.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            entity: The user to add.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_email</span><span class="p">[</span><span class="n">entity</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">entity</span>
@@ -394,28 +394,28 @@
 <div class="viewcode-block" id="UserRegistry.get_by_email">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.get_by_email">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_by_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a user by email address.</span>
+<span class="w">        </span><span class="sd">"""Get a user by email address.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            email: The email address.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_email</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.get_by_handle">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.get_by_handle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_by_handle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a user by handle/username.</span>
+<span class="w">        </span><span class="sd">"""Get a user by handle/username.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            handle: The handle/username.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_handle</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
 
 
@@ -429,7 +429,7 @@
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a user by any available identifier.</span>
+<span class="w">        </span><span class="sd">"""Look up a user by any available identifier.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: User ID to look up.</span>
@@ -439,7 +439,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
@@ -462,54 +462,54 @@
 <div class="viewcode-block" id="UserRegistry.user_to_id">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.user_to_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">user_to_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ID for a user.</span>
+<span class="w">        </span><span class="sd">"""Get the ID for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The user&#39;s ID.</span>
+<span class="sd">            The user's ID.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If user has no ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User has no ID: </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User has no ID: </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.user_to_name">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.user_to_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">user_to_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the display name for a user.</span>
+<span class="w">        </span><span class="sd">"""Get the display name for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The user&#39;s display name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The user's display name.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">display_name</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.user_to_email">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.user_to_email">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">user_to_email</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the email for a user.</span>
+<span class="w">        </span><span class="sd">"""Get the email for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The user&#39;s email or None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The user's email or None.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.id_to_user">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.id_to_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">id_to_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a user by ID.</span>
+<span class="w">        </span><span class="sd">"""Look up a user by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The user ID.</span>
@@ -519,17 +519,17 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If user not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">user</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User not found with ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User not found with ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.name_to_user">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.name_to_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">name_to_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a user by name.</span>
+<span class="w">        </span><span class="sd">"""Look up a user by name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: The user name.</span>
@@ -539,17 +539,17 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If user not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">user</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User not found with name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User not found with name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.email_to_user">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.email_to_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">email_to_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a user by email.</span>
+<span class="w">        </span><span class="sd">"""Look up a user by email.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            email: The email address.</span>
@@ -559,17 +559,17 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If user not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_email</span><span class="p">(</span><span class="n">email</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">user</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User not found with email: </span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User not found with email: </span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="UserRegistry.clear">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.UserRegistry.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all cached users.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clear all cached users."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_email</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache_by_handle</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
@@ -580,17 +580,17 @@
 <div class="viewcode-block" id="ChannelRegistry">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.ChannelRegistry">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ChannelRegistry</span><span class="p">(</span><span class="n">Registry</span><span class="p">[</span><span class="n">Channel</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Registry for looking up channels by ID or name.</span>
+<span class="w">    </span><span class="sd">"""Registry for looking up channels by ID or name.</span>
 
 <span class="sd">    This can be subclassed by backends to provide additional</span>
 <span class="sd">    lookup capabilities like fetching from an API.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; registry = ChannelRegistry()</span>
-<span class="sd">        &gt;&gt;&gt; registry.add(Channel(id=&quot;C123&quot;, name=&quot;general&quot;))</span>
-<span class="sd">        &gt;&gt;&gt; registry.get_by_id(&quot;C123&quot;)</span>
-<span class="sd">        Channel(id=&#39;C123&#39;, name=&#39;general&#39;, ...)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; registry.add(Channel(id="C123", name="general"))</span>
+<span class="sd">        &gt;&gt;&gt; registry.get_by_id("C123")</span>
+<span class="sd">        Channel(id='C123', name='general', ...)</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="ChannelRegistry.lookup">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.ChannelRegistry.lookup">[docs]</a>
@@ -600,7 +600,7 @@
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a channel by any available identifier.</span>
+<span class="w">        </span><span class="sd">"""Look up a channel by any available identifier.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: Channel ID to look up.</span>
@@ -608,7 +608,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The channel if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
@@ -623,40 +623,40 @@
 <div class="viewcode-block" id="ChannelRegistry.channel_to_id">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.ChannelRegistry.channel_to_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">channel_to_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the ID for a channel.</span>
+<span class="w">        </span><span class="sd">"""Get the ID for a channel.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The channel&#39;s ID.</span>
+<span class="sd">            The channel's ID.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If channel has no ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel has no ID: </span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Channel has no ID: </span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ChannelRegistry.channel_to_name">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.ChannelRegistry.channel_to_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">channel_to_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the name for a channel.</span>
+<span class="w">        </span><span class="sd">"""Get the name for a channel.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel object.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The channel&#39;s name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The channel's name.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span></div>
 
 
 <div class="viewcode-block" id="ChannelRegistry.id_to_channel">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.ChannelRegistry.id_to_channel">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">id_to_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a channel by ID.</span>
+<span class="w">        </span><span class="sd">"""Look up a channel by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The channel ID.</span>
@@ -666,17 +666,17 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If channel not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">channel</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">channel</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel not found with ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Channel not found with ID: </span><span class="si">{</span><span class="nb">id</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ChannelRegistry.name_to_channel">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.ChannelRegistry.name_to_channel">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">name_to_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Look up a channel by name.</span>
+<span class="w">        </span><span class="sd">"""Look up a channel by name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: The channel name.</span>
@@ -686,11 +686,11 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            LookupError: If channel not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">channel</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">channel</span>
-        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Channel not found with name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Channel not found with name: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 </div>
 
 
@@ -698,7 +698,7 @@
 <div class="viewcode-block" id="Connection">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.Connection">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Connection</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for a connection to a backend service.</span>
+<span class="w">    </span><span class="sd">"""Base class for a connection to a backend service.</span>
 
 <span class="sd">    This provides a unified interface for connecting to chat platforms,</span>
 <span class="sd">    managing users and channels, and sending messages.</span>
@@ -707,81 +707,81 @@
 <span class="sd">    behavior.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        backend: The backend type identifier (e.g., &#39;slack&#39;, &#39;discord&#39;).</span>
+<span class="sd">        backend: The backend type identifier (e.g., 'slack', 'discord').</span>
 <span class="sd">        connected: Whether currently connected.</span>
 <span class="sd">        users: Registry of users.</span>
 <span class="sd">        channels: Registry of channels.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The backend type identifier.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The backend type identifier."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">connected</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether currently connected.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether currently connected."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">users</span><span class="p">:</span> <span class="n">UserRegistry</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="n">UserRegistry</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Registry of users.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Registry of users."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">channels</span><span class="p">:</span> <span class="n">ChannelRegistry</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="n">ChannelRegistry</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Registry of channels.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Registry of channels."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Connection.connect">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.Connection.connect">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Establish connection to the backend.</span>
+<span class="w">        </span><span class="sd">"""Establish connection to the backend.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: If not implemented by subclass.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass must implement connect()&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclass must implement connect()"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Connection.disconnect">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.Connection.disconnect">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from the backend.</span>
+<span class="w">        </span><span class="sd">"""Disconnect from the backend.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            NotImplementedError: If not implemented by subclass.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass must implement disconnect()&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclass must implement disconnect()"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Connection.fetch_user">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.Connection.fetch_user">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a user from the backend by ID.</span>
+<span class="w">        </span><span class="sd">"""Fetch a user from the backend by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The user ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass must implement fetch_user()&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclass must implement fetch_user()"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Connection.fetch_channel">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.connection.Connection.fetch_channel">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">fetch_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a channel from the backend by ID.</span>
+<span class="w">        </span><span class="sd">"""Fetch a channel from the backend by ID.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The channel ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The channel if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Subclass must implement fetch_channel()&quot;</span><span class="p">)</span></div>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Subclass must implement fetch_channel()"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Connection.get_user">
@@ -794,7 +794,7 @@
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a user by any identifier, fetching from backend if needed.</span>
+<span class="w">        </span><span class="sd">"""Get a user by any identifier, fetching from backend if needed.</span>
 
 <span class="sd">        First checks the local registry, then fetches from backend if</span>
 <span class="sd">        not found and an ID was provided.</span>
@@ -807,7 +807,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Try local registry first</span>
         <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span> <span class="n">handle</span><span class="o">=</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
@@ -831,7 +831,7 @@
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a channel by any identifier, fetching from backend if needed.</span>
+<span class="w">        </span><span class="sd">"""Get a channel by any identifier, fetching from backend if needed.</span>
 
 <span class="sd">        First checks the local registry, then fetches from backend if</span>
 <span class="sd">        not found and an ID was provided.</span>
@@ -842,7 +842,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The channel if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Try local registry first</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">lookup</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">channel</span><span class="p">:</span>
@@ -859,7 +859,7 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Connection(backend=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">!r}</span><span class="s2">, connected=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="si">}</span><span class="s2">)&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"Connection(backend=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="si">!r}</span><span class="s2">, connected=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">connected</span><span class="si">}</span><span class="s2">)"</span></div>
 
 </pre></div>
         </article>

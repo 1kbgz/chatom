@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.backend.backend_config</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Backend configuration for chatom.</span>
+<span></span><span class="sd">"""Backend configuration for chatom.</span>
 
 <span class="sd">This module provides base classes for configuring chat backends.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
@@ -264,18 +264,18 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;BackendConfig&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"BackendConfig"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="BackendConfig">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.backend.backend_config.BackendConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base configuration for a chat backend.</span>
+<span class="w">    </span><span class="sd">"""Base configuration for a chat backend.</span>
 
 <span class="sd">    Subclass this for backend-specific configuration options.</span>
 
 <span class="sd">    This base class provides common patterns for configuration:</span>
-<span class="sd">    - get_secret(field_name): Get a SecretStr field&#39;s value as a plain string</span>
+<span class="sd">    - get_secret(field_name): Get a SecretStr field's value as a plain string</span>
 <span class="sd">    - has_field(field_name): Check if a field has a non-empty value</span>
 
 <span class="sd">    Attributes:</span>
@@ -284,33 +284,33 @@
 <span class="sd">        timeout: Request timeout in seconds.</span>
 <span class="sd">        retry_count: Number of retries for failed requests.</span>
 <span class="sd">        extra: Additional backend-specific configuration.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">api_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Authentication token for the backend API.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Authentication token for the backend API."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">api_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Base URL for the backend API.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Base URL for the backend API."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Request timeout in seconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Request timeout in seconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">retry_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of retries for failed requests.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of retries for failed requests."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">extra</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional backend-specific configuration.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Additional backend-specific configuration."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="BackendConfig.get_secret">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.backend.backend_config.BackendConfig.get_secret">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_secret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a SecretStr field&#39;s value as a plain string.</span>
+<span class="w">        </span><span class="sd">"""Get a SecretStr field's value as a plain string.</span>
 
 <span class="sd">        This is a helper method to avoid repeating the pattern of</span>
 <span class="sd">        `self.field.get_secret_value()` in every config class.</span>
@@ -322,16 +322,16 @@
 <span class="sd">            The secret value as a plain string, or empty string if not set.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            AttributeError: If the field doesn&#39;t exist.</span>
+<span class="sd">            AttributeError: If the field doesn't exist.</span>
 <span class="sd">            TypeError: If the field is not a SecretStr.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; config.get_secret(&quot;password&quot;)</span>
-<span class="sd">            &quot;my-secret-password&quot;</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; config.get_secret("password")</span>
+<span class="sd">            "my-secret-password"</span>
+<span class="sd">        """</span>
         <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
@@ -340,7 +340,7 @@
 <div class="viewcode-block" id="BackendConfig.has_field">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.backend.backend_config.BackendConfig.has_field">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a field has a non-empty value.</span>
+<span class="w">        </span><span class="sd">"""Check if a field has a non-empty value.</span>
 
 <span class="sd">        This is a helper method to check if optional configuration</span>
 <span class="sd">        fields are set. Works with strings, SecretStr, and other types.</span>
@@ -352,9 +352,9 @@
 <span class="sd">            True if the field has a non-empty value.</span>
 
 <span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; config.has_field(&quot;api_token&quot;)</span>
+<span class="sd">            &gt;&gt;&gt; config.has_field("api_token")</span>
 <span class="sd">            True</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -369,20 +369,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if an API token is configured.</span>
+<span class="w">        </span><span class="sd">"""Check if an API token is configured.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if api_token is set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_token</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if an API URL is configured.</span>
+<span class="w">        </span><span class="sd">"""Check if an API URL is configured.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if api_url is set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">)</span></div>
 
 </pre></div>

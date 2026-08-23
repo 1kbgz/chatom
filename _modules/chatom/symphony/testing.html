@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.symphony.testing</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Mock Symphony backend for testing.</span>
+<span></span><span class="sd">"""Mock Symphony backend for testing.</span>
 
 <span class="sd">This module provides a mock implementation of the Symphony backend</span>
-<span class="sd">that doesn&#39;t require actual Symphony servers.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">that doesn't require actual Symphony servers.</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">uuid</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
@@ -283,13 +283,13 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.presence</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymphonyPresence</span><span class="p">,</span> <span class="n">SymphonyPresenceStatus</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymphonyUser</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;MockSymphonyBackend&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"MockSymphonyBackend"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MockSymphonyBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mock Symphony backend for testing.</span>
+<span class="w">    </span><span class="sd">"""Mock Symphony backend for testing.</span>
 
 <span class="sd">    This provides a testing-friendly implementation that simulates</span>
 <span class="sd">    Symphony operations without requiring actual servers.</span>
@@ -309,15 +309,15 @@
 <span class="sd">        &gt;&gt;&gt; backend = MockSymphonyBackend()</span>
 <span class="sd">        &gt;&gt;&gt; await backend.connect()</span>
 <span class="sd">        &gt;&gt;&gt; # Add mock data</span>
-<span class="sd">        &gt;&gt;&gt; backend.add_mock_user(123456789, &quot;Test User&quot;, &quot;testuser&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; backend.add_mock_stream(&quot;stream123&quot;, &quot;Test Room&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; backend.add_mock_user(123456789, "Test User", "testuser")</span>
+<span class="sd">        &gt;&gt;&gt; backend.add_mock_stream("stream123", "Test Room")</span>
 <span class="sd">        &gt;&gt;&gt; # Verify operations</span>
-<span class="sd">        &gt;&gt;&gt; await backend.send_message(&quot;stream123&quot;, &quot;&lt;messageML&gt;Hello&lt;/messageML&gt;&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; await backend.send_message("stream123", "&lt;messageML&gt;Hello&lt;/messageML&gt;")</span>
 <span class="sd">        &gt;&gt;&gt; assert len(backend.sent_messages) == 1</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">name</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;symphony&quot;</span>
-    <span class="n">display_name</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Symphony (Mock)&quot;</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"symphony"</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"Symphony (Mock)"</span>
     <span class="nb">format</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="n">Format</span><span class="p">]</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span>
 
     <span class="n">capabilities</span><span class="p">:</span> <span class="n">BackendCapabilities</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">SYMPHONY_CAPABILITIES</span>
@@ -343,7 +343,7 @@
 <div class="viewcode-block" id="MockSymphonyBackend.Config">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.Config">[docs]</a>
     <span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pydantic config.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Pydantic config."""</span>
 
         <span class="n">arbitrary_types_allowed</span> <span class="o">=</span> <span class="kc">True</span></div>
 
@@ -357,19 +357,19 @@
         <span class="n">username</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock user.</span>
+<span class="w">        </span><span class="sd">"""Add a mock user.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            user_id: The user&#39;s Symphony ID.</span>
-<span class="sd">            display_name: The user&#39;s display name.</span>
-<span class="sd">            username: The user&#39;s username.</span>
-<span class="sd">            email: The user&#39;s email address.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            user_id: The user's Symphony ID.</span>
+<span class="sd">            display_name: The user's display name.</span>
+<span class="sd">            username: The user's username.</span>
+<span class="sd">            email: The user's email address.</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_users</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">user_id</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
-            <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
-            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
-            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">email</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">@example.com&quot;</span><span class="p">,</span>
+            <span class="s2">"id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">"display_name"</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
+            <span class="s2">"username"</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+            <span class="s2">"email"</span><span class="p">:</span> <span class="n">email</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">username</span><span class="si">}</span><span class="s2">@example.com"</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -379,19 +379,19 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">stream_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">stream_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ROOM&quot;</span><span class="p">,</span>
+        <span class="n">stream_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"ROOM"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock stream (channel).</span>
+<span class="w">        </span><span class="sd">"""Add a mock stream (channel).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            stream_id: The stream ID.</span>
 <span class="sd">            name: The stream name.</span>
 <span class="sd">            stream_type: The stream type (ROOM, IM, MIM).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_streams</span><span class="p">[</span><span class="n">stream_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">stream_id</span><span class="p">,</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">stream_type</span><span class="p">,</span>
+            <span class="s2">"id"</span><span class="p">:</span> <span class="n">stream_id</span><span class="p">,</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="n">stream_type</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">stream_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">stream_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
@@ -407,18 +407,18 @@
         <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock message to a stream.</span>
+<span class="w">        </span><span class="sd">"""Add a mock message to a stream.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            stream_id: The stream ID.</span>
-<span class="sd">            user_id: The sender&#39;s user ID.</span>
+<span class="sd">            user_id: The sender's user ID.</span>
 <span class="sd">            content: The message content (MessageML).</span>
 <span class="sd">            message_id: Optional message ID. Generated if not provided.</span>
 <span class="sd">            timestamp: Optional timestamp. Uses current time if not provided.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The message ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">stream_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">stream_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -429,11 +429,11 @@
             <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
 
         <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
-            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
-            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
-            <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">stream_id</span><span class="p">,</span>
+            <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+            <span class="s2">"user_id"</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">"content"</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+            <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">stream_id</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">stream_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">message_id</span></div>
@@ -446,29 +446,29 @@
         <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">status</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set mock presence for a user.</span>
+<span class="w">        </span><span class="sd">"""Set mock presence for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user_id: The user ID.</span>
 <span class="sd">            status: The presence status.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_presence</span><span class="p">[</span><span class="n">user_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.connect">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.connect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Connect to mock Symphony.</span>
+<span class="w">        </span><span class="sd">"""Connect to mock Symphony.</span>
 
 <span class="sd">        Always succeeds immediately.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connected</span> <span class="o">=</span> <span class="kc">True</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.disconnect">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.disconnect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Disconnect from mock Symphony.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Disconnect from mock Symphony."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span></div>
 
 
@@ -483,7 +483,7 @@
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a mock user by ID or other attributes.</span>
+<span class="w">        </span><span class="sd">"""Fetch a mock user by ID or other attributes.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier: A User object or user ID string.</span>
@@ -494,11 +494,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The user if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Handle User object input</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">SymphonyUser</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">identifier</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifier</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="c1"># Resolve identifier to id</span>
@@ -515,10 +515,10 @@
             <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_users</span><span class="p">:</span>
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_users</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
                 <span class="n">user</span> <span class="o">=</span> <span class="n">SymphonyUser</span><span class="p">(</span>
-                    <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]),</span>
-                    <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">],</span>
-                    <span class="n">handle</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">],</span>
-                    <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;email&quot;</span><span class="p">],</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">"display_name"</span><span class="p">],</span>
+                    <span class="n">handle</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">"username"</span><span class="p">],</span>
+                    <span class="n">email</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">"email"</span><span class="p">],</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">user</span>
@@ -526,7 +526,7 @@
         <span class="c1"># Search by email</span>
         <span class="k">if</span> <span class="n">email</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_users</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;email&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">email</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"email"</span><span class="p">)</span> <span class="o">==</span> <span class="n">email</span><span class="p">:</span>
                     <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
 
         <span class="c1"># Search by name or handle</span>
@@ -534,7 +534,7 @@
         <span class="k">if</span> <span class="n">search_term</span><span class="p">:</span>
             <span class="n">search_lower</span> <span class="o">=</span> <span class="n">search_term</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">uid</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_users</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;display_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">search_lower</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">search_lower</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">"display_name"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">search_lower</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">"username"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">search_lower</span><span class="p">:</span>
                     <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
@@ -549,7 +549,7 @@
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a mock channel (stream) by ID or name.</span>
+<span class="w">        </span><span class="sd">"""Fetch a mock channel (stream) by ID or name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier: A Channel object or stream ID string.</span>
@@ -558,11 +558,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The channel if found, None otherwise.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Handle Channel object input</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">SymphonyChannel</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">identifier</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifier</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="c1"># Resolve identifier to id</span>
@@ -580,7 +580,7 @@
                 <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_streams</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span>
                 <span class="n">channel</span> <span class="o">=</span> <span class="n">SymphonyChannel</span><span class="p">(</span>
                     <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
-                    <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">"name"</span><span class="p">],</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">channel</span>
@@ -589,7 +589,7 @@
         <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
             <span class="n">name_lower</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">sid</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_streams</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">name_lower</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s2">"name"</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">name_lower</span><span class="p">:</span>
                     <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">sid</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
@@ -604,7 +604,7 @@
         <span class="n">before</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span> <span class="o">|</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">after</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span> <span class="o">|</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch messages from a mock stream.</span>
+<span class="w">        </span><span class="sd">"""Fetch messages from a mock stream.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel to fetch from (ID string or Channel object).</span>
@@ -614,7 +614,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of messages.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
@@ -632,22 +632,22 @@
         <span class="n">filtered</span> <span class="o">=</span> <span class="n">messages_data</span>
         <span class="k">if</span> <span class="n">before</span><span class="p">:</span>
             <span class="n">before_dt</span> <span class="o">=</span> <span class="n">_to_dt</span><span class="p">(</span><span class="n">before</span><span class="p">)</span>
-            <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">before_dt</span> <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">before_dt</span><span class="p">]</span>
+            <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">before_dt</span> <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">before_dt</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">after</span><span class="p">:</span>
             <span class="n">after_dt</span> <span class="o">=</span> <span class="n">_to_dt</span><span class="p">(</span><span class="n">after</span><span class="p">)</span>
-            <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">after_dt</span> <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">after_dt</span><span class="p">]</span>
+            <span class="n">filtered</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">filtered</span> <span class="k">if</span> <span class="n">after_dt</span> <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">after_dt</span><span class="p">]</span>
 
         <span class="c1"># Sort by timestamp (newest first) and limit</span>
-        <span class="n">filtered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filtered</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">filtered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">filtered</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">filtered</span> <span class="o">=</span> <span class="n">filtered</span><span class="p">[:</span><span class="n">limit</span><span class="p">]</span>
 
         <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">filtered</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="n">SymphonyMessage</span><span class="p">(</span>
-                <span class="nb">id</span><span class="o">=</span><span class="n">raw</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">],</span>
-                <span class="n">content</span><span class="o">=</span><span class="n">raw</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">],</span>
-                <span class="n">created_at</span><span class="o">=</span><span class="n">raw</span><span class="p">[</span><span class="s2">&quot;timestamp&quot;</span><span class="p">],</span>
-                <span class="n">author</span><span class="o">=</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">])),</span>
+                <span class="nb">id</span><span class="o">=</span><span class="n">raw</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">],</span>
+                <span class="n">content</span><span class="o">=</span><span class="n">raw</span><span class="p">[</span><span class="s2">"content"</span><span class="p">],</span>
+                <span class="n">created_at</span><span class="o">=</span><span class="n">raw</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span>
+                <span class="n">author</span><span class="o">=</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="p">[</span><span class="s2">"user_id"</span><span class="p">])),</span>
                 <span class="n">channel</span><span class="o">=</span><span class="n">SymphonyChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -663,7 +663,7 @@
         <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a mock message.</span>
+<span class="w">        </span><span class="sd">"""Send a mock message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel to send to (stream ID string or Channel object).</span>
@@ -672,25 +672,25 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The sent message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve channel ID</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
         <span class="c1"># Drop standardized thread/reply_to kwargs (Symphony has no concept)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;thread&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reply_to&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"reply_to"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
 
         <span class="c1"># Track sent message</span>
         <span class="n">sent</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-            <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
-            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
-            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
-            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">),</span>
-            <span class="s2">&quot;attachments&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attachments&quot;</span><span class="p">),</span>
+            <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+            <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+            <span class="s2">"content"</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+            <span class="s2">"data"</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"data"</span><span class="p">),</span>
+            <span class="s2">"attachments"</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attachments"</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sent_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
 
@@ -699,11 +699,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_bot_user_id</span><span class="p">,</span>
-                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
-                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
-                <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"user_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_bot_user_id</span><span class="p">,</span>
+                <span class="s2">"content"</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+                <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
@@ -725,7 +725,7 @@
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Edit a mock message.</span>
+<span class="w">        </span><span class="sd">"""Edit a mock message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to edit (ID string or Message object).</span>
@@ -735,32 +735,32 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The edited message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve message and channel IDs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span>
 
         <span class="c1"># Track edit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">edited_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
-                <span class="s2">&quot;new_content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
-                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">"new_content"</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+                <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
         <span class="c1"># Update in mock messages</span>
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">message_id</span><span class="p">:</span>
-                    <span class="n">msg</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
+                <span class="k">if</span> <span class="n">msg</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">]</span> <span class="o">==</span> <span class="n">message_id</span><span class="p">:</span>
+                    <span class="n">msg</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
                     <span class="k">break</span>
 
         <span class="k">return</span> <span class="n">SymphonyMessage</span><span class="p">(</span>
@@ -779,25 +779,25 @@
         <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete (suppress) a mock message.</span>
+<span class="w">        </span><span class="sd">"""Delete (suppress) a mock message.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to delete (ID string or Message object).</span>
 <span class="sd">            channel: The channel containing the message (required if message is a string).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve message and channel IDs</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">deleted_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message_id</span><span class="p">)</span>
 
         <span class="c1"># Remove from mock messages</span>
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">message_id</span><span class="p">]</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">]</span> <span class="o">!=</span> <span class="n">message_id</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.forward_message">
@@ -811,7 +811,7 @@
         <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SymphonyMessage</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward a mock message to another stream.</span>
+<span class="w">        </span><span class="sd">"""Forward a mock message to another stream.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            message: The message to forward (SymphonyMessage object).</span>
@@ -822,9 +822,9 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The forwarded message in the destination stream.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;forward_message requires a Message object, not just a message ID.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"forward_message requires a Message object, not just a message ID."</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
 
         <span class="c1"># Resolve destination channel ID</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">):</span>
@@ -835,19 +835,19 @@
         <span class="c1"># Build forwarded content in MessageML</span>
         <span class="n">content_parts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
-            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p&gt;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
+            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">include_attribution</span><span class="p">:</span>
-            <span class="n">author_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">&quot;Unknown&quot;</span>
-            <span class="n">channel_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">&quot;unknown room&quot;</span>
-            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p&gt;&lt;i&gt;Forwarded from </span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">&lt;/i&gt;&lt;/p&gt;&quot;</span><span class="p">)</span>
+            <span class="n">author_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">"Unknown"</span>
+            <span class="n">channel_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">"unknown room"</span>
+            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;p&gt;&lt;i&gt;Forwarded from </span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">&lt;/i&gt;&lt;/p&gt;"</span><span class="p">)</span>
 
         <span class="c1"># Add the original content</span>
         <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">formatted_content</span><span class="p">:</span>
             <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">formatted_content</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p&gt;</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
+            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span><span class="p">)</span>
 
-        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="s2">&quot;&lt;messageML&gt;&quot;</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content_parts</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&lt;/messageML&gt;&quot;</span>
+        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="s2">"&lt;messageML&gt;"</span> <span class="o">+</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content_parts</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"&lt;/messageML&gt;"</span>
 
         <span class="c1"># Create the forwarded message</span>
         <span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
@@ -866,12 +866,12 @@
 
         <span class="c1"># Track sent message as dict (consistent with send_message)</span>
         <span class="n">sent</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-            <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">dest_channel_id</span><span class="p">,</span>
-            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
-            <span class="s2">&quot;formatted_content&quot;</span><span class="p">:</span> <span class="n">forwarded_content</span><span class="p">,</span>
-            <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
-            <span class="s2">&quot;forwarded_from&quot;</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+            <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">dest_channel_id</span><span class="p">,</span>
+            <span class="s2">"content"</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
+            <span class="s2">"formatted_content"</span><span class="p">:</span> <span class="n">forwarded_content</span><span class="p">,</span>
+            <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+            <span class="s2">"forwarded_from"</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sent_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
 
@@ -879,12 +879,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">dest_channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="p">[</span><span class="n">dest_channel_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">dest_channel_id</span><span class="p">,</span>
-                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mock_bot_user_id</span><span class="p">),</span>
-                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
-                <span class="s2">&quot;formatted_content&quot;</span><span class="p">:</span> <span class="n">forwarded_content</span><span class="p">,</span>
-                <span class="s2">&quot;timestamp&quot;</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">dest_channel_id</span><span class="p">,</span>
+                <span class="s2">"user_id"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mock_bot_user_id</span><span class="p">),</span>
+                <span class="s2">"content"</span><span class="p">:</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
+                <span class="s2">"formatted_content"</span><span class="p">:</span> <span class="n">forwarded_content</span><span class="p">,</span>
+                <span class="s2">"timestamp"</span><span class="p">:</span> <span class="n">timestamp</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
@@ -899,22 +899,22 @@
         <span class="n">status_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set mock presence.</span>
+<span class="w">        </span><span class="sd">"""Set mock presence.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            status: Presence status.</span>
 <span class="sd">            status_text: Not used in Symphony.</span>
 <span class="sd">            **kwargs: Additional options.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Map status</span>
         <span class="n">status_map</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;available&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AVAILABLE</span><span class="p">,</span>
-            <span class="s2">&quot;online&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AVAILABLE</span><span class="p">,</span>
-            <span class="s2">&quot;busy&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">BUSY</span><span class="p">,</span>
-            <span class="s2">&quot;dnd&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">BUSY</span><span class="p">,</span>
-            <span class="s2">&quot;away&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AWAY</span><span class="p">,</span>
-            <span class="s2">&quot;idle&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AWAY</span><span class="p">,</span>
-            <span class="s2">&quot;offline&quot;</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
+            <span class="s2">"available"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AVAILABLE</span><span class="p">,</span>
+            <span class="s2">"online"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AVAILABLE</span><span class="p">,</span>
+            <span class="s2">"busy"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">BUSY</span><span class="p">,</span>
+            <span class="s2">"dnd"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">BUSY</span><span class="p">,</span>
+            <span class="s2">"away"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AWAY</span><span class="p">,</span>
+            <span class="s2">"idle"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AWAY</span><span class="p">,</span>
+            <span class="s2">"offline"</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="n">mapped_status</span> <span class="o">=</span> <span class="n">status_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AVAILABLE</span><span class="p">)</span>
@@ -922,27 +922,27 @@
         <span class="c1"># Track change</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">presence_changes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
-                <span class="s2">&quot;mapped_status&quot;</span><span class="p">:</span> <span class="n">mapped_status</span><span class="p">,</span>
-                <span class="s2">&quot;soft&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;soft&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="s2">"status"</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="s2">"mapped_status"</span><span class="p">:</span> <span class="n">mapped_status</span><span class="p">,</span>
+                <span class="s2">"soft"</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"soft"</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
             <span class="p">}</span>
         <span class="p">)</span>
 
-        <span class="c1"># Update bot&#39;s presence</span>
+        <span class="c1"># Update bot's presence</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_presence</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mock_bot_user_id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">mapped_status</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.get_presence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.get_presence">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_presence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Presence</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mock presence for a user.</span>
+<span class="w">        </span><span class="sd">"""Get mock presence for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user to get presence for (ID string or User object).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The user&#39;s presence.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The user's presence.</span>
+<span class="sd">        """</span>
         <span class="n">user_id</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
         <span class="n">symphony_status</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mock_presence</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">)</span>
 
@@ -979,14 +979,14 @@
         <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a reaction.</span>
+<span class="w">        </span><span class="sd">"""Add a reaction.</span>
 
-<span class="sd">        Symphony doesn&#39;t support reactions.</span>
+<span class="sd">        Symphony doesn't support reactions.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError: Symphony doesn&#39;t support reactions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Symphony does not support emoji reactions&quot;</span><span class="p">)</span></div>
+<span class="sd">            NotImplementedError: Symphony doesn't support reactions.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Symphony does not support emoji reactions"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.remove_reaction">
@@ -997,43 +997,43 @@
         <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a reaction.</span>
+<span class="w">        </span><span class="sd">"""Remove a reaction.</span>
 
-<span class="sd">        Symphony doesn&#39;t support reactions.</span>
+<span class="sd">        Symphony doesn't support reactions.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError: Symphony doesn&#39;t support reactions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Symphony does not support emoji reactions&quot;</span><span class="p">)</span></div>
+<span class="sd">            NotImplementedError: Symphony doesn't support reactions.</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Symphony does not support emoji reactions"</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.mention_user">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.mention_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mention_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a user mention.</span>
+<span class="w">        </span><span class="sd">"""Format a user mention.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The user to mention.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Symphony mention format.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">SymphonyUser</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">_mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention uid=&quot;</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention uid="</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">"/&gt;'</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.mention_channel">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.mention_channel">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mention_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format a channel mention.</span>
+<span class="w">        </span><span class="sd">"""Format a channel mention.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: The channel to mention.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The channel name.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">SymphonyChannel</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="n">channel</span><span class="o">.</span><span class="n">stream_id</span> <span class="ow">or</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span>
         <span class="k">return</span> <span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span></div>
@@ -1042,27 +1042,27 @@
 <div class="viewcode-block" id="MockSymphonyBackend.create_dm">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.create_dm">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_dm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mock DM/IM.</span>
+<span class="w">        </span><span class="sd">"""Create a mock DM/IM.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            users: List of users to include (ID strings or User objects).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The stream ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Extract user IDs and convert to ints for tracking (Symphony uses int IDs)</span>
         <span class="n">user_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">users</span><span class="p">]</span>
         <span class="n">int_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">uid</span><span class="p">)</span> <span class="k">for</span> <span class="n">uid</span> <span class="ow">in</span> <span class="n">user_ids</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">created_ims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">int_ids</span><span class="p">)</span>
-        <span class="n">stream_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;im_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_mock_stream</span><span class="p">(</span><span class="n">stream_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;IM with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span><span class="si">}</span><span class="s2"> users&quot;</span><span class="p">,</span> <span class="s2">&quot;IM&quot;</span><span class="p">)</span>
+        <span class="n">stream_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"im_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_mock_stream</span><span class="p">(</span><span class="n">stream_id</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"IM with </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span><span class="si">}</span><span class="s2"> users"</span><span class="p">,</span> <span class="s2">"IM"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">stream_id</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.create_im">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.create_im">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_im</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mock IM.</span>
+<span class="w">        </span><span class="sd">"""Create a mock IM.</span>
 
 <span class="sd">        This is an alias for create_dm.</span>
 
@@ -1071,7 +1071,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The stream ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_dm</span><span class="p">(</span><span class="n">users</span><span class="p">)</span></div>
 
 
@@ -1080,11 +1080,11 @@
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_channel</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mock channel/room.</span>
+<span class="w">        </span><span class="sd">"""Create a mock channel/room.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: The room name.</span>
@@ -1095,18 +1095,18 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The stream ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">stream_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;room_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="sd">        """</span>
+        <span class="n">stream_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"room_</span><span class="si">{</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">created_rooms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;stream_id&quot;</span><span class="p">:</span> <span class="n">stream_id</span><span class="p">,</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-                <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
-                <span class="s2">&quot;public&quot;</span><span class="p">:</span> <span class="n">public</span><span class="p">,</span>
-                <span class="s2">&quot;read_only&quot;</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;read_only&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="s2">"stream_id"</span><span class="p">:</span> <span class="n">stream_id</span><span class="p">,</span>
+                <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                <span class="s2">"description"</span><span class="p">:</span> <span class="n">description</span><span class="p">,</span>
+                <span class="s2">"public"</span><span class="p">:</span> <span class="n">public</span><span class="p">,</span>
+                <span class="s2">"read_only"</span><span class="p">:</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"read_only"</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
             <span class="p">}</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add_mock_stream</span><span class="p">(</span><span class="n">stream_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;ROOM&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_mock_stream</span><span class="p">(</span><span class="n">stream_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">"ROOM"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">stream_id</span></div>
 
 
@@ -1115,11 +1115,11 @@
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_room</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mock room.</span>
+<span class="w">        </span><span class="sd">"""Create a mock room.</span>
 
 <span class="sd">        This is an alias for create_channel.</span>
 
@@ -1131,17 +1131,17 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The stream ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_channel</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">public</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="MockSymphonyBackend.reset">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.reset">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset all mock data and tracking.</span>
+<span class="w">        </span><span class="sd">"""Reset all mock data and tracking.</span>
 
 <span class="sd">        Useful for cleaning up between tests.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_users</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_streams</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mock_messages</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>

@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.symphony.channel</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Symphony-specific Channel model.</span>
+<span></span><span class="sd">"""Symphony-specific Channel model.</span>
 
 <span class="sd">This module provides the Symphony-specific Channel class.</span>
-<span class="sd">In Symphony, channels are called &quot;streams&quot; or &quot;rooms&quot;.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">In Symphony, channels are called "streams" or "rooms".</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -266,32 +266,32 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">ChannelType</span><span class="p">,</span> <span class="n">Field</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SymphonyChannel&quot;</span><span class="p">,</span> <span class="s2">&quot;SymphonyRoom&quot;</span><span class="p">,</span> <span class="s2">&quot;SymphonyStreamType&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SymphonyChannel"</span><span class="p">,</span> <span class="s2">"SymphonyRoom"</span><span class="p">,</span> <span class="s2">"SymphonyStreamType"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SymphonyStreamType">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.channel.SymphonyStreamType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyStreamType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony stream types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Symphony stream types."""</span>
 
-    <span class="n">IM</span> <span class="o">=</span> <span class="s2">&quot;IM&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Instant message (1:1 chat).&quot;&quot;&quot;</span>
+    <span class="n">IM</span> <span class="o">=</span> <span class="s2">"IM"</span>
+<span class="w">    </span><span class="sd">"""Instant message (1:1 chat)."""</span>
 
-    <span class="n">MIM</span> <span class="o">=</span> <span class="s2">&quot;MIM&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multi-party instant message.&quot;&quot;&quot;</span>
+    <span class="n">MIM</span> <span class="o">=</span> <span class="s2">"MIM"</span>
+<span class="w">    </span><span class="sd">"""Multi-party instant message."""</span>
 
-    <span class="n">ROOM</span> <span class="o">=</span> <span class="s2">&quot;ROOM&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Chat room.&quot;&quot;&quot;</span>
+    <span class="n">ROOM</span> <span class="o">=</span> <span class="s2">"ROOM"</span>
+<span class="w">    </span><span class="sd">"""Chat room."""</span>
 
-    <span class="n">POST</span> <span class="o">=</span> <span class="s2">&quot;POST&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wall post.&quot;&quot;&quot;</span></div>
+    <span class="n">POST</span> <span class="o">=</span> <span class="s2">"POST"</span>
+<span class="w">    </span><span class="sd">"""Wall post."""</span></div>
 
 
 
 <div class="viewcode-block" id="SymphonyChannel">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.channel.SymphonyChannel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony-specific channel (stream) with additional Symphony fields.</span>
+<span class="w">    </span><span class="sd">"""Symphony-specific channel (stream) with additional Symphony fields.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        stream_type: The type of Symphony stream.</span>
@@ -302,48 +302,48 @@
 <span class="sd">        public: Whether the stream is public.</span>
 <span class="sd">        creation_date: When the stream was created.</span>
 <span class="sd">        last_message_date: When the last message was sent.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">stream_type</span><span class="p">:</span> <span class="n">SymphonyStreamType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">SymphonyStreamType</span><span class="o">.</span><span class="n">ROOM</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The type of Symphony stream.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The type of Symphony stream."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">external</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the stream includes external users.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the stream includes external users."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">cross_pod</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the stream is cross-pod.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the stream is cross-pod."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the stream is active.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the stream is active."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">read_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the stream is read-only.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the stream is read-only."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">public</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the stream is public.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the stream is public."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">creation_date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the stream was created.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the stream was created."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">last_message_date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the last message was sent.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the last message was sent."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">generic_channel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ChannelType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Symphony stream type to generic channel type.</span>
+<span class="w">        </span><span class="sd">"""Convert Symphony stream type to generic channel type.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ChannelType: The generic channel type.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_type</span> <span class="o">==</span> <span class="n">SymphonyStreamType</span><span class="o">.</span><span class="n">IM</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_type</span> <span class="o">==</span> <span class="n">SymphonyStreamType</span><span class="o">.</span><span class="n">MIM</span><span class="p">:</span>
@@ -352,21 +352,21 @@
             <span class="k">return</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PUBLIC</span>
         <span class="k">return</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PRIVATE</span>
 
-    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_sync_channel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SymphonyChannel&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync channel_type from Symphony stream_type.&quot;&quot;&quot;</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sync_channel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SymphonyChannel"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Sync channel_type from Symphony stream_type."""</span>
         <span class="c1"># Only update if not already set to a meaningful value</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">:</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;channel_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generic_channel_type</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"channel_type"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">generic_channel_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stream_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for id - Symphony uses stream_id terminology.</span>
+<span class="w">        </span><span class="sd">"""Alias for id - Symphony uses stream_id terminology.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The stream/channel ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span></div>
 
 

@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.telegram.user</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Telegram-specific User model.</span>
+<span></span><span class="sd">"""Telegram-specific User model.</span>
 
 <span class="sd">This module provides the Telegram-specific User class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Self</span>
 
@@ -265,92 +265,92 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">User</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base.conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_backend_type</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;TelegramUser&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"TelegramUser"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="TelegramUser">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.user.TelegramUser">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TelegramUser</span><span class="p">(</span><span class="n">User</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Telegram-specific user with additional Telegram fields.</span>
+<span class="w">    </span><span class="sd">"""Telegram-specific user with additional Telegram fields.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        first_name: User&#39;s first name.</span>
-<span class="sd">        last_name: User&#39;s last name.</span>
-<span class="sd">        username: User&#39;s Telegram username (without @).</span>
-<span class="sd">        language_code: IETF language tag of the user&#39;s language.</span>
+<span class="sd">        first_name: User's first name.</span>
+<span class="sd">        last_name: User's last name.</span>
+<span class="sd">        username: User's Telegram username (without @).</span>
+<span class="sd">        language_code: IETF language tag of the user's language.</span>
 <span class="sd">        is_premium: Whether the user has Telegram Premium.</span>
 <span class="sd">        added_to_attachment_menu: Whether the user added the bot to attachment menu.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User&#39;s first name.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"User's first name."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User&#39;s last name.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"User's last name."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;User&#39;s Telegram username (without @).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"User's Telegram username (without @)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">language_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;IETF language tag of the user&#39;s language.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"IETF language tag of the user's language."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_premium</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user has Telegram Premium.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user has Telegram Premium."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">added_to_attachment_menu</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user added the bot to attachment menu.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user added the bot to attachment menu."</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set display_name from first_name + last_name if not explicitly set.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;display_name&quot;</span><span class="p">):</span>
-            <span class="n">full</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_name</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;display_name&quot;</span><span class="p">,</span> <span class="n">full</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Set display_name from first_name + last_name if not explicitly set."""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"display_name"</span><span class="p">):</span>
+            <span class="n">full</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="si">}</span><span class="s2">"</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_name</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"display_name"</span><span class="p">,</span> <span class="n">full</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">full_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the user&#39;s full name.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the user's full name."""</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">first_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_name</span><span class="p">]</span>
-        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">p</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TelegramUser.from_telegram_user">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.user.TelegramUser.from_telegram_user">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_telegram_user</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;TelegramUser&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a TelegramUser from a python-telegram-bot User object.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_telegram_user</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"TelegramUser"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a TelegramUser from a python-telegram-bot User object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: A telegram.User object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A TelegramUser instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
-            <span class="n">name</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">or</span> <span class="n">user</span><span class="o">.</span><span class="n">first_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">handle</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">first_name</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">first_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">last_name</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">last_name</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">language_code</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">language_code</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">full_name</span> <span class="ow">or</span> <span class="n">user</span><span class="o">.</span><span class="n">first_name</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">handle</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">first_name</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">first_name</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">last_name</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">last_name</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">username</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">language_code</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">language_code</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
             <span class="n">is_bot</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">is_bot</span><span class="p">,</span>
-            <span class="n">is_premium</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;is_premium&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="n">added_to_attachment_menu</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;added_to_attachment_menu&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">is_premium</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"is_premium"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">added_to_attachment_menu</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"added_to_attachment_menu"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span></div>
 </div>
 
 
 
 <span class="c1"># Register with conversion system</span>
-<span class="n">register_backend_type</span><span class="p">(</span><span class="s2">&quot;telegram&quot;</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">TelegramUser</span><span class="p">)</span>
+<span class="n">register_backend_type</span><span class="p">(</span><span class="s2">"telegram"</span><span class="p">,</span> <span class="n">User</span><span class="p">,</span> <span class="n">TelegramUser</span><span class="p">)</span>
 </pre></div>
         </article>
       </div>

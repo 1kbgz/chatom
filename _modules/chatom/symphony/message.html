@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.symphony.message</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Symphony-specific Message model.</span>
+<span></span><span class="sd">"""Symphony-specific Message model.</span>
 
 <span class="sd">This module provides the Symphony-specific Message class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">html</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
@@ -274,25 +274,25 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;SymphonyMessage&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SymphonyMessageFormat&quot;</span><span class="p">,</span>
+    <span class="s2">"SymphonyMessage"</span><span class="p">,</span>
+    <span class="s2">"SymphonyMessageFormat"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="SymphonyMessageFormat">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.message.SymphonyMessageFormat">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyMessageFormat</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony message format types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Symphony message format types."""</span>
 
-    <span class="n">MESSAGEML</span> <span class="o">=</span> <span class="s2">&quot;com.symphony.messageml.v2&quot;</span>
-    <span class="n">PRESENTATIONML</span> <span class="o">=</span> <span class="s2">&quot;com.symphony.presentationml&quot;</span></div>
+    <span class="n">MESSAGEML</span> <span class="o">=</span> <span class="s2">"com.symphony.messageml.v2"</span>
+    <span class="n">PRESENTATIONML</span> <span class="o">=</span> <span class="s2">"com.symphony.presentationml"</span></div>
 
 
 
 <div class="viewcode-block" id="SymphonyMessage">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyMessage</span><span class="p">(</span><span class="n">Message</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony-specific message with additional Symphony fields.</span>
+<span class="w">    </span><span class="sd">"""Symphony-specific message with additional Symphony fields.</span>
 
 <span class="sd">    Based on the Symphony REST API message structure.</span>
 
@@ -312,120 +312,120 @@
 <span class="sd">        hashtags: List of hashtags in the message.</span>
 <span class="sd">        cashtags: List of cashtags in the message.</span>
 <span class="sd">        mentions: List of user mentions in the message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># message_id</span>
     <span class="c1"># stream_id</span>
 
     <span class="n">message_ml</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The MessageML content.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The MessageML content."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">presentation_ml</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The PresentationML rendered content.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The PresentationML rendered content."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">entity_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Entity data for structured objects.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Entity data for structured objects."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The JSON data associated with the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The JSON data associated with the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">shared_message</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Shared/forwarded message info.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Shared/forwarded message info."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">ingestion_date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the message was ingested.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the message was ingested."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">diagnostic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Diagnostic information.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Diagnostic information."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">sid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Session ID.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Session ID."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">original_format</span><span class="p">:</span> <span class="n">SymphonyMessageFormat</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">SymphonyMessageFormat</span><span class="o">.</span><span class="n">MESSAGEML</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The original message format.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The original message format."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_chime</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a chime message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a chime message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_copy_disabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether copying is disabled.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether copying is disabled."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">attachments_metadata</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Metadata about attachments.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Metadata about attachments."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">hashtags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of hashtags in the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of hashtags in the message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">cashtags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of cashtags in the message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of cashtags in the message."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_shared_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this is a shared/forwarded message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this is a shared/forwarded message."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">message_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the message ID (same as id).</span>
+<span class="w">        </span><span class="sd">"""Get the message ID (same as id).</span>
 
-<span class="sd">        Returns the message&#39;s id for backward compatibility.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        Returns the message's id for backward compatibility.</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">stream_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the stream ID (channel.id).</span>
+<span class="w">        </span><span class="sd">"""Get the stream ID (channel.id).</span>
 
-<span class="sd">        Returns the channel&#39;s id, or empty string if no channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        Returns the channel's id, or empty string if no channel.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_entity_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message has entity data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message has entity data."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_hashtags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message contains hashtags.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message contains hashtags."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hashtags</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_cashtags</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message contains cashtags.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message contains cashtags."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cashtags</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_mentions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message contains user mentions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if this message contains user mentions."""</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
 <div class="viewcode-block" id="SymphonyMessage.mentions_user">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.mentions_user">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">mentions_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this message mentions a specific user.</span>
+<span class="w">        </span><span class="sd">"""Check if this message mentions a specific user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user: The User to check for.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if the user is mentioned in this message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user_id_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="n">user_id_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">user_id_str</span><span class="p">)</span> <span class="k">if</span> <span class="n">user_id_str</span><span class="o">.</span><span class="n">isdigit</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span>
 
@@ -436,8 +436,8 @@
 
         <span class="c1"># Check entity_data for mention entities</span>
         <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_data</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;com.symphony.user.mention&quot;</span><span class="p">:</span>
-                <span class="n">mentioned_id</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="p">[{}])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"com.symphony.user.mention"</span><span class="p">:</span>
+                <span class="n">mentioned_id</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="p">[{}])[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">mentioned_id</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">mentioned_id</span><span class="p">)</span> <span class="o">==</span> <span class="n">user_id_str</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">True</span>
 
@@ -454,17 +454,17 @@
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.extract_mentions_from_data">[docs]</a>
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">extract_mentions_from_data</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract user IDs from Symphony data field (JSON entity data).</span>
+<span class="w">        </span><span class="sd">"""Extract user IDs from Symphony data field (JSON entity data).</span>
 
 <span class="sd">        Symphony encodes mentions in the data field as JSON with entity</span>
-<span class="sd">        references like {&quot;mention0&quot;: {&quot;type&quot;: &quot;com.symphony.user.mention&quot;, &quot;id&quot;: [{&quot;value&quot;: &quot;123&quot;}]}}.</span>
+<span class="sd">        references like {"mention0": {"type": "com.symphony.user.mention", "id": [{"value": "123"}]}}.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The JSON data string from the message.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of user IDs (as integers) mentioned in the message.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
 
@@ -472,10 +472,10 @@
             <span class="n">entities</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
             <span class="n">mentions</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;com.symphony.user.mention&quot;</span><span class="p">:</span>
-                    <span class="n">id_list</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"type"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"com.symphony.user.mention"</span><span class="p">:</span>
+                    <span class="n">id_list</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"id"</span><span class="p">,</span> <span class="p">[])</span>
                     <span class="k">if</span> <span class="n">id_list</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_list</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">id_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">user_id</span> <span class="o">=</span> <span class="n">id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)</span>
+                        <span class="n">user_id</span> <span class="o">=</span> <span class="n">id_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"value"</span><span class="p">)</span>
                         <span class="k">if</span> <span class="n">user_id</span><span class="p">:</span>
                             <span class="n">mentions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">mentions</span>
@@ -485,11 +485,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">rendered_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the rendered content, preferring PresentationML.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the rendered content, preferring PresentationML."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">presentation_ml</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_ml</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_parse_symphony_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse Symphony MessageML/PresentationML and extract plain text.</span>
+<span class="w">        </span><span class="sd">"""Parse Symphony MessageML/PresentationML and extract plain text.</span>
 
 <span class="sd">        Strips all HTML/XML tags and converts to plain text, preserving</span>
 <span class="sd">        meaningful whitespace.</span>
@@ -499,80 +499,80 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Plain text extracted from the content.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">content</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">return</span> <span class="s2">""</span>
 
         <span class="n">text</span> <span class="o">=</span> <span class="n">content</span>
 
         <span class="c1"># Replace common block elements with newlines</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;br\s*/?&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;/p&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;/div&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;/li&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;/tr&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;/td&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot; | &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;/th&gt;\s*&quot;</span><span class="p">,</span> <span class="s2">&quot; | &quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;br\s*/?&gt;\s*"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/p&gt;\s*"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/div&gt;\s*"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/li&gt;\s*"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/tr&gt;\s*"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/td&gt;\s*"</span><span class="p">,</span> <span class="s2">" | "</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/th&gt;\s*"</span><span class="p">,</span> <span class="s2">" | "</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
 
         <span class="c1"># Remove all remaining HTML/XML tags</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;[^&gt;]+&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;[^&gt;]+&gt;"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
         <span class="c1"># Decode HTML entities</span>
         <span class="n">text</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">unescape</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 
         <span class="c1"># Normalize whitespace (but preserve intentional newlines)</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>  <span class="c1"># normalize spaces per line</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">]</span>  <span class="c1"># normalize spaces per line</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
         <span class="c1"># Remove excessive blank lines</span>
-        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\n{3,}&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\n{3,}"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SymphonyMessage.from_api_response">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.from_api_response">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;SymphonyMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SymphonyMessage from an API response.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_api_response</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"SymphonyMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a SymphonyMessage from an API response.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            data: The API response data.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A SymphonyMessage instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">user_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">stream_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;stream&quot;</span><span class="p">,</span> <span class="p">{})</span>
-        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+<span class="sd">        """</span>
+        <span class="n">user_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"user"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">stream_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"stream"</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;messageId&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">channel</span><span class="o">=</span><span class="n">SymphonyChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">stream_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;streamId&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)),</span>
-            <span class="n">content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">message_ml</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">formatted_content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;message&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;userId&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))),</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"messageId"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">channel</span><span class="o">=</span><span class="n">SymphonyChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">stream_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"streamId"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)),</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">message_ml</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">formatted_content</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"message"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"userId"</span><span class="p">,</span> <span class="s2">""</span><span class="p">))),</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">timestamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="k">if</span> <span class="n">timestamp</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># noqa: DTZ006</span>
-            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">),</span>
-            <span class="n">entity_data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;entityData&quot;</span><span class="p">,</span> <span class="p">{}),</span>
-            <span class="n">attachments_metadata</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attachments&quot;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"data"</span><span class="p">),</span>
+            <span class="n">entity_data</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"entityData"</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="n">attachments_metadata</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attachments"</span><span class="p">,</span> <span class="p">[]),</span>
             <span class="n">raw</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
-            <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;symphony&quot;</span><span class="p">,</span>
+            <span class="n">backend</span><span class="o">=</span><span class="s2">"symphony"</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SymphonyMessage.to_formatted">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.to_formatted">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert this Symphony message to a FormattedMessage.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_formatted</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"FormattedMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Convert this Symphony message to a FormattedMessage.</span>
 
 <span class="sd">        Parses Symphony MessageML/PresentationML formatting and converts to a</span>
 <span class="sd">        FormattedMessage that can be rendered for other backends.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            FormattedMessage: The formatted message representation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedAttachment</span><span class="p">,</span> <span class="n">FormattedMessage</span>
 
         <span class="n">fm</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span>
@@ -588,29 +588,29 @@
         <span class="k">for</span> <span class="n">att_meta</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attachments_metadata</span><span class="p">:</span>
             <span class="n">fm</span><span class="o">.</span><span class="n">attachments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">FormattedAttachment</span><span class="p">(</span>
-                    <span class="n">filename</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                    <span class="n">url</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                    <span class="n">content_type</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contentType&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
-                    <span class="n">size</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                    <span class="n">filename</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                    <span class="n">url</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"url"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                    <span class="n">content_type</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"contentType"</span><span class="p">,</span> <span class="s2">""</span><span class="p">),</span>
+                    <span class="n">size</span><span class="o">=</span><span class="n">att_meta</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"size"</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="c1"># Add metadata</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;source_backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;symphony&quot;</span>
-        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;message_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_id</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"source_backend"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"symphony"</span>
+        <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"message_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;stream_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;channel_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"stream_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"channel_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;author_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"author_id"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashtags</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;hashtags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashtags</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"hashtags"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hashtags</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cashtags</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;cashtags&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cashtags</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"cashtags"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cashtags</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;mention_ids&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">]</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"mention_ids"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mentions</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_data</span><span class="p">:</span>
-            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;entity_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_data</span>
+            <span class="n">fm</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"entity_data"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_data</span>
 
         <span class="k">return</span> <span class="n">fm</span></div>
 
@@ -620,11 +620,11 @@
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_formatted</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
-        <span class="n">formatted</span><span class="p">:</span> <span class="s2">&quot;FormattedMessage&quot;</span><span class="p">,</span>
-        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">formatted</span><span class="p">:</span> <span class="s2">"FormattedMessage"</span><span class="p">,</span>
+        <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SymphonyMessage&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a SymphonyMessage from a FormattedMessage.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SymphonyMessage"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a SymphonyMessage from a FormattedMessage.</span>
 
 <span class="sd">        Renders the FormattedMessage in Symphony MessageML format.</span>
 
@@ -635,13 +635,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            SymphonyMessage: A new SymphonyMessage instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">Format</span>
 
         <span class="n">content</span> <span class="o">=</span> <span class="n">formatted</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;stream_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="s2">&quot;channel&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">SymphonyChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;stream_id&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s2">"stream_id"</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="s2">"channel"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"channel"</span><span class="p">]</span> <span class="o">=</span> <span class="n">SymphonyChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"stream_id"</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>

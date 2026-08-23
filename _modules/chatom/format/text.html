@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.format.text</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Text formatting nodes for chatom.</span>
+<span></span><span class="sd">"""Text formatting nodes for chatom.</span>
 
 <span class="sd">This module provides a composable system for building formatted text</span>
 <span class="sd">that can be rendered to different output formats (Markdown, HTML, etc.).</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
@@ -269,63 +269,63 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.variant</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMAT</span><span class="p">,</span> <span class="n">Format</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;Bold&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ChannelMention&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Code&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;CodeBlock&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Document&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Emoji&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Heading&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;HorizontalRule&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Italic&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;LineBreak&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Link&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ListItem&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;OrderedList&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Paragraph&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Quote&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Raw&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Span&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Strikethrough&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Text&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TextNode&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Underline&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UnorderedList&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;UserMention&quot;</span><span class="p">,</span>
+    <span class="s2">"Bold"</span><span class="p">,</span>
+    <span class="s2">"ChannelMention"</span><span class="p">,</span>
+    <span class="s2">"Code"</span><span class="p">,</span>
+    <span class="s2">"CodeBlock"</span><span class="p">,</span>
+    <span class="s2">"Document"</span><span class="p">,</span>
+    <span class="s2">"Emoji"</span><span class="p">,</span>
+    <span class="s2">"Heading"</span><span class="p">,</span>
+    <span class="s2">"HorizontalRule"</span><span class="p">,</span>
+    <span class="s2">"Italic"</span><span class="p">,</span>
+    <span class="s2">"LineBreak"</span><span class="p">,</span>
+    <span class="s2">"Link"</span><span class="p">,</span>
+    <span class="s2">"ListItem"</span><span class="p">,</span>
+    <span class="s2">"OrderedList"</span><span class="p">,</span>
+    <span class="s2">"Paragraph"</span><span class="p">,</span>
+    <span class="s2">"Quote"</span><span class="p">,</span>
+    <span class="s2">"Raw"</span><span class="p">,</span>
+    <span class="s2">"Span"</span><span class="p">,</span>
+    <span class="s2">"Strikethrough"</span><span class="p">,</span>
+    <span class="s2">"Text"</span><span class="p">,</span>
+    <span class="s2">"TextNode"</span><span class="p">,</span>
+    <span class="s2">"Underline"</span><span class="p">,</span>
+    <span class="s2">"UnorderedList"</span><span class="p">,</span>
+    <span class="s2">"UserMention"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="TextNode">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.TextNode">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextNode</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">,</span> <span class="n">ABC</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all text formatting nodes.</span>
+<span class="w">    </span><span class="sd">"""Base class for all text formatting nodes.</span>
 
 <span class="sd">    TextNodes represent semantic text content that can be rendered</span>
 <span class="sd">    to different output formats. They form a tree structure allowing</span>
 <span class="sd">    complex nested formatting.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
 <div class="viewcode-block" id="TextNode.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.TextNode.render">[docs]</a>
     <span class="nd">@abstractmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render this node to the specified format.</span>
+<span class="w">        </span><span class="sd">"""Render this node to the specified format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            format: The output format to render to.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The rendered string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="o">...</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return plaintext representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Return plaintext representation."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">PLAINTEXT</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Span&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Concatenate nodes with + operator.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">"TextNode"</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"Span"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Concatenate nodes with + operator."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Span</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
@@ -335,29 +335,29 @@
 <div class="viewcode-block" id="Text">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Text">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Text</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Plain text content.</span>
+<span class="w">    </span><span class="sd">"""Plain text content.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        content: The text content.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The text content.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The text content."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Text.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Text.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render plain text, escaping special characters as needed.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render plain text, escaping special characters as needed."""</span>
         <span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span>
 
-        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">,</span> <span class="s2">&quot;telegram-html&quot;</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">,</span> <span class="s2">&quot;symphony-messageml&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="s2">"html"</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">,</span> <span class="s2">"telegram-html"</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">,</span> <span class="s2">"symphony-messageml"</span><span class="p">):</span>
             <span class="c1"># Escape HTML special characters</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;amp;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;gt;&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">,</span> <span class="s2">&quot;symphony-messageml&quot;</span><span class="p">):</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">format</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">,</span> <span class="s2">"symphony-messageml"</span><span class="p">):</span>
             <span class="c1"># Additional Symphony escapes</span>
-            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;${&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;#36;{&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;#{&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;#35;{&quot;</span><span class="p">)</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"${"</span><span class="p">,</span> <span class="s2">"&amp;#36;{"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"#{"</span><span class="p">,</span> <span class="s2">"&amp;#35;{"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">text</span></div>
 </div>
@@ -367,24 +367,24 @@
 <div class="viewcode-block" id="Raw">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Raw">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Raw</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raw content that is not escaped.</span>
+<span class="w">    </span><span class="sd">"""Raw content that is not escaped.</span>
 
 <span class="sd">    Use this for inserting platform-specific markup that should not be</span>
 <span class="sd">    escaped, such as Symphony hashtags, cashtags, or mentions.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        content: The raw content (will be inserted as-is).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The raw content (not escaped).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The raw content (not escaped)."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Raw.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Raw.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render raw content without any escaping.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render raw content without any escaping."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span></div>
 </div>
 
@@ -393,13 +393,13 @@
 <div class="viewcode-block" id="Bold">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Bold">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Bold</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bold formatted text.</span>
+<span class="w">    </span><span class="sd">"""Bold formatted text.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The content to make bold.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The content to make bold.&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The content to make bold."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Bold.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Bold.render">[docs]</a>
@@ -408,11 +408,11 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;**</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">**&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"**</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">**"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;*</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">*&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"*</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">*"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/b&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;b&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/b&gt;"</span>
         <span class="k">return</span> <span class="n">content</span></div>
 </div>
 
@@ -421,13 +421,13 @@
 <div class="viewcode-block" id="Italic">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Italic">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Italic</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Italic formatted text.</span>
+<span class="w">    </span><span class="sd">"""Italic formatted text.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The content to italicize.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The content to italicize.&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The content to italicize."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Italic.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Italic.render">[docs]</a>
@@ -436,11 +436,11 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;*</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">*&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"*</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">*"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;_</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">_&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">_"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;i&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/i&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;i&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/i&gt;"</span>
         <span class="k">return</span> <span class="n">content</span></div>
 </div>
 
@@ -449,13 +449,13 @@
 <div class="viewcode-block" id="Strikethrough">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Strikethrough">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Strikethrough</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Strikethrough formatted text.</span>
+<span class="w">    </span><span class="sd">"""Strikethrough formatted text.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The content to strike through.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The content to strike through.&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The content to strike through."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Strikethrough.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Strikethrough.render">[docs]</a>
@@ -464,14 +464,14 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;~~</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">~~&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"~~</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">~~"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;~</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">~&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"~</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">~"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
             <span class="c1"># Symphony does not support &lt;s&gt;; render with dash decoration</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">-&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"-</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">-"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;s&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/s&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;s&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/s&gt;"</span>
         <span class="k">return</span> <span class="n">content</span></div>
 </div>
 
@@ -480,15 +480,15 @@
 <div class="viewcode-block" id="Underline">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Underline">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Underline</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Underlined text.</span>
+<span class="w">    </span><span class="sd">"""Underlined text.</span>
 
 <span class="sd">    Note: Not all formats support underline.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The content to underline.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The content to underline.&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The content to underline."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Underline.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Underline.render">[docs]</a>
@@ -497,13 +497,13 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;__</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">__&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"__</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">__"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
             <span class="c1"># Symphony does not support &lt;u&gt;; render content as-is</span>
             <span class="k">return</span> <span class="n">content</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;u&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/u&gt;&quot;</span>
-        <span class="c1"># Most formats don&#39;t support underline</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;u&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/u&gt;"</span>
+        <span class="c1"># Most formats don't support underline</span>
         <span class="k">return</span> <span class="n">content</span></div>
 </div>
 
@@ -512,13 +512,13 @@
 <div class="viewcode-block" id="Code">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Code">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Code</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Inline code.</span>
+<span class="w">    </span><span class="sd">"""Inline code.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        content: The code content.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The code content.&quot;</span><span class="p">)</span>
+    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The code content."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Code.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Code.render">[docs]</a>
@@ -526,10 +526,10 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">`&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"`</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">`"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;amp;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;gt;&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;code&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/code&gt;&quot;</span>
+            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;code&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/code&gt;"</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span></div>
 </div>
 
@@ -538,15 +538,15 @@
 <div class="viewcode-block" id="CodeBlock">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.CodeBlock">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CodeBlock</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Code block with optional language specification.</span>
+<span class="w">    </span><span class="sd">"""Code block with optional language specification.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        content: The code content.</span>
 <span class="sd">        language: The programming language for syntax highlighting.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The code content.&quot;</span><span class="p">)</span>
-    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Programming language for syntax highlighting.&quot;</span><span class="p">)</span>
+    <span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The code content."</span><span class="p">)</span>
+    <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Programming language for syntax highlighting."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CodeBlock.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.CodeBlock.render">[docs]</a>
@@ -554,19 +554,19 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;```</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="se">\n</span><span class="s2">```&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"```</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="se">\n</span><span class="s2">```"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
-            <span class="c1"># Symphony MessageML doesn&#39;t allow &lt;code&gt; inside &lt;pre&gt;</span>
-            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;amp;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;gt;&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;pre&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/pre&gt;&quot;</span>
+            <span class="c1"># Symphony MessageML doesn't allow &lt;code&gt; inside &lt;pre&gt;</span>
+            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;pre&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/pre&gt;"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;amp;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;gt;&quot;</span><span class="p">)</span>
-            <span class="n">lang_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; class=&quot;language-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;pre&gt;&lt;code</span><span class="si">{</span><span class="n">lang_attr</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/code&gt;&lt;/pre&gt;&quot;</span> <span class="k">if</span> <span class="n">lang_attr</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">&quot;&lt;pre&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/pre&gt;&quot;</span>
+            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+            <span class="n">lang_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">' class="language-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;pre&gt;&lt;code</span><span class="si">{</span><span class="n">lang_attr</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/code&gt;&lt;/pre&gt;"</span> <span class="k">if</span> <span class="n">lang_attr</span> <span class="k">else</span> <span class="sa">f</span><span class="s2">"&lt;pre&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/pre&gt;"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">:</span>
-            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;amp;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;lt;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;gt;&quot;</span><span class="p">)</span>
-            <span class="n">lang_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; class=&quot;language-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;pre&gt;&lt;code</span><span class="si">{</span><span class="n">lang_attr</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/code&gt;&lt;/pre&gt;&quot;</span>
+            <span class="n">escaped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"&amp;amp;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&amp;lt;"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&amp;gt;"</span><span class="p">)</span>
+            <span class="n">lang_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">' class="language-</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;pre&gt;&lt;code</span><span class="si">{</span><span class="n">lang_attr</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">escaped</span><span class="si">}</span><span class="s2">&lt;/code&gt;&lt;/pre&gt;"</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span></div>
 </div>
 
@@ -575,17 +575,17 @@
 <div class="viewcode-block" id="Link">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Link">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Link</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hyperlink.</span>
+<span class="w">    </span><span class="sd">"""Hyperlink.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        text: The link text.</span>
 <span class="sd">        url: The URL to link to.</span>
 <span class="sd">        title: Optional title attribute.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The link text.&quot;</span><span class="p">)</span>
-    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The URL to link to.&quot;</span><span class="p">)</span>
-    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional title attribute.&quot;</span><span class="p">)</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The link text."</span><span class="p">)</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The URL to link to."</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Optional title attribute."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Link.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Link.render">[docs]</a>
@@ -594,17 +594,17 @@
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">](</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">&quot;)&#39;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">)&quot;</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s1">'[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">](</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1"> "</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">")'</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">](</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">)"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">|</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&gt;"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;a href="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">"&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/a&gt;'</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="n">title_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; title=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">title_attr</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+            <span class="n">title_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">' title="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;a href="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">"</span><span class="si">{</span><span class="n">title_attr</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s1">&lt;/a&gt;'</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">PLAINTEXT</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s2">)"</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span></div>
 </div>
 
@@ -613,13 +613,13 @@
 <div class="viewcode-block" id="Quote">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Quote">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Quote</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Block quote.</span>
+<span class="w">    </span><span class="sd">"""Block quote.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The quoted content.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The quoted content.&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The quoted content."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Quote.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Quote.render">[docs]</a>
@@ -629,15 +629,15 @@
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">):</span>
             <span class="c1"># Prefix each line with &gt;</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&gt; </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&gt; </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
             <span class="c1"># Symphony does not support &lt;blockquote&gt;; render with visual quote prefix</span>
-            <span class="k">if</span> <span class="s2">&quot;&lt;p&gt;&quot;</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&lt;p&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;p&gt;</span><span class="se">\u258e</span><span class="s2"> &quot;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;p&gt;</span><span class="se">\u258e</span><span class="s2"> </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span>
+            <span class="k">if</span> <span class="s2">"&lt;p&gt;"</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"&lt;p&gt;"</span><span class="p">,</span> <span class="s2">"&lt;p&gt;</span><span class="se">\u258e</span><span class="s2"> "</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="se">\u258e</span><span class="s2"> </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;blockquote&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/blockquote&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;blockquote&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/blockquote&gt;"</span>
         <span class="k">return</span> <span class="n">content</span></div>
 </div>
 
@@ -646,28 +646,28 @@
 <div class="viewcode-block" id="Paragraph">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Paragraph">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Paragraph</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Paragraph of text.</span>
+<span class="w">    </span><span class="sd">"""Paragraph of text.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        children: The content nodes within the paragraph.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"TextNode"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Content nodes within the paragraph.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Content nodes within the paragraph."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Paragraph.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Paragraph.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">content</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="n">content</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;p&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span>
-        <span class="k">return</span> <span class="n">content</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;p&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/p&gt;"</span>
+        <span class="k">return</span> <span class="n">content</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
 </div>
 
 
@@ -675,7 +675,7 @@
 <div class="viewcode-block" id="LineBreak">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.LineBreak">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LineBreak</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Line break.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Line break."""</span>
 
 <div class="viewcode-block" id="LineBreak.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.LineBreak.render">[docs]</a>
@@ -683,10 +683,10 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;&lt;br/&gt;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="s2">"&lt;br/&gt;"</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
 </div>
 
 
@@ -694,7 +694,7 @@
 <div class="viewcode-block" id="HorizontalRule">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.HorizontalRule">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">HorizontalRule</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Horizontal rule/divider.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Horizontal rule/divider."""</span>
 
 <div class="viewcode-block" id="HorizontalRule.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.HorizontalRule.render">[docs]</a>
@@ -702,10 +702,10 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">---</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="s2">&quot;&lt;hr/&gt;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">40</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="s2">"&lt;hr/&gt;"</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="s2">"-"</span> <span class="o">*</span> <span class="mi">40</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
 </div>
 
 
@@ -713,13 +713,13 @@
 <div class="viewcode-block" id="ListItem">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.ListItem">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ListItem</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List item.</span>
+<span class="w">    </span><span class="sd">"""List item.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The item content.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The item content.&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The item content."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ListItem.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.ListItem.render">[docs]</a>
@@ -732,15 +732,15 @@
 <div class="viewcode-block" id="UnorderedList">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.UnorderedList">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UnorderedList</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unordered (bulleted) list.</span>
+<span class="w">    </span><span class="sd">"""Unordered (bulleted) list.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        items: List items.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ListItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List items.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List items."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="UnorderedList.render">
@@ -749,14 +749,14 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;- </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"- </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="n">items_html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;li&gt;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/li&gt;&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;ul&gt;</span><span class="si">{</span><span class="n">items_html</span><span class="si">}</span><span class="s2">&lt;/ul&gt;&quot;</span>
+            <span class="n">items_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;li&gt;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/li&gt;"</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;ul&gt;</span><span class="si">{</span><span class="n">items_html</span><span class="si">}</span><span class="s2">&lt;/ul&gt;"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;• </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"• </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">]</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 </div>
 
 
@@ -764,18 +764,18 @@
 <div class="viewcode-block" id="OrderedList">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.OrderedList">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OrderedList</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ordered (numbered) list.</span>
+<span class="w">    </span><span class="sd">"""Ordered (numbered) list.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        items: List items.</span>
 <span class="sd">        start: Starting number.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">items</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ListItem</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List items.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List items."</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Starting number.&quot;</span><span class="p">)</span>
+    <span class="n">start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Starting number."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="OrderedList.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.OrderedList.render">[docs]</a>
@@ -783,15 +783,15 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="n">items_html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;li&gt;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/li&gt;&quot;</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
-            <span class="n">start_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; start=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;ol</span><span class="si">{</span><span class="n">start_attr</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">items_html</span><span class="si">}</span><span class="s2">&lt;/ol&gt;&quot;</span>
+            <span class="n">items_html</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;li&gt;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&lt;/li&gt;"</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)</span>
+            <span class="n">start_attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">' start="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;ol</span><span class="si">{</span><span class="n">start_attr</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">items_html</span><span class="si">}</span><span class="s2">&lt;/ol&gt;"</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
-            <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="si">}</span><span class="s2">. </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
 </div>
 
 
@@ -799,15 +799,15 @@
 <div class="viewcode-block" id="Heading">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Heading">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Heading</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Heading.</span>
+<span class="w">    </span><span class="sd">"""Heading.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        child: The heading content.</span>
 <span class="sd">        level: Heading level (1-6).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">child</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;The heading content.&quot;</span><span class="p">)</span>
-    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Heading level (1-6).&quot;</span><span class="p">)</span>
+    <span class="n">child</span><span class="p">:</span> <span class="s2">"TextNode"</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"The heading content."</span><span class="p">)</span>
+    <span class="n">level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">le</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Heading level (1-6)."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Heading.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Heading.render">[docs]</a>
@@ -816,15 +816,15 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;#&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'#'</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="c1"># Slack doesn&#39;t have headings, use bold</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;*</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">*</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="c1"># Slack doesn't have headings, use bold</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"*</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">*</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;b&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/b&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;b&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/b&gt;</span><span class="se">\n</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;h</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/h</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-        <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;h</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/h</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="si">}</span><span class="s2">&gt;"</span>
+        <span class="k">return</span> <span class="n">content</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span></div>
 </div>
 
 
@@ -832,15 +832,15 @@
 <div class="viewcode-block" id="UserMention">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.UserMention">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">UserMention</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User mention.</span>
+<span class="w">    </span><span class="sd">"""User mention.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        user_id: Platform-specific user ID.</span>
 <span class="sd">        display_name: Fallback display name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific user ID.&quot;</span><span class="p">)</span>
-    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fallback display name.&quot;</span><span class="p">)</span>
+    <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific user ID."</span><span class="p">)</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Fallback display name."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="UserMention.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.UserMention.render">[docs]</a>
@@ -848,14 +848,14 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&gt;"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention uid=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention uid="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">"/&gt;'</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;a href=&quot;tg://user?id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&quot;&gt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&lt;/a&gt;&#39;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;a href="tg://user?id=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">"&gt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&lt;/a&gt;'</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;span class=&quot;mention&quot; data-user-id=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&quot;&gt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&lt;/span&gt;&#39;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;span class="mention" data-user-id="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">"&gt;@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"@</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="si">}</span><span class="s2">"</span></div>
 </div>
 
 
@@ -863,15 +863,15 @@
 <div class="viewcode-block" id="ChannelMention">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.ChannelMention">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ChannelMention</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Channel mention.</span>
+<span class="w">    </span><span class="sd">"""Channel mention.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        channel_id: Platform-specific channel ID.</span>
 <span class="sd">        display_name: Fallback display name.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific channel ID.&quot;</span><span class="p">)</span>
-    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Fallback display name.&quot;</span><span class="p">)</span>
+    <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific channel ID."</span><span class="p">)</span>
+    <span class="n">display_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Fallback display name."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ChannelMention.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.ChannelMention.render">[docs]</a>
@@ -879,12 +879,12 @@
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&gt;"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;span class=&quot;channel-mention&quot; data-channel-id=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s1">&quot;&gt;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s1">&lt;/span&gt;&#39;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;span class="channel-mention" data-channel-id="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s1">"&gt;#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s1">&lt;/span&gt;'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">channel_id</span><span class="si">}</span><span class="s2">"</span></div>
 </div>
 
 
@@ -892,17 +892,17 @@
 <div class="viewcode-block" id="Emoji">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Emoji">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Emoji</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Emoji.</span>
+<span class="w">    </span><span class="sd">"""Emoji.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Emoji name (without colons).</span>
 <span class="sd">        unicode: Unicode representation if standard emoji.</span>
 <span class="sd">        custom_id: Platform-specific ID for custom emoji.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Emoji name (without colons).&quot;</span><span class="p">)</span>
-    <span class="n">unicode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unicode representation.&quot;</span><span class="p">)</span>
-    <span class="n">custom_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific custom emoji ID.&quot;</span><span class="p">)</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Emoji name (without colons)."</span><span class="p">)</span>
+    <span class="n">unicode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Unicode representation."</span><span class="p">)</span>
+    <span class="n">custom_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific custom emoji ID."</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Emoji.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Emoji.render">[docs]</a>
@@ -915,15 +915,15 @@
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_id</span><span class="p">:</span>
-                <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">custom_id</span><span class="si">}</span><span class="s2">&gt;"</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span> <span class="ow">or</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">TELEGRAM_HTML</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span>
         <span class="k">elif</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unicode</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">unicode</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;span class=&quot;emoji&quot; data-emoji=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot;&gt;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">:&lt;/span&gt;&#39;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;span class="emoji" data-emoji="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">"&gt;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">:&lt;/span&gt;'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span></div>
 </div>
 
 
@@ -931,24 +931,24 @@
 <div class="viewcode-block" id="Span">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Span">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Span</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for multiple text nodes.</span>
+<span class="w">    </span><span class="sd">"""Container for multiple text nodes.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        children: The child nodes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"TextNode"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Child nodes.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Child nodes."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Span.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Span.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;Span&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="s2">"TextNode"</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">"Span"</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">other</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Span</span><span class="p">(</span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">,</span> <span class="n">other</span><span class="p">])</span></div>
@@ -958,39 +958,39 @@
 <div class="viewcode-block" id="Document">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Document">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Document</span><span class="p">(</span><span class="n">TextNode</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Top-level document containing multiple nodes.</span>
+<span class="w">    </span><span class="sd">"""Top-level document containing multiple nodes.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        children: The document content nodes.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">&quot;TextNode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+    <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="s2">"TextNode"</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Document content nodes.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Document content nodes."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Document.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Document.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="n">Format</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="nb">format</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">HTML</span><span class="p">,):</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;div&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/div&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;div&gt;</span><span class="si">{</span><span class="n">content</span><span class="si">}</span><span class="s2">&lt;/div&gt;"</span>
         <span class="k">return</span> <span class="n">content</span></div>
 
 
 <div class="viewcode-block" id="Document.append">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.text.Document.append">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s2">&quot;TextNode&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Document&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Append a node to the document.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="s2">"TextNode"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Document"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Append a node to the document.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            node: The node to append.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for method chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 </div>
@@ -999,36 +999,36 @@
 
 <span class="c1"># Helper functions for building text nodes</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">text</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Text</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Text node.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create a Text node."""</span>
     <span class="k">return</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">bold</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">TextNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Bold</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Bold node.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create a Bold node."""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Bold</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">italic</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">TextNode</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Italic</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an Italic node.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create an Italic node."""</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Italic</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">code</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Code</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an inline Code node.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Create an inline Code node."""</span>
     <span class="k">return</span> <span class="n">Code</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">code_block</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CodeBlock</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a CodeBlock node.&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">code_block</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CodeBlock</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Create a CodeBlock node."""</span>
     <span class="k">return</span> <span class="n">CodeBlock</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="n">language</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">link</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Link</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Link node.&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">link</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Link</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Create a Link node."""</span>
     <span class="k">return</span> <span class="n">Link</span><span class="p">(</span><span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
 </pre></div>
         </article>

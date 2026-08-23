@@ -253,22 +253,22 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.slack.channel</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Slack-specific Channel model.</span>
+<span></span><span class="sd">"""Slack-specific Channel model.</span>
 
 <span class="sd">This module provides the Slack-specific Channel class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_validator</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">ChannelType</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">User</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SlackChannel&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SlackChannel"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="SlackChannel">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.slack.channel.SlackChannel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SlackChannel</span><span class="p">(</span><span class="n">Channel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Slack-specific channel with additional Slack fields.</span>
+<span class="w">    </span><span class="sd">"""Slack-specific channel with additional Slack fields.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        is_channel: Whether this is a public channel.</span>
@@ -285,81 +285,81 @@
 <span class="sd">        unread_count: Number of unread messages.</span>
 <span class="sd">        last_read: Timestamp of last read message.</span>
 <span class="sd">        latest: Timestamp of latest message.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">is_channel</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a public channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a public channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_group</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a private channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a private channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_im</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a direct message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a direct message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_mpim</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a multi-party direct message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a multi-party direct message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_private</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is a private channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is a private channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_shared</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this channel is shared with other workspaces.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this channel is shared with other workspaces."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_ext_shared</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this channel is shared externally.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this channel is shared externally."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_org_shared</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this channel is shared org-wide.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this channel is shared org-wide."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">creator</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user who created the channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user who created the channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">purpose</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Channel purpose text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Channel purpose text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">num_members</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of members in the channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of members in the channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">unread_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of unread messages.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of unread messages."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">last_read</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timestamp of last read message.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Timestamp of last read message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">latest</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timestamp of latest message.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Timestamp of latest message."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">creator_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the creator&#39;s user ID.</span>
+<span class="w">        </span><span class="sd">"""Get the creator's user ID.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            str: The creator&#39;s ID, or empty string if not set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">            str: The creator's ID, or empty string if not set.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">creator</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">slack_channel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ChannelType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the channel type from Slack flags.</span>
+<span class="w">        </span><span class="sd">"""Determine the channel type from Slack flags.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ChannelType: The generic channel type.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_im</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mpim</span><span class="p">:</span>
@@ -370,12 +370,12 @@
             <span class="k">return</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PUBLIC</span>
         <span class="k">return</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">UNKNOWN</span>
 
-    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_sync_channel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SlackChannel&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sync channel_type from Slack-specific flags.&quot;&quot;&quot;</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_sync_channel_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SlackChannel"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Sync channel_type from Slack-specific flags."""</span>
         <span class="c1"># Only update if not already set to a meaningful value</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">:</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;channel_type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack_channel_type</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"channel_type"</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slack_channel_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 </pre></div>

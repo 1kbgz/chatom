@@ -268,16 +268,16 @@
 
 <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">MessageBuilder</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;Incident update&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s2">&quot;Database latency has returned to normal.&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">&quot;Status: &quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;resolved&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">"Incident update"</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s2">"Database latency has returned to normal."</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">"Status: "</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"resolved"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">line_break</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="s2">&quot;Runbook&quot;</span><span class="p">,</span> <span class="s2">&quot;https://example.com/runbook&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">link</span><span class="p">(</span><span class="s2">"Runbook"</span><span class="p">,</span> <span class="s2">"https://example.com/runbook"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="p">)</span>
 
-<span class="n">content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<span class="n">content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"slack"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The builder supports text, bold, italic, strikethrough, inline code, code blocks, links, quotes, headings, paragraphs, line breaks, lists, tables, images, attachments, embeds, and arbitrary nodes.</p>
@@ -287,9 +287,9 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">MessageBuilder</span><span class="p">()</span>
     <span class="o">.</span><span class="n">table</span><span class="p">(</span>
-        <span class="p">[[</span><span class="s2">&quot;api&quot;</span><span class="p">,</span> <span class="s2">&quot;healthy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;workers&quot;</span><span class="p">,</span> <span class="s2">&quot;degraded&quot;</span><span class="p">]],</span>
-        <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;service&quot;</span><span class="p">,</span> <span class="s2">&quot;state&quot;</span><span class="p">],</span>
-        <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Service health&quot;</span><span class="p">,</span>
+        <span class="p">[[</span><span class="s2">"api"</span><span class="p">,</span> <span class="s2">"healthy"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"workers"</span><span class="p">,</span> <span class="s2">"degraded"</span><span class="p">]],</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">"service"</span><span class="p">,</span> <span class="s2">"state"</span><span class="p">],</span>
+        <span class="n">caption</span><span class="o">=</span><span class="s2">"Service health"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="p">)</span>
@@ -305,14 +305,14 @@
     <span class="n">children</span><span class="o">=</span><span class="p">[</span>
         <span class="n">Paragraph</span><span class="p">(</span>
             <span class="n">children</span><span class="o">=</span><span class="p">[</span>
-                <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello &quot;</span><span class="p">),</span>
-                <span class="n">Bold</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;team&quot;</span><span class="p">)),</span>
+                <span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"Hello "</span><span class="p">),</span>
+                <span class="n">Bold</span><span class="p">(</span><span class="n">child</span><span class="o">=</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"team"</span><span class="p">)),</span>
             <span class="p">]</span>
         <span class="p">)</span>
     <span class="p">]</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;markdown&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">"markdown"</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Direct nodes support nested styles, spans, lists, headings, quotes, code, user and channel mentions, emoji, and raw platform markup.</p>
@@ -321,13 +321,13 @@
 <h2>Mention a user or channel<a class="headerlink" href="#mention-a-user-or-channel" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">FormattedMessage</span><span class="p">,</span> <span class="n">User</span>
 
-<span class="n">alice</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Alice&quot;</span><span class="p">)</span>
-<span class="n">operations</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;operations&quot;</span><span class="p">)</span>
+<span class="n">alice</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Alice"</span><span class="p">)</span>
+<span class="n">operations</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"operations"</span><span class="p">)</span>
 
 <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">FormattedMessage</span><span class="p">()</span>
     <span class="o">.</span><span class="n">mention</span><span class="p">(</span><span class="n">alice</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">&quot; posted an update in &quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">" posted an update in "</span><span class="p">)</span>
     <span class="o">.</span><span class="n">channel_mention</span><span class="p">(</span><span class="n">operations</span><span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
@@ -337,9 +337,9 @@
 <h2>Convert existing Markdown<a class="headerlink" href="#convert-existing-markdown" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_format</span><span class="p">,</span> <span class="n">parse_markdown</span>
 
-<span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_markdown</span><span class="p">(</span><span class="s2">&quot;**Ready** for [release](https://example.com)&quot;</span><span class="p">)</span>
-<span class="n">message_ml</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">&quot;symphony_messageml&quot;</span><span class="p">)</span>
-<span class="n">plain_text</span> <span class="o">=</span> <span class="n">convert_format</span><span class="p">(</span><span class="s2">&quot;**Ready**&quot;</span><span class="p">,</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span> <span class="s2">&quot;plaintext&quot;</span><span class="p">)</span>
+<span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_markdown</span><span class="p">(</span><span class="s2">"**Ready** for [release](https://example.com)"</span><span class="p">)</span>
+<span class="n">message_ml</span> <span class="o">=</span> <span class="n">parsed</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="s2">"symphony_messageml"</span><span class="p">)</span>
+<span class="n">plain_text</span> <span class="o">=</span> <span class="n">convert_format</span><span class="p">(</span><span class="s2">"**Ready**"</span><span class="p">,</span> <span class="s2">"markdown"</span><span class="p">,</span> <span class="s2">"plaintext"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -348,19 +348,19 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">FormattedMessage</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">ButtonStyle</span><span class="p">,</span> <span class="n">SelectOption</span>
 
-<span class="n">message</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">&quot;Deploy this release?&quot;</span><span class="p">)</span>
-<span class="n">message</span><span class="o">.</span><span class="n">add_button</span><span class="p">(</span><span class="s2">&quot;Deploy&quot;</span><span class="p">,</span> <span class="n">action_id</span><span class="o">=</span><span class="s2">&quot;deploy&quot;</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">ButtonStyle</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span><span class="o">.</span><span class="n">add_text</span><span class="p">(</span><span class="s2">"Deploy this release?"</span><span class="p">)</span>
+<span class="n">message</span><span class="o">.</span><span class="n">add_button</span><span class="p">(</span><span class="s2">"Deploy"</span><span class="p">,</span> <span class="n">action_id</span><span class="o">=</span><span class="s2">"deploy"</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">ButtonStyle</span><span class="o">.</span><span class="n">SUCCESS</span><span class="p">)</span>
 <span class="n">message</span><span class="o">.</span><span class="n">add_select</span><span class="p">(</span>
-    <span class="s2">&quot;environment&quot;</span><span class="p">,</span>
+    <span class="s2">"environment"</span><span class="p">,</span>
     <span class="p">[</span>
-        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Staging&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;staging&quot;</span><span class="p">),</span>
-        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;Production&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;production&quot;</span><span class="p">),</span>
+        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Staging"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"staging"</span><span class="p">),</span>
+        <span class="n">SelectOption</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">"Production"</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s2">"production"</span><span class="p">),</span>
     <span class="p">],</span>
 <span class="p">)</span>
-<span class="n">message</span><span class="o">.</span><span class="n">add_embed</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Release 2.4&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;All checks passed&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mh">0x2E7D32</span><span class="p">)</span>
+<span class="n">message</span><span class="o">.</span><span class="n">add_embed</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"Release 2.4"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"All checks passed"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="mh">0x2E7D32</span><span class="p">)</span>
 
-<span class="n">components</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get_components</span><span class="p">(</span><span class="s2">&quot;slack_markdown&quot;</span><span class="p">)</span>
-<span class="n">embeds</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get_embeds_for</span><span class="p">(</span><span class="s2">&quot;discord&quot;</span><span class="p">)</span>
+<span class="n">components</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get_components</span><span class="p">(</span><span class="s2">"slack_markdown"</span><span class="p">)</span>
+<span class="n">embeds</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get_embeds_for</span><span class="p">(</span><span class="s2">"discord"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Send rendered text and structured payloads using the keyword arguments expected by the selected backend.</p>

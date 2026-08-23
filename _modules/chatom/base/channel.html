@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.channel</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Channel model for chatom.</span>
+<span></span><span class="sd">"""Channel model for chatom.</span>
 
 <span class="sd">This module provides the base Channel class representing a chat channel or room.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -270,44 +270,44 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Channel&quot;</span><span class="p">,</span> <span class="s2">&quot;ChannelType&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Channel"</span><span class="p">,</span> <span class="s2">"ChannelType"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ChannelType">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.channel.ChannelType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ChannelType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of chat channels.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Types of chat channels."""</span>
 
-    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s2">&quot;public&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A public channel visible to all members.&quot;&quot;&quot;</span>
+    <span class="n">PUBLIC</span> <span class="o">=</span> <span class="s2">"public"</span>
+<span class="w">    </span><span class="sd">"""A public channel visible to all members."""</span>
 
-    <span class="n">PRIVATE</span> <span class="o">=</span> <span class="s2">&quot;private&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A private channel with restricted access.&quot;&quot;&quot;</span>
+    <span class="n">PRIVATE</span> <span class="o">=</span> <span class="s2">"private"</span>
+<span class="w">    </span><span class="sd">"""A private channel with restricted access."""</span>
 
-    <span class="n">DIRECT</span> <span class="o">=</span> <span class="s2">&quot;direct&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A direct message between two users.&quot;&quot;&quot;</span>
+    <span class="n">DIRECT</span> <span class="o">=</span> <span class="s2">"direct"</span>
+<span class="w">    </span><span class="sd">"""A direct message between two users."""</span>
 
-    <span class="n">GROUP</span> <span class="o">=</span> <span class="s2">&quot;group&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A group direct message between multiple users.&quot;&quot;&quot;</span>
+    <span class="n">GROUP</span> <span class="o">=</span> <span class="s2">"group"</span>
+<span class="w">    </span><span class="sd">"""A group direct message between multiple users."""</span>
 
-    <span class="n">THREAD</span> <span class="o">=</span> <span class="s2">&quot;thread&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A thread within another channel.&quot;&quot;&quot;</span>
+    <span class="n">THREAD</span> <span class="o">=</span> <span class="s2">"thread"</span>
+<span class="w">    </span><span class="sd">"""A thread within another channel."""</span>
 
-    <span class="n">FORUM</span> <span class="o">=</span> <span class="s2">&quot;forum&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A forum channel for organized discussions.&quot;&quot;&quot;</span>
+    <span class="n">FORUM</span> <span class="o">=</span> <span class="s2">"forum"</span>
+<span class="w">    </span><span class="sd">"""A forum channel for organized discussions."""</span>
 
-    <span class="n">ANNOUNCEMENT</span> <span class="o">=</span> <span class="s2">&quot;announcement&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An announcement or broadcast channel.&quot;&quot;&quot;</span>
+    <span class="n">ANNOUNCEMENT</span> <span class="o">=</span> <span class="s2">"announcement"</span>
+<span class="w">    </span><span class="sd">"""An announcement or broadcast channel."""</span>
 
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unknown channel type.&quot;&quot;&quot;</span></div>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">"unknown"</span>
+<span class="w">    </span><span class="sd">"""Unknown channel type."""</span></div>
 
 
 
 <div class="viewcode-block" id="Channel">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.channel.Channel">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Channel</span><span class="p">(</span><span class="n">Identifiable</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a channel or room on a chat platform.</span>
+<span class="w">    </span><span class="sd">"""Represents a channel or room on a chat platform.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        id: Platform-specific unique identifier.</span>
@@ -318,61 +318,61 @@
 <span class="sd">        member_count: Number of members in the channel.</span>
 <span class="sd">        parent: Parent channel (for threads/subchannels).</span>
 <span class="sd">        parent_id: ID of the parent channel (derived from parent).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Channel topic or description.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Channel topic or description."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">channel_type</span><span class="p">:</span> <span class="n">ChannelType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">ChannelType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of the channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Type of the channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_archived</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the channel is archived.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the channel is archived."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">member_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Number of members in the channel.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Number of members in the channel."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parent</span><span class="p">:</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Parent channel (for threads/subchannels).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Parent channel (for threads/subchannels)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Users in a DM channel (for DIRECT/GROUP types).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Users in a DM channel (for DIRECT/GROUP types)."</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_validate_dm_users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate that users field is appropriate for channel type.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Validate that users field is appropriate for channel type."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DIRECT channel must have exactly 1 user, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DIRECT channel must have exactly 1 user, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GROUP channel must have at least 2 users, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"GROUP channel must have at least 2 users, got </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
             <span class="c1"># If users are set but type is UNKNOWN, infer the type</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                    <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;channel_type&quot;</span><span class="p">,</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">)</span>
+                    <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"channel_type"</span><span class="p">,</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;channel_type&quot;</span><span class="p">,</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">)</span>
+                    <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"channel_type"</span><span class="p">,</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this channel has all required fields populated.</span>
+<span class="w">        </span><span class="sd">"""Check if this channel has all required fields populated.</span>
 
 <span class="sd">        A channel is complete if it has an ID. DM channels with users</span>
 <span class="sd">        but no ID are considered incomplete (need resolution to get/create ID).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the channel is complete.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># DM channels with users but no ID need resolution</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span>
@@ -380,74 +380,74 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">parent_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the parent channel&#39;s ID.</span>
+<span class="w">        </span><span class="sd">"""Get the parent channel's ID.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            str: The parent channel ID or empty string if no parent.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="k">else</span> <span class="s2">""</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this channel is a thread.</span>
+<span class="w">        </span><span class="sd">"""Check if this channel is a thread.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a thread channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">THREAD</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_direct_message</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this channel is a direct message.</span>
+<span class="w">        </span><span class="sd">"""Check if this channel is a direct message.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a DM or group DM.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">,</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_dm</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for is_direct_message.</span>
+<span class="w">        </span><span class="sd">"""Alias for is_direct_message.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a DM or group DM.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_direct_message</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_public</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this channel is public.</span>
+<span class="w">        </span><span class="sd">"""Check if this channel is public.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a public channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PUBLIC</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_private</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this channel is private.</span>
+<span class="w">        </span><span class="sd">"""Check if this channel is private.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if this is a private channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel_type</span> <span class="o">==</span> <span class="n">ChannelType</span><span class="o">.</span><span class="n">PRIVATE</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_resolvable</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if this channel can be resolved by a backend.</span>
+<span class="w">        </span><span class="sd">"""Check if this channel can be resolved by a backend.</span>
 
 <span class="sd">        A channel is resolvable if it has an id, name, or users (for DMs).</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if the channel can potentially be resolved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">users</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Channel.dm_to">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.channel.Channel.dm_to">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">dm_to</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an incomplete DM channel to a user.</span>
+<span class="w">        </span><span class="sd">"""Create an incomplete DM channel to a user.</span>
 
 <span class="sd">        The returned channel is marked incomplete and will be resolved</span>
 <span class="sd">        by the backend (looking up or creating the DM channel).</span>
@@ -460,8 +460,8 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; dm_channel = Channel.dm_to(user)</span>
-<span class="sd">            &gt;&gt;&gt; await backend.send_message(dm_channel, &quot;Hello!&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; await backend.send_message(dm_channel, "Hello!")</span>
+<span class="sd">        """</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">channel_type</span><span class="o">=</span><span class="n">ChannelType</span><span class="o">.</span><span class="n">DIRECT</span><span class="p">,</span>
             <span class="n">users</span><span class="o">=</span><span class="p">[</span><span class="n">user</span><span class="p">],</span>
@@ -474,7 +474,7 @@
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.channel.Channel.group_dm_to">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">group_dm_to</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an incomplete group DM channel to multiple users.</span>
+<span class="w">        </span><span class="sd">"""Create an incomplete group DM channel to multiple users.</span>
 
 <span class="sd">        The returned channel is marked incomplete and will be resolved</span>
 <span class="sd">        by the backend (looking up or creating the group DM).</span>
@@ -487,8 +487,8 @@
 
 <span class="sd">        Example:</span>
 <span class="sd">            &gt;&gt;&gt; group = Channel.group_dm_to([user1, user2])</span>
-<span class="sd">            &gt;&gt;&gt; await backend.send_message(group, &quot;Hello everyone!&quot;)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            &gt;&gt;&gt; await backend.send_message(group, "Hello everyone!")</span>
+<span class="sd">        """</span>
         <span class="n">channel</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="n">channel_type</span><span class="o">=</span><span class="n">ChannelType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">,</span>
             <span class="n">users</span><span class="o">=</span><span class="n">users</span><span class="p">,</span>

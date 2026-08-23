@@ -253,66 +253,66 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.symphony.presence</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Symphony-specific Presence model.</span>
+<span></span><span class="sd">"""Symphony-specific Presence model.</span>
 
 <span class="sd">This module provides the Symphony-specific Presence class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Presence</span><span class="p">,</span> <span class="n">PresenceStatus</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SymphonyPresence&quot;</span><span class="p">,</span> <span class="s2">&quot;SymphonyPresenceStatus&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SymphonyPresence"</span><span class="p">,</span> <span class="s2">"SymphonyPresenceStatus"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SymphonyPresenceStatus">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.presence.SymphonyPresenceStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyPresenceStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony-specific presence statuses.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Symphony-specific presence statuses."""</span>
 
-    <span class="n">AVAILABLE</span> <span class="o">=</span> <span class="s2">&quot;AVAILABLE&quot;</span>
-    <span class="n">BUSY</span> <span class="o">=</span> <span class="s2">&quot;BUSY&quot;</span>
-    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">&quot;AWAY&quot;</span>
-    <span class="n">ON_THE_PHONE</span> <span class="o">=</span> <span class="s2">&quot;ON_THE_PHONE&quot;</span>
-    <span class="n">BE_RIGHT_BACK</span> <span class="o">=</span> <span class="s2">&quot;BE_RIGHT_BACK&quot;</span>
-    <span class="n">IN_A_MEETING</span> <span class="o">=</span> <span class="s2">&quot;IN_A_MEETING&quot;</span>
-    <span class="n">OUT_OF_OFFICE</span> <span class="o">=</span> <span class="s2">&quot;OUT_OF_OFFICE&quot;</span>
-    <span class="n">OFF_WORK</span> <span class="o">=</span> <span class="s2">&quot;OFF_WORK&quot;</span>
-    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="s2">&quot;OFFLINE&quot;</span></div>
+    <span class="n">AVAILABLE</span> <span class="o">=</span> <span class="s2">"AVAILABLE"</span>
+    <span class="n">BUSY</span> <span class="o">=</span> <span class="s2">"BUSY"</span>
+    <span class="n">AWAY</span> <span class="o">=</span> <span class="s2">"AWAY"</span>
+    <span class="n">ON_THE_PHONE</span> <span class="o">=</span> <span class="s2">"ON_THE_PHONE"</span>
+    <span class="n">BE_RIGHT_BACK</span> <span class="o">=</span> <span class="s2">"BE_RIGHT_BACK"</span>
+    <span class="n">IN_A_MEETING</span> <span class="o">=</span> <span class="s2">"IN_A_MEETING"</span>
+    <span class="n">OUT_OF_OFFICE</span> <span class="o">=</span> <span class="s2">"OUT_OF_OFFICE"</span>
+    <span class="n">OFF_WORK</span> <span class="o">=</span> <span class="s2">"OFF_WORK"</span>
+    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="s2">"OFFLINE"</span></div>
 
 
 
 <div class="viewcode-block" id="SymphonyPresence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.presence.SymphonyPresence">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyPresence</span><span class="p">(</span><span class="n">Presence</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Symphony-specific presence.</span>
+<span class="w">    </span><span class="sd">"""Symphony-specific presence.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        symphony_status: Symphony-specific status enum.</span>
 <span class="sd">        category: Presence category.</span>
 <span class="sd">        timestamp: When the presence was last updated.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">symphony_status</span><span class="p">:</span> <span class="n">SymphonyPresenceStatus</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Symphony-specific status.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Symphony-specific status."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">category</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Presence category.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Presence category."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the presence was last updated (epoch ms).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the presence was last updated (epoch ms)."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">generic_status</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PresenceStatus</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert Symphony status to generic status.</span>
+<span class="w">        </span><span class="sd">"""Convert Symphony status to generic status.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            PresenceStatus: The generic presence status.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">status_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">AVAILABLE</span><span class="p">:</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span>
             <span class="n">SymphonyPresenceStatus</span><span class="o">.</span><span class="n">BUSY</span><span class="p">:</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">DND</span><span class="p">,</span>

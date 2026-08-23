@@ -253,45 +253,45 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.embed</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Embed model for chatom.</span>
+<span></span><span class="sd">"""Embed model for chatom.</span>
 
 <span class="sd">This module provides the Embed class for rich message embeds.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Embed&quot;</span><span class="p">,</span> <span class="s2">&quot;EmbedAuthor&quot;</span><span class="p">,</span> <span class="s2">&quot;EmbedField&quot;</span><span class="p">,</span> <span class="s2">&quot;EmbedFooter&quot;</span><span class="p">,</span> <span class="s2">&quot;EmbedMedia&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Embed"</span><span class="p">,</span> <span class="s2">"EmbedAuthor"</span><span class="p">,</span> <span class="s2">"EmbedField"</span><span class="p">,</span> <span class="s2">"EmbedFooter"</span><span class="p">,</span> <span class="s2">"EmbedMedia"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="EmbedMedia">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.embed.EmbedMedia">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmbedMedia</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Media (image/video/thumbnail) within an embed.</span>
+<span class="w">    </span><span class="sd">"""Media (image/video/thumbnail) within an embed.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        url: URL of the media.</span>
 <span class="sd">        proxy_url: Proxy URL of the media.</span>
 <span class="sd">        width: Width in pixels.</span>
 <span class="sd">        height: Height in pixels.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL of the media.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL of the media."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">proxy_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Proxy URL of the media.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Proxy URL of the media."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Width in pixels.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Width in pixels."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Height in pixels.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Height in pixels."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -299,25 +299,25 @@
 <div class="viewcode-block" id="EmbedAuthor">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.embed.EmbedAuthor">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmbedAuthor</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Author information for an embed.</span>
+<span class="w">    </span><span class="sd">"""Author information for an embed.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Name of the author.</span>
 <span class="sd">        url: URL for the author link.</span>
-<span class="sd">        icon_url: URL for the author&#39;s icon.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        icon_url: URL for the author's icon.</span>
+<span class="sd">    """</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the author.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Name of the author."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL for the author link.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL for the author link."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">icon_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL for the author&#39;s icon.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL for the author's icon."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -325,20 +325,20 @@
 <div class="viewcode-block" id="EmbedFooter">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.embed.EmbedFooter">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmbedFooter</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Footer information for an embed.</span>
+<span class="w">    </span><span class="sd">"""Footer information for an embed.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        text: Footer text.</span>
 <span class="sd">        icon_url: URL for the footer icon.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Footer text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Footer text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">icon_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL for the footer icon.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL for the footer icon."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -346,25 +346,25 @@
 <div class="viewcode-block" id="EmbedField">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.embed.EmbedField">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">EmbedField</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A field within an embed.</span>
+<span class="w">    </span><span class="sd">"""A field within an embed.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Field name/title.</span>
 <span class="sd">        value: Field value/content.</span>
 <span class="sd">        inline: Whether to display inline with other fields.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Field name/title.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Field name/title."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Field value/content.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Field value/content."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to display inline with other fields.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether to display inline with other fields."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -372,7 +372,7 @@
 <div class="viewcode-block" id="Embed">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.embed.Embed">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Embed</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rich embed for messages.</span>
+<span class="w">    </span><span class="sd">"""Rich embed for messages.</span>
 
 <span class="sd">    Supports images, fields, authors, footers, and more.</span>
 <span class="sd">    Compatible with Discord embeds and similar rich content systems.</span>
@@ -389,57 +389,57 @@
 <span class="sd">        image: Main image.</span>
 <span class="sd">        video: Video content.</span>
 <span class="sd">        fields: List of embed fields.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Title of the embed.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Title of the embed."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Description text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Description text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL the title links to.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL the title links to."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">color</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Color of the embed sidebar (as hex integer).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Color of the embed sidebar (as hex integer)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Timestamp to display.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Timestamp to display."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">author</span><span class="p">:</span> <span class="n">EmbedAuthor</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Author information.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Author information."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">footer</span><span class="p">:</span> <span class="n">EmbedFooter</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Footer information.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Footer information."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">thumbnail</span><span class="p">:</span> <span class="n">EmbedMedia</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Thumbnail image.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Thumbnail image."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">EmbedMedia</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Main image.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Main image."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">video</span><span class="p">:</span> <span class="n">EmbedMedia</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Video content.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Video content."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">fields</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">EmbedField</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of embed fields.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of embed fields."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Embed.add_field">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.embed.Embed.add_field">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Embed&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a field to the embed.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inline</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Embed"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a field to the embed.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: Field name.</span>
@@ -448,7 +448,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for method chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EmbedField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="n">inline</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 </div>

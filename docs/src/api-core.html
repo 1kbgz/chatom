@@ -851,7 +851,7 @@ by the backend (looking up or creating the DM channel).</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm_channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">dm_to</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">dm_channel</span><span class="p">,</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">dm_channel</span><span class="p">,</span> <span class="s2">"Hello!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -872,7 +872,7 @@ by the backend (looking up or creating the group DM).</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">group</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">group_dm_to</span><span class="p">([</span><span class="n">user1</span><span class="p">,</span> <span class="n">user2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">&quot;Hello everyone!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s2">"Hello everyone!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1670,9 +1670,9 @@ parsed by the backend, use the <cite>mentions</cite> property instead.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hey &lt;@U123&gt; and &lt;@U456&gt;!&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"Hey &lt;@U123&gt; and &lt;@U456&gt;!"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span><span class="o">.</span><span class="n">get_mentioned_user_ids</span><span class="p">()</span>
-<span class="go">[&#39;U123&#39;, &#39;U456&#39;]</span>
+<span class="go">['U123', 'U456']</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1692,9 +1692,9 @@ format and returns a list of channel IDs that were referenced.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Join &lt;#C123&gt; and &lt;#C456&gt;!&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"Join &lt;#C123&gt; and &lt;#C456&gt;!"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span><span class="o">.</span><span class="n">get_mentioned_channel_ids</span><span class="p">()</span>
-<span class="go">[&#39;C123&#39;, &#39;C456&#39;]</span>
+<span class="go">['C123', 'C456']</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1738,10 +1738,10 @@ preserving formatting based on the backend’s format.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello **world**&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;discord&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"Hello **world**"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"discord"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">formatted</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">to_formatted</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">formatted</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span>
-<span class="go">&#39;Hello *world*&#39;</span>
+<span class="go">'Hello *world*'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1769,10 +1769,10 @@ target backend and creates a Message instance.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom.format</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessageBuilder</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">fm</span> <span class="o">=</span> <span class="n">MessageBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot; world&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">from_formatted</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fm</span> <span class="o">=</span> <span class="n">MessageBuilder</span><span class="p">()</span><span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">"Hello"</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">" world"</span><span class="p">)</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">from_formatted</span><span class="p">(</span><span class="n">fm</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span><span class="o">.</span><span class="n">content</span>
-<span class="go">&#39;*Hello* world&#39;</span>
+<span class="go">'*Hello* world'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1795,9 +1795,9 @@ for the target backend’s format.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">DiscordMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello **world**&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
-<span class="go">&#39;Hello *world*&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">DiscordMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"Hello **world**"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"slack"</span><span class="p">)</span>
+<span class="go">'Hello *world*'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1821,7 +1821,7 @@ list (user IDs as strings).</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bot_user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyBot&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bot_user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"MyBot"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">is_message_to_user</span><span class="p">(</span><span class="n">bot_user</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="c1"># This message mentions the bot</span>
 <span class="gp">... </span>    <span class="k">await</span> <span class="n">handle_command</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -1889,7 +1889,7 @@ set as the reply_to reference.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_reply</span><span class="p">(</span><span class="s2">&quot;Thanks for letting me know!&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_reply</span><span class="p">(</span><span class="s2">"Thanks for letting me know!"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span><span class="o">.</span><span class="n">reply_to</span> <span class="ow">is</span> <span class="n">message</span>
 <span class="go">True</span>
 </pre></div>
@@ -1914,7 +1914,7 @@ in that thread. Otherwise, a new thread is started on this message.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_thread_reply</span><span class="p">(</span><span class="s2">&quot;Following up on this...&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_thread_reply</span><span class="p">(</span><span class="s2">"Following up on this..."</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span><span class="o">.</span><span class="n">thread</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="go">True</span>
 </pre></div>
@@ -1952,8 +1952,8 @@ use a plain reply reference.</p></li>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="s2">&quot;thanks!&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">slack</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="s2">&quot;ack&quot;</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">slack</span><span class="p">,</span> <span class="n">in_thread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="s2">"thanks!"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">slack</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="s2">"ack"</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">slack</span><span class="p">,</span> <span class="n">in_thread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1976,7 +1976,7 @@ be resolved by the backend when sent.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_dm_to_author</span><span class="p">(</span><span class="s2">&quot;I&#39;ll follow up privately.&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_dm_to_author</span><span class="p">(</span><span class="s2">"I'll follow up privately."</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dm</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span>
 <span class="go">True</span>
 </pre></div>
@@ -2026,8 +2026,8 @@ followed by the reply content.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quote</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_quote_reply</span><span class="p">(</span><span class="s2">&quot;I agree with this point!&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="s2">&quot;&gt; &quot;</span> <span class="ow">in</span> <span class="n">quote</span><span class="o">.</span><span class="n">content</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">quote</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">as_quote_reply</span><span class="p">(</span><span class="s2">"I agree with this point!"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s2">"&gt; "</span> <span class="ow">in</span> <span class="n">quote</span><span class="o">.</span><span class="n">content</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -2046,9 +2046,9 @@ followed by the reply content.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ctx</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">reply_context</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">new_msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">],</span>
-<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;My reply&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">reply_to</span><span class="o">=</span><span class="n">ctx</span><span class="p">[</span><span class="s2">&quot;message&quot;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="n">ctx</span><span class="p">[</span><span class="s2">"channel"</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="s2">"My reply"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">reply_to</span><span class="o">=</span><span class="n">ctx</span><span class="p">[</span><span class="s2">"message"</span><span class="p">],</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2928,7 +2928,7 @@ and with what emoji.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Handle a reaction event in a bot</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_reaction</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">ReactionEvent</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">event_type</span> <span class="o">==</span> <span class="n">ReactionEventType</span><span class="o">.</span><span class="n">ADDED</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> added </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">emoji</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"User </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2"> added </span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">emoji</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py attribute pydantic_field">
@@ -3843,9 +3843,9 @@ base chatom types and backend-specific types. It enables:</p>
 <dt>Example usage:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base.conversion</span><span class="w"> </span><span class="kn">import</span> <span class="n">can_promote</span><span class="p">,</span> <span class="n">promote</span><span class="p">,</span> <span class="n">demote</span>
 <span class="gp">&gt;&gt;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Test&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">can_promote</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">discord_user</span> <span class="o">=</span> <span class="n">promote</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Test"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">can_promote</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">discord_user</span> <span class="o">=</span> <span class="n">promote</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">base_user</span> <span class="o">=</span> <span class="n">demote</span><span class="p">(</span><span class="n">discord_user</span><span class="p">)</span>
 </pre></div>
@@ -4223,9 +4223,9 @@ only the channel IDs as strings.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">extract_channel_ids</span><span class="p">(</span><span class="s2">&quot;Join &lt;#C123&gt; and &lt;#C456&gt;!&quot;</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">extract_channel_ids</span><span class="p">(</span><span class="s2">"Join &lt;#C123&gt; and &lt;#C456&gt;!"</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span>
-<span class="go">[&#39;C123&#39;, &#39;C456&#39;]</span>
+<span class="go">['C123', 'C456']</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4251,9 +4251,9 @@ only the user IDs as strings.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">extract_mention_ids</span><span class="p">(</span><span class="s2">&quot;Hey &lt;@U123&gt; and &lt;@U456&gt;!&quot;</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="n">extract_mention_ids</span><span class="p">(</span><span class="s2">"Hey &lt;@U123&gt; and &lt;@U456&gt;!"</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span>
-<span class="go">[&#39;U123&#39;, &#39;U456&#39;]</span>
+<span class="go">['U123', 'U456']</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4283,9 +4283,9 @@ for platform-specific channel types.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">mention_channel</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;456&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"456"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mention_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
-<span class="go">&#39;#general&#39;</span>
+<span class="go">'#general'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4310,9 +4310,9 @@ for platform-specific channel types.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">mention_channel_for_backend</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
-<span class="go">&#39;&lt;#C123&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">)</span>
+<span class="go">'&lt;#C123&gt;'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4344,9 +4344,9 @@ for platform-specific user types.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">mention_user</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"John"</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="go">&#39;John&#39;</span>
+<span class="go">'John'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4373,13 +4373,13 @@ backend-specific mention format based on the backend parameter.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span><span class="p">,</span> <span class="n">mention_user_for_backend</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
-<span class="go">&#39;&lt;@123&gt;&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">)</span>
-<span class="go">&#39;&lt;@123&gt;&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;symphony&quot;</span><span class="p">)</span>
-<span class="go">&#39;&lt;mention uid=&quot;123&quot;/&gt;&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"John"</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">"john@example.com"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">)</span>
+<span class="go">'&lt;@123&gt;'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">)</span>
+<span class="go">'&lt;@123&gt;'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"symphony"</span><span class="p">)</span>
+<span class="go">'&lt;mention uid="123"/&gt;'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4407,15 +4407,15 @@ the channel IDs and positions of mentions in the content.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parse Slack channel mentions</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_channel_mentions</span><span class="p">(</span><span class="s2">&quot;Join &lt;#C123&gt;!&quot;</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_channel_mentions</span><span class="p">(</span><span class="s2">"Join &lt;#C123&gt;!"</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">channel_id</span>
-<span class="go">&#39;C123&#39;</span>
+<span class="go">'C123'</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parse Discord channel mentions</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_channel_mentions</span><span class="p">(</span><span class="s2">&quot;Check &lt;#987654321&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_channel_mentions</span><span class="p">(</span><span class="s2">"Check &lt;#987654321&gt;"</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">channel_id</span>
-<span class="go">&#39;987654321&#39;</span>
+<span class="go">'987654321'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4443,21 +4443,21 @@ the user IDs and positions of mentions in the content.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parse Slack mentions</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="s2">&quot;Hey &lt;@U123&gt;, check this!&quot;</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="s2">"Hey &lt;@U123&gt;, check this!"</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">user_id</span>
-<span class="go">&#39;U123&#39;</span>
+<span class="go">'U123'</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parse Discord mentions</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="s2">&quot;&lt;@123456789&gt; Hello!&quot;</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="s2">"&lt;@123456789&gt; Hello!"</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">user_id</span>
-<span class="go">&#39;123456789&#39;</span>
+<span class="go">'123456789'</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Parse Symphony mentions</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="s1">&#39;&lt;mention uid=&quot;123&quot;/&gt;!&#39;</span><span class="p">,</span> <span class="s2">&quot;symphony&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span> <span class="o">=</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="s1">'&lt;mention uid="123"/&gt;!'</span><span class="p">,</span> <span class="s2">"symphony"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mentions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">user_id</span>
-<span class="go">&#39;123&#39;</span>
+<span class="go">'123'</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -4485,7 +4485,7 @@ channel membership, or any other criteria.</p>
 <span class="gp">... </span>            <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span><span class="n">authorized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="n">AuthorizationResult</span><span class="p">(</span>
 <span class="gp">... </span>            <span class="n">authorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="n">reason</span><span class="o">=</span><span class="s2">&quot;Not an admin user&quot;</span>
+<span class="gp">... </span>            <span class="n">reason</span><span class="o">=</span><span class="s2">"Not an admin user"</span>
 <span class="gp">... </span>        <span class="p">)</span>
 </pre></div>
 </div>
@@ -4666,14 +4666,14 @@ If False, user needs any one permission.</p></li>
 - Default behavior (allow or deny)</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">SimpleAuthorizationPolicy</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">admin_users</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="s2">&quot;U456&quot;</span><span class="p">],</span>  <span class="c1"># These users can do anything</span>
+<span class="gp">... </span>    <span class="n">admin_users</span><span class="o">=</span><span class="p">[</span><span class="s2">"U123"</span><span class="p">,</span> <span class="s2">"U456"</span><span class="p">],</span>  <span class="c1"># These users can do anything</span>
 <span class="gp">... </span>    <span class="n">default_authorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Deny by default</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Allow specific users to use commands</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span><span class="o">.</span><span class="n">allow_permission</span><span class="p">(</span><span class="s2">&quot;execute_commands&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;U789&quot;</span><span class="p">,</span> <span class="s2">&quot;U999&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span><span class="o">.</span><span class="n">allow_permission</span><span class="p">(</span><span class="s2">"execute_commands"</span><span class="p">,</span> <span class="p">[</span><span class="s2">"U789"</span><span class="p">,</span> <span class="s2">"U999"</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check authorization</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">policy</span><span class="o">.</span><span class="n">is_authorized</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;execute_commands&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">policy</span><span class="o">.</span><span class="n">is_authorized</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"execute_commands"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -4771,7 +4771,7 @@ If False, user needs any one permission.</p></li>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">SimpleAuthorizationPolicy</span><span class="p">(</span><span class="n">admin_users</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;U123&quot;</span><span class="p">])</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">policy</span> <span class="o">=</span> <span class="n">SimpleAuthorizationPolicy</span><span class="p">(</span><span class="n">admin_users</span><span class="o">=</span><span class="p">[</span><span class="s2">"U123"</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="k">await</span> <span class="n">is_user_authorized</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">Permission</span><span class="o">.</span><span class="n">ADMIN_COMMANDS</span><span class="p">,</span> <span class="n">policy</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">await</span> <span class="n">handle_admin_command</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
@@ -4793,9 +4793,9 @@ for looking up users and channels.</p>
 lookup capabilities like fetching from an API.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span> <span class="o">=</span> <span class="n">ChannelRegistry</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
-<span class="go">Channel(id=&#39;C123&#39;, name=&#39;general&#39;, ...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">)</span>
+<span class="go">Channel(id='C123', name='general', ...)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -5047,9 +5047,9 @@ not found and an ID was provided.</p>
 lookup capabilities like fetching from an API.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span> <span class="o">=</span> <span class="n">UserRegistry</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">&quot;123&quot;</span><span class="p">)</span>
-<span class="go">User(id=&#39;123&#39;, name=&#39;John&#39;, ...)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"John"</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">"john@example.com"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">registry</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">"123"</span><span class="p">)</span>
+<span class="go">User(id='123', name='John', ...)</span>
 </pre></div>
 </div>
 <dl class="py method">
@@ -5306,8 +5306,8 @@ lookup capabilities like fetching from an API.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">get_secret</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">)</span>
-<span class="go">&quot;my-secret-password&quot;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">get_secret</span><span class="p">(</span><span class="s2">"password"</span><span class="p">)</span>
+<span class="go">"my-secret-password"</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -5327,7 +5327,7 @@ fields are set. Works with strings, SecretStr, and other types.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">has_field</span><span class="p">(</span><span class="s2">&quot;api_token&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">config</span><span class="o">.</span><span class="n">has_field</span><span class="p">(</span><span class="s2">"api_token"</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
@@ -5368,7 +5368,7 @@ fields are set. Works with strings, SecretStr, and other types.</p>
 Backends can be registered via entry points or programmatically.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Get a registered backend class</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">SlackBackend</span> <span class="o">=</span> <span class="n">BackendRegistry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SlackBackend</span> <span class="o">=</span> <span class="n">BackendRegistry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"slack"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span> <span class="o">=</span> <span class="n">SlackBackend</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># List all available backends</span>
@@ -5395,7 +5395,7 @@ backend_class.name.</p></li>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@BackendRegistry</span><span class="o">.</span><span class="n">register</span>
 <span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">MyBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_backend&quot;</span>
+<span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">"my_backend"</span>
 <span class="gp">... </span>    <span class="o">...</span>
 </pre></div>
 </div>
@@ -5551,9 +5551,9 @@ backend registry.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nd">@register_backend</span>
 <span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">MyBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_backend&quot;</span>
+<span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">"my_backend"</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nd">@register_backend</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;custom_name&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@register_backend</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"custom_name"</span><span class="p">)</span>
 <span class="gp">... </span><span class="k">class</span><span class="w"> </span><span class="nc">AnotherBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="o">...</span>
 </pre></div>
@@ -5621,8 +5621,8 @@ or by calling register_backend().</p>
 
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span><span class="w"> </span><span class="nc">MyBackend</span><span class="p">(</span><span class="n">BackendBase</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;my_backend&quot;</span>
-<span class="gp">... </span>    <span class="n">display_name</span> <span class="o">=</span> <span class="s2">&quot;My Backend&quot;</span>
+<span class="gp">... </span>    <span class="n">name</span> <span class="o">=</span> <span class="s2">"my_backend"</span>
+<span class="gp">... </span>    <span class="n">display_name</span> <span class="o">=</span> <span class="s2">"My Backend"</span>
 <span class="gp">... </span>    <span class="nb">format</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span>
 <span class="gp">...</span>
 <span class="gp">... </span>    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -5692,7 +5692,7 @@ or by calling register_backend().</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span> <span class="o">=</span> <span class="n">MyBackend</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>  <span class="c1"># Calls connect() synchronously</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">lookup_user</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">lookup_user</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -5796,10 +5796,10 @@ efficient method available for the platform.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># All of these work:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="s2">&quot;U123456&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123456&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;John Doe&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="s2">"U123456"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123456"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"John Doe"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">"john@example.com"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">existing_user</span><span class="p">)</span>  <span class="c1"># refresh</span>
 </pre></div>
 </div>
@@ -5868,9 +5868,9 @@ efficient method available for the platform.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># All of these work:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="s2">&quot;C123456&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123456&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="s2">"C123456"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123456"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">existing_channel</span><span class="p">)</span>  <span class="c1"># refresh</span>
 </pre></div>
 </div>
@@ -5941,7 +5941,7 @@ Otherwise, fetches the full channel data from the backend.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Channel from config might only have name</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">incomplete_channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">incomplete_channel</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">full_channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">resolve_channel</span><span class="p">(</span><span class="n">incomplete_channel</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">full_channel</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># Now populated</span>
 </pre></div>
@@ -6028,9 +6028,9 @@ building user interfaces.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># All of these work:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel_members</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -6075,9 +6075,9 @@ that needs to be filled in before sending.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="n">Message</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">author</span><span class="o">=</span><span class="n">User</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="s2">"Hello"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">author</span><span class="o">=</span><span class="n">User</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">"john@example.com"</span><span class="p">),</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">resolved</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">resolve_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">resolved</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>  <span class="c1"># Now populated</span>
@@ -6115,11 +6115,11 @@ cover the whole range without dropping messages (subject to
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Most recent 50:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msgs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msgs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Everything in the last 30 minutes:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">since</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">minutes</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msgs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">since</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msgs</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">after</span><span class="o">=</span><span class="n">since</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6149,11 +6149,11 @@ has_file, date range).</p></li>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Search all channels</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">&quot;important meeting&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">"important meeting"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Search specific channel</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">&quot;bug fix&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">"bug fix"</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># With filters</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">&quot;report&quot;</span><span class="p">,</span> <span class="n">from_user</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">"report"</span><span class="p">,</span> <span class="n">from_user</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6210,12 +6210,12 @@ attachments, <code class="docutils literal notranslate"><span class="pre">thread
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># All of these work:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">),</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">),</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>  <span class="c1"># Resolves</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="s2">"Hello!"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">),</span> <span class="s2">"Hello!"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">),</span> <span class="s2">"Hello!"</span><span class="p">)</span>  <span class="c1"># Resolves</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Thread and reply:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="s2">&quot;In thread&quot;</span><span class="p">,</span> <span class="n">thread</span><span class="o">=</span><span class="n">parent_msg</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="s2">&quot;Replying&quot;</span><span class="p">,</span> <span class="n">reply_to</span><span class="o">=</span><span class="n">parent_msg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="s2">"In thread"</span><span class="p">,</span> <span class="n">thread</span><span class="o">=</span><span class="n">parent_msg</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="s2">"Replying"</span><span class="p">,</span> <span class="n">reply_to</span><span class="o">=</span><span class="n">parent_msg</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6242,9 +6242,9 @@ attachments, <code class="docutils literal notranslate"><span class="pre">thread
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Edit using Message object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">edited</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">edit_message</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;Updated content&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edited</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">edit_message</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">"Updated content"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Edit using IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">edited</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">edit_message</span><span class="p">(</span><span class="s2">&quot;M123&quot;</span><span class="p">,</span> <span class="s2">&quot;Updated&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">edited</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">edit_message</span><span class="p">(</span><span class="s2">"M123"</span><span class="p">,</span> <span class="s2">"Updated"</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6333,7 +6333,7 @@ resolve the download.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Delete using Message object</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Delete using IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="s2">&quot;M123&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="s2">"M123"</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6369,7 +6369,7 @@ attachments).</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">on_message</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="n">Message</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span>
 <span class="gp">... </span>        <span class="n">message</span><span class="p">,</span>
-<span class="gp">... </span>        <span class="s2">&quot;Thanks for your message!&quot;</span>
+<span class="gp">... </span>        <span class="s2">"Thanks for your message!"</span>
 <span class="gp">... </span>    <span class="p">)</span>
 </pre></div>
 </div>
@@ -6412,20 +6412,20 @@ thread_id for threading).</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Forward a message to another channel</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">forwarded</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">forward_message</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">incoming_message</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">to_channel</span><span class="o">=</span><span class="s2">&quot;C456789&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">to_channel</span><span class="o">=</span><span class="s2">"C456789"</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Forward with custom prefix</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">forwarded</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">forward_message</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">incoming_message</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">to_channel</span><span class="o">=</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;alerts&quot;</span><span class="p">),</span>
-<span class="gp">... </span>    <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;⚠️ Escalated: &quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">to_channel</span><span class="o">=</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"alerts"</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">prefix</span><span class="o">=</span><span class="s2">"⚠️ Escalated: "</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Forward without attribution</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">forwarded</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">forward_message</span><span class="p">(</span>
 <span class="gp">... </span>    <span class="n">incoming_message</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">to_channel</span><span class="o">=</span><span class="s2">&quot;C456789&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">to_channel</span><span class="o">=</span><span class="s2">"C456789"</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="n">include_attribution</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
@@ -6461,9 +6461,9 @@ messages from all channels the bot has access to.</p></li>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">listen</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="s2">&quot;!ping&quot;</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;Pong!&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="s2">"!ping"</span> <span class="ow">in</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"Pong!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6499,16 +6499,16 @@ the stream started. Only yields new messages.</p></li>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_messages</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Received: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Received: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">mentions_bot</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"Hello!"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Filter to a specific channel</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_messages</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_messages</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">await</span> <span class="n">process_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Filter using Channel object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_messages</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">)):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_messages</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">)):</span>
 <span class="gp">... </span>    <span class="k">await</span> <span class="n">process_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -6538,7 +6538,7 @@ leave this as <code class="docutils literal notranslate"><span class="pre">NotIm
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">stream_interactions</span><span class="p">():</span>
-<span class="gp">... </span>    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">action_id</span> <span class="o">==</span> <span class="s2">&quot;confirm&quot;</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">action_id</span> <span class="o">==</span> <span class="s2">"confirm"</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">await</span> <span class="n">handle_confirm</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -6565,8 +6565,8 @@ easier iteration.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">read_messages</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">read_messages</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6596,8 +6596,8 @@ one at a time. Threads are platform-specific:
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">read_thread</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="s2">&quot;1234567890.123456&quot;</span><span class="p">):</span>
-<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">read_thread</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">,</span> <span class="s2">"1234567890.123456"</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6632,11 +6632,11 @@ a message), use reply_in_thread() instead.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">thread</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_thread</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">message_id</span><span class="o">=</span><span class="s2">&quot;M456&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Discussion Thread&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">message_id</span><span class="o">=</span><span class="s2">"M456"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s2">"Discussion Thread"</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;First message in thread!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">thread</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">"First message in thread!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6670,9 +6670,9 @@ which handles the thread context automatically.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_to_message</span><span class="p">(</span>
-<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">message_id</span><span class="o">=</span><span class="s2">&quot;M456&quot;</span><span class="p">,</span>
-<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Thanks for your message!&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">message_id</span><span class="o">=</span><span class="s2">"M456"</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">content</span><span class="o">=</span><span class="s2">"Thanks for your message!"</span><span class="p">,</span>
 <span class="gp">... </span><span class="p">)</span>
 </pre></div>
 </div>
@@ -6695,7 +6695,7 @@ messages mention the bot.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bot</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_bot_info</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Connected as: </span><span class="si">{</span><span class="n">bot</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">bot</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Connected as: </span><span class="si">{</span><span class="n">bot</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">bot</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6735,9 +6735,9 @@ messages mention the bot.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># All of these work:</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="s2">&quot;U123&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">))</span>  <span class="c1"># Resolves</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="s2">"U123"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">"john@example.com"</span><span class="p">))</span>  <span class="c1"># Resolves</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6763,7 +6763,7 @@ stop_presence_heartbeat().</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Start keeping the bot online</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">start_presence_heartbeat</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s2">&quot;online&quot;</span><span class="p">,</span> <span class="s2">&quot;Ready to help!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">start_presence_heartbeat</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="s2">"online"</span><span class="p">,</span> <span class="s2">"Ready to help!"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Later, stop the heartbeat</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">stop_presence_heartbeat</span><span class="p">()</span>
@@ -6815,9 +6815,9 @@ start_presence_heartbeat().</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># React using Message object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;👍&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">"👍"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># React using IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="s2">&quot;M123&quot;</span><span class="p">,</span> <span class="s2">&quot;👍&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="s2">"M123"</span><span class="p">,</span> <span class="s2">"👍"</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6840,9 +6840,9 @@ start_presence_heartbeat().</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Remove reaction using Message object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;👍&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">"👍"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Remove reaction using IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="s2">&quot;M123&quot;</span><span class="p">,</span> <span class="s2">&quot;👍&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="s2">"M123"</span><span class="p">,</span> <span class="s2">"👍"</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6867,11 +6867,11 @@ this may create a group DM/MIM depending on the platform.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create DM with user IDs</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dm_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_dm</span><span class="p">([</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="s2">&quot;U456&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dm_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_dm</span><span class="p">([</span><span class="s2">"U123"</span><span class="p">,</span> <span class="s2">"U456"</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create DM with User objects</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dm_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_dm</span><span class="p">([</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dm_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_dm</span><span class="p">([</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create DM with incomplete User (will resolve)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">dm_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_dm</span><span class="p">([</span><span class="n">User</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;john@example.com&quot;</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dm_id</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">create_dm</span><span class="p">([</span><span class="n">User</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">"john@example.com"</span><span class="p">)])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6922,11 +6922,11 @@ await backend.send_message(dm_id, content)</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Send DM using user ID</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="s2">&quot;U123&quot;</span><span class="p">,</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="s2">"U123"</span><span class="p">,</span> <span class="s2">"Hello!"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Send DM using User object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"Hello!"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># With additional options</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;Check this!&quot;</span><span class="p">,</span> <span class="n">thread_id</span><span class="o">=</span><span class="s2">&quot;T123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">msg</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"Check this!"</span><span class="p">,</span> <span class="n">thread_id</span><span class="o">=</span><span class="s2">"T123"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -6998,9 +6998,9 @@ fits your platform (room for Symphony/Matrix, channel for Slack/Discord).</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Join using channel ID</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">join_channel</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">join_channel</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Join using Channel object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">join_channel</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">join_channel</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7040,9 +7040,9 @@ fits your platform.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Leave using channel ID</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">leave_channel</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">leave_channel</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Leave using Channel object</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">leave_channel</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;general&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">leave_channel</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"general"</span><span class="p">))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7083,9 +7083,9 @@ this may be formatted as italicized text or similar.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Send action to channel</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_action</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;#general&quot;</span><span class="p">),</span> <span class="s2">&quot;waves hello&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_action</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"#general"</span><span class="p">),</span> <span class="s2">"waves hello"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Send action to user</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_action</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">),</span> <span class="s2">&quot;waves hello&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_action</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">),</span> <span class="s2">"waves hello"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7109,9 +7109,9 @@ On IRC this is a NOTICE. Other platforms may not distinguish notices.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Send notice to channel</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_notice</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;#general&quot;</span><span class="p">),</span> <span class="s2">&quot;Server maintenance&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_notice</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"#general"</span><span class="p">),</span> <span class="s2">"Server maintenance"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Send notice to user</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_notice</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;U123&quot;</span><span class="p">),</span> <span class="s2">&quot;You have been warned&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_notice</span><span class="p">(</span><span class="n">User</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"U123"</span><span class="p">),</span> <span class="s2">"You have been warned"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7161,11 +7161,11 @@ channel reference.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># From channel ID</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">link</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">channel_link</span><span class="p">(</span><span class="s2">&quot;C123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">link</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">channel_link</span><span class="p">(</span><span class="s2">"C123"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># From Channel object</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">link</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">channel_link</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use in message</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Join us in </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">channel_link</span><span class="p">(</span><span class="s1">&#39;general&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"Join us in </span><span class="si">{</span><span class="n">backend</span><span class="o">.</span><span class="n">channel_link</span><span class="p">(</span><span class="s1">'general'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -7223,10 +7223,10 @@ to dynamically wrap any async method on the backend.</p>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span> <span class="o">=</span> <span class="n">MyBackend</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Call async method synchronously</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">lookup_user</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;123&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">user</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">lookup_user</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"123"</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Any async method can be called:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel_id</span><span class="o">=</span><span class="s2">&quot;C123&quot;</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Hello&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel_id</span><span class="o">=</span><span class="s2">"C123"</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="s2">"Hello"</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="py method">

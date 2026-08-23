@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.telegram.testing</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Mock Telegram backend for testing.</span>
+<span></span><span class="sd">"""Mock Telegram backend for testing.</span>
 
 <span class="sd">This module provides a mock implementation of the Telegram backend</span>
 <span class="sd">for use in testing without requiring an actual Telegram connection.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">UTC</span><span class="p">,</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -272,25 +272,25 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.presence</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelegramPresence</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelegramUser</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;MockTelegramBackend&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"MockTelegramBackend"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="MockTelegramBackend">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MockTelegramBackend</span><span class="p">(</span><span class="n">TelegramBackend</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mock Telegram backend for testing.</span>
+<span class="w">    </span><span class="sd">"""Mock Telegram backend for testing.</span>
 
 <span class="sd">    Stores all data in memory and provides methods to set up</span>
 <span class="sd">    mock data for tests.</span>
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; backend = MockTelegramBackend()</span>
-<span class="sd">        &gt;&gt;&gt; backend.add_mock_user(&quot;123&quot;, &quot;Alice&quot;, &quot;alice&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; backend.add_mock_channel(&quot;-100456&quot;, &quot;general&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; backend.add_mock_user("123", "Alice", "alice")</span>
+<span class="sd">        &gt;&gt;&gt; backend.add_mock_channel("-100456", "general")</span>
 <span class="sd">        &gt;&gt;&gt; await backend.connect()</span>
-<span class="sd">        &gt;&gt;&gt; user = await backend.fetch_user(&quot;123&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; assert user.name == &quot;Alice&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; user = await backend.fetch_user("123")</span>
+<span class="sd">        &gt;&gt;&gt; assert user.name == "Alice"</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Mock data stores</span>
     <span class="n">_mock_users</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TelegramUser</span><span class="p">]</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
@@ -307,7 +307,7 @@
     <span class="n">_message_counter</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">PrivateAttr</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">data</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the mock backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Initialize the mock backend."""</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_users</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_channels</span> <span class="o">=</span> <span class="p">{}</span>
@@ -328,37 +328,37 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">first_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">last_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">is_bot</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">is_premium</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-        <span class="n">language_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">language_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TelegramUser</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock user for testing.</span>
+<span class="w">        </span><span class="sd">"""Add a mock user for testing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The user ID.</span>
-<span class="sd">            name: The user&#39;s display name.</span>
+<span class="sd">            name: The user's display name.</span>
 <span class="sd">            handle: The username (without @).</span>
 <span class="sd">            first_name: First name.</span>
 <span class="sd">            last_name: Last name.</span>
 <span class="sd">            username: Telegram username (defaults to handle).</span>
 <span class="sd">            is_bot: Whether the user is a bot.</span>
 <span class="sd">            is_premium: Whether the user has Telegram Premium.</span>
-<span class="sd">            language_code: User&#39;s language code.</span>
+<span class="sd">            language_code: User's language code.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The created mock user.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">TelegramUser</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
             <span class="n">handle</span><span class="o">=</span><span class="n">handle</span> <span class="ow">or</span> <span class="n">username</span><span class="p">,</span>
-            <span class="n">first_name</span><span class="o">=</span><span class="n">first_name</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">last_name</span><span class="o">=</span><span class="n">last_name</span> <span class="ow">or</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+            <span class="n">first_name</span><span class="o">=</span><span class="n">first_name</span> <span class="ow">or</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">name</span> <span class="k">else</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">last_name</span><span class="o">=</span><span class="n">last_name</span> <span class="ow">or</span> <span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">""</span><span class="p">),</span>
             <span class="n">username</span><span class="o">=</span><span class="n">username</span> <span class="ow">or</span> <span class="n">handle</span><span class="p">,</span>
             <span class="n">is_bot</span><span class="o">=</span><span class="n">is_bot</span><span class="p">,</span>
             <span class="n">is_premium</span><span class="o">=</span><span class="n">is_premium</span><span class="p">,</span>
@@ -375,19 +375,19 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">channel_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;supergroup&quot;</span><span class="p">,</span>
+        <span class="n">channel_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"supergroup"</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">topic</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">chat_type</span><span class="p">:</span> <span class="n">TelegramChatType</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">is_forum</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TelegramChannel</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock channel for testing.</span>
+<span class="w">        </span><span class="sd">"""Add a mock channel for testing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            id: The chat ID.</span>
 <span class="sd">            name: The chat name/title.</span>
-<span class="sd">            channel_type: Chat type string (&quot;private&quot;, &quot;group&quot;, &quot;supergroup&quot;, &quot;channel&quot;).</span>
+<span class="sd">            channel_type: Chat type string ("private", "group", "supergroup", "channel").</span>
 <span class="sd">            topic: The chat topic.</span>
 <span class="sd">            description: The chat description.</span>
 <span class="sd">            chat_type: TelegramChatType enum (overrides channel_type).</span>
@@ -395,13 +395,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The created mock channel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">chat_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">type_map</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;private&quot;</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">PRIVATE</span><span class="p">,</span>
-                <span class="s2">&quot;group&quot;</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">,</span>
-                <span class="s2">&quot;supergroup&quot;</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">SUPERGROUP</span><span class="p">,</span>
-                <span class="s2">&quot;channel&quot;</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span>
+                <span class="s2">"private"</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">PRIVATE</span><span class="p">,</span>
+                <span class="s2">"group"</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">GROUP</span><span class="p">,</span>
+                <span class="s2">"supergroup"</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">SUPERGROUP</span><span class="p">,</span>
+                <span class="s2">"channel"</span><span class="p">:</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">CHANNEL</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="n">chat_type</span> <span class="o">=</span> <span class="n">type_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel_type</span><span class="p">,</span> <span class="n">TelegramChatType</span><span class="o">.</span><span class="n">SUPERGROUP</span><span class="p">)</span>
 
@@ -430,11 +430,11 @@
         <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">edited</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock message for testing.</span>
+<span class="w">        </span><span class="sd">"""Add a mock message for testing.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel_id: The chat containing the message.</span>
-<span class="sd">            user_id: The author&#39;s user ID.</span>
+<span class="sd">            user_id: The author's user ID.</span>
 <span class="sd">            content: The message content.</span>
 <span class="sd">            message_id: Optional message ID (auto-generated if not provided).</span>
 <span class="sd">            timestamp: Message timestamp.</span>
@@ -442,7 +442,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The message ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">message_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span><span class="p">)</span>
@@ -470,9 +470,9 @@
         <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">last_seen_approximate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">last_seen_approximate</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TelegramPresence</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set mock presence for a user.</span>
+<span class="w">        </span><span class="sd">"""Set mock presence for a user.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            user_id: The user ID.</span>
@@ -481,7 +481,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The created mock presence.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">user</span> <span class="o">=</span> <span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
         <span class="n">presence</span> <span class="o">=</span> <span class="n">TelegramPresence</span><span class="p">(</span>
             <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
@@ -494,63 +494,63 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">sent_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">TelegramMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages sent through this backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all messages sent through this backend."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sent_messages</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">edited_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">TelegramMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages edited through this backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all messages edited through this backend."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edited_messages</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">deleted_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all message IDs deleted through this backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all message IDs deleted through this backend."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span>
 
 <div class="viewcode-block" id="MockTelegramBackend.get_sent_messages">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_sent_messages">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_sent_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">TelegramMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages sent through this backend (copy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all messages sent through this backend (copy)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sent_messages</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockTelegramBackend.get_edited_messages">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_edited_messages">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_edited_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">TelegramMessage</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages edited through this backend (copy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all messages edited through this backend (copy)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_edited_messages</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockTelegramBackend.get_deleted_messages">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_deleted_messages">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_deleted_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all messages deleted through this backend (copy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all messages deleted through this backend (copy)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockTelegramBackend.get_reactions">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_reactions">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all reactions added/removed through this backend (copy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all reactions added/removed through this backend (copy)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="MockTelegramBackend.get_presence_updates">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_presence_updates">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_presence_updates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all presence updates (copy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all presence updates (copy)."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_presence_updates</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">created_dms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get all DMs created through this backend.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get all DMs created through this backend."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_created_dms</span>
 
 <div class="viewcode-block" id="MockTelegramBackend.clear">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.clear">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all mock data and tracking stores.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Clear all mock data and tracking stores."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_users</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_channels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -569,16 +569,16 @@
 <div class="viewcode-block" id="MockTelegramBackend.connect">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.connect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mock connect - always succeeds.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Mock connect - always succeeds."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connected</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bot_user_id</span> <span class="o">=</span> <span class="s2">&quot;bot_user&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bot_user_name</span> <span class="o">=</span> <span class="s2">&quot;test_bot&quot;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bot_user_id</span> <span class="o">=</span> <span class="s2">"bot_user"</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bot_user_name</span> <span class="o">=</span> <span class="s2">"test_bot"</span></div>
 
 
 <div class="viewcode-block" id="MockTelegramBackend.disconnect">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.disconnect">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">disconnect</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Mock disconnect.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Mock disconnect."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connected</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bot_user_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_bot_user_name</span> <span class="o">=</span> <span class="kc">None</span></div>
@@ -595,10 +595,10 @@
         <span class="n">email</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">handle</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a mock user.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Fetch a mock user."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">TelegramUser</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">identifier</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifier</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">identifier</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">id</span><span class="p">:</span>
@@ -628,10 +628,10 @@
         <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a mock channel.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Fetch a mock channel."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">TelegramChannel</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">identifier</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">)</span> <span class="ow">and</span> <span class="n">identifier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">identifier</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">identifier</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">id</span><span class="p">:</span>
@@ -660,7 +660,7 @@
         <span class="n">before</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span> <span class="o">|</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">after</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span> <span class="o">|</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch mock messages from a channel.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Fetch mock messages from a channel."""</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
         <span class="n">messages</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">channel_id</span><span class="p">,</span> <span class="p">[])</span>
 
@@ -689,14 +689,14 @@
         <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TelegramMessage</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a mock message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Send a mock message."""</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
         <span class="c1"># Normalize thread / reply_to (matches production backend)</span>
-        <span class="n">thread_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_thread_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;thread&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">thread_val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;thread_id&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">thread_val</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;thread_id&quot;</span><span class="p">)</span>
-        <span class="n">reply_to_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_reply_to_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;reply_to&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">thread_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_thread_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">thread_val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">"thread_id"</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">thread_val</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread_id"</span><span class="p">)</span>
+        <span class="n">reply_to_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_reply_to_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"reply_to"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mi">1000000</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span><span class="p">)</span>
@@ -707,12 +707,12 @@
             <span class="n">message_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">message_id</span><span class="p">),</span>
             <span class="n">chat_id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">,</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;bot_user&quot;</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"bot_user"</span><span class="p">),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">TelegramChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">),</span>
             <span class="n">thread</span><span class="o">=</span><span class="n">Thread</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">thread_val</span><span class="p">)</span> <span class="k">if</span> <span class="n">thread_val</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">reply_to_id</span><span class="p">:</span>
-            <span class="n">message</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">&quot;reply_to_message_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reply_to_id</span>
+            <span class="n">message</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s2">"reply_to_message_id"</span><span class="p">]</span> <span class="o">=</span> <span class="n">reply_to_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sent_messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">message</span></div>
 
@@ -726,13 +726,13 @@
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TelegramMessage</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Edit a mock message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Edit a mock message."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="n">edited_msg</span> <span class="o">=</span> <span class="n">TelegramMessage</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="n">message_id</span><span class="p">,</span>
@@ -740,7 +740,7 @@
             <span class="n">message_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">message_id</span><span class="p">),</span>
             <span class="n">chat_id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">,</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;bot_user&quot;</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"bot_user"</span><span class="p">),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">TelegramChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">)</span> <span class="k">if</span> <span class="n">channel_id</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">is_edited</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
@@ -755,15 +755,15 @@
         <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete a mock message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Delete a mock message."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;channel_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span> <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deleted_messages</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"channel_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span> <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">})</span>
         <span class="k">if</span> <span class="n">channel_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_messages</span><span class="p">[</span><span class="n">channel_id</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">message_id</span><span class="p">]</span></div>
 
@@ -779,9 +779,9 @@
         <span class="n">prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TelegramMessage</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward a mock message.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Forward a mock message."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;forward_message requires a Message object, not just a message ID.&quot;</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"forward_message requires a Message object, not just a message ID."</span><span class="p">)</span>  <span class="c1"># noqa: TRY004</span>
 
         <span class="n">dest_channel_id</span> <span class="o">=</span> <span class="n">to_channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_channel</span><span class="p">)</span>
 
@@ -789,12 +789,12 @@
         <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
             <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">include_attribution</span><span class="p">:</span>
-            <span class="n">author_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">&quot;Unknown&quot;</span>
-            <span class="n">channel_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">&quot;unknown chat&quot;</span>
-            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;i&gt;Forwarded from </span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">&lt;/i&gt;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">author_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span> <span class="k">else</span> <span class="s2">"Unknown"</span>
+            <span class="n">channel_name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="s2">"unknown chat"</span>
+            <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;i&gt;Forwarded from </span><span class="si">{</span><span class="n">channel_name</span><span class="si">}</span><span class="s2"> by </span><span class="si">{</span><span class="n">author_name</span><span class="si">}</span><span class="s2">&lt;/i&gt;</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
         <span class="n">content_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
-        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content_parts</span><span class="p">)</span>
+        <span class="n">forwarded_content</span> <span class="o">=</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">content_parts</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">message_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mi">1000000</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_message_counter</span><span class="p">)</span>
@@ -805,7 +805,7 @@
             <span class="n">message_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">message_id</span><span class="p">),</span>
             <span class="n">chat_id</span><span class="o">=</span><span class="n">dest_channel_id</span><span class="p">,</span>
             <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">),</span>
-            <span class="n">author</span><span class="o">=</span><span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">&quot;bot_user&quot;</span><span class="p">),</span>
+            <span class="n">author</span><span class="o">=</span><span class="n">TelegramUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"bot_user"</span><span class="p">),</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">TelegramChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">dest_channel_id</span><span class="p">),</span>
             <span class="n">message_type</span><span class="o">=</span><span class="n">MessageType</span><span class="o">.</span><span class="n">FORWARD</span><span class="p">,</span>
         <span class="p">)</span>
@@ -828,11 +828,11 @@
         <span class="n">status_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set mock presence.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set mock presence."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_presence_updates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
-                <span class="s2">&quot;status_text&quot;</span><span class="p">:</span> <span class="n">status_text</span><span class="p">,</span>
+                <span class="s2">"status"</span><span class="p">:</span> <span class="n">status</span><span class="p">,</span>
+                <span class="s2">"status_text"</span><span class="p">:</span> <span class="n">status_text</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
@@ -841,7 +841,7 @@
 <div class="viewcode-block" id="MockTelegramBackend.get_presence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_presence">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_presence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Presence</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get mock presence for a user.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get mock presence for a user."""</span>
         <span class="n">user_id</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">User</span><span class="p">)</span> <span class="k">else</span> <span class="n">user</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mock_presence</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span></div>
 
@@ -854,20 +854,20 @@
         <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a mock reaction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Add a mock reaction."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;channel_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;emoji&quot;</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
-                <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>
+                <span class="s2">"channel_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"emoji"</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
+                <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"add"</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
@@ -880,20 +880,20 @@
         <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a mock reaction.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Remove a mock reaction."""</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">Message</span><span class="p">):</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">channel</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">message_id</span> <span class="o">=</span> <span class="n">message</span>
-            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="n">channel_id</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">Channel</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">channel</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="s2">&quot;channel_id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
-                <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
-                <span class="s2">&quot;emoji&quot;</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
-                <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;remove&quot;</span><span class="p">,</span>
+                <span class="s2">"channel_id"</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+                <span class="s2">"message_id"</span><span class="p">:</span> <span class="n">message_id</span><span class="p">,</span>
+                <span class="s2">"emoji"</span><span class="p">:</span> <span class="n">emoji</span><span class="p">,</span>
+                <span class="s2">"action"</span><span class="p">:</span> <span class="s2">"remove"</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="p">)</span></div>
 
@@ -904,7 +904,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">users</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">User</span><span class="p">],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a mock DM channel.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Create a mock DM channel."""</span>
         <span class="n">user_ids</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="n">users</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">TelegramUser</span><span class="p">):</span>
@@ -912,11 +912,11 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">user</span><span class="p">)))</span>
+                <span class="n">user_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"id"</span><span class="p">,</span> <span class="n">user</span><span class="p">)))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_created_dms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">user_ids</span><span class="p">)</span>
 
-        <span class="c1"># In Telegram, DM chat ID is the user&#39;s ID</span>
+        <span class="c1"># In Telegram, DM chat ID is the user's ID</span>
         <span class="k">return</span> <span class="n">user_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">user_ids</span> <span class="k">else</span> <span class="kc">None</span></div>
 </div>
 

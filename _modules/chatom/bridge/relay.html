@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.bridge.relay</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Message bridge for cross-backend message forwarding.</span>
+<span></span><span class="sd">"""Message bridge for cross-backend message forwarding.</span>
 
 <span class="sd">Forwards messages between chat backends with automatic format</span>
 <span class="sd">conversion and mention translation via an IdentityMapper.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -270,13 +270,13 @@
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;MessageBridge&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"MessageBridge"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="MessageBridge">
 <a class="viewcode-back" href="../../../docs/src/api-integrations.html#chatom.bridge.MessageBridge">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MessageBridge</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forwards messages between two chat backends.</span>
+<span class="w">    </span><span class="sd">"""Forwards messages between two chat backends.</span>
 
 <span class="sd">    Handles:</span>
 <span class="sd">    - Format conversion (markdown ↔ HTML ↔ MessageML)</span>
@@ -290,29 +290,29 @@
 <span class="sd">            source=slack_backend,</span>
 <span class="sd">            dest=symphony_backend,</span>
 <span class="sd">            identity_mapper=mapper,</span>
-<span class="sd">            channels={&quot;C123&quot;: &quot;sym_stream_id&quot;},</span>
+<span class="sd">            channels={"C123": "sym_stream_id"},</span>
 <span class="sd">        )</span>
 
 <span class="sd">        # Forward a single message</span>
 <span class="sd">        await bridge.forward(message)</span>
 
 <span class="sd">        # Forward with explicit target channel</span>
-<span class="sd">        await bridge.forward(message, to_channel=&quot;sym_stream_id&quot;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        await bridge.forward(message, to_channel="sym_stream_id")</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">source</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="n">dest</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
-        <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">dest_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">source_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
+        <span class="n">dest_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">identity_mapper</span><span class="p">:</span> <span class="n">IdentityMapper</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">channels</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">attribution</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-        <span class="n">attribution_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;📨 </span><span class="si">{name}</span><span class="s2"> (via </span><span class="si">{source}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">attribution_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"📨 </span><span class="si">{name}</span><span class="s2"> (via </span><span class="si">{source}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the bridge.</span>
+<span class="w">        </span><span class="sd">"""Initialize the bridge.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            source: Source backend (BackendBase instance).</span>
@@ -324,11 +324,11 @@
 <span class="sd">            attribution: Whether to prepend sender attribution to forwarded messages.</span>
 <span class="sd">            attribution_format: Format string for attribution. Supports ``{name}``,</span>
 <span class="sd">                ``{source}``, ``{email}``, ``{handle}``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dest</span> <span class="o">=</span> <span class="n">dest</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">source_name</span> <span class="o">=</span> <span class="n">source_name</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">dest_name</span> <span class="o">=</span> <span class="n">dest_name</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_name</span> <span class="o">=</span> <span class="n">source_name</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dest_name</span> <span class="o">=</span> <span class="n">dest_name</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">dest</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span> <span class="o">=</span> <span class="n">identity_mapper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span> <span class="ow">or</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attribution</span> <span class="o">=</span> <span class="n">attribution</span>
@@ -343,7 +343,7 @@
         <span class="n">to_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">include_attachments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Message</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward a message from source to dest.</span>
+<span class="w">        </span><span class="sd">"""Forward a message from source to dest.</span>
 
 <span class="sd">        1. Resolves the target channel</span>
 <span class="sd">        2. Converts the message to a FormattedMessage</span>
@@ -358,13 +358,13 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The sent message on the destination, or None on failure.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Resolve target channel</span>
         <span class="n">channel_id</span> <span class="o">=</span> <span class="n">to_channel</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">channel_id</span> <span class="ow">and</span> <span class="n">message</span><span class="o">.</span><span class="n">channel_id</span><span class="p">:</span>
             <span class="n">channel_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">channel_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">channel_id</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No target channel for message </span><span class="si">%s</span><span class="s2"> (source channel </span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">channel_id</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"No target channel for message </span><span class="si">%s</span><span class="s2"> (source channel </span><span class="si">%s</span><span class="s2">)"</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">channel_id</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span>
 
         <span class="c1"># Build a FormattedMessage from the source message</span>
@@ -375,9 +375,9 @@
 
         <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="n">fm</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;attachments&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_fa_to_base_attachment</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fm</span><span class="o">.</span><span class="n">attachments</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"attachments"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_fa_to_base_attachment</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">fm</span><span class="o">.</span><span class="n">attachments</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">fm</span><span class="o">.</span><span class="n">embeds</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;embeds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fe</span><span class="o">.</span><span class="n">embed</span> <span class="k">for</span> <span class="n">fe</span> <span class="ow">in</span> <span class="n">fm</span><span class="o">.</span><span class="n">embeds</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"embeds"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">fe</span><span class="o">.</span><span class="n">embed</span> <span class="k">for</span> <span class="n">fe</span> <span class="ow">in</span> <span class="n">fm</span><span class="o">.</span><span class="n">embeds</span><span class="p">]</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
@@ -385,10 +385,10 @@
                 <span class="n">content</span><span class="o">=</span><span class="n">rendered</span><span class="p">,</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Forwarded message </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> channel </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_name</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Forwarded message </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2"> channel </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dest_name</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed forwarding message </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Failed forwarding message </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div>
 
 
@@ -401,7 +401,7 @@
         <span class="n">to_channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">include_attachments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Forward multiple messages in order.</span>
+<span class="w">        </span><span class="sd">"""Forward multiple messages in order.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            messages: Source messages.</span>
@@ -410,7 +410,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List of sent messages (None entries excluded).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">to_channel</span><span class="o">=</span><span class="n">to_channel</span><span class="p">,</span> <span class="n">include_attachments</span><span class="o">=</span><span class="n">include_attachments</span><span class="p">)</span>
@@ -425,7 +425,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">include_attachments</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FormattedMessage</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert a source message to a FormattedMessage with translated mentions.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Convert a source message to a FormattedMessage with translated mentions."""</span>
         <span class="n">fm</span> <span class="o">=</span> <span class="n">FormattedMessage</span><span class="p">()</span>
 
         <span class="c1"># Attribution prefix</span>
@@ -447,7 +447,7 @@
                     <span class="n">FormattedAttachment</span><span class="p">(</span>
                         <span class="n">filename</span><span class="o">=</span><span class="n">att</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                         <span class="n">url</span><span class="o">=</span><span class="n">att</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-                        <span class="n">data</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">att</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                        <span class="n">data</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">att</span><span class="p">,</span> <span class="s2">"data"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                         <span class="n">content_type</span><span class="o">=</span><span class="n">att</span><span class="o">.</span><span class="n">content_type</span><span class="p">,</span>
                         <span class="n">size</span><span class="o">=</span><span class="n">att</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
                     <span class="p">)</span>
@@ -463,10 +463,10 @@
         <span class="k">return</span> <span class="n">fm</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_build_attribution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="n">Message</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the attribution prefix for a forwarded message.&quot;&quot;&quot;</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
-        <span class="n">email</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Build the attribution prefix for a forwarded message."""</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">"Unknown"</span>
+        <span class="n">email</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="s2">""</span>
 
         <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">author</span><span class="o">.</span><span class="n">best_display_name</span>
@@ -485,14 +485,14 @@
         <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">source_backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse platform mentions from raw text and translate to target-backend UserMention nodes.</span>
+<span class="w">        </span><span class="sd">"""Parse platform mentions from raw text and translate to target-backend UserMention nodes.</span>
 
 <span class="sd">        Any text between mentions is preserved as Text nodes.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Each backend declares its own mention regex on the class.</span>
-        <span class="c1"># ``None`` means the backend doesn&#39;t embed user IDs inline</span>
+        <span class="c1"># ``None`` means the backend doesn't embed user IDs inline</span>
         <span class="c1"># (e.g. Telegram uses MessageEntity) and we pass content through.</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="s2">&quot;mention_pattern&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="s2">"mention_pattern"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pattern</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)]</span>
 
@@ -523,7 +523,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Could not resolve — try to get display name from source</span>
                 <span class="n">display_name</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_source_display_name</span><span class="p">(</span><span class="n">source_user_id</span><span class="p">,</span> <span class="n">source_backend</span><span class="p">)</span>
-                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">))</span>
+                <span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="sa">f</span><span class="s2">"@</span><span class="si">{</span><span class="n">display_name</span><span class="si">}</span><span class="s2">"</span><span class="p">))</span>
 
             <span class="n">last_end</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
 
@@ -534,7 +534,7 @@
         <span class="k">return</span> <span class="n">nodes</span> <span class="k">if</span> <span class="n">nodes</span> <span class="k">else</span> <span class="p">[</span><span class="n">Text</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">)]</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_get_source_display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a display name from the source backend for an unresolved mention.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Fetch a display name from the source backend for an unresolved mention."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">user</span><span class="p">:</span>
@@ -546,7 +546,7 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_fa_to_base_attachment</span><span class="p">(</span><span class="n">fa</span><span class="p">:</span> <span class="n">FormattedAttachment</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a FormattedAttachment to a base Attachment for send_message kwargs.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Convert a FormattedAttachment to a base Attachment for send_message kwargs."""</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base.attachment</span><span class="w"> </span><span class="kn">import</span> <span class="n">Attachment</span>
 
     <span class="k">return</span> <span class="n">Attachment</span><span class="p">(</span>

@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.mention</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Mention utilities for chatom.</span>
+<span></span><span class="sd">"""Mention utilities for chatom.</span>
 
 <span class="sd">This module provides a single-dispatch based system for generating</span>
 <span class="sd">platform-specific mention strings from User objects.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">singledispatch</span>
@@ -270,16 +270,16 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">..enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">BACKEND</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;ChannelMentionMatch&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;MentionMatch&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;extract_channel_ids&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;extract_mention_ids&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mention_channel&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mention_channel_for_backend&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mention_user&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;mention_user_for_backend&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;parse_channel_mentions&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;parse_mentions&quot;</span><span class="p">,</span>
+    <span class="s2">"ChannelMentionMatch"</span><span class="p">,</span>
+    <span class="s2">"MentionMatch"</span><span class="p">,</span>
+    <span class="s2">"extract_channel_ids"</span><span class="p">,</span>
+    <span class="s2">"extract_mention_ids"</span><span class="p">,</span>
+    <span class="s2">"mention_channel"</span><span class="p">,</span>
+    <span class="s2">"mention_channel_for_backend"</span><span class="p">,</span>
+    <span class="s2">"mention_user"</span><span class="p">,</span>
+    <span class="s2">"mention_user_for_backend"</span><span class="p">,</span>
+    <span class="s2">"parse_channel_mentions"</span><span class="p">,</span>
+    <span class="s2">"parse_mentions"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -287,7 +287,7 @@
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.mention_user">[docs]</a>
 <span class="nd">@singledispatch</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">mention_user</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mention string for a user.</span>
+<span class="w">    </span><span class="sd">"""Generate a mention string for a user.</span>
 
 <span class="sd">    This is a single-dispatch function that can be overridden</span>
 <span class="sd">    for platform-specific user types.</span>
@@ -300,11 +300,11 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; from chatom import User, mention_user</span>
-<span class="sd">        &gt;&gt;&gt; user = User(name=&quot;John&quot;, id=&quot;123&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; user = User(name="John", id="123")</span>
 <span class="sd">        &gt;&gt;&gt; mention_user(user)</span>
-<span class="sd">        &#39;John&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Default to using the user&#39;s display name</span>
+<span class="sd">        'John'</span>
+<span class="sd">    """</span>
+    <span class="c1"># Default to using the user's display name</span>
     <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">display_name</span></div>
 
 
@@ -313,7 +313,7 @@
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.mention_channel">[docs]</a>
 <span class="nd">@singledispatch</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">mention_channel</span><span class="p">(</span><span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mention string for a channel.</span>
+<span class="w">    </span><span class="sd">"""Generate a mention string for a channel.</span>
 
 <span class="sd">    This is a single-dispatch function that can be overridden</span>
 <span class="sd">    for platform-specific channel types.</span>
@@ -326,20 +326,20 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; from chatom import Channel, mention_channel</span>
-<span class="sd">        &gt;&gt;&gt; channel = Channel(name=&quot;general&quot;, id=&quot;456&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; channel = Channel(name="general", id="456")</span>
 <span class="sd">        &gt;&gt;&gt; mention_channel(channel)</span>
-<span class="sd">        &#39;#general&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        '#general'</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span></div>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 
 <div class="viewcode-block" id="mention_user_for_backend">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.mention_user_for_backend">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s2">&quot;BACKEND&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mention string for a user based on the backend platform.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mention_user_for_backend</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">User</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s2">"BACKEND"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Generate a mention string for a user based on the backend platform.</span>
 
 <span class="sd">    This is a convenience function that dispatches to the appropriate</span>
 <span class="sd">    backend-specific mention format based on the backend parameter.</span>
@@ -353,27 +353,27 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; from chatom import User, mention_user_for_backend</span>
-<span class="sd">        &gt;&gt;&gt; user = User(id=&quot;123&quot;, name=&quot;John&quot;, email=&quot;john@example.com&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; mention_user_for_backend(user, &quot;slack&quot;)</span>
-<span class="sd">        &#39;&lt;@123&gt;&#39;</span>
-<span class="sd">        &gt;&gt;&gt; mention_user_for_backend(user, &quot;discord&quot;)</span>
-<span class="sd">        &#39;&lt;@123&gt;&#39;</span>
-<span class="sd">        &gt;&gt;&gt; mention_user_for_backend(user, &quot;symphony&quot;)</span>
-<span class="sd">        &#39;&lt;mention uid=&quot;123&quot;/&gt;&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; user = User(id="123", name="John", email="john@example.com")</span>
+<span class="sd">        &gt;&gt;&gt; mention_user_for_backend(user, "slack")</span>
+<span class="sd">        '&lt;@123&gt;'</span>
+<span class="sd">        &gt;&gt;&gt; mention_user_for_backend(user, "discord")</span>
+<span class="sd">        '&lt;@123&gt;'</span>
+<span class="sd">        &gt;&gt;&gt; mention_user_for_backend(user, "symphony")</span>
+<span class="sd">        '&lt;mention uid="123"/&gt;'</span>
+<span class="sd">    """</span>
     <span class="n">backend_lower</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">backend</span>
 
-    <span class="k">if</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">&quot;discord&quot;</span> <span class="ow">or</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">&quot;slack&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">"discord"</span> <span class="ow">or</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">"slack"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;@</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;@</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&gt;"</span>
         <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">display_name</span>
 
-    <span class="k">elif</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">&quot;symphony&quot;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">"symphony"</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention uid=&quot;</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention uid="</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">"/&gt;'</span>
         <span class="k">elif</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention email=&quot;</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention email="</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s1">"/&gt;'</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"@</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Fallback to display name</span>
@@ -383,8 +383,8 @@
 
 <div class="viewcode-block" id="mention_channel_for_backend">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.mention_channel_for_backend">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s2">&quot;BACKEND&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a mention string for a channel based on the backend platform.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">mention_channel_for_backend</span><span class="p">(</span><span class="n">channel</span><span class="p">:</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s2">"BACKEND"</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Generate a mention string for a channel based on the backend platform.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        channel: The channel to mention.</span>
@@ -395,36 +395,36 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; from chatom import Channel, mention_channel_for_backend</span>
-<span class="sd">        &gt;&gt;&gt; channel = Channel(id=&quot;C123&quot;, name=&quot;general&quot;)</span>
-<span class="sd">        &gt;&gt;&gt; mention_channel_for_backend(channel, &quot;slack&quot;)</span>
-<span class="sd">        &#39;&lt;#C123&gt;&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        &gt;&gt;&gt; channel = Channel(id="C123", name="general")</span>
+<span class="sd">        &gt;&gt;&gt; mention_channel_for_backend(channel, "slack")</span>
+<span class="sd">        '&lt;#C123&gt;'</span>
+<span class="sd">    """</span>
     <span class="n">backend_lower</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">backend</span>
 
-    <span class="k">if</span> <span class="n">backend_lower</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;discord&quot;</span><span class="p">,</span> <span class="s2">&quot;slack&quot;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">backend_lower</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"discord"</span><span class="p">,</span> <span class="s2">"slack"</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"&lt;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&gt;"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># Default format</span>
         <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span></div>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">"#</span><span class="si">{</span><span class="n">channel</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">"</span></div>
 
 
 
 <div class="viewcode-block" id="MentionMatch">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.MentionMatch">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">MentionMatch</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a mention found in message content.</span>
+<span class="w">    </span><span class="sd">"""Represents a mention found in message content.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        user_id: The extracted user ID.</span>
 <span class="sd">        start: Start position in the original string.</span>
 <span class="sd">        end: End position in the original string.</span>
 <span class="sd">        raw: The raw mention string as it appeared.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">start</span><span class="p">:</span> <span class="nb">int</span>
@@ -436,20 +436,20 @@
 <span class="c1"># Backend-specific mention patterns</span>
 <span class="n">_MENTION_PATTERNS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># Discord: &lt;@123456789&gt; or &lt;@!123456789&gt; (nickname mention)</span>
-    <span class="s2">&quot;discord&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;@!?(\d+)&gt;&quot;</span><span class="p">),</span>
+    <span class="s2">"discord"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;@!?(\d+)&gt;"</span><span class="p">),</span>
     <span class="c1"># Slack: &lt;@U123ABC456&gt;</span>
-    <span class="s2">&quot;slack&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;@([A-Z0-9]+)&gt;&quot;</span><span class="p">),</span>
-    <span class="c1"># Symphony: &lt;mention uid=&quot;123456789&quot;/&gt; or &lt;mention email=&quot;user@example.com&quot;/&gt;</span>
-    <span class="s2">&quot;symphony&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;mention\s+(?:uid=&quot;([^&quot;]+)&quot;|email=&quot;([^&quot;]+)&quot;)\s*/&gt;&#39;</span><span class="p">),</span>
+    <span class="s2">"slack"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;@([A-Z0-9]+)&gt;"</span><span class="p">),</span>
+    <span class="c1"># Symphony: &lt;mention uid="123456789"/&gt; or &lt;mention email="user@example.com"/&gt;</span>
+    <span class="s2">"symphony"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'&lt;mention\s+(?:uid="([^"]+)"|email="([^"]+)")\s*/&gt;'</span><span class="p">),</span>
 <span class="p">}</span>
 
 
 <div class="viewcode-block" id="parse_mentions">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.parse_mentions">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_mentions</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">MentionMatch</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse user mentions from message content.</span>
+<span class="w">    </span><span class="sd">"""Parse user mentions from message content.</span>
 
-<span class="sd">    Extracts user mentions from a message based on the backend&#39;s</span>
+<span class="sd">    Extracts user mentions from a message based on the backend's</span>
 <span class="sd">    mention format. Returns a list of MentionMatch objects containing</span>
 <span class="sd">    the user IDs and positions of mentions in the content.</span>
 
@@ -462,20 +462,20 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # Parse Slack mentions</span>
-<span class="sd">        &gt;&gt;&gt; mentions = parse_mentions(&quot;Hey &lt;@U123&gt;, check this!&quot;, &quot;slack&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; mentions = parse_mentions("Hey &lt;@U123&gt;, check this!", "slack")</span>
 <span class="sd">        &gt;&gt;&gt; mentions[0].user_id</span>
-<span class="sd">        &#39;U123&#39;</span>
+<span class="sd">        'U123'</span>
 
 <span class="sd">        &gt;&gt;&gt; # Parse Discord mentions</span>
-<span class="sd">        &gt;&gt;&gt; mentions = parse_mentions(&quot;&lt;@123456789&gt; Hello!&quot;, &quot;discord&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; mentions = parse_mentions("&lt;@123456789&gt; Hello!", "discord")</span>
 <span class="sd">        &gt;&gt;&gt; mentions[0].user_id</span>
-<span class="sd">        &#39;123456789&#39;</span>
+<span class="sd">        '123456789'</span>
 
 <span class="sd">        &gt;&gt;&gt; # Parse Symphony mentions</span>
-<span class="sd">        &gt;&gt;&gt; mentions = parse_mentions(&#39;&lt;mention uid=&quot;123&quot;/&gt;!&#39;, &quot;symphony&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; mentions = parse_mentions('&lt;mention uid="123"/&gt;!', "symphony")</span>
 <span class="sd">        &gt;&gt;&gt; mentions[0].user_id</span>
-<span class="sd">        &#39;123&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        '123'</span>
+<span class="sd">    """</span>
     <span class="n">backend_lower</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c1"># noqa: RUF034</span>
 
     <span class="n">pattern</span> <span class="o">=</span> <span class="n">_MENTION_PATTERNS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend_lower</span><span class="p">)</span>
@@ -486,7 +486,7 @@
     <span class="n">matches</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">MentionMatch</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">pattern</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">&quot;symphony&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">backend_lower</span> <span class="o">==</span> <span class="s2">"symphony"</span><span class="p">:</span>
             <span class="c1"># Symphony has two capture groups (uid or email)</span>
             <span class="n">user_id</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -508,7 +508,7 @@
 <div class="viewcode-block" id="extract_mention_ids">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.extract_mention_ids">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_mention_ids</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract just the user IDs from mentions in content.</span>
+<span class="w">    </span><span class="sd">"""Extract just the user IDs from mentions in content.</span>
 
 <span class="sd">    This is a convenience wrapper around parse_mentions that returns</span>
 <span class="sd">    only the user IDs as strings.</span>
@@ -521,10 +521,10 @@
 <span class="sd">        List[str]: List of user IDs mentioned in the content.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; ids = extract_mention_ids(&quot;Hey &lt;@U123&gt; and &lt;@U456&gt;!&quot;, &quot;slack&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; ids = extract_mention_ids("Hey &lt;@U123&gt; and &lt;@U456&gt;!", "slack")</span>
 <span class="sd">        &gt;&gt;&gt; ids</span>
-<span class="sd">        [&#39;U123&#39;, &#39;U456&#39;]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        ['U123', 'U456']</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">user_id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">parse_mentions</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">backend</span><span class="p">)]</span></div>
 
 
@@ -532,14 +532,14 @@
 <div class="viewcode-block" id="ChannelMentionMatch">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.ChannelMentionMatch">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ChannelMentionMatch</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of parsing a channel mention from content.</span>
+<span class="w">    </span><span class="sd">"""Result of parsing a channel mention from content.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        channel_id: The extracted channel ID.</span>
 <span class="sd">        start: Start position in the original string.</span>
 <span class="sd">        end: End position in the original string.</span>
 <span class="sd">        raw: The raw mention string as it appeared.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">channel_id</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">start</span><span class="p">:</span> <span class="nb">int</span>
@@ -551,18 +551,18 @@
 <span class="c1"># Backend-specific channel mention patterns</span>
 <span class="n">_CHANNEL_MENTION_PATTERNS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># Discord: &lt;#123456789&gt;</span>
-    <span class="s2">&quot;discord&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;#(\d+)&gt;&quot;</span><span class="p">),</span>
+    <span class="s2">"discord"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;#(\d+)&gt;"</span><span class="p">),</span>
     <span class="c1"># Slack: &lt;#C123ABC456&gt; or &lt;#C123ABC456|channel-name&gt;</span>
-    <span class="s2">&quot;slack&quot;</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;#([A-Z0-9]+)(?:\|[^&gt;]*)?&gt;&quot;</span><span class="p">),</span>
+    <span class="s2">"slack"</span><span class="p">:</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;#([A-Z0-9]+)(?:\|[^&gt;]*)?&gt;"</span><span class="p">),</span>
 <span class="p">}</span>
 
 
 <div class="viewcode-block" id="parse_channel_mentions">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.parse_channel_mentions">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">parse_channel_mentions</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ChannelMentionMatch</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse channel mentions from message content.</span>
+<span class="w">    </span><span class="sd">"""Parse channel mentions from message content.</span>
 
-<span class="sd">    Extracts channel mentions from a message based on the backend&#39;s</span>
+<span class="sd">    Extracts channel mentions from a message based on the backend's</span>
 <span class="sd">    mention format. Returns a list of ChannelMentionMatch objects containing</span>
 <span class="sd">    the channel IDs and positions of mentions in the content.</span>
 
@@ -575,15 +575,15 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # Parse Slack channel mentions</span>
-<span class="sd">        &gt;&gt;&gt; mentions = parse_channel_mentions(&quot;Join &lt;#C123&gt;!&quot;, &quot;slack&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; mentions = parse_channel_mentions("Join &lt;#C123&gt;!", "slack")</span>
 <span class="sd">        &gt;&gt;&gt; mentions[0].channel_id</span>
-<span class="sd">        &#39;C123&#39;</span>
+<span class="sd">        'C123'</span>
 
 <span class="sd">        &gt;&gt;&gt; # Parse Discord channel mentions</span>
-<span class="sd">        &gt;&gt;&gt; mentions = parse_channel_mentions(&quot;Check &lt;#987654321&gt;&quot;, &quot;discord&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; mentions = parse_channel_mentions("Check &lt;#987654321&gt;", "discord")</span>
 <span class="sd">        &gt;&gt;&gt; mentions[0].channel_id</span>
-<span class="sd">        &#39;987654321&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        '987654321'</span>
+<span class="sd">    """</span>
     <span class="n">backend_lower</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">backend</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="n">backend</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>  <span class="c1"># noqa: RUF034</span>
 
     <span class="n">pattern</span> <span class="o">=</span> <span class="n">_CHANNEL_MENTION_PATTERNS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend_lower</span><span class="p">)</span>
@@ -611,7 +611,7 @@
 <div class="viewcode-block" id="extract_channel_ids">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.discord.mention.extract_channel_ids">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">extract_channel_ids</span><span class="p">(</span><span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract just the channel IDs from mentions in content.</span>
+<span class="w">    </span><span class="sd">"""Extract just the channel IDs from mentions in content.</span>
 
 <span class="sd">    This is a convenience wrapper around parse_channel_mentions that returns</span>
 <span class="sd">    only the channel IDs as strings.</span>
@@ -624,10 +624,10 @@
 <span class="sd">        List[str]: List of channel IDs mentioned in the content.</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; ids = extract_channel_ids(&quot;Join &lt;#C123&gt; and &lt;#C456&gt;!&quot;, &quot;slack&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; ids = extract_channel_ids("Join &lt;#C123&gt; and &lt;#C456&gt;!", "slack")</span>
 <span class="sd">        &gt;&gt;&gt; ids</span>
-<span class="sd">        [&#39;C123&#39;, &#39;C456&#39;]</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        ['C123', 'C456']</span>
+<span class="sd">    """</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">channel_id</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">parse_channel_mentions</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">backend</span><span class="p">)]</span></div>
 
 </pre></div>

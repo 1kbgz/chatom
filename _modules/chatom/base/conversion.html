@@ -253,7 +253,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.conversion</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Backend type conversion and validation for chatom.</span>
+<span></span><span class="sd">"""Backend type conversion and validation for chatom.</span>
 
 <span class="sd">This module provides functionality for validating and converting between</span>
 <span class="sd">base chatom types and backend-specific types. It enables:</span>
@@ -266,12 +266,12 @@
 <span class="sd">    &gt;&gt;&gt; from chatom import User</span>
 <span class="sd">    &gt;&gt;&gt; from chatom.base.conversion import can_promote, promote, demote</span>
 <span class="sd">    &gt;&gt;&gt;</span>
-<span class="sd">    &gt;&gt;&gt; user = User(id=&quot;123&quot;, name=&quot;Test&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; if can_promote(user, &quot;discord&quot;):</span>
-<span class="sd">    ...     discord_user = promote(user, &quot;discord&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; user = User(id="123", name="Test")</span>
+<span class="sd">    &gt;&gt;&gt; if can_promote(user, "discord"):</span>
+<span class="sd">    ...     discord_user = promote(user, "discord")</span>
 <span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; base_user = demote(discord_user)</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">cast</span>
 
@@ -280,52 +280,52 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;BackendNotFoundError&quot;</span><span class="p">,</span>
+    <span class="s2">"BackendNotFoundError"</span><span class="p">,</span>
     <span class="c1"># Exceptions</span>
-    <span class="s2">&quot;ConversionError&quot;</span><span class="p">,</span>
+    <span class="s2">"ConversionError"</span><span class="p">,</span>
     <span class="c1"># Validation result</span>
-    <span class="s2">&quot;ValidationResult&quot;</span><span class="p">,</span>
+    <span class="s2">"ValidationResult"</span><span class="p">,</span>
     <span class="c1"># Core functions</span>
-    <span class="s2">&quot;can_promote&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;demote&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_backend_type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;get_base_type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;list_backends_for_type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;promote&quot;</span><span class="p">,</span>
+    <span class="s2">"can_promote"</span><span class="p">,</span>
+    <span class="s2">"demote"</span><span class="p">,</span>
+    <span class="s2">"get_backend_type"</span><span class="p">,</span>
+    <span class="s2">"get_base_type"</span><span class="p">,</span>
+    <span class="s2">"list_backends_for_type"</span><span class="p">,</span>
+    <span class="s2">"promote"</span><span class="p">,</span>
     <span class="c1"># Registry functions</span>
-    <span class="s2">&quot;register_backend_type&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;validate_for_backend&quot;</span><span class="p">,</span>
+    <span class="s2">"register_backend_type"</span><span class="p">,</span>
+    <span class="s2">"validate_for_backend"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
-<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">BaseModel</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">"T"</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="n">BaseModel</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ConversionError">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.ConversionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ConversionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a type conversion fails.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when a type conversion fails."""</span></div>
 
 
 
 <div class="viewcode-block" id="BackendNotFoundError">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.BackendNotFoundError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BackendNotFoundError</span><span class="p">(</span><span class="n">ConversionError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when a backend or backend type is not found.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when a backend or backend type is not found."""</span></div>
 
 
 
 <div class="viewcode-block" id="ValidationResult">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.ValidationResult">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ValidationResult</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of validating a base type for a backend.</span>
+<span class="w">    </span><span class="sd">"""Result of validating a base type for a backend.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        valid: Whether the instance is valid for the backend.</span>
 <span class="sd">        missing_required: List of required fields that are missing values.</span>
 <span class="sd">        invalid_fields: Dict of field names to validation error messages.</span>
 <span class="sd">        warnings: List of warning messages (non-fatal issues).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -340,15 +340,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">warnings</span> <span class="o">=</span> <span class="n">warnings</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Allow using ValidationResult in boolean context.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Allow using ValidationResult in boolean context."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;ValidationResult(valid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;missing_required=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">missing_required</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;invalid_fields=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">invalid_fields</span><span class="si">}</span><span class="s2">, &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;warnings=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="sa">f</span><span class="s2">"ValidationResult(valid=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"missing_required=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">missing_required</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"invalid_fields=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">invalid_fields</span><span class="si">}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"warnings=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="si">}</span><span class="s2">)"</span>
         <span class="p">)</span></div>
 
 
@@ -364,11 +364,11 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_types_registered</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensure backend types are registered.</span>
+<span class="w">    </span><span class="sd">"""Ensure backend types are registered.</span>
 
 <span class="sd">    This is called lazily when conversion functions are first used,</span>
 <span class="sd">    avoiding circular import issues during module initialization.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">global</span> <span class="n">_TYPES_REGISTERED</span>
     <span class="k">if</span> <span class="n">_TYPES_REGISTERED</span><span class="p">:</span>
         <span class="k">return</span>
@@ -383,16 +383,16 @@
     <span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
     <span class="n">backend_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register a backend-specific type for a base type.</span>
+<span class="w">    </span><span class="sd">"""Register a backend-specific type for a base type.</span>
 
 <span class="sd">    This function registers the relationship between a base chatom type</span>
 <span class="sd">    and its backend-specific variant. Called during module initialization.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        backend: The backend identifier (e.g., &quot;discord&quot;, &quot;slack&quot;).</span>
+<span class="sd">        backend: The backend identifier (e.g., "discord", "slack").</span>
 <span class="sd">        base_type: The base chatom type (e.g., User).</span>
 <span class="sd">        backend_type: The backend-specific type (e.g., DiscordUser).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">base_name</span> <span class="o">=</span> <span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span>
     <span class="k">if</span> <span class="n">base_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_TYPE_REGISTRY</span><span class="p">:</span>
         <span class="n">_TYPE_REGISTRY</span><span class="p">[</span><span class="n">base_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
@@ -407,7 +407,7 @@
     <span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">T</span><span class="p">],</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the backend-specific type for a base type.</span>
+<span class="w">    </span><span class="sd">"""Get the backend-specific type for a base type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        base_type: The base type class.</span>
@@ -415,7 +415,7 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The backend-specific type class, or None if not registered.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
     <span class="n">base_name</span> <span class="o">=</span> <span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span>
     <span class="k">return</span> <span class="n">_TYPE_REGISTRY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span></div>
@@ -425,14 +425,14 @@
 <div class="viewcode-block" id="get_base_type">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.get_base_type">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_base_type</span><span class="p">(</span><span class="n">backend_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the base type for a backend-specific type.</span>
+<span class="w">    </span><span class="sd">"""Get the base type for a backend-specific type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        backend_type: The backend-specific type class.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The base type class, or None if not registered.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">_BASE_TYPE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">backend_type</span><span class="p">)</span></div>
 
@@ -441,14 +441,14 @@
 <div class="viewcode-block" id="list_backends_for_type">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.list_backends_for_type">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_backends_for_type</span><span class="p">(</span><span class="n">base_type</span><span class="p">:</span> <span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List all backends that have a registered type for the given base type.</span>
+<span class="w">    </span><span class="sd">"""List all backends that have a registered type for the given base type.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        base_type: The base type class.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        List of backend identifiers.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
     <span class="n">base_name</span> <span class="o">=</span> <span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_TYPE_REGISTRY</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
@@ -461,7 +461,7 @@
     <span class="n">instance</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ValidationResult</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate if a base type instance can be promoted to a backend type.</span>
+<span class="w">    </span><span class="sd">"""Validate if a base type instance can be promoted to a backend type.</span>
 
 <span class="sd">    This performs validation to check if the instance has all required</span>
 <span class="sd">    fields and if the values are compatible with the backend type.</span>
@@ -475,7 +475,7 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        BackendNotFoundError: If the backend type is not registered.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
 
     <span class="c1"># Get the backend type</span>
@@ -497,7 +497,7 @@
 
     <span class="n">backend_type</span> <span class="o">=</span> <span class="n">get_backend_type</span><span class="p">(</span><span class="n">base_type</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">backend_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">BackendNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> type registered for </span><span class="si">{</span><span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BackendNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> type registered for </span><span class="si">{</span><span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="n">missing_required</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">invalid_fields</span> <span class="o">=</span> <span class="p">{}</span>
@@ -511,11 +511,11 @@
         <span class="n">backend_type</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">errors</span><span class="p">():</span>
-            <span class="n">field_path</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;loc&quot;</span><span class="p">])</span>
-            <span class="n">error_type</span> <span class="o">=</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
-            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">error</span><span class="p">[</span><span class="s2">&quot;msg&quot;</span><span class="p">]</span>
+            <span class="n">field_path</span> <span class="o">=</span> <span class="s2">"."</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span> <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="n">error</span><span class="p">[</span><span class="s2">"loc"</span><span class="p">])</span>
+            <span class="n">error_type</span> <span class="o">=</span> <span class="n">error</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="n">error</span><span class="p">[</span><span class="s2">"msg"</span><span class="p">]</span>
 
-            <span class="k">if</span> <span class="n">error_type</span> <span class="o">==</span> <span class="s2">&quot;missing&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">error_type</span> <span class="o">==</span> <span class="s2">"missing"</span><span class="p">:</span>
                 <span class="n">missing_required</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field_path</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">invalid_fields</span><span class="p">[</span><span class="n">field_path</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_msg</span>
@@ -537,7 +537,7 @@
     <span class="n">instance</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">,</span>
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if a base type instance can be promoted to a backend type.</span>
+<span class="w">    </span><span class="sd">"""Check if a base type instance can be promoted to a backend type.</span>
 
 <span class="sd">    This is a convenience wrapper around validate_for_backend that</span>
 <span class="sd">    returns a simple boolean.</span>
@@ -551,7 +551,7 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        BackendNotFoundError: If the backend type is not registered.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">validate_for_backend</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">valid</span></div>
 
@@ -564,7 +564,7 @@
     <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">**</span><span class="n">extra_fields</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Promote a base type instance to a backend-specific type.</span>
+<span class="w">    </span><span class="sd">"""Promote a base type instance to a backend-specific type.</span>
 
 <span class="sd">    Creates a new instance of the backend-specific type using the</span>
 <span class="sd">    data from the base instance, plus any additional backend-specific</span>
@@ -581,7 +581,7 @@
 <span class="sd">    Raises:</span>
 <span class="sd">        BackendNotFoundError: If the backend type is not registered.</span>
 <span class="sd">        ConversionError: If the promotion fails validation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
 
     <span class="c1"># Get the backend type</span>
@@ -608,7 +608,7 @@
 
     <span class="n">backend_type</span> <span class="o">=</span> <span class="n">get_backend_type</span><span class="p">(</span><span class="n">base_type</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">backend_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">BackendNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> type registered for </span><span class="si">{</span><span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">BackendNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"No </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> type registered for </span><span class="si">{</span><span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
     <span class="c1"># Get data from the instance</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span>
@@ -620,17 +620,17 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">backend_type</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to promote </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">backend_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to promote </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">backend_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="demote">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.conversion.demote">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">demote</span><span class="p">(</span><span class="n">instance</span><span class="p">:</span> <span class="n">BaseModel</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseModel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Demote a backend-specific type instance to its base type.</span>
+<span class="w">    </span><span class="sd">"""Demote a backend-specific type instance to its base type.</span>
 
 <span class="sd">    Creates a new instance of the base type using only the base</span>
-<span class="sd">    type&#39;s fields, stripping away backend-specific fields.</span>
+<span class="sd">    type's fields, stripping away backend-specific fields.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        instance: The backend-specific type instance to demote.</span>
@@ -640,14 +640,14 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ConversionError: If the instance is not a registered backend type.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">_ensure_types_registered</span><span class="p">()</span>
 
     <span class="n">instance_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
     <span class="n">base_type</span> <span class="o">=</span> <span class="n">_BASE_TYPE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">instance_type</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">base_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Check if it&#39;s already a base type (has entries in registry)</span>
+        <span class="c1"># Check if it's already a base type (has entries in registry)</span>
         <span class="k">if</span> <span class="n">instance_type</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">_TYPE_REGISTRY</span><span class="p">:</span>
             <span class="c1"># Already a base type, return a copy</span>
             <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">model_copy</span><span class="p">()</span>
@@ -658,11 +658,11 @@
                 <span class="n">base_type</span> <span class="o">=</span> <span class="n">_BASE_TYPE_MAP</span><span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="nb">type</span><span class="p">[</span><span class="n">BaseModel</span><span class="p">],</span> <span class="n">parent</span><span class="p">)]</span>
                 <span class="k">break</span>
             <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">_TYPE_REGISTRY</span><span class="p">:</span>
-                <span class="c1"># It&#39;s a base type</span>
+                <span class="c1"># It's a base type</span>
                 <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="n">model_copy</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">base_type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">instance_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not a registered backend type&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">instance_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is not a registered backend type"</span><span class="p">)</span>
 
     <span class="c1"># Get data and filter to base type fields only</span>
     <span class="c1"># base_type is guaranteed to be non-None here due to the check above</span>
@@ -674,18 +674,18 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">base_type</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">filtered_data</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to demote </span><span class="si">{</span><span class="n">instance_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to demote </span><span class="si">{</span><span class="n">instance_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">base_type</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_register_all_types</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register all known backend types from the backend registry.</span>
+<span class="w">    </span><span class="sd">"""Register all known backend types from the backend registry.</span>
 
 <span class="sd">    This delegates to BackendRegistry.register_all_types() which uses</span>
 <span class="sd">    entry points to discover backends and their type classes.</span>
 
 <span class="sd">    This is called lazily when conversion functions are first used.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">..backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendRegistry</span>
 

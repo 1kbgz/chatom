@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.discord.config</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Discord backend configuration.</span>
+<span></span><span class="sd">"""Discord backend configuration.</span>
 
 <span class="sd">This module provides configuration classes for the Discord backend.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
@@ -264,13 +264,13 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">..backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">BackendConfig</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DiscordConfig&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DiscordConfig"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="DiscordConfig">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.config.DiscordConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordConfig</span><span class="p">(</span><span class="n">BackendConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for Discord backend.</span>
+<span class="w">    </span><span class="sd">"""Configuration for Discord backend.</span>
 
 <span class="sd">    This configuration is used to connect to Discord using the discord.py library.</span>
 <span class="sd">    You need a bot token from the Discord Developer Portal.</span>
@@ -284,48 +284,48 @@
 
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; config = DiscordConfig(</span>
-<span class="sd">        ...     bot_token=&quot;your-bot-token&quot;,</span>
-<span class="sd">        ...     application_id=&quot;123456789&quot;,</span>
-<span class="sd">        ...     intents=[&quot;guilds&quot;, &quot;messages&quot;, &quot;message_content&quot;],</span>
+<span class="sd">        ...     bot_token="your-bot-token",</span>
+<span class="sd">        ...     application_id="123456789",</span>
+<span class="sd">        ...     intents=["guilds", "messages", "message_content"],</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; backend = DiscordBackend(config=config)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discord bot token from Developer Portal (can be a file path).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Discord bot token from Developer Portal (can be a file path)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">application_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discord application ID.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Discord application ID."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">guild_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default guild/server ID (optional).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Default guild/server ID (optional)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">intents</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;guilds&quot;</span><span class="p">,</span> <span class="s2">&quot;messages&quot;</span><span class="p">],</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Discord gateway intents to request.&quot;</span><span class="p">,</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[</span><span class="s2">"guilds"</span><span class="p">,</span> <span class="s2">"messages"</span><span class="p">],</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Discord gateway intents to request."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">command_prefix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;!&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Prefix for bot commands.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"!"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Prefix for bot commands."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">shard_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Shard ID for sharded bots.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Shard ID for sharded bots."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">shard_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Total number of shards.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Total number of shards."</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;before&quot;</span><span class="p">)</span>
+    <span class="nd">@field_validator</span><span class="p">(</span><span class="s2">"token"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"before"</span><span class="p">)</span>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">validate_token</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate and load bot token, supporting file paths.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="sd">"""Validate and load bot token, supporting file paths."""</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">==</span> <span class="s2">""</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
         <span class="c1"># Handle SecretStr input</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">):</span>
@@ -333,35 +333,35 @@
 
         <span class="c1"># Check for empty string after extracting from SecretStr</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">v</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 
-        <span class="c1"># Check if it&#39;s a file path (but not a directory or special path)</span>
+        <span class="c1"># Check if it's a file path (but not a directory or special path)</span>
         <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">v</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 
-        <span class="c1"># Accept any non-empty token (don&#39;t validate length for flexibility in testing)</span>
+        <span class="c1"># Accept any non-empty token (don't validate length for flexibility in testing)</span>
         <span class="k">if</span> <span class="n">v</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">SecretStr</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
 
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Token must be a valid Discord bot token or a file path containing one&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Token must be a valid Discord bot token or a file path containing one"</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_token_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bot token as a plain string.</span>
+<span class="w">        </span><span class="sd">"""Get the bot token as a plain string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The bot token string.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a bot token is configured.</span>
+<span class="w">        </span><span class="sd">"""Check if a bot token is configured.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            True if a bot token is set.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">)</span></div>
 
 </pre></div>

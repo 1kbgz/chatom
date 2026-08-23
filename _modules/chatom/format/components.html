@@ -253,7 +253,7 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.format.components</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Interactive components for chatom.</span>
+<span></span><span class="sd">"""Interactive components for chatom.</span>
 
 <span class="sd">This module provides interactive UI components like buttons, select menus,</span>
 <span class="sd">and forms that can be rendered to platform-specific formats.</span>
@@ -262,7 +262,7 @@
 <span class="sd">- Slack: Block Kit (buttons, select menus, modals)</span>
 <span class="sd">- Discord: Components (buttons, select menus)</span>
 <span class="sd">- Symphony: Symphony Elements (buttons, forms)</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
@@ -274,45 +274,45 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.variant</span><span class="w"> </span><span class="kn">import</span> <span class="n">FORMAT</span><span class="p">,</span> <span class="n">Format</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="s2">&quot;ActionRow&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Button&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ButtonStyle&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ComponentContainer&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;Modal&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SelectMenu&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;SelectOption&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TextInput&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;TextInputStyle&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;attach_components_for_backend&quot;</span><span class="p">,</span>
+    <span class="s2">"ActionRow"</span><span class="p">,</span>
+    <span class="s2">"Button"</span><span class="p">,</span>
+    <span class="s2">"ButtonStyle"</span><span class="p">,</span>
+    <span class="s2">"ComponentContainer"</span><span class="p">,</span>
+    <span class="s2">"Modal"</span><span class="p">,</span>
+    <span class="s2">"SelectMenu"</span><span class="p">,</span>
+    <span class="s2">"SelectOption"</span><span class="p">,</span>
+    <span class="s2">"TextInput"</span><span class="p">,</span>
+    <span class="s2">"TextInputStyle"</span><span class="p">,</span>
+    <span class="s2">"attach_components_for_backend"</span><span class="p">,</span>
 <span class="p">)</span>
 
 
 <div class="viewcode-block" id="ButtonStyle">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.ButtonStyle">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ButtonStyle</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Button visual styles.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Button visual styles."""</span>
 
-    <span class="n">PRIMARY</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Primary action button (usually colored).&quot;&quot;&quot;</span>
+    <span class="n">PRIMARY</span> <span class="o">=</span> <span class="s2">"primary"</span>
+<span class="w">    </span><span class="sd">"""Primary action button (usually colored)."""</span>
 
-    <span class="n">SECONDARY</span> <span class="o">=</span> <span class="s2">&quot;secondary&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Secondary action button (neutral).&quot;&quot;&quot;</span>
+    <span class="n">SECONDARY</span> <span class="o">=</span> <span class="s2">"secondary"</span>
+<span class="w">    </span><span class="sd">"""Secondary action button (neutral)."""</span>
 
-    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="s2">&quot;success&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Success/positive action (green).&quot;&quot;&quot;</span>
+    <span class="n">SUCCESS</span> <span class="o">=</span> <span class="s2">"success"</span>
+<span class="w">    </span><span class="sd">"""Success/positive action (green)."""</span>
 
-    <span class="n">DANGER</span> <span class="o">=</span> <span class="s2">&quot;danger&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Destructive/negative action (red).&quot;&quot;&quot;</span>
+    <span class="n">DANGER</span> <span class="o">=</span> <span class="s2">"danger"</span>
+<span class="w">    </span><span class="sd">"""Destructive/negative action (red)."""</span>
 
-    <span class="n">LINK</span> <span class="o">=</span> <span class="s2">&quot;link&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Link button (opens URL).&quot;&quot;&quot;</span></div>
+    <span class="n">LINK</span> <span class="o">=</span> <span class="s2">"link"</span>
+<span class="w">    </span><span class="sd">"""Link button (opens URL)."""</span></div>
 
 
 
 <div class="viewcode-block" id="Button">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.Button">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Button</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An interactive button component.</span>
+<span class="w">    </span><span class="sd">"""An interactive button component.</span>
 
 <span class="sd">    Buttons can trigger actions or open URLs. They have a label,</span>
 <span class="sd">    style, and either an action_id (for callbacks) or url (for links).</span>
@@ -325,47 +325,47 @@
 <span class="sd">        disabled: Whether the button is disabled.</span>
 <span class="sd">        emoji: Optional emoji to display with the label.</span>
 <span class="sd">        value: Optional value sent with the callback.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Button text label.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Button text label."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier for button action (used in callbacks).&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier for button action (used in callbacks)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">style</span><span class="p">:</span> <span class="n">ButtonStyle</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Visual style of the button.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Visual style of the button."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL to open (for link buttons).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL to open (for link buttons)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">disabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the button is disabled.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the button is disabled."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Emoji to display with the label.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Emoji to display with the label."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Value sent with the callback.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Value sent with the callback."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Button.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.Button.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the button to platform-specific format.</span>
+<span class="w">        </span><span class="sd">"""Render the button to platform-specific format.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            format: The output format.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict representation for the platform&#39;s API.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            Dict representation for the platform's API.</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_slack</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
@@ -378,34 +378,34 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_slack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Slack Block Kit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Slack Block Kit."""</span>
         <span class="n">button</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-                <span class="s2">&quot;emoji&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span>
+            <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+                <span class="s2">"emoji"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
             <span class="p">},</span>
-            <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;button_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">"button_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
         <span class="c1"># Map styles to Slack</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"style"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"primary"</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">DANGER</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;style&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;danger&quot;</span>
-        <span class="c1"># Slack doesn&#39;t have success/secondary, they&#39;re default</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"style"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"danger"</span>
+        <span class="c1"># Slack doesn't have success/secondary, they're default</span>
 
         <span class="k">return</span> <span class="n">button</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_discord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Discord Components.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Discord Components."""</span>
         <span class="c1"># Discord button styles: 1=Primary, 2=Secondary, 3=Success, 4=Danger, 5=Link</span>
         <span class="n">style_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -416,39 +416,39 @@
         <span class="p">}</span>
 
         <span class="n">button</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Button component type</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-            <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="n">style_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="s2">&quot;disabled&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">disabled</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>  <span class="c1"># Button component type</span>
+            <span class="s2">"label"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+            <span class="s2">"style"</span><span class="p">:</span> <span class="n">style_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">"disabled"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">disabled</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">LINK</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;custom_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;button_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"custom_id"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">"button_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">emoji</span><span class="p">:</span>
-            <span class="n">button</span><span class="p">[</span><span class="s2">&quot;emoji&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">emoji</span><span class="p">}</span>
+            <span class="n">button</span><span class="p">[</span><span class="s2">"emoji"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">emoji</span><span class="p">}</span>
 
         <span class="k">return</span> <span class="n">button</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_symphony</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Symphony MessageML.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Symphony MessageML."""</span>
         <span class="c1"># Symphony uses &lt;button&gt; tags in MessageML</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">&quot;button_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="n">style_class</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;class=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">!=</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;button name=&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; </span><span class="si">{</span><span class="n">style_class</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&lt;/button&gt;&#39;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span> <span class="s2">&quot;messageml&quot;</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">"button_</span><span class="si">{</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">style_class</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'class="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">!=</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;button name="</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">" </span><span class="si">{</span><span class="n">style_class</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&lt;/button&gt;'</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span> <span class="s2">"messageml"</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render generic dict representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render generic dict representation."""</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;button&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-            <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
-            <span class="s2">&quot;disabled&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">disabled</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"button"</span><span class="p">,</span>
+            <span class="s2">"label"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+            <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"style"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">"url"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s2">"disabled"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">disabled</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -456,7 +456,7 @@
 <div class="viewcode-block" id="SelectOption">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.SelectOption">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectOption</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;An option in a select menu.</span>
+<span class="w">    </span><span class="sd">"""An option in a select menu.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        label: Display text for the option.</span>
@@ -464,21 +464,21 @@
 <span class="sd">        description: Optional description text.</span>
 <span class="sd">        emoji: Optional emoji to display.</span>
 <span class="sd">        default: Whether this is the default selection.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Display text for the option.&quot;</span><span class="p">)</span>
-    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Value sent when option is selected.&quot;</span><span class="p">)</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Display text for the option."</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Value sent when option is selected."</span><span class="p">)</span>
     <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional description text.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Optional description text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Optional emoji to display.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Optional emoji to display."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">default</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether this is the default selection.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether this is the default selection."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -486,7 +486,7 @@
 <div class="viewcode-block" id="SelectMenu">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.SelectMenu">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SelectMenu</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dropdown select menu component.</span>
+<span class="w">    </span><span class="sd">"""A dropdown select menu component.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        action_id: Unique identifier for this select action.</span>
@@ -495,36 +495,36 @@
 <span class="sd">        min_values: Minimum number of selections required.</span>
 <span class="sd">        max_values: Maximum number of selections allowed.</span>
 <span class="sd">        disabled: Whether the select is disabled.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier for select action.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier for select action."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Select an option&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Placeholder text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"Select an option"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Placeholder text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SelectOption</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Selectable options.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Selectable options."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">min_values</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minimum selections required.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Minimum selections required."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_values</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum selections allowed.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum selections allowed."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">disabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the select is disabled.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the select is disabled."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="SelectMenu.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.SelectMenu.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the select menu to platform-specific format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render the select menu to platform-specific format."""</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_slack</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
@@ -536,67 +536,67 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_slack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Slack Block Kit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Slack Block Kit."""</span>
         <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="n">option</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">label</span><span class="p">},</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">"text"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">label</span><span class="p">},</span>
+                <span class="s2">"value"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
-                <span class="n">option</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">description</span><span class="p">}</span>
+                <span class="n">option</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">description</span><span class="p">}</span>
             <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;static_select&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;placeholder&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">},</span>
-            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="n">options</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"static_select"</span><span class="p">,</span>
+            <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"placeholder"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">},</span>
+            <span class="s2">"options"</span><span class="p">:</span> <span class="n">options</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_discord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Discord Components.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Discord Components."""</span>
         <span class="n">options</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
             <span class="n">option</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-                <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-                <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+                <span class="s2">"label"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+                <span class="s2">"value"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="s2">"default"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
-                <span class="n">option</span><span class="p">[</span><span class="s2">&quot;description&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">description</span>
+                <span class="n">option</span><span class="p">[</span><span class="s2">"description"</span><span class="p">]</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">description</span>
             <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">emoji</span><span class="p">:</span>
-                <span class="n">option</span><span class="p">[</span><span class="s2">&quot;emoji&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">emoji</span><span class="p">}</span>
+                <span class="n">option</span><span class="p">[</span><span class="s2">"emoji"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="n">opt</span><span class="o">.</span><span class="n">emoji</span><span class="p">}</span>
             <span class="n">options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># Select menu component type</span>
-            <span class="s2">&quot;custom_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;placeholder&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">,</span>
-            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="n">options</span><span class="p">,</span>
-            <span class="s2">&quot;min_values&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_values</span><span class="p">,</span>
-            <span class="s2">&quot;max_values&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_values</span><span class="p">,</span>
-            <span class="s2">&quot;disabled&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">disabled</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>  <span class="c1"># Select menu component type</span>
+            <span class="s2">"custom_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"placeholder"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">,</span>
+            <span class="s2">"options"</span><span class="p">:</span> <span class="n">options</span><span class="p">,</span>
+            <span class="s2">"min_values"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_values</span><span class="p">,</span>
+            <span class="s2">"max_values"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_values</span><span class="p">,</span>
+            <span class="s2">"disabled"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">disabled</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_symphony</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Symphony MessageML.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Symphony MessageML."""</span>
         <span class="n">options_ml</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
-            <span class="n">selected</span> <span class="o">=</span> <span class="s1">&#39; selected=&quot;true&quot;&#39;</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">default</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="n">options_ml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;option value=&quot;</span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">selected</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&lt;/option&gt;&#39;</span><span class="p">)</span>
+            <span class="n">selected</span> <span class="o">=</span> <span class="s1">' selected="true"'</span> <span class="k">if</span> <span class="n">opt</span><span class="o">.</span><span class="n">default</span> <span class="k">else</span> <span class="s2">""</span>
+            <span class="n">options_ml</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">'&lt;option value="</span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s1">"</span><span class="si">{</span><span class="n">selected</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="n">opt</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&lt;/option&gt;'</span><span class="p">)</span>
 
-        <span class="n">options_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options_ml</span><span class="p">)</span>
-        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;select name=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="si">}</span><span class="s1">&quot;&gt;</span><span class="se">\n</span><span class="si">{</span><span class="n">options_str</span><span class="si">}</span><span class="se">\n</span><span class="s1">&lt;/select&gt;&#39;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;messageml&quot;</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">}</span>
+        <span class="n">options_str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options_ml</span><span class="p">)</span>
+        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;select name="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="si">}</span><span class="s1">"&gt;</span><span class="se">\n</span><span class="si">{</span><span class="n">options_str</span><span class="si">}</span><span class="se">\n</span><span class="s1">&lt;/select&gt;'</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"select"</span><span class="p">,</span> <span class="s2">"messageml"</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render generic dict representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render generic dict representation."""</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;select&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;placeholder&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">,</span>
-            <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">],</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"select"</span><span class="p">,</span>
+            <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"placeholder"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">,</span>
+            <span class="s2">"options"</span><span class="p">:</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">model_dump</span><span class="p">()</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">],</span>
         <span class="p">}</span></div>
 
 
@@ -604,24 +604,24 @@
 <div class="viewcode-block" id="ActionRow">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.ActionRow">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ActionRow</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A row of interactive components.</span>
+<span class="w">    </span><span class="sd">"""A row of interactive components.</span>
 
 <span class="sd">    Components are laid out horizontally. Most platforms limit</span>
 <span class="sd">    the number of components per row (e.g., Discord allows 5 buttons).</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        components: List of components in this row.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">components</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Button</span> <span class="o">|</span> <span class="n">SelectMenu</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Components in this row.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Components in this row."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="ActionRow.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.ActionRow.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the action row to platform-specific format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render the action row to platform-specific format."""</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_slack</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
@@ -633,35 +633,35 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_slack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Slack Block Kit.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Slack Block Kit."""</span>
         <span class="n">elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">comp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;actions&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;elements&quot;</span><span class="p">:</span> <span class="n">elements</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"actions"</span><span class="p">,</span>
+            <span class="s2">"elements"</span><span class="p">:</span> <span class="n">elements</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_discord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Discord Components.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Discord Components."""</span>
         <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="n">comp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">]</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Action row component type</span>
-            <span class="s2">&quot;components&quot;</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Action row component type</span>
+            <span class="s2">"components"</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_symphony</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Symphony MessageML.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Symphony MessageML."""</span>
         <span class="n">parts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span> <span class="p">(</span><span class="n">Button</span><span class="p">,</span> <span class="n">SelectMenu</span><span class="p">)):</span>
-                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">_render_symphony</span><span class="p">()[</span><span class="s2">&quot;messageml&quot;</span><span class="p">])</span>
-        <span class="n">messageml</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;action_row&quot;</span><span class="p">,</span> <span class="s2">&quot;messageml&quot;</span><span class="p">:</span> <span class="n">messageml</span><span class="p">}</span>
+                <span class="n">parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comp</span><span class="o">.</span><span class="n">_render_symphony</span><span class="p">()[</span><span class="s2">"messageml"</span><span class="p">])</span>
+        <span class="n">messageml</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"action_row"</span><span class="p">,</span> <span class="s2">"messageml"</span><span class="p">:</span> <span class="n">messageml</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render generic dict representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render generic dict representation."""</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;action_row&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;components&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">comp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">],</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"action_row"</span><span class="p">,</span>
+            <span class="s2">"components"</span><span class="p">:</span> <span class="p">[</span><span class="n">comp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">],</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="ActionRow.add_button">
@@ -669,12 +669,12 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_button</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">style</span><span class="p">:</span> <span class="n">ButtonStyle</span> <span class="o">=</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ActionRow&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a button to the row.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ActionRow"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a button to the row.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            label: Button text.</span>
@@ -685,7 +685,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">Button</span><span class="p">(</span>
                 <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
@@ -704,9 +704,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SelectOption</span><span class="p">],</span>
-        <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Select an option&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ActionRow&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a select menu to the row.</span>
+        <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Select an option"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ActionRow"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a select menu to the row.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            action_id: Callback action identifier.</span>
@@ -715,7 +715,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">SelectMenu</span><span class="p">(</span>
                 <span class="n">action_id</span><span class="o">=</span><span class="n">action_id</span><span class="p">,</span>
@@ -731,20 +731,20 @@
 <div class="viewcode-block" id="TextInputStyle">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.TextInputStyle">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextInputStyle</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Text input styles for modals.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Text input styles for modals."""</span>
 
-    <span class="n">SHORT</span> <span class="o">=</span> <span class="s2">&quot;short&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Single-line input.&quot;&quot;&quot;</span>
+    <span class="n">SHORT</span> <span class="o">=</span> <span class="s2">"short"</span>
+<span class="w">    </span><span class="sd">"""Single-line input."""</span>
 
-    <span class="n">PARAGRAPH</span> <span class="o">=</span> <span class="s2">&quot;paragraph&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multi-line input.&quot;&quot;&quot;</span></div>
+    <span class="n">PARAGRAPH</span> <span class="o">=</span> <span class="s2">"paragraph"</span>
+<span class="w">    </span><span class="sd">"""Multi-line input."""</span></div>
 
 
 
 <div class="viewcode-block" id="TextInput">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.TextInput">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">TextInput</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A text input field for modals/forms.</span>
+<span class="w">    </span><span class="sd">"""A text input field for modals/forms.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        action_id: Unique identifier for this input.</span>
@@ -755,39 +755,39 @@
 <span class="sd">        max_length: Maximum input length.</span>
 <span class="sd">        required: Whether input is required.</span>
 <span class="sd">        default_value: Default value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier for this input.&quot;</span><span class="p">)</span>
-    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Label displayed above the input.&quot;</span><span class="p">)</span>
+    <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier for this input."</span><span class="p">)</span>
+    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Label displayed above the input."</span><span class="p">)</span>
     <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Placeholder text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Placeholder text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">style</span><span class="p">:</span> <span class="n">TextInputStyle</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">TextInputStyle</span><span class="o">.</span><span class="n">SHORT</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Input style.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Input style."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">min_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Minimum input length.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Minimum input length."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum input length.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum input length."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether input is required.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether input is required."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">default_value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Default value.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Default value."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="TextInput.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.TextInput.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the text input to platform-specific format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render the text input to platform-specific format."""</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_slack</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
@@ -799,69 +799,69 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_slack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Slack Block Kit (modal input).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Slack Block Kit (modal input)."""</span>
         <span class="n">element</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text_input&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;multiline&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">TextInputStyle</span><span class="o">.</span><span class="n">PARAGRAPH</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text_input"</span><span class="p">,</span>
+            <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"multiline"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">TextInputStyle</span><span class="o">.</span><span class="n">PARAGRAPH</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">:</span>
-            <span class="n">element</span><span class="p">[</span><span class="s2">&quot;placeholder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">}</span>
+            <span class="n">element</span><span class="p">[</span><span class="s2">"placeholder"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span><span class="p">:</span>
-            <span class="n">element</span><span class="p">[</span><span class="s2">&quot;min_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span>
+            <span class="n">element</span><span class="p">[</span><span class="s2">"min_length"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">:</span>
-            <span class="n">element</span><span class="p">[</span><span class="s2">&quot;max_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span>
+            <span class="n">element</span><span class="p">[</span><span class="s2">"max_length"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span><span class="p">:</span>
-            <span class="n">element</span><span class="p">[</span><span class="s2">&quot;initial_value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span>
+            <span class="n">element</span><span class="p">[</span><span class="s2">"initial_value"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;input&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">},</span>
-            <span class="s2">&quot;element&quot;</span><span class="p">:</span> <span class="n">element</span><span class="p">,</span>
-            <span class="s2">&quot;optional&quot;</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"input"</span><span class="p">,</span>
+            <span class="s2">"label"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">},</span>
+            <span class="s2">"element"</span><span class="p">:</span> <span class="n">element</span><span class="p">,</span>
+            <span class="s2">"optional"</span><span class="p">:</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_discord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Discord Components (modal input).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Discord Components (modal input)."""</span>
         <span class="n">style</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">TextInputStyle</span><span class="o">.</span><span class="n">SHORT</span> <span class="k">else</span> <span class="mi">2</span>
 
         <span class="n">component</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># Text input component type</span>
-            <span class="s2">&quot;custom_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="n">style</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>  <span class="c1"># Text input component type</span>
+            <span class="s2">"custom_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"style"</span><span class="p">:</span> <span class="n">style</span><span class="p">,</span>
+            <span class="s2">"label"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+            <span class="s2">"required"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="p">:</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;placeholder&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">"placeholder"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span><span class="p">:</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;min_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">"min_length"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_length</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">:</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;max_length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">"max_length"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span><span class="p">:</span>
-            <span class="n">component</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span>
+            <span class="n">component</span><span class="p">[</span><span class="s2">"value"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_value</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Action row wrapper</span>
-            <span class="s2">&quot;components&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">component</span><span class="p">],</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Action row wrapper</span>
+            <span class="s2">"components"</span><span class="p">:</span> <span class="p">[</span><span class="n">component</span><span class="p">],</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_symphony</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Symphony MessageML.&quot;&quot;&quot;</span>
-        <span class="n">input_type</span> <span class="o">=</span> <span class="s2">&quot;textarea&quot;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">TextInputStyle</span><span class="o">.</span><span class="n">PARAGRAPH</span> <span class="k">else</span> <span class="s2">&quot;text-field&quot;</span>
-        <span class="n">required</span> <span class="o">=</span> <span class="s1">&#39; required=&quot;true&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">placeholder</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39; placeholder=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1"> name=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="si">}</span><span class="s1">&quot;</span><span class="si">{</span><span class="n">required</span><span class="si">}{</span><span class="n">placeholder</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_value</span><span class="si">}</span><span class="s1">&lt;/</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1">&gt;&#39;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text_input&quot;</span><span class="p">,</span> <span class="s2">&quot;messageml&quot;</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">}</span>
+<span class="w">        </span><span class="sd">"""Render for Symphony MessageML."""</span>
+        <span class="n">input_type</span> <span class="o">=</span> <span class="s2">"textarea"</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span> <span class="o">==</span> <span class="n">TextInputStyle</span><span class="o">.</span><span class="n">PARAGRAPH</span> <span class="k">else</span> <span class="s2">"text-field"</span>
+        <span class="n">required</span> <span class="o">=</span> <span class="s1">' required="true"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">placeholder</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">' placeholder="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span><span class="si">}</span><span class="s1">"'</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">placeholder</span> <span class="k">else</span> <span class="s2">""</span>
+        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">'&lt;</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1"> name="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="si">}</span><span class="s1">"</span><span class="si">{</span><span class="n">required</span><span class="si">}{</span><span class="n">placeholder</span><span class="si">}</span><span class="s1">&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">default_value</span><span class="si">}</span><span class="s1">&lt;/</span><span class="si">{</span><span class="n">input_type</span><span class="si">}</span><span class="s1">&gt;'</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text_input"</span><span class="p">,</span> <span class="s2">"messageml"</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render generic dict representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render generic dict representation."""</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;text_input&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;action_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
-            <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
-            <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"text_input"</span><span class="p">,</span>
+            <span class="s2">"action_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">action_id</span><span class="p">,</span>
+            <span class="s2">"label"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+            <span class="s2">"style"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="s2">"required"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">,</span>
         <span class="p">}</span></div>
 
 
@@ -869,7 +869,7 @@
 <div class="viewcode-block" id="Modal">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.Modal">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Modal</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A modal dialog with form inputs.</span>
+<span class="w">    </span><span class="sd">"""A modal dialog with form inputs.</span>
 
 <span class="sd">    Modals are opened in response to interactions and contain</span>
 <span class="sd">    form elements for user input.</span>
@@ -880,27 +880,27 @@
 <span class="sd">        submit_label: Submit button text.</span>
 <span class="sd">        close_label: Close/cancel button text.</span>
 <span class="sd">        inputs: List of input elements.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">callback_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Unique identifier for form submission.&quot;</span><span class="p">)</span>
-    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Modal title.&quot;</span><span class="p">)</span>
+    <span class="n">callback_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Unique identifier for form submission."</span><span class="p">)</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">"Modal title."</span><span class="p">)</span>
     <span class="n">submit_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Submit&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Submit button text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"Submit"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Submit button text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">close_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Cancel&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Close button text.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"Cancel"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Close button text."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">inputs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">TextInput</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Form input elements.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Form input elements."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="Modal.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.Modal.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the modal to platform-specific format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render the modal to platform-specific format."""</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_slack</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
@@ -912,47 +912,47 @@
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_slack</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Slack modal view.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Slack modal view."""</span>
         <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;modal&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;callback_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">,</span>
-            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">},</span>
-            <span class="s2">&quot;submit&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_label</span><span class="p">},</span>
-            <span class="s2">&quot;close&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;plain_text&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_label</span><span class="p">},</span>
-            <span class="s2">&quot;blocks&quot;</span><span class="p">:</span> <span class="n">blocks</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"modal"</span><span class="p">,</span>
+            <span class="s2">"callback_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">,</span>
+            <span class="s2">"title"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">},</span>
+            <span class="s2">"submit"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">submit_label</span><span class="p">},</span>
+            <span class="s2">"close"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"plain_text"</span><span class="p">,</span> <span class="s2">"text"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_label</span><span class="p">},</span>
+            <span class="s2">"blocks"</span><span class="p">:</span> <span class="n">blocks</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_discord</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Discord modal.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render for Discord modal."""</span>
         <span class="n">components</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>  <span class="c1"># Modal response type</span>
-            <span class="s2">&quot;custom_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">,</span>
-            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
-            <span class="s2">&quot;components&quot;</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span>  <span class="c1"># Modal response type</span>
+            <span class="s2">"custom_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">,</span>
+            <span class="s2">"title"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="s2">"components"</span><span class="p">:</span> <span class="n">components</span><span class="p">,</span>
         <span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_symphony</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render for Symphony form.&quot;&quot;&quot;</span>
-        <span class="n">inputs_ml</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">_render_symphony</span><span class="p">()[</span><span class="s2">&quot;messageml&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">]</span>
-        <span class="n">inputs_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs_ml</span><span class="p">)</span>
-        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;&lt;form id=&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="si">}</span><span class="s2">&quot;&gt;</span>
+<span class="w">        </span><span class="sd">"""Render for Symphony form."""</span>
+        <span class="n">inputs_ml</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">_render_symphony</span><span class="p">()[</span><span class="s2">"messageml"</span><span class="p">]</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">]</span>
+        <span class="n">inputs_str</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs_ml</span><span class="p">)</span>
+        <span class="n">messageml</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"""&lt;form id="</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="si">}</span><span class="s2">"&gt;</span>
 <span class="s2">&lt;h3&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&lt;/h3&gt;</span>
 <span class="si">{</span><span class="n">inputs_str</span><span class="si">}</span>
-<span class="s2">&lt;button name=&quot;submit&quot; type=&quot;action&quot;&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_label</span><span class="si">}</span><span class="s2">&lt;/button&gt;</span>
-<span class="s2">&lt;/form&gt;&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;modal&quot;</span><span class="p">,</span> <span class="s2">&quot;messageml&quot;</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">&quot;callback_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">}</span>
+<span class="s2">&lt;button name="submit" type="action"&gt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">submit_label</span><span class="si">}</span><span class="s2">&lt;/button&gt;</span>
+<span class="s2">&lt;/form&gt;"""</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"type"</span><span class="p">:</span> <span class="s2">"modal"</span><span class="p">,</span> <span class="s2">"messageml"</span><span class="p">:</span> <span class="n">messageml</span><span class="p">,</span> <span class="s2">"callback_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_render_generic</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render generic dict representation.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render generic dict representation."""</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;modal&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;callback_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">,</span>
-            <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
-            <span class="s2">&quot;inputs&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">],</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="s2">"modal"</span><span class="p">,</span>
+            <span class="s2">"callback_id"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback_id</span><span class="p">,</span>
+            <span class="s2">"title"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="s2">"inputs"</span><span class="p">:</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">],</span>
         <span class="p">}</span>
 
 <div class="viewcode-block" id="Modal.add_text_input">
@@ -961,11 +961,11 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">style</span><span class="p">:</span> <span class="n">TextInputStyle</span> <span class="o">=</span> <span class="n">TextInputStyle</span><span class="o">.</span><span class="n">SHORT</span><span class="p">,</span>
         <span class="n">required</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Modal&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a text input to the modal.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"Modal"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a text input to the modal.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            action_id: Unique identifier.</span>
@@ -976,7 +976,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
             <span class="n">TextInput</span><span class="p">(</span>
                 <span class="n">action_id</span><span class="o">=</span><span class="n">action_id</span><span class="p">,</span>
@@ -994,27 +994,27 @@
 <div class="viewcode-block" id="ComponentContainer">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.ComponentContainer">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ComponentContainer</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container for interactive components attached to a message.</span>
+<span class="w">    </span><span class="sd">"""Container for interactive components attached to a message.</span>
 
 <span class="sd">    This wraps action rows and can be attached to a FormattedMessage.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        rows: List of action rows.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ActionRow</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Action rows containing components.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Action rows containing components."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="ComponentContainer.render">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.ComponentContainer.render">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="p">:</span> <span class="n">FORMAT</span> <span class="o">=</span> <span class="n">Format</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render all rows to platform-specific format.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Render all rows to platform-specific format."""</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
             <span class="c1"># Symphony uses inline MessageML</span>
-            <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">_render_symphony</span><span class="p">()[</span><span class="s2">&quot;messageml&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">]</span>
-            <span class="k">return</span> <span class="p">[{</span><span class="s2">&quot;messageml&quot;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)}]</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">_render_symphony</span><span class="p">()[</span><span class="s2">"messageml"</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">]</span>
+            <span class="k">return</span> <span class="p">[{</span><span class="s2">"messageml"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">)}]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="nb">format</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">]</span></div>
 
@@ -1022,11 +1022,11 @@
 <div class="viewcode-block" id="ComponentContainer.add_row">
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.ComponentContainer.add_row">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_row</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ActionRow</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new action row and return it.</span>
+<span class="w">        </span><span class="sd">"""Add a new action row and return it.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The new action row for adding components.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">row</span> <span class="o">=</span> <span class="n">ActionRow</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">row</span></div>
@@ -1037,11 +1037,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">add_button</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span><span class="p">,</span>
         <span class="n">style</span><span class="p">:</span> <span class="n">ButtonStyle</span> <span class="o">=</span> <span class="n">ButtonStyle</span><span class="o">.</span><span class="n">PRIMARY</span><span class="p">,</span>
         <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComponentContainer&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a button to the last row (creates row if needed).</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ComponentContainer"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a button to the last row (creates row if needed).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            label: Button text.</span>
@@ -1051,7 +1051,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_row</span><span class="p">()</span>
 
@@ -1065,9 +1065,9 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">action_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">options</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">SelectOption</span><span class="p">],</span>
-        <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Select an option&quot;</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;ComponentContainer&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a select menu (creates new row for it).</span>
+        <span class="n">placeholder</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"Select an option"</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"ComponentContainer"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Add a select menu (creates new row for it).</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            action_id: Callback action identifier.</span>
@@ -1076,7 +1076,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Self for chaining.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># Select menus typically need their own row</span>
         <span class="n">row</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_row</span><span class="p">()</span>
         <span class="n">row</span><span class="o">.</span><span class="n">add_select</span><span class="p">(</span><span class="n">action_id</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">placeholder</span><span class="p">)</span>
@@ -1089,10 +1089,10 @@
 <a class="viewcode-back" href="../../../docs/src/api-format.html#chatom.format.components.attach_components_for_backend">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">attach_components_for_backend</span><span class="p">(</span>
     <span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
-    <span class="n">container</span><span class="p">:</span> <span class="s2">&quot;ComponentContainer&quot;</span><span class="p">,</span>
-    <span class="n">backend_format</span><span class="p">:</span> <span class="s2">&quot;FORMAT&quot;</span><span class="p">,</span>
+    <span class="n">container</span><span class="p">:</span> <span class="s2">"ComponentContainer"</span><span class="p">,</span>
+    <span class="n">backend_format</span><span class="p">:</span> <span class="s2">"FORMAT"</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Populate ``send_message`` keyword args for interactive components.</span>
+<span class="w">    </span><span class="sd">"""Populate ``send_message`` keyword args for interactive components.</span>
 
 <span class="sd">    Writes the correct kwarg for the target backend format into ``kwargs``</span>
 <span class="sd">    in-place, rendering ``container`` exactly once. Returns ``kwargs`` for</span>
@@ -1102,24 +1102,24 @@
 <span class="sd">    - ``DISCORD_MARKDOWN`` -&gt; ``components`` (Discord component objects)</span>
 <span class="sd">    - ``SYMPHONY_MESSAGEML`` -&gt; merged into ``content`` inline</span>
 <span class="sd">    - anything else -&gt; ``components`` as a generic fallback</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">container</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">container</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">kwargs</span>
 
     <span class="n">rendered</span> <span class="o">=</span> <span class="n">container</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">backend_format</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">backend_format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SLACK_MARKDOWN</span><span class="p">:</span>
-        <span class="n">existing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;blocks&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[])</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;blocks&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">existing</span> <span class="o">+</span> <span class="n">rendered</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"blocks"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"blocks"</span><span class="p">]</span> <span class="o">=</span> <span class="n">existing</span> <span class="o">+</span> <span class="n">rendered</span>
     <span class="k">elif</span> <span class="n">backend_format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">DISCORD_MARKDOWN</span><span class="p">:</span>
-        <span class="n">existing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;components&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[])</span>
-        <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;components&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">existing</span> <span class="o">+</span> <span class="n">rendered</span>
+        <span class="n">existing</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"components"</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s2">"components"</span><span class="p">]</span> <span class="o">=</span> <span class="n">existing</span> <span class="o">+</span> <span class="n">rendered</span>
     <span class="k">elif</span> <span class="n">backend_format</span> <span class="o">==</span> <span class="n">Format</span><span class="o">.</span><span class="n">SYMPHONY_MESSAGEML</span><span class="p">:</span>
-        <span class="n">inline</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;messageml&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rendered</span> <span class="k">if</span> <span class="n">r</span><span class="p">)</span>
+        <span class="n">inline</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"messageml"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rendered</span> <span class="k">if</span> <span class="n">r</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">inline</span><span class="p">:</span>
-            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;content&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">inline</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">"content"</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"content"</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">inline</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">&quot;components&quot;</span><span class="p">,</span> <span class="n">rendered</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s2">"components"</span><span class="p">,</span> <span class="n">rendered</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">kwargs</span></div>
 
 </pre></div>

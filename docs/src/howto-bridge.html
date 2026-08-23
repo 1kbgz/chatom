@@ -267,17 +267,17 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">IdentityMapper</span>
 
 <span class="n">mapper</span> <span class="o">=</span> <span class="n">IdentityMapper</span><span class="p">()</span>
-<span class="n">mapper</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">,</span> <span class="n">slack_backend</span><span class="p">)</span>
-<span class="n">mapper</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="s2">&quot;symphony&quot;</span><span class="p">,</span> <span class="n">symphony_backend</span><span class="p">)</span>
+<span class="n">mapper</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="s2">"slack"</span><span class="p">,</span> <span class="n">slack_backend</span><span class="p">)</span>
+<span class="n">mapper</span><span class="o">.</span><span class="n">register_backend</span><span class="p">(</span><span class="s2">"symphony"</span><span class="p">,</span> <span class="n">symphony_backend</span><span class="p">)</span>
 
-<span class="k">await</span> <span class="n">mapper</span><span class="o">.</span><span class="n">link_by_email</span><span class="p">(</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">mapper</span><span class="o">.</span><span class="n">link_by_email</span><span class="p">(</span><span class="s2">"alice@example.com"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For users without a shared email address, link known user objects manually:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mapper</span><span class="o">.</span><span class="n">link</span><span class="p">(</span>
     <span class="n">slack_user</span><span class="p">,</span>
     <span class="n">symphony_user</span><span class="p">,</span>
-    <span class="n">backends</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;slack&quot;</span><span class="p">,</span> <span class="s2">&quot;symphony&quot;</span><span class="p">],</span>
+    <span class="n">backends</span><span class="o">=</span><span class="p">[</span><span class="s2">"slack"</span><span class="p">,</span> <span class="s2">"symphony"</span><span class="p">],</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -289,10 +289,10 @@
 <span class="n">bridge</span> <span class="o">=</span> <span class="n">MessageBridge</span><span class="p">(</span>
     <span class="n">source</span><span class="o">=</span><span class="n">slack_backend</span><span class="p">,</span>
     <span class="n">dest</span><span class="o">=</span><span class="n">symphony_backend</span><span class="p">,</span>
-    <span class="n">source_name</span><span class="o">=</span><span class="s2">&quot;slack&quot;</span><span class="p">,</span>
-    <span class="n">dest_name</span><span class="o">=</span><span class="s2">&quot;symphony&quot;</span><span class="p">,</span>
+    <span class="n">source_name</span><span class="o">=</span><span class="s2">"slack"</span><span class="p">,</span>
+    <span class="n">dest_name</span><span class="o">=</span><span class="s2">"symphony"</span><span class="p">,</span>
     <span class="n">identity_mapper</span><span class="o">=</span><span class="n">mapper</span><span class="p">,</span>
-    <span class="n">channels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;C0123&quot;</span><span class="p">:</span> <span class="s2">&quot;symphony-stream-id&quot;</span><span class="p">},</span>
+    <span class="n">channels</span><span class="o">=</span><span class="p">{</span><span class="s2">"C0123"</span><span class="p">:</span> <span class="s2">"symphony-stream-id"</span><span class="p">},</span>
 <span class="p">)</span>
 
 <span class="n">forwarded</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bridge</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">incoming_message</span><span class="p">)</span>
@@ -301,7 +301,7 @@
 <p>Pass <code class="docutils literal notranslate"><span class="pre">to_channel</span></code> to override the channel map for one call:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">forwarded</span> <span class="o">=</span> <span class="k">await</span> <span class="n">bridge</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span>
     <span class="n">incoming_message</span><span class="p">,</span>
-    <span class="n">to_channel</span><span class="o">=</span><span class="s2">&quot;incident-room-id&quot;</span><span class="p">,</span>
+    <span class="n">to_channel</span><span class="o">=</span><span class="s2">"incident-room-id"</span><span class="p">,</span>
     <span class="n">include_attachments</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>

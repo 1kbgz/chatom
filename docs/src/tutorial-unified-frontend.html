@@ -266,18 +266,18 @@
 <h2>Build the message<a class="headerlink" href="#build-the-message" title="Link to this heading">¶</a></h2>
 <p>Chatom’s frontend consists of backend-independent models and formatting nodes. Build a status message with the fluent <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.MessageBuilder</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">build_status_message</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a backend-independent status message.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Build a backend-independent status message."""</span>
     <span class="k">return</span> <span class="p">(</span>
         <span class="n">MessageBuilder</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;Deployment status&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s2">&quot;The same message object is ready for every configured backend.&quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">&quot;Environment: &quot;</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;production&quot;</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">"Deployment status"</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s2">"The same message object is ready for every configured backend."</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">"Environment: "</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"production"</span><span class="p">)</span>
         <span class="o">.</span><span class="n">line_break</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">bullet_list</span><span class="p">([</span><span class="s2">&quot;API: healthy&quot;</span><span class="p">,</span> <span class="s2">&quot;Workers: healthy&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">bullet_list</span><span class="p">([</span><span class="s2">"API: healthy"</span><span class="p">,</span> <span class="s2">"Workers: healthy"</span><span class="p">])</span>
         <span class="o">.</span><span class="n">table</span><span class="p">(</span>
-            <span class="p">[[</span><span class="s2">&quot;API&quot;</span><span class="p">,</span> <span class="s2">&quot;healthy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Workers&quot;</span><span class="p">,</span> <span class="s2">&quot;healthy&quot;</span><span class="p">]],</span>
-            <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="s2">&quot;State&quot;</span><span class="p">],</span>
+            <span class="p">[[</span><span class="s2">"API"</span><span class="p">,</span> <span class="s2">"healthy"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"Workers"</span><span class="p">,</span> <span class="s2">"healthy"</span><span class="p">]],</span>
+            <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">"Service"</span><span class="p">,</span> <span class="s2">"State"</span><span class="p">],</span>
         <span class="p">)</span>
         <span class="o">.</span><span class="n">build</span><span class="p">()</span>
     <span class="p">)</span>
@@ -290,8 +290,8 @@
 <p>Render the same object with each backend name:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">build_status_message</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">,</span> <span class="s2">&quot;discord&quot;</span><span class="p">,</span> <span class="s2">&quot;symphony&quot;</span><span class="p">,</span> <span class="s2">&quot;telegram&quot;</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;--- </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> ---&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"slack"</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">,</span> <span class="s2">"symphony"</span><span class="p">,</span> <span class="s2">"telegram"</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--- </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> ---"</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="n">backend</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -311,7 +311,7 @@
 <section id="send-the-rendered-result">
 <h2>Send the rendered result<a class="headerlink" href="#send-the-rendered-result" title="Link to this heading">¶</a></h2>
 <p>A connected backend accepts the same channel-and-content call shape:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;operations&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"operations"</span><span class="p">)</span>
 <span class="n">content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">content</span><span class="p">)</span>
 </pre></div>

@@ -253,11 +253,11 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.symphony.config</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Symphony backend configuration.</span>
+<span></span><span class="sd">"""Symphony backend configuration.</span>
 
 <span class="sd">This module provides the SymphonyConfig class for configuring</span>
 <span class="sd">the Symphony backend with the Symphony BDK.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">atexit</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
@@ -273,7 +273,7 @@
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymphonyBackend</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;SymphonyConfig&quot;</span><span class="p">,</span> <span class="s2">&quot;SymphonyRoomMapper&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"SymphonyConfig"</span><span class="p">,</span> <span class="s2">"SymphonyRoomMapper"</span><span class="p">)</span>
 
 <span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -281,27 +281,27 @@
 <div class="viewcode-block" id="SymphonyConfig">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyConfig</span><span class="p">(</span><span class="n">BackendConfig</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the Symphony backend.</span>
+<span class="w">    </span><span class="sd">"""Configuration for the Symphony backend.</span>
 
 <span class="sd">    This class holds all Symphony-specific configuration needed</span>
 <span class="sd">    for the Symphony BDK, including pod URL, bot credentials,</span>
 <span class="sd">    and optional application settings.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        host: The Symphony pod hostname (e.g., &quot;mycompany.symphony.com&quot;).</span>
+<span class="sd">        host: The Symphony pod hostname (e.g., "mycompany.symphony.com").</span>
 <span class="sd">        port: The Symphony pod port (default: 443).</span>
-<span class="sd">        scheme: The URL scheme (default: &quot;https&quot;).</span>
-<span class="sd">        context: Optional context path (default: &quot;&quot;).</span>
-<span class="sd">        bot_username: The bot&#39;s username.</span>
-<span class="sd">        bot_private_key_path: Path to the bot&#39;s RSA private key file.</span>
+<span class="sd">        scheme: The URL scheme (default: "https").</span>
+<span class="sd">        context: Optional context path (default: "").</span>
+<span class="sd">        bot_username: The bot's username.</span>
+<span class="sd">        bot_private_key_path: Path to the bot's RSA private key file.</span>
 <span class="sd">        bot_private_key_content: Direct content of the RSA private key.</span>
-<span class="sd">        bot_certificate_path: Path to the bot&#39;s certificate (for cert auth).</span>
+<span class="sd">        bot_certificate_path: Path to the bot's certificate (for cert auth).</span>
 <span class="sd">        bot_certificate_content: Direct content of the certificate (PEM format).</span>
 <span class="sd">            If provided without bot_certificate_path, a temp file is created</span>
 <span class="sd">            automatically since Symphony BDK requires a file path.</span>
 <span class="sd">        bot_certificate_password: Password for the certificate.</span>
 <span class="sd">        app_id: Optional extension app ID.</span>
-<span class="sd">        app_private_key_path: Path to the app&#39;s RSA private key.</span>
+<span class="sd">        app_private_key_path: Path to the app's RSA private key.</span>
 <span class="sd">        agent_host: Optional separate agent host (if different from pod).</span>
 <span class="sd">        agent_port: Optional agent port.</span>
 <span class="sd">        session_auth_host: Optional session auth host (if different from pod).</span>
@@ -317,28 +317,28 @@
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; # Using RSA key file</span>
 <span class="sd">        &gt;&gt;&gt; config = SymphonyConfig(</span>
-<span class="sd">        ...     host=&quot;mycompany.symphony.com&quot;,</span>
-<span class="sd">        ...     bot_username=&quot;my-bot&quot;,</span>
-<span class="sd">        ...     bot_private_key_path=&quot;/path/to/private-key.pem&quot;,</span>
+<span class="sd">        ...     host="mycompany.symphony.com",</span>
+<span class="sd">        ...     bot_username="my-bot",</span>
+<span class="sd">        ...     bot_private_key_path="/path/to/private-key.pem",</span>
 <span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; backend = SymphonyBackend(config=config)</span>
 
 <span class="sd">        &gt;&gt;&gt; # Using certificate content (temp file created automatically)</span>
 <span class="sd">        &gt;&gt;&gt; config = SymphonyConfig(</span>
-<span class="sd">        ...     host=&quot;mycompany.symphony.com&quot;,</span>
-<span class="sd">        ...     bot_username=&quot;my-bot&quot;,</span>
+<span class="sd">        ...     host="mycompany.symphony.com",</span>
+<span class="sd">        ...     bot_username="my-bot",</span>
 <span class="sd">        ...     bot_certificate_content=SecretStr(cert_pem_string),</span>
 <span class="sd">        ... )</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="c1"># Pod configuration</span>
-    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">host</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">port</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">443</span>
-    <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;https&quot;</span>
-    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">scheme</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"https"</span>
+    <span class="n">context</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
 
     <span class="c1"># Bot authentication (RSA)</span>
-    <span class="n">bot_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">bot_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">bot_private_key_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">bot_private_key_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -346,7 +346,7 @@
     <span class="n">bot_certificate_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">bot_certificate_content</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Direct content of the certificate PEM. If provided without bot_certificate_path, a temp file will be created automatically.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Direct content of the certificate PEM. If provided without bot_certificate_path, a temp file will be created automatically."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">bot_certificate_password</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">SecretStr</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -377,61 +377,61 @@
     <span class="n">proxy_password</span><span class="p">:</span> <span class="n">SecretStr</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Connection settings</span>
-    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Request timeout in seconds&quot;</span><span class="p">)</span>
+    <span class="n">timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Request timeout in seconds"</span><span class="p">)</span>
 
     <span class="c1"># Error handling and retry configuration</span>
     <span class="n">error_room</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;A room to direct error messages to, if a message fails to be sent.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"A room to direct error messages to, if a message fails to be sent."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">inform_client</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to inform the intended recipient of a failed message.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether to inform the intended recipient of a failed message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_attempts</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mi">10</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Max attempts for datafeed and message post requests before raising exception.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Max attempts for datafeed and message post requests before raising exception."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">initial_interval_ms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mi">500</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Initial interval to wait between attempts, in milliseconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Initial interval to wait between attempts, in milliseconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">multiplier</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mf">2.0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Multiplier between attempt delays for exponential backoff.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Multiplier between attempt delays for exponential backoff."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">max_interval_ms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="mi">300000</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Maximum delay between retry attempts, in milliseconds.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Maximum delay between retry attempts, in milliseconds."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">datafeed_version</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="s2">&quot;v2&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Version of datafeed to use (&#39;v1&#39; or &#39;v2&#39;).&quot;</span><span class="p">,</span>
+        <span class="s2">"v2"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Version of datafeed to use ('v1' or 'v2')."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c1"># SSL configuration</span>
     <span class="n">ssl_trust_store_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Path to a custom CA certificate bundle file.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Path to a custom CA certificate bundle file."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">ssl_verify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">True</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether to verify SSL certificates.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether to verify SSL certificates."</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;after&quot;</span><span class="p">)</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SymphonyConfig&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate configuration and handle certificate content.&quot;&quot;&quot;</span>
+    <span class="nd">@model_validator</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">"after"</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"SymphonyConfig"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Validate configuration and handle certificate content."""</span>
         <span class="c1"># Validate required fields - allow pod_host as fallback for host</span>
         <span class="n">effective_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_host</span>
         <span class="k">if</span> <span class="n">effective_host</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">:</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;host&quot;</span><span class="p">,</span> <span class="n">effective_host</span><span class="p">)</span>
-        <span class="c1"># Only validate if we&#39;re not in a mock/testing context (has some connection config)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"host"</span><span class="p">,</span> <span class="n">effective_host</span><span class="p">)</span>
+        <span class="c1"># Only validate if we're not in a mock/testing context (has some connection config)</span>
         <span class="c1"># Skip validation if both are empty (allows mock backends)</span>
 
         <span class="c1"># Handle SSL verification</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;SSL verification is disabled. This is not recommended for production.&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"SSL verification is disabled. This is not recommended for production."</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_patch_ssl_verify</span><span class="p">()</span>
 
         <span class="c1"># Handle certificate content -&gt; temp file</span>
@@ -442,15 +442,15 @@
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_content</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span>
                 <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_content</span>
             <span class="p">)</span>
-            <span class="n">fd</span><span class="p">,</span> <span class="n">temp_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.pem&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;chatom_cert_&quot;</span><span class="p">)</span>
+            <span class="n">fd</span><span class="p">,</span> <span class="n">temp_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s2">".pem"</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"chatom_cert_"</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">cert_content</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">cert_content</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span>
             <span class="k">finally</span><span class="p">:</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">)</span>
 
             <span class="c1"># Store and set the temp path</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_temp_cert_path&quot;</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">)</span>
-            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;bot_certificate_path&quot;</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_temp_cert_path"</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">)</span>
+            <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"bot_certificate_path"</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">)</span>
 
             <span class="c1"># Register cleanup on exit</span>
             <span class="k">def</span><span class="w"> </span><span class="nf">cleanup_temp_cert</span><span class="p">():</span>
@@ -468,56 +468,56 @@
     <span class="c1"># Use {sid} for stream ID, {datafeed_id} for datafeed ID, {room_id} for room ID</span>
     <span class="n">message_create_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for message creation. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v4/stream/</span><span class="si">{sid}</span><span class="s2">/message/create&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for message creation. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v4/stream/</span><span class="si">{sid}</span><span class="s2">/message/create"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">datafeed_create_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for datafeed creation. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v5/datafeeds&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for datafeed creation. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v5/datafeeds"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">datafeed_delete_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for datafeed deletion. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v5/datafeeds/</span><span class="si">{datafeed_id}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for datafeed deletion. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v5/datafeeds/</span><span class="si">{datafeed_id}</span><span class="s2">"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">datafeed_read_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for datafeed reading. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v5/datafeeds/</span><span class="si">{datafeed_id}</span><span class="s2">/read&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for datafeed reading. Template: https://</span><span class="si">{host}</span><span class="s2">/agent/v5/datafeeds/</span><span class="si">{datafeed_id}</span><span class="s2">/read"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">room_search_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for room search. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/room/search&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for room search. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/room/search"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">room_info_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for room info. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/room/</span><span class="si">{room_id}</span><span class="s2">/info&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for room info. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/room/</span><span class="si">{room_id}</span><span class="s2">/info"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">im_create_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for IM creation. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v1/im/create&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for IM creation. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v1/im/create"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">room_members_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for room members. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v2/room/</span><span class="si">{room_id}</span><span class="s2">/membership/list&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for room members. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v2/room/</span><span class="si">{room_id}</span><span class="s2">/membership/list"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">presence_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for user presence. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v2/user/presence&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for user presence. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v2/user/presence"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">user_detail_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for user detail. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v2/admin/user/</span><span class="si">{uid}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for user detail. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v2/admin/user/</span><span class="si">{uid}</span><span class="s2">"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">user_search_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for user search. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/users&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for user search. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/users"</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">user_lookup_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom URL for user lookup by email/username. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/users&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom URL for user lookup by email/username. Template: https://</span><span class="si">{host}</span><span class="s2">/pod/v3/users"</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_private_key_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the bot private key content as string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the bot private key content as string."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_content</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_content</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
@@ -528,7 +528,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_certificate_content_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the certificate content as string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the certificate content as string."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_content</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_content</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
@@ -539,7 +539,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">bot_certificate_password_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the certificate password as string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the certificate password as string."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_password</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_password</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span>
@@ -550,143 +550,143 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">proxy_password_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the proxy password as string.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Get the proxy password as string."""</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_password</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_password</span><span class="o">.</span><span class="n">get_secret_value</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proxy_password</span><span class="p">,</span> <span class="n">SecretStr</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_password</span>
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_rsa_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if RSA authentication is configured.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if RSA authentication is configured."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_username</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_content</span><span class="p">))</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_cert_auth</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if certificate authentication is configured.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if certificate authentication is configured."""</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_path</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_content</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_using_temp_cert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a temporary certificate file was created.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Check if a temporary certificate file was created."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temp_cert_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="SymphonyConfig.cleanup_temp_cert">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.cleanup_temp_cert">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">cleanup_temp_cert</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manually cleanup temporary certificate file if created.</span>
+<span class="w">        </span><span class="sd">"""Manually cleanup temporary certificate file if created.</span>
 
 <span class="sd">        This is called automatically on process exit, but can be called</span>
 <span class="sd">        manually for explicit cleanup.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_temp_cert_path</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_cert_path</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_temp_cert_path</span><span class="p">)</span>
-                <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_temp_cert_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">"_temp_cert_path"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
                 <span class="k">pass</span></div>
 
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pod_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the pod URL.&quot;&quot;&quot;</span>
-        <span class="n">base</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">        </span><span class="sd">"""Build the pod URL."""</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="si">}</span><span class="s2">://</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">!=</span> <span class="mi">443</span><span class="p">:</span>
-            <span class="n">base</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;:</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">base</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">:</span>
-            <span class="n">base</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">base</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"/</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">return</span> <span class="n">base</span>
 
 <div class="viewcode-block" id="SymphonyConfig.to_bdk_config">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.to_bdk_config">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_bdk_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to Symphony BDK configuration format.</span>
+<span class="w">        </span><span class="sd">"""Convert to Symphony BDK configuration format.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dictionary suitable for passing to SymphonyBdk.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
-            <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
-            <span class="s2">&quot;scheme&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
-            <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
+            <span class="s2">"host"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+            <span class="s2">"port"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+            <span class="s2">"scheme"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+            <span class="s2">"context"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">,</span>
         <span class="p">}</span>
 
         <span class="c1"># Bot configuration</span>
-        <span class="n">bot_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_username</span><span class="p">}</span>
+        <span class="n">bot_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"username"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_username</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_path</span><span class="p">:</span>
-            <span class="n">bot_config</span><span class="p">[</span><span class="s2">&quot;privateKey&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_path</span><span class="p">}</span>
+            <span class="n">bot_config</span><span class="p">[</span><span class="s2">"privateKey"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_path</span><span class="p">}</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_content</span><span class="p">:</span>
-            <span class="n">bot_config</span><span class="p">[</span><span class="s2">&quot;privateKey&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_str</span><span class="p">}</span>
+            <span class="n">bot_config</span><span class="p">[</span><span class="s2">"privateKey"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_private_key_str</span><span class="p">}</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_path</span><span class="p">:</span>
-            <span class="n">cert_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_path</span><span class="p">}</span>
+            <span class="n">cert_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_path</span><span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_password</span><span class="p">:</span>
-                <span class="n">cert_config</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_password_str</span>
-            <span class="n">bot_config</span><span class="p">[</span><span class="s2">&quot;certificate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cert_config</span>
+                <span class="n">cert_config</span><span class="p">[</span><span class="s2">"password"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bot_certificate_password_str</span>
+            <span class="n">bot_config</span><span class="p">[</span><span class="s2">"certificate"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cert_config</span>
 
-        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;bot&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bot_config</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">"bot"</span><span class="p">]</span> <span class="o">=</span> <span class="n">bot_config</span>
 
         <span class="c1"># Pod configuration (only if explicitly set)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_host</span><span class="p">:</span>
-            <span class="n">pod_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_host</span><span class="p">}</span>
+            <span class="n">pod_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"host"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_host</span><span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_port</span><span class="p">:</span>
-                <span class="n">pod_config</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_port</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pod&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pod_config</span>
+                <span class="n">pod_config</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pod_port</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"pod"</span><span class="p">]</span> <span class="o">=</span> <span class="n">pod_config</span>
 
         <span class="c1"># Agent configuration</span>
         <span class="c1"># Only set if explicitly specified; BDK defaults to main host if not set</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_host</span><span class="p">:</span>
-            <span class="n">agent_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_host</span><span class="p">}</span>
+            <span class="n">agent_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"host"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_host</span><span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_port</span><span class="p">:</span>
-                <span class="n">agent_config</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_port</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;agent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent_config</span>
+                <span class="n">agent_config</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">agent_port</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"agent"</span><span class="p">]</span> <span class="o">=</span> <span class="n">agent_config</span>
 
         <span class="c1"># Key manager configuration</span>
         <span class="c1"># Default to session_auth_host if not set (common deployment pattern where KM auth is separate)</span>
         <span class="n">effective_km_host</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_manager_host</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_host</span>
         <span class="k">if</span> <span class="n">effective_km_host</span><span class="p">:</span>
-            <span class="n">km_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">effective_km_host</span><span class="p">}</span>
+            <span class="n">km_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"host"</span><span class="p">:</span> <span class="n">effective_km_host</span><span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_manager_port</span><span class="p">:</span>
-                <span class="n">km_config</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_manager_port</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;keyManager&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">km_config</span>
+                <span class="n">km_config</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_manager_port</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"keyManager"</span><span class="p">]</span> <span class="o">=</span> <span class="n">km_config</span>
 
         <span class="c1"># Session auth configuration (if separate)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_host</span><span class="p">:</span>
-            <span class="n">session_auth_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_host</span><span class="p">}</span>
+            <span class="n">session_auth_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"host"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_host</span><span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_port</span><span class="p">:</span>
-                <span class="n">session_auth_config</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_port</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;sessionAuth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">session_auth_config</span>
+                <span class="n">session_auth_config</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_auth_port</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"sessionAuth"</span><span class="p">]</span> <span class="o">=</span> <span class="n">session_auth_config</span>
 
         <span class="c1"># App configuration</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_id</span><span class="p">:</span>
-            <span class="n">app_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;appId&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_id</span><span class="p">}</span>
+            <span class="n">app_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"appId"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_id</span><span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_private_key_path</span><span class="p">:</span>
-                <span class="n">app_config</span><span class="p">[</span><span class="s2">&quot;privateKey&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_private_key_path</span><span class="p">}</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;app&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">app_config</span>
+                <span class="n">app_config</span><span class="p">[</span><span class="s2">"privateKey"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_private_key_path</span><span class="p">}</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"app"</span><span class="p">]</span> <span class="o">=</span> <span class="n">app_config</span>
 
         <span class="c1"># SSL configuration</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_store_path</span><span class="p">:</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ssl&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;trustStore&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_store_path</span><span class="p">}}</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"ssl"</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"trustStore"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trust_store_path</span><span class="p">}}</span>
 
         <span class="c1"># Proxy configuration</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">:</span>
             <span class="n">proxy_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span>
+                <span class="s2">"host"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_host</span><span class="p">,</span>
             <span class="p">}</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_port</span><span class="p">:</span>
-                <span class="n">proxy_config</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_port</span>
+                <span class="n">proxy_config</span><span class="p">[</span><span class="s2">"port"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_port</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_username</span><span class="p">:</span>
-                <span class="n">proxy_config</span><span class="p">[</span><span class="s2">&quot;username&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_username</span>
+                <span class="n">proxy_config</span><span class="p">[</span><span class="s2">"username"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_username</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_password</span><span class="p">:</span>
-                <span class="n">proxy_config</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_password_str</span>
-            <span class="n">config</span><span class="p">[</span><span class="s2">&quot;proxy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy_config</span>
+                <span class="n">proxy_config</span><span class="p">[</span><span class="s2">"password"</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proxy_password_str</span>
+            <span class="n">config</span><span class="p">[</span><span class="s2">"proxy"</span><span class="p">]</span> <span class="o">=</span> <span class="n">proxy_config</span>
 
         <span class="k">return</span> <span class="n">config</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_patch_ssl_verify</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Patch the BDK to disable SSL verification.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Patch the BDK to disable SSL verification."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.configuration</span><span class="w"> </span><span class="kn">import</span> <span class="n">Configuration</span>
 
@@ -697,24 +697,24 @@
                 <span class="n">config_self</span><span class="o">.</span><span class="n">verify_ssl</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="n">cast</span><span class="p">(</span><span class="n">Any</span><span class="p">,</span> <span class="n">Configuration</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span> <span class="o">=</span> <span class="n">patched_config_init</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;SSL verification has been disabled via monkey patch&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"SSL verification has been disabled via monkey patch"</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not patch SSL verification: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Could not patch SSL verification: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SymphonyConfig.get_bdk_config">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.get_bdk_config">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_bdk_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a BdkConfig from chatom config fields.</span>
+<span class="w">        </span><span class="sd">"""Build a BdkConfig from chatom config fields.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            A BdkConfig instance for use with symphony-bdk-python.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.core.config.model.bdk_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">BdkConfig</span>
 
             <span class="k">return</span> <span class="n">BdkConfig</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">to_bdk_config</span><span class="p">())</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;symphony-bdk-python is required for get_bdk_config()&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">"symphony-bdk-python is required for get_bdk_config()"</span><span class="p">)</span></div>
 </div>
 
 
@@ -722,19 +722,19 @@
 <div class="viewcode-block" id="SymphonyRoomMapper">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">SymphonyRoomMapper</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Thread-safe mapper for Symphony room names and IDs.</span>
+<span class="w">    </span><span class="sd">"""Thread-safe mapper for Symphony room names and IDs.</span>
 
 <span class="sd">    This class maintains a cache of room name to ID mappings and vice versa,</span>
 <span class="sd">    using the stream service to resolve unknown rooms.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;SymphonyBackend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the room mapper.</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_service</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">"SymphonyBackend"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Initialize the room mapper.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            stream_service: Optional StreamService from SymphonyBdk.</span>
 <span class="sd">            backend: Optional chatom SymphonyBackend for room resolution.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_name_to_id</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stream_service</span> <span class="o">=</span> <span class="n">stream_service</span>
@@ -744,34 +744,34 @@
 <div class="viewcode-block" id="SymphonyRoomMapper.set_stream_service">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.set_stream_service">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_stream_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_service</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the stream service for room resolution.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Set the stream service for room resolution."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stream_service</span> <span class="o">=</span> <span class="n">stream_service</span></div>
 
 
 <div class="viewcode-block" id="SymphonyRoomMapper.set_backend">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.set_backend">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s2">&quot;SymphonyBackend&quot;</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the chatom backend for room resolution.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">:</span> <span class="s2">"SymphonyBackend"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Set the chatom backend for room resolution."""</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_backend</span> <span class="o">=</span> <span class="n">backend</span></div>
 
 
 <div class="viewcode-block" id="SymphonyRoomMapper.get_room_id">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.get_room_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_room_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">room_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the room ID for a given room name.</span>
+<span class="w">        </span><span class="sd">"""Get the room ID for a given room name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            room_name: The display name of the room.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The room&#39;s stream ID, or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The room's stream ID, or None if not found.</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">room_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_to_id</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name_to_id</span><span class="p">[</span><span class="n">room_name</span><span class="p">]</span>
 
             <span class="c1"># If it looks like a stream ID already, return it</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">room_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span> <span class="ow">and</span> <span class="s2">&quot; &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">room_name</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">room_name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span> <span class="ow">and</span> <span class="s2">" "</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">room_name</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">room_name</span>
 
             <span class="k">return</span> <span class="kc">None</span></div>
@@ -780,14 +780,14 @@
 <div class="viewcode-block" id="SymphonyRoomMapper.get_room_id_async">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.get_room_id_async">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_room_id_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">room_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the room ID for a given room name, using async calls if needed.</span>
+<span class="w">        </span><span class="sd">"""Get the room ID for a given room name, using async calls if needed.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            room_name: The display name of the room.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The room&#39;s stream ID, or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The room's stream ID, or None if not found.</span>
+<span class="sd">        """</span>
         <span class="c1"># Check cache first</span>
         <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_room_id</span><span class="p">(</span><span class="n">room_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
@@ -821,7 +821,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_name</span><span class="p">[</span><span class="n">room_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">room_name</span>
                         <span class="k">return</span> <span class="n">room_id</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># noqa: BLE001</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error searching for room &#39;</span><span class="si">{</span><span class="n">room_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error searching for room '</span><span class="si">{</span><span class="n">room_name</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -829,14 +829,14 @@
 <div class="viewcode-block" id="SymphonyRoomMapper.get_room_name">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.get_room_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_room_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">room_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the room name for a given room ID.</span>
+<span class="w">        </span><span class="sd">"""Get the room name for a given room ID.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            room_id: The room&#39;s stream ID.</span>
+<span class="sd">            room_id: The room's stream ID.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The room&#39;s display name, or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The room's display name, or None if not found.</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">room_id</span><span class="p">)</span></div>
 
@@ -844,14 +844,14 @@
 <div class="viewcode-block" id="SymphonyRoomMapper.get_room_name_async">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.get_room_name_async">[docs]</a>
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">get_room_name_async</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">room_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the room name for a given room ID, using async calls if needed.</span>
+<span class="w">        </span><span class="sd">"""Get the room name for a given room ID, using async calls if needed.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            room_id: The room&#39;s stream ID.</span>
+<span class="sd">            room_id: The room's stream ID.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            The room&#39;s display name, or None if not found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            The room's display name, or None if not found.</span>
+<span class="sd">        """</span>
         <span class="c1"># Check cache first</span>
         <span class="n">cached</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_room_name</span><span class="p">(</span><span class="n">room_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">cached</span><span class="p">:</span>
@@ -879,7 +879,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_name</span><span class="p">[</span><span class="n">room_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">room_name</span>
                 <span class="k">return</span> <span class="n">room_name</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># noqa: BLE001</span>
-            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error getting room info for &#39;</span><span class="si">{</span><span class="n">room_id</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error getting room info for '</span><span class="si">{</span><span class="n">room_id</span><span class="si">}</span><span class="s2">': </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -887,12 +887,12 @@
 <div class="viewcode-block" id="SymphonyRoomMapper.set_im_id">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.set_im_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_im_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">stream_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register an IM stream ID for a user.</span>
+<span class="w">        </span><span class="sd">"""Register an IM stream ID for a user.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            user_identifier: The user&#39;s display name or user ID.</span>
+<span class="sd">            user_identifier: The user's display name or user ID.</span>
 <span class="sd">            stream_id: The IM stream ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_name</span><span class="p">[</span><span class="n">stream_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">user_identifier</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_name_to_id</span><span class="p">[</span><span class="n">user_identifier</span><span class="p">]</span> <span class="o">=</span> <span class="n">stream_id</span></div>
@@ -901,12 +901,12 @@
 <div class="viewcode-block" id="SymphonyRoomMapper.register_room">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.register_room">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">register_room</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">room_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">room_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manually register a room name to ID mapping.</span>
+<span class="w">        </span><span class="sd">"""Manually register a room name to ID mapping.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            room_name: The display name of the room.</span>
-<span class="sd">            room_id: The room&#39;s stream ID.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            room_id: The room's stream ID.</span>
+<span class="sd">        """</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_name_to_id</span><span class="p">[</span><span class="n">room_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">room_id</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id_to_name</span><span class="p">[</span><span class="n">room_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">room_name</span></div>

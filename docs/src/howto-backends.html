@@ -274,16 +274,16 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.symphony</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymphonyBackend</span><span class="p">,</span> <span class="n">SymphonyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.telegram</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelegramBackend</span><span class="p">,</span> <span class="n">TelegramConfig</span>
 
-<span class="n">slack</span> <span class="o">=</span> <span class="n">SlackBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">SlackConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">&quot;xoxb-...&quot;</span><span class="p">))</span>
-<span class="n">discord</span> <span class="o">=</span> <span class="n">DiscordBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">DiscordConfig</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">))</span>
+<span class="n">slack</span> <span class="o">=</span> <span class="n">SlackBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">SlackConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">"xoxb-..."</span><span class="p">))</span>
+<span class="n">discord</span> <span class="o">=</span> <span class="n">DiscordBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">DiscordConfig</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s2">"..."</span><span class="p">))</span>
 <span class="n">symphony</span> <span class="o">=</span> <span class="n">SymphonyBackend</span><span class="p">(</span>
     <span class="n">config</span><span class="o">=</span><span class="n">SymphonyConfig</span><span class="p">(</span>
-        <span class="n">host</span><span class="o">=</span><span class="s2">&quot;company.symphony.com&quot;</span><span class="p">,</span>
-        <span class="n">bot_username</span><span class="o">=</span><span class="s2">&quot;chatom-bot&quot;</span><span class="p">,</span>
-        <span class="n">bot_private_key_path</span><span class="o">=</span><span class="s2">&quot;bot-private-key.pem&quot;</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="s2">"company.symphony.com"</span><span class="p">,</span>
+        <span class="n">bot_username</span><span class="o">=</span><span class="s2">"chatom-bot"</span><span class="p">,</span>
+        <span class="n">bot_private_key_path</span><span class="o">=</span><span class="s2">"bot-private-key.pem"</span><span class="p">,</span>
     <span class="p">)</span>
 <span class="p">)</span>
-<span class="n">telegram</span> <span class="o">=</span> <span class="n">TelegramBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">TelegramConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">&quot;...&quot;</span><span class="p">))</span>
+<span class="n">telegram</span> <span class="o">=</span> <span class="n">TelegramBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">TelegramConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">"..."</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>Pass secrets from environment variables or a secret manager in production.</p>
@@ -307,8 +307,8 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 <p>For a synchronous caller, use <code class="xref py py-attr docutils literal notranslate"><span class="pre">chatom.BackendBase.sync</span></code> and close it when finished:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;operations&quot;</span><span class="p">)</span>
-    <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;Deployment complete&quot;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"operations"</span><span class="p">)</span>
+    <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">"Deployment complete"</span><span class="p">)</span>
 <span class="k">finally</span><span class="p">:</span>
     <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
     <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -320,7 +320,7 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">Capability</span>
 
 <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">EMOJI_REACTIONS</span><span class="p">):</span>
-    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="s2">&quot;thumbsup&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="s2">"thumbsup"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Consult the backend’s <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.BackendCapabilities</span></code> before relying on reactions, presence, editing, files, threads, or interactions.</p>
@@ -336,16 +336,16 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
     <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">author_name</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">MESSAGE_SEARCH</span><span class="p">):</span>
-    <span class="n">matches</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">&quot;deployment&quot;</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">search_messages</span><span class="p">(</span><span class="s2">"deployment"</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>History is returned newest-first. Bounds accept message IDs, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Message</span></code> objects, or timezone-aware datetimes.</p>
 </section>
 <section id="reply-and-work-with-threads">
 <h2>Reply and work with threads<a class="headerlink" href="#reply-and-work-with-threads" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;Deployment discussion&quot;</span><span class="p">)</span>
-<span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">&quot;All checks passed&quot;</span><span class="p">,</span> <span class="n">reply_to</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
-<span class="n">thread_reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">&quot;Following up in the thread&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">parent</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">"Deployment discussion"</span><span class="p">)</span>
+<span class="n">reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="s2">"All checks passed"</span><span class="p">,</span> <span class="n">reply_to</span><span class="o">=</span><span class="n">parent</span><span class="p">)</span>
+<span class="n">thread_reply</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="s2">"Following up in the thread"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Use <code class="xref py py-meth docutils literal notranslate"><span class="pre">chatom.BackendBase.create_thread()</span></code> for platforms where a thread is a named object and <code class="xref py py-meth docutils literal notranslate"><span class="pre">chatom.BackendBase.read_thread()</span></code> to iterate its messages.</p>
@@ -353,11 +353,11 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 <section id="edit-delete-and-react">
 <h2>Edit, delete, and react<a class="headerlink" href="#edit-delete-and-react" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">EDITING</span><span class="p">):</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">edit_message</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;Corrected content&quot;</span><span class="p">)</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">edit_message</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"Corrected content"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">EMOJI_REACTIONS</span><span class="p">):</span>
-    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;thumbsup&quot;</span><span class="p">)</span>
-    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;thumbsup&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"thumbsup"</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"thumbsup"</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">DELETING</span><span class="p">):</span>
     <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">delete_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
@@ -369,9 +369,9 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">uploaded</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">upload_file</span><span class="p">(</span>
     <span class="n">channel</span><span class="p">,</span>
     <span class="n">report_bytes</span><span class="p">,</span>
-    <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;report.csv&quot;</span><span class="p">,</span>
-    <span class="n">content_type</span><span class="o">=</span><span class="s2">&quot;text/csv&quot;</span><span class="p">,</span>
-    <span class="n">content</span><span class="o">=</span><span class="s2">&quot;Latest report&quot;</span><span class="p">,</span>
+    <span class="n">filename</span><span class="o">=</span><span class="s2">"report.csv"</span><span class="p">,</span>
+    <span class="n">content_type</span><span class="o">=</span><span class="s2">"text/csv"</span><span class="p">,</span>
+    <span class="n">content</span><span class="o">=</span><span class="s2">"Latest report"</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="k">for</span> <span class="n">attachment</span> <span class="ow">in</span> <span class="n">incoming_message</span><span class="o">.</span><span class="n">attachments</span><span class="p">:</span>
@@ -381,16 +381,16 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 </section>
 <section id="send-a-direct-message">
 <h2>Send a direct message<a class="headerlink" href="#send-a-direct-message" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">&quot;alice@example.com&quot;</span><span class="p">)</span>
-<span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">&quot;The report is ready&quot;</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_user</span><span class="p">(</span><span class="n">email</span><span class="o">=</span><span class="s2">"alice@example.com"</span><span class="p">)</span>
+<span class="n">message</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_dm</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="s2">"The report is ready"</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="listen-for-events">
 <h2>Listen for events<a class="headerlink" href="#listen-for-events" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="n">backend</span><span class="o">.</span><span class="n">listen</span><span class="p">(</span><span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">&quot;ping&quot;</span><span class="p">:</span>
-        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">&quot;pong&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="s2">"ping"</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">reply_in_thread</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="s2">"pong"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Use <code class="xref py py-meth docutils literal notranslate"><span class="pre">chatom.BackendBase.stream_interactions()</span></code> for button, menu, and modal events. Streaming support depends on the selected backend and its connection mode.</p>
@@ -398,7 +398,7 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 <section id="manage-presence">
 <h2>Manage presence<a class="headerlink" href="#manage-presence" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">backend</span><span class="o">.</span><span class="n">capabilities</span><span class="o">.</span><span class="n">supports</span><span class="p">(</span><span class="n">Capability</span><span class="o">.</span><span class="n">PRESENCE</span><span class="p">):</span>
-    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span><span class="s2">&quot;online&quot;</span><span class="p">,</span> <span class="s2">&quot;Ready&quot;</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">set_presence</span><span class="p">(</span><span class="s2">"online"</span><span class="p">,</span> <span class="s2">"Ready"</span><span class="p">)</span>
     <span class="n">presence</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_presence</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 </pre></div>
 </div>

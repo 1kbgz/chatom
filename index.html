@@ -291,28 +291,28 @@
 
 <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
     <span class="n">MessageBuilder</span><span class="p">()</span>
-    <span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">&quot;Deployment status&quot;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s2">&quot;All checks passed.&quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">&quot;Environment: &quot;</span><span class="p">)</span>
-    <span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;production&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">heading</span><span class="p">(</span><span class="s2">"Deployment status"</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">paragraph</span><span class="p">(</span><span class="s2">"All checks passed."</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">bold</span><span class="p">(</span><span class="s2">"Environment: "</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="s2">"production"</span><span class="p">)</span>
     <span class="o">.</span><span class="n">table</span><span class="p">(</span>
-        <span class="p">[[</span><span class="s2">&quot;API&quot;</span><span class="p">,</span> <span class="s2">&quot;healthy&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Workers&quot;</span><span class="p">,</span> <span class="s2">&quot;healthy&quot;</span><span class="p">]],</span>
-        <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Service&quot;</span><span class="p">,</span> <span class="s2">&quot;State&quot;</span><span class="p">],</span>
+        <span class="p">[[</span><span class="s2">"API"</span><span class="p">,</span> <span class="s2">"healthy"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"Workers"</span><span class="p">,</span> <span class="s2">"healthy"</span><span class="p">]],</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">"Service"</span><span class="p">,</span> <span class="s2">"State"</span><span class="p">],</span>
     <span class="p">)</span>
     <span class="o">.</span><span class="n">build</span><span class="p">()</span>
 <span class="p">)</span>
 
-<span class="n">slack_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;slack&quot;</span><span class="p">)</span>
-<span class="n">discord_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;discord&quot;</span><span class="p">)</span>
-<span class="n">symphony_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;symphony&quot;</span><span class="p">)</span>
-<span class="n">telegram_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">&quot;telegram&quot;</span><span class="p">)</span>
+<span class="n">slack_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"slack"</span><span class="p">)</span>
+<span class="n">discord_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"discord"</span><span class="p">)</span>
+<span class="n">symphony_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"symphony"</span><span class="p">)</span>
+<span class="n">telegram_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"telegram"</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Message construction stays unchanged. Only rendering and backend configuration know which platform receives it.</p>
 <p>Connected backends share the same lifecycle and operation shape:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;operations&quot;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">"operations"</span><span class="p">)</span>
     <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 <span class="k">finally</span><span class="p">:</span>
     <span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
@@ -341,17 +341,6 @@
 <li><p><a class="reference internal" href="docs/src/concepts.html"><span class="std std-doc">Why the unified frontend works</span></a></p></li>
 <li><p><a class="reference internal" href="docs/src/api.html"><span class="std std-doc">API reference</span></a></p></li>
 </ul>
-</section>
-<section id="development">
-<h2>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/1kbgz/chatom.git
-<span class="nb">cd</span><span class="w"> </span>chatom
-pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;.[develop]&#39;</span>
-make<span class="w"> </span><span class="nb">test</span>
-make<span class="w"> </span>lint
-yardang<span class="w"> </span>build
-</pre></div>
-</div>
 </section>
 <section id="license">
 <h2>License<a class="headerlink" href="#license" title="Link to this heading">¶</a></h2>

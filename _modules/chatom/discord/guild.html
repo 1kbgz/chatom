@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.discord.guild</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Discord-specific Guild (Organization) model.</span>
+<span></span><span class="sd">"""Discord-specific Guild (Organization) model.</span>
 
 <span class="sd">This module provides the Discord-specific Guild class which extends Organization.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
@@ -264,76 +264,76 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordUser</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DiscordGuild&quot;</span><span class="p">,)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DiscordGuild"</span><span class="p">,)</span>
 
 
 <div class="viewcode-block" id="DiscordGuild">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.guild.DiscordGuild">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordGuild</span><span class="p">(</span><span class="n">Organization</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific guild (server) with additional Discord fields.</span>
+<span class="w">    </span><span class="sd">"""Discord-specific guild (server) with additional Discord fields.</span>
 
-<span class="sd">    A Discord guild is the organization unit in Discord (commonly called a &quot;server&quot;).</span>
+<span class="sd">    A Discord guild is the organization unit in Discord (commonly called a "server").</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        premium_tier: The guild&#39;s boost level (0-3).</span>
-<span class="sd">        nsfw_level: The guild&#39;s NSFW content level.</span>
-<span class="sd">        preferred_locale: The guild&#39;s preferred locale.</span>
+<span class="sd">        premium_tier: The guild's boost level (0-3).</span>
+<span class="sd">        nsfw_level: The guild's NSFW content level.</span>
+<span class="sd">        preferred_locale: The guild's preferred locale.</span>
 <span class="sd">        approximate_member_count: Approximate number of members (may differ from member_count).</span>
 <span class="sd">        approximate_presence_count: Approximate number of online members.</span>
-<span class="sd">        vanity_url_code: The guild&#39;s vanity invite code if set.</span>
-<span class="sd">        features: List of guild features (e.g., &quot;COMMUNITY&quot;, &quot;PARTNERED&quot;).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        vanity_url_code: The guild's vanity invite code if set.</span>
+<span class="sd">        features: List of guild features (e.g., "COMMUNITY", "PARTNERED").</span>
+<span class="sd">    """</span>
 
     <span class="n">premium_tier</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The guild&#39;s boost level (0-3).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The guild's boost level (0-3)."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">nsfw_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The guild&#39;s NSFW content level.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The guild's NSFW content level."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">preferred_locale</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;en-US&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The guild&#39;s preferred locale.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"en-US"</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The guild's preferred locale."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">approximate_member_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Approximate number of members.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Approximate number of members."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">approximate_presence_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Approximate number of online members.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Approximate number of online members."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">vanity_url_code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The guild&#39;s vanity invite code if set.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The guild's vanity invite code if set."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">features</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of guild features.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of guild features."</span><span class="p">,</span>
     <span class="p">)</span>
 
 <div class="viewcode-block" id="DiscordGuild.from_discord_guild">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.guild.DiscordGuild.from_discord_guild">[docs]</a>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_discord_guild</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DiscordGuild&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a DiscordGuild from a discord.py Guild object.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_discord_guild</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">guild</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">"DiscordGuild"</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a DiscordGuild from a discord.py Guild object.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            guild: A discord.py Guild object.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            DiscordGuild instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
             <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
             <span class="n">name</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-            <span class="n">description</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-            <span class="n">icon_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">icon</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">if</span> <span class="n">guild</span><span class="o">.</span><span class="n">icon</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">,</span>
+            <span class="n">icon_url</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">icon</span><span class="o">.</span><span class="n">url</span><span class="p">)</span> <span class="k">if</span> <span class="n">guild</span><span class="o">.</span><span class="n">icon</span> <span class="k">else</span> <span class="s2">""</span><span class="p">,</span>
             <span class="n">member_count</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">member_count</span><span class="p">,</span>
             <span class="n">owner</span><span class="o">=</span><span class="n">DiscordUser</span><span class="o">.</span><span class="n">from_discord_user</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">owner</span><span class="p">)</span> <span class="k">if</span> <span class="n">guild</span><span class="o">.</span><span class="n">owner</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
             <span class="n">premium_tier</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">premium_tier</span><span class="p">,</span>
-            <span class="n">nsfw_level</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">nsfw_level</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">nsfw_level</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">nsfw_level</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">nsfw_level</span><span class="o">.</span><span class="n">value</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">nsfw_level</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span><span class="p">,</span>
             <span class="n">preferred_locale</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">guild</span><span class="o">.</span><span class="n">preferred_locale</span><span class="p">),</span>
             <span class="n">approximate_member_count</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">approximate_member_count</span><span class="p">,</span>
             <span class="n">approximate_presence_count</span><span class="o">=</span><span class="n">guild</span><span class="o">.</span><span class="n">approximate_presence_count</span><span class="p">,</span>

@@ -253,54 +253,54 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.attachment</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Attachment model for chatom.</span>
+<span></span><span class="sd">"""Attachment model for chatom.</span>
 
 <span class="sd">This module provides classes for file attachments and media.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Attachment&quot;</span><span class="p">,</span> <span class="s2">&quot;AttachmentType&quot;</span><span class="p">,</span> <span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="s2">&quot;Image&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Attachment"</span><span class="p">,</span> <span class="s2">"AttachmentType"</span><span class="p">,</span> <span class="s2">"File"</span><span class="p">,</span> <span class="s2">"Image"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="AttachmentType">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.attachment.AttachmentType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">AttachmentType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of attachments.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Types of attachments."""</span>
 
-    <span class="n">FILE</span> <span class="o">=</span> <span class="s2">&quot;file&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic file attachment.&quot;&quot;&quot;</span>
+    <span class="n">FILE</span> <span class="o">=</span> <span class="s2">"file"</span>
+<span class="w">    </span><span class="sd">"""Generic file attachment."""</span>
 
-    <span class="n">IMAGE</span> <span class="o">=</span> <span class="s2">&quot;image&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Image attachment.&quot;&quot;&quot;</span>
+    <span class="n">IMAGE</span> <span class="o">=</span> <span class="s2">"image"</span>
+<span class="w">    </span><span class="sd">"""Image attachment."""</span>
 
-    <span class="n">VIDEO</span> <span class="o">=</span> <span class="s2">&quot;video&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Video attachment.&quot;&quot;&quot;</span>
+    <span class="n">VIDEO</span> <span class="o">=</span> <span class="s2">"video"</span>
+<span class="w">    </span><span class="sd">"""Video attachment."""</span>
 
-    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">&quot;audio&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Audio attachment.&quot;&quot;&quot;</span>
+    <span class="n">AUDIO</span> <span class="o">=</span> <span class="s2">"audio"</span>
+<span class="w">    </span><span class="sd">"""Audio attachment."""</span>
 
-    <span class="n">DOCUMENT</span> <span class="o">=</span> <span class="s2">&quot;document&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Document attachment (PDF, DOC, etc.).&quot;&quot;&quot;</span>
+    <span class="n">DOCUMENT</span> <span class="o">=</span> <span class="s2">"document"</span>
+<span class="w">    </span><span class="sd">"""Document attachment (PDF, DOC, etc.)."""</span>
 
-    <span class="n">ARCHIVE</span> <span class="o">=</span> <span class="s2">&quot;archive&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Archive file (ZIP, TAR, etc.).&quot;&quot;&quot;</span>
+    <span class="n">ARCHIVE</span> <span class="o">=</span> <span class="s2">"archive"</span>
+<span class="w">    </span><span class="sd">"""Archive file (ZIP, TAR, etc.)."""</span>
 
-    <span class="n">CODE</span> <span class="o">=</span> <span class="s2">&quot;code&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Code snippet or file.&quot;&quot;&quot;</span>
+    <span class="n">CODE</span> <span class="o">=</span> <span class="s2">"code"</span>
+<span class="w">    </span><span class="sd">"""Code snippet or file."""</span>
 
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unknown attachment type.&quot;&quot;&quot;</span></div>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">"unknown"</span>
+<span class="w">    </span><span class="sd">"""Unknown attachment type."""</span></div>
 
 
 
 <div class="viewcode-block" id="Attachment">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.attachment.Attachment">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Attachment</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for file attachments.</span>
+<span class="w">    </span><span class="sd">"""Base class for file attachments.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        id: Platform-specific unique identifier.</span>
@@ -310,79 +310,79 @@
 <span class="sd">        content_type: MIME type of the attachment.</span>
 <span class="sd">        size: File size in bytes.</span>
 <span class="sd">        attachment_type: Type of attachment.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific unique identifier.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific unique identifier."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the file.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Name of the file."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL to download the attachment.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL to download the attachment."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">data</span><span class="p">:</span> <span class="nb">bytes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Raw file bytes for direct upload.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Raw file bytes for direct upload."</span><span class="p">,</span>
         <span class="n">exclude</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="nb">repr</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MIME type of the attachment.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"MIME type of the attachment."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;File size in bytes.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"File size in bytes."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">attachment_type</span><span class="p">:</span> <span class="n">AttachmentType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AttachmentType</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of attachment.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Type of attachment."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Platform-specific data needed to resolve or download the attachment (e.g. Symphony stream/message IDs).&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Platform-specific data needed to resolve or download the attachment (e.g. Symphony stream/message IDs)."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">has_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether this attachment carries in-memory binary data.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Whether this attachment carries in-memory binary data."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="Attachment.from_content_type">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.attachment.Attachment.from_content_type">[docs]</a>
     <span class="nd">@classmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">from_content_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">content_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AttachmentType</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine attachment type from MIME type.</span>
+<span class="w">        </span><span class="sd">"""Determine attachment type from MIME type.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            content_type: MIME type string.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            AttachmentType: The determined attachment type.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;image/&quot;</span><span class="p">):</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"image/"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">IMAGE</span>
-        <span class="k">elif</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;video/&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"video/"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">VIDEO</span>
-        <span class="k">elif</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;audio/&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"audio/"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">AUDIO</span>
         <span class="k">elif</span> <span class="n">content_type</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="s2">&quot;application/pdf&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;application/msword&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;application/vnd.openxmlformats-officedocument.wordprocessingml.document&quot;</span><span class="p">,</span>
+            <span class="s2">"application/pdf"</span><span class="p">,</span>
+            <span class="s2">"application/msword"</span><span class="p">,</span>
+            <span class="s2">"application/vnd.openxmlformats-officedocument.wordprocessingml.document"</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">DOCUMENT</span>
         <span class="k">elif</span> <span class="n">content_type</span> <span class="ow">in</span> <span class="p">(</span>
-            <span class="s2">&quot;application/zip&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;application/x-tar&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;application/gzip&quot;</span><span class="p">,</span>
+            <span class="s2">"application/zip"</span><span class="p">,</span>
+            <span class="s2">"application/x-tar"</span><span class="p">,</span>
+            <span class="s2">"application/gzip"</span><span class="p">,</span>
         <span class="p">):</span>
             <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">ARCHIVE</span>
-        <span class="k">elif</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;text/&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">content_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"text/"</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">CODE</span>
         <span class="k">return</span> <span class="n">AttachmentType</span><span class="o">.</span><span class="n">FILE</span></div>
 </div>
@@ -392,34 +392,34 @@
 <div class="viewcode-block" id="Image">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.attachment.Image">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Image</span><span class="p">(</span><span class="n">Attachment</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Image attachment with additional image-specific metadata.</span>
+<span class="w">    </span><span class="sd">"""Image attachment with additional image-specific metadata.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        width: Image width in pixels.</span>
 <span class="sd">        height: Image height in pixels.</span>
 <span class="sd">        alt_text: Alternative text description.</span>
 <span class="sd">        thumbnail_url: URL to a thumbnail version.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">attachment_type</span><span class="p">:</span> <span class="n">AttachmentType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AttachmentType</span><span class="o">.</span><span class="n">IMAGE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of attachment.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Type of attachment."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">width</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Image width in pixels.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Image width in pixels."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">height</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Image height in pixels.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Image height in pixels."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">alt_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Alternative text description.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Alternative text description."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">thumbnail_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL to a thumbnail version.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL to a thumbnail version."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -427,19 +427,19 @@
 <div class="viewcode-block" id="File">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.attachment.File">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">File</span><span class="p">(</span><span class="n">Attachment</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generic file attachment.</span>
+<span class="w">    </span><span class="sd">"""Generic file attachment.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        preview: Preview text or snippet of the file content.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">attachment_type</span><span class="p">:</span> <span class="n">AttachmentType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">AttachmentType</span><span class="o">.</span><span class="n">FILE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of attachment.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Type of attachment."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">preview</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Preview text or snippet of the file content.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Preview text or snippet of the file content."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 </pre></div>

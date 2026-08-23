@@ -253,100 +253,100 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.discord.presence</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Discord-specific Presence model.</span>
+<span></span><span class="sd">"""Discord-specific Presence model.</span>
 
 <span class="sd">This module provides the Discord-specific Presence class.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Activity</span><span class="p">,</span> <span class="n">Field</span><span class="p">,</span> <span class="n">Presence</span><span class="p">,</span> <span class="n">PresenceStatus</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DiscordActivityType&quot;</span><span class="p">,</span> <span class="s2">&quot;DiscordPresence&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DiscordActivityType"</span><span class="p">,</span> <span class="s2">"DiscordPresence"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DiscordActivityType">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.presence.DiscordActivityType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordActivityType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific activity types.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Discord-specific activity types."""</span>
 
-    <span class="n">PLAYING</span> <span class="o">=</span> <span class="s2">&quot;playing&quot;</span>
-    <span class="n">STREAMING</span> <span class="o">=</span> <span class="s2">&quot;streaming&quot;</span>
-    <span class="n">LISTENING</span> <span class="o">=</span> <span class="s2">&quot;listening&quot;</span>
-    <span class="n">WATCHING</span> <span class="o">=</span> <span class="s2">&quot;watching&quot;</span>
-    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span>
-    <span class="n">COMPETING</span> <span class="o">=</span> <span class="s2">&quot;competing&quot;</span></div>
+    <span class="n">PLAYING</span> <span class="o">=</span> <span class="s2">"playing"</span>
+    <span class="n">STREAMING</span> <span class="o">=</span> <span class="s2">"streaming"</span>
+    <span class="n">LISTENING</span> <span class="o">=</span> <span class="s2">"listening"</span>
+    <span class="n">WATCHING</span> <span class="o">=</span> <span class="s2">"watching"</span>
+    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">"custom"</span>
+    <span class="n">COMPETING</span> <span class="o">=</span> <span class="s2">"competing"</span></div>
 
 
 
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordActivity</span><span class="p">(</span><span class="n">Activity</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific activity.</span>
+<span class="w">    </span><span class="sd">"""Discord-specific activity.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        state: The user&#39;s current party status.</span>
+<span class="sd">        state: The user's current party status.</span>
 <span class="sd">        details: What the player is currently doing.</span>
 <span class="sd">        application_id: Application ID for the game.</span>
 <span class="sd">        large_image: Large image asset key.</span>
 <span class="sd">        large_text: Text displayed when hovering over large image.</span>
 <span class="sd">        small_image: Small image asset key.</span>
 <span class="sd">        small_text: Text displayed when hovering over small image.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">state</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user&#39;s current party status.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user's current party status."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">details</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;What the player is currently doing.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"What the player is currently doing."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">application_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Application ID for the game.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Application ID for the game."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">large_image</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Large image asset key.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Large image asset key."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">large_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Text displayed when hovering over large image.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Text displayed when hovering over large image."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">small_image</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Small image asset key.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Small image asset key."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">small_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Text displayed when hovering over small image.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Text displayed when hovering over small image."</span><span class="p">,</span>
     <span class="p">)</span>
 
 
 <div class="viewcode-block" id="DiscordPresence">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.presence.DiscordPresence">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DiscordPresence</span><span class="p">(</span><span class="n">Presence</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Discord-specific presence.</span>
+<span class="w">    </span><span class="sd">"""Discord-specific presence.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        activities: List of activities the user is engaged in.</span>
 <span class="sd">        client_status: Status per client (desktop, mobile, web).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">activities</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;List of activities the user is engaged in.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"List of activities the user is engaged in."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">desktop_status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Status on desktop client.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Status on desktop client."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">mobile_status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Status on mobile client.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Status on mobile client."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">web_status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">OFFLINE</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Status on web client.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Status on web client."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 </pre></div>

@@ -253,21 +253,21 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.symphony.mention</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Symphony-specific mention utilities.</span>
+<span></span><span class="sd">"""Symphony-specific mention utilities.</span>
 
 <span class="sd">This module registers Symphony-specific mention formatting using MessageML.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">mention_user</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymphonyUser</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;mention_user&quot;</span><span class="p">,</span> <span class="s2">&quot;mention_user_by_email&quot;</span><span class="p">,</span> <span class="s2">&quot;mention_user_by_uid&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"mention_user"</span><span class="p">,</span> <span class="s2">"mention_user_by_email"</span><span class="p">,</span> <span class="s2">"mention_user_by_uid"</span><span class="p">)</span>
 
 
 <span class="nd">@mention_user</span><span class="o">.</span><span class="n">register</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_mention_symphony_user</span><span class="p">(</span><span class="n">user</span><span class="p">:</span> <span class="n">SymphonyUser</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a Symphony mention string for a user.</span>
+<span class="w">    </span><span class="sd">"""Generate a Symphony mention string for a user.</span>
 
 <span class="sd">    Uses MessageML format with uid if available, otherwise email.</span>
 
@@ -276,66 +276,66 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The Symphony MessageML mention tag.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention uid=&quot;</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention uid="</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s1">"/&gt;'</span>
     <span class="k">elif</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">:</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention email=&quot;</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention email="</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s1">"/&gt;'</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">"@</span><span class="si">{</span><span class="n">user</span><span class="o">.</span><span class="n">display_name</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="n">user</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">"</span>
 
 
 <div class="viewcode-block" id="mention_user_by_email">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.mention.mention_user_by_email">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">mention_user_by_email</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a Symphony mention by email address.</span>
+<span class="w">    </span><span class="sd">"""Generate a Symphony mention by email address.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        email: The email address to mention.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The Symphony MessageML mention tag.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention email=&quot;</span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span></div>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention email="</span><span class="si">{</span><span class="n">email</span><span class="si">}</span><span class="s1">"/&gt;'</span></div>
 
 
 
 <div class="viewcode-block" id="mention_user_by_uid">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.symphony.mention.mention_user_by_uid">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">mention_user_by_uid</span><span class="p">(</span><span class="n">uid</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a Symphony mention by user ID.</span>
+<span class="w">    </span><span class="sd">"""Generate a Symphony mention by user ID.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        uid: The user ID to mention.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The Symphony MessageML mention tag.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;mention uid=&quot;</span><span class="si">{</span><span class="n">uid</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span></div>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;mention uid="</span><span class="si">{</span><span class="n">uid</span><span class="si">}</span><span class="s1">"/&gt;'</span></div>
 
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">format_hashtag</span><span class="p">(</span><span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format a Symphony hashtag.</span>
+<span class="w">    </span><span class="sd">"""Format a Symphony hashtag.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        tag: The hashtag text (without #).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The Symphony MessageML hash tag.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;hash tag=&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;hash tag="</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">"/&gt;'</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">format_cashtag</span><span class="p">(</span><span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Format a Symphony cashtag (stock ticker).</span>
+<span class="w">    </span><span class="sd">"""Format a Symphony cashtag (stock ticker).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        tag: The cashtag text (without $).</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        str: The Symphony MessageML cash tag.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;&lt;cash tag=&quot;</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">&quot;/&gt;&#39;</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s1">'&lt;cash tag="</span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s1">"/&gt;'</span>
 </pre></div>
         </article>
       </div>

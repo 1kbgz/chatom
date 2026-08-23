@@ -253,10 +253,10 @@
         </div>
         <article role="main" id="furo-main-content">
           <h1>Source code for chatom.base.presence</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Presence model for chatom.</span>
+<span></span><span class="sd">"""Presence model for chatom.</span>
 
-<span class="sd">This module provides the Presence class representing a user&#39;s online status.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module provides the Presence class representing a user's online status.</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
@@ -264,63 +264,63 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Activity&quot;</span><span class="p">,</span> <span class="s2">&quot;ActivityType&quot;</span><span class="p">,</span> <span class="s2">&quot;Presence&quot;</span><span class="p">,</span> <span class="s2">&quot;PresenceStatus&quot;</span><span class="p">)</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Activity"</span><span class="p">,</span> <span class="s2">"ActivityType"</span><span class="p">,</span> <span class="s2">"Presence"</span><span class="p">,</span> <span class="s2">"PresenceStatus"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PresenceStatus">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.presence.PresenceStatus">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">PresenceStatus</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User presence status.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""User presence status."""</span>
 
-    <span class="n">ONLINE</span> <span class="o">=</span> <span class="s2">&quot;online&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User is online and active.&quot;&quot;&quot;</span>
+    <span class="n">ONLINE</span> <span class="o">=</span> <span class="s2">"online"</span>
+<span class="w">    </span><span class="sd">"""User is online and active."""</span>
 
-    <span class="n">IDLE</span> <span class="o">=</span> <span class="s2">&quot;idle&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User is online but idle/away.&quot;&quot;&quot;</span>
+    <span class="n">IDLE</span> <span class="o">=</span> <span class="s2">"idle"</span>
+<span class="w">    </span><span class="sd">"""User is online but idle/away."""</span>
 
-    <span class="n">DND</span> <span class="o">=</span> <span class="s2">&quot;dnd&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User is in do not disturb mode.&quot;&quot;&quot;</span>
+    <span class="n">DND</span> <span class="o">=</span> <span class="s2">"dnd"</span>
+<span class="w">    </span><span class="sd">"""User is in do not disturb mode."""</span>
 
-    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="s2">&quot;offline&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User is offline.&quot;&quot;&quot;</span>
+    <span class="n">OFFLINE</span> <span class="o">=</span> <span class="s2">"offline"</span>
+<span class="w">    </span><span class="sd">"""User is offline."""</span>
 
-    <span class="n">INVISIBLE</span> <span class="o">=</span> <span class="s2">&quot;invisible&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;User is online but appearing offline.&quot;&quot;&quot;</span>
+    <span class="n">INVISIBLE</span> <span class="o">=</span> <span class="s2">"invisible"</span>
+<span class="w">    </span><span class="sd">"""User is online but appearing offline."""</span>
 
-    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unknown status.&quot;&quot;&quot;</span></div>
+    <span class="n">UNKNOWN</span> <span class="o">=</span> <span class="s2">"unknown"</span>
+<span class="w">    </span><span class="sd">"""Unknown status."""</span></div>
 
 
 
 <div class="viewcode-block" id="ActivityType">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.presence.ActivityType">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ActivityType</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Types of user activities.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Types of user activities."""</span>
 
-    <span class="n">PLAYING</span> <span class="o">=</span> <span class="s2">&quot;playing&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Playing a game.&quot;&quot;&quot;</span>
+    <span class="n">PLAYING</span> <span class="o">=</span> <span class="s2">"playing"</span>
+<span class="w">    </span><span class="sd">"""Playing a game."""</span>
 
-    <span class="n">STREAMING</span> <span class="o">=</span> <span class="s2">&quot;streaming&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Streaming content.&quot;&quot;&quot;</span>
+    <span class="n">STREAMING</span> <span class="o">=</span> <span class="s2">"streaming"</span>
+<span class="w">    </span><span class="sd">"""Streaming content."""</span>
 
-    <span class="n">LISTENING</span> <span class="o">=</span> <span class="s2">&quot;listening&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Listening to music.&quot;&quot;&quot;</span>
+    <span class="n">LISTENING</span> <span class="o">=</span> <span class="s2">"listening"</span>
+<span class="w">    </span><span class="sd">"""Listening to music."""</span>
 
-    <span class="n">WATCHING</span> <span class="o">=</span> <span class="s2">&quot;watching&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Watching content.&quot;&quot;&quot;</span>
+    <span class="n">WATCHING</span> <span class="o">=</span> <span class="s2">"watching"</span>
+<span class="w">    </span><span class="sd">"""Watching content."""</span>
 
-    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">&quot;custom&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom status.&quot;&quot;&quot;</span>
+    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="s2">"custom"</span>
+<span class="w">    </span><span class="sd">"""Custom status."""</span>
 
-    <span class="n">COMPETING</span> <span class="o">=</span> <span class="s2">&quot;competing&quot;</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Competing in something.&quot;&quot;&quot;</span></div>
+    <span class="n">COMPETING</span> <span class="o">=</span> <span class="s2">"competing"</span>
+<span class="w">    </span><span class="sd">"""Competing in something."""</span></div>
 
 
 
 <div class="viewcode-block" id="Activity">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.presence.Activity">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Activity</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a user&#39;s current activity.</span>
+<span class="w">    </span><span class="sd">"""Represents a user's current activity.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        name: Name of the activity.</span>
@@ -328,27 +328,27 @@
 <span class="sd">        details: Additional details about the activity.</span>
 <span class="sd">        url: URL associated with the activity (e.g., stream URL).</span>
 <span class="sd">        started_at: When the activity started.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Name of the activity.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Name of the activity."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">activity_type</span><span class="p">:</span> <span class="n">ActivityType</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">ActivityType</span><span class="o">.</span><span class="n">CUSTOM</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Type of activity.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Type of activity."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">details</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Additional details about the activity.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Additional details about the activity."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;URL associated with the activity.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"URL associated with the activity."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">started_at</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the activity started.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the activity started."</span><span class="p">,</span>
     <span class="p">)</span></div>
 
 
@@ -356,7 +356,7 @@
 <div class="viewcode-block" id="Presence">
 <a class="viewcode-back" href="../../../docs/src/api-core.html#chatom.base.presence.Presence">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Presence</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Represents a user&#39;s presence/online status.</span>
+<span class="w">    </span><span class="sd">"""Represents a user's presence/online status.</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        user: The user this presence belongs to.</span>
@@ -365,40 +365,40 @@
 <span class="sd">        activity: Current activity, if any.</span>
 <span class="sd">        last_seen: When the user was last active.</span>
 <span class="sd">        is_mobile: Whether the user is on a mobile device.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="n">user</span><span class="p">:</span> <span class="n">User</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The user this presence belongs to.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"The user this presence belongs to."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">PresenceStatus</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">UNKNOWN</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Current presence status.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Current presence status."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">status_text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
-        <span class="n">default</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Custom status text/message.&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Custom status text/message."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">activity</span><span class="p">:</span> <span class="n">Activity</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Current activity, if any.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Current activity, if any."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">last_seen</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;When the user was last active.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"When the user was last active."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">is_mobile</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Whether the user is on a mobile device.&quot;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">"Whether the user is on a mobile device."</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_online</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if user is currently online.</span>
+<span class="w">        </span><span class="sd">"""Check if user is currently online.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if user is online (any non-offline status).</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span>
             <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">,</span>
@@ -407,11 +407,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_available</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if user is available for messaging.</span>
+<span class="w">        </span><span class="sd">"""Check if user is available for messaging.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bool: True if user is online and not DND.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="p">(</span><span class="n">PresenceStatus</span><span class="o">.</span><span class="n">ONLINE</span><span class="p">,</span> <span class="n">PresenceStatus</span><span class="o">.</span><span class="n">IDLE</span><span class="p">)</span></div>
 
 </pre></div>
