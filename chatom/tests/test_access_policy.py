@@ -18,7 +18,7 @@ from chatom.base import Channel, ChannelType, Message, User
 # ---------------------------------------------------------------------------
 
 
-def _make_backend(members=None, channel_type=ChannelType.PUBLIC):
+def _make_backend(members=None, channel_type=ChannelType.PUBLIC, resolved_channel_id="C123"):
     """Create a mock backend with configurable membership and channel info."""
     backend = MagicMock()
     backend.name = "test"
@@ -34,7 +34,7 @@ def _make_backend(members=None, channel_type=ChannelType.PUBLIC):
         backend.fetch_channel_members = AsyncMock(side_effect=NotImplementedError("not supported"))
 
     # lookup_channel
-    resolved_channel = Channel(id="C123", name="general", channel_type=channel_type)
+    resolved_channel = Channel(id=resolved_channel_id, name="general", channel_type=channel_type)
     backend.lookup_channel = AsyncMock(return_value=resolved_channel)
 
     # fetch_messages
@@ -45,6 +45,8 @@ def _make_backend(members=None, channel_type=ChannelType.PUBLIC):
 
     # send_message
     backend.send_message = AsyncMock(return_value=None)
+    backend.edit_message = AsyncMock(return_value=None)
+    backend.add_reaction = AsyncMock(return_value=None)
 
     return backend
 
@@ -165,6 +167,32 @@ class TestRestrictToInvokingChannel:
         )
         toolset = _make_toolset(backend, policy)
         _run(toolset._check_channel_access(Channel(id="C_OTHER", name="other")))
+
+    @pytest.mark.parametrize(
+        ("tool_name", "tool_args"),
+        [
+            ("search_messages", {"query": "test", "channel": {"name": "other"}, "limit": 10}),
+            ("get_channel_members", {"channel": {"name": "other"}}),
+            ("send_message", {"channel": {"name": "other"}, "content": "blocked"}),
+            ("edit_message", {"message_id": "m1", "channel": {"name": "other"}, "content": "blocked"}),
+            ("add_reaction", {"message_id": "m1", "channel": {"name": "other"}, "emoji": "x"}),
+        ],
+    )
+    def test_name_only_cross_channel_is_denied(self, tool_name, tool_args):
+        backend = _make_backend(
+            members=[_make_user()],
+            resolved_channel_id="C_OTHER",
+        )
+        policy = AccessPolicy(
+            requesting_user=_make_user(),
+            invoking_channel_id="C123",
+            restrict_to_invoking_channel=True,
+        )
+        toolset = _make_toolset(backend, policy)
+
+        result = _run(toolset.call(tool_name, tool_args))
+
+        assert result["error"] == "access_denied"
 
 
 # ---------------------------------------------------------------------------
