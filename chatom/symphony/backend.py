@@ -87,6 +87,16 @@ PRESENCE_MAP = {
 }
 
 
+def _message_identifiers(message: Any) -> tuple[str, str] | None:
+    """Return required stream and message IDs for a datafeed message."""
+    stream = getattr(message, "stream", None)
+    stream_id = getattr(stream, "stream_id", None)
+    message_id = getattr(message, "message_id", None)
+    if not stream_id or not message_id:
+        return None
+    return stream_id, message_id
+
+
 def _symphony_attachments(attachments_info: Any, stream_id: str, message_id: str) -> list[Attachment]:
     """Convert Symphony ``V4AttachmentInfo`` objects into chatom attachments.
 
@@ -1516,10 +1526,13 @@ class SymphonyBackend(BackendBase):
 
             async def on_message_sent(self, initiator: V4Initiator, event: V4MessageSent):
                 msg = event.message
-                if not msg or not msg.stream:
+                if not msg:
                     return
 
-                stream_id = msg.stream.stream_id
+                identifiers = _message_identifiers(msg)
+                if identifiers is None:
+                    return
+                stream_id, message_id = identifiers
                 sender_id = str(initiator.user.user_id) if initiator.user else None
 
                 # Skip bot's own messages
@@ -1574,7 +1587,7 @@ class SymphonyBackend(BackendBase):
 
                 # Convert to SymphonyMessage
                 symphony_msg = SymphonyMessage(
-                    id=msg.message_id,
+                    id=message_id,
                     content=msg.message or "",
                     presentation_ml=msg.message or "",
                     author=author,  # Use looked-up author with full info
@@ -1582,7 +1595,7 @@ class SymphonyBackend(BackendBase):
                     created_at=msg_timestamp,
                     data=msg.data,
                     mentions=list(mention_users),  # List of SymphonyUser objects
-                    attachments=_symphony_attachments(getattr(msg, "attachments", None), stream_id, msg.message_id),
+                    attachments=_symphony_attachments(getattr(msg, "attachments", None), stream_id, message_id),
                 )
 
                 # If we didn't find the author via lookup, use info from initiator
