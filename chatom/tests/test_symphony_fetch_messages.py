@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from chatom.base import Message
-from chatom.symphony.backend import SymphonyBackend
+from chatom.symphony.backend import SymphonyBackend, _message_identifiers
 
 
 def _make_v4_message(message_id: str, timestamp_ms: int, user_id: int = 1001):
@@ -31,6 +31,27 @@ def _make_messages_in_range(start_ms: int, end_ms: int, count: int):
 
 def _ms(dt: datetime) -> int:
     return int(dt.timestamp() * 1000)
+
+
+class TestMessageIdentifiers:
+    def test_returns_stream_and_message_ids(self):
+        message = SimpleNamespace(
+            stream=SimpleNamespace(stream_id="stream-1"),
+            message_id="message-1",
+        )
+
+        assert _message_identifiers(message) == ("stream-1", "message-1")
+
+    @pytest.mark.parametrize(
+        "message",
+        [
+            SimpleNamespace(stream=None, message_id="message-1"),
+            SimpleNamespace(stream=SimpleNamespace(stream_id=None), message_id="message-1"),
+            SimpleNamespace(stream=SimpleNamespace(stream_id="stream-1"), message_id=None),
+        ],
+    )
+    def test_returns_none_when_an_id_is_missing(self, message):
+        assert _message_identifiers(message) is None
 
 
 @pytest.fixture

@@ -274,6 +274,64 @@ def readonly_backend(mock_backend: _MockBackend) -> _MockBackend:
 class TestBackendToolset:
     """Tests for BackendToolset."""
 
+    def test_tool_definitions_are_available_without_run_context(self, mock_backend: _MockBackend) -> None:
+        from chatom.agent.toolset import BackendToolset
+
+        definitions = BackendToolset(mock_backend).tool_definitions()
+
+        assert "read_channel_history" in definitions
+        assert "send_message" in definitions
+        assert "properties" in definitions["read_channel_history"].parameters_json_schema
+
+    @pytest.mark.asyncio
+    async def test_call_executes_tool_without_pydantic_context(self, mock_backend: _MockBackend) -> None:
+        from chatom.agent.toolset import BackendToolset
+
+        result = await BackendToolset(mock_backend).call(
+            "lookup_user",
+            {"user": {"id": "U1"}},
+        )
+
+        assert result["name"] == "Alice"
+
+    @pytest.mark.asyncio
+    async def test_call_rejects_tool_omitted_by_read_only_policy(self, mock_backend: _MockBackend) -> None:
+        from chatom.agent.toolset import BackendToolset
+
+        with pytest.raises(ValueError, match="not available"):
+            await BackendToolset(mock_backend, read_only=True).call(
+                "send_message",
+                {"channel": {"id": "C1"}, "content": "blocked"},
+            )
+
+        assert mock_backend.sent == []
+
+    @pytest.mark.asyncio
+    async def test_call_rejects_tool_omitted_by_backend_capability(self) -> None:
+        from chatom.agent.toolset import BackendToolset
+
+        backend = _MockBackend(
+            capabilities=BackendCapabilities(capabilities=frozenset({Capability.PLAINTEXT})),
+        )
+
+        with pytest.raises(ValueError, match="not available"):
+            await BackendToolset(backend).call(
+                "search_messages",
+                {"query": "test", "limit": 10},
+            )
+
+    @pytest.mark.asyncio
+    async def test_call_validates_arguments_before_backend_dispatch(self, mock_backend: _MockBackend) -> None:
+        from pydantic import ValidationError
+
+        from chatom.agent.toolset import BackendToolset
+
+        with pytest.raises(ValidationError):
+            await BackendToolset(mock_backend).call(
+                "read_channel_history",
+                {"channel": {"id": "C1"}, "limit": 201},
+            )
+
     @pytest.mark.asyncio
     async def test_get_tools_returns_all_tools(self, mock_backend: _MockBackend) -> None:
         from chatom.agent.toolset import BackendToolset

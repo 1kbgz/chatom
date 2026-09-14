@@ -474,25 +474,55 @@ class BackendToolset(AbstractToolset[Any]):
     def id(self) -> str | None:
         return f"chatom-{self._backend.name}" if self._backend.name else "chatom"
 
-    async def get_tools(self, ctx: RunContext[Any]) -> dict[str, ToolsetTool[Any]]:
-        tools: dict[str, ToolsetTool[Any]] = {}
+    def tool_definitions(self) -> dict[str, ToolDefinition]:
+        """Return the tools available for this backend and policy."""
+        definitions: dict[str, ToolDefinition] = {}
         for desc in _TOOL_DESCRIPTORS:
             if not self._should_include(desc):
                 continue
             params_model = desc["params_model"]
             adapter = TypeAdapter(params_model)
-            tool_def = ToolDefinition(
+            definitions[desc["name"]] = ToolDefinition(
                 name=desc["name"],
                 description=desc["description"],
                 parameters_json_schema=adapter.json_schema(),
             )
-            tools[desc["name"]] = ToolsetTool(
+        return definitions
+
+    async def get_tools(self, ctx: RunContext[Any]) -> dict[str, ToolsetTool[Any]]:
+        tools: dict[str, ToolsetTool[Any]] = {}
+        for name, tool_def in self.tool_definitions().items():
+            adapter = TypeAdapter(self._tool_descriptor(name)["params_model"])
+            tools[name] = ToolsetTool(
                 toolset=self,
                 tool_def=tool_def,
                 max_retries=self._max_retries,
                 args_validator=cast(Any, adapter.validator),
             )
         return tools
+
+    async def call(self, name: str, tool_args: dict[str, Any]) -> Any:
+        """Execute a tool after applying access policy checks."""
+        descriptor = self._tool_descriptor(name)
+        handler = getattr(self, f"_call_{name}", None)
+        if handler is None:
+            raise ValueError(f"Unknown tool: {name}")
+        try:
+            self._enforce_budget(name)
+        except ToolBudgetExceededError as e:
+            logger.warning("Tool budget exceeded for '%s': %s", name, e)
+            return {"error": "budget_exceeded", "message": str(e)}
+        self._tool_calls_made += 1
+        self._per_tool_calls[name] = self._per_tool_calls.get(name, 0) + 1
+        tool_args = TypeAdapter(descriptor["params_model"]).validate_python(tool_args)
+        if hasattr(tool_args, "model_dump"):
+            tool_args = tool_args.model_dump()
+        try:
+            result = await handler(tool_args)
+        except AccessDeniedError as e:
+            logger.warning("Access denied for tool '%s': %s", name, e)
+            return {"error": "access_denied", "message": str(e)}
+        return _serialize_result(result)
 
     async def call_tool(
         self,
@@ -501,32 +531,7 @@ class BackendToolset(AbstractToolset[Any]):
         ctx: RunContext[Any],
         tool: ToolsetTool[Any],
     ) -> Any:
-        handler = getattr(self, f"_call_{name}", None)
-        if handler is None:
-            raise ValueError(f"Unknown tool: {name}")
-        # Enforce the per-run / per-tool budget before doing any work. Return
-        # the exhaustion as a tool result (not an exception) so the agent can
-        # wrap up gracefully using what it has already gathered.
-        try:
-            self._enforce_budget(name)
-        except ToolBudgetExceededError as e:
-            logger.warning("Tool budget exceeded for '%s': %s", name, e)
-            return {"error": "budget_exceeded", "message": str(e)}
-        # Count this admitted call (denied/failed calls still consume budget,
-        # so prompt injection cannot retry a blocked tool indefinitely).
-        self._tool_calls_made += 1
-        self._per_tool_calls[name] = self._per_tool_calls.get(name, 0) + 1
-        # tool_args may be a validated Pydantic model — convert to dict
-        if hasattr(tool_args, "model_dump"):
-            tool_args = tool_args.model_dump()  # ty: ignore[call-non-callable]
-        try:
-            result = await handler(tool_args)
-        except AccessDeniedError as e:
-            # Return the denial as a tool result so the agent can inform the user
-            # rather than crashing the entire run.
-            logger.warning("Access denied for tool '%s': %s", name, e)
-            return {"error": "access_denied", "message": str(e)}
-        return _serialize_result(result)
+        return await self.call(name, tool_args)
 
     def _enforce_budget(self, name: str) -> None:
         """Raise ToolBudgetExceededError if this call would exceed a budget.
@@ -555,6 +560,14 @@ class BackendToolset(AbstractToolset[Any]):
             return False
         cap = desc.get("capability")
         return not (cap is not None and self._backend.capabilities and not self._backend.capabilities.supports(cap))
+
+    def _tool_descriptor(self, name: str) -> dict[str, Any]:
+        for descriptor in _TOOL_DESCRIPTORS:
+            if descriptor["name"] == name:
+                if not self._should_include(descriptor):
+                    raise ValueError(f"Tool is not available: {name}")
+                return descriptor
+        raise ValueError(f"Unknown tool: {name}")
 
     @staticmethod
     def _channel(args: dict[str, Any], key: str = "channel") -> Channel:
@@ -600,8 +613,10 @@ class BackendToolset(AbstractToolset[Any]):
             return
 
         # 3. Restrict to invoking channel
-        if policy.restrict_to_invoking_channel and policy.invoking_channel_id:  # noqa: SIM102
-            if channel_id and norm_id != normalize(policy.invoking_channel_id):
+        if policy.restrict_to_invoking_channel and policy.invoking_channel_id:
+            if not channel_id:
+                raise AccessDeniedError("Access restricted to the invoking channel. Could not resolve the requested channel.")
+            if norm_id != normalize(policy.invoking_channel_id):
                 raise AccessDeniedError(f"Access restricted to the invoking channel. Cannot read from channel '{channel.name or channel_id}'.")
 
         # 4. Block DM reads
@@ -765,6 +780,7 @@ class BackendToolset(AbstractToolset[Any]):
         ch = self._channel(args) if args.get("channel") else None
         # If searching a specific channel, enforce access
         if ch:
+            ch = await self._resolve_channel_full(ch)
             await self._check_channel_access(ch)
         elif self._policy.restrict_to_invoking_channel:
             # No channel specified but policy restricts to invoking channel
@@ -821,6 +837,7 @@ class BackendToolset(AbstractToolset[Any]):
 
     async def _call_get_channel_members(self, args: dict[str, Any]) -> Any:
         channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
         await self._check_channel_access(channel)
         return await self._backend.fetch_channel_members(channel)
 
@@ -833,6 +850,7 @@ class BackendToolset(AbstractToolset[Any]):
 
     async def _call_send_message(self, args: dict[str, Any]) -> Any:
         channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
         await self._check_channel_access(channel)
         return await self._backend.send_message(
             channel=channel,
@@ -841,6 +859,7 @@ class BackendToolset(AbstractToolset[Any]):
 
     async def _call_edit_message(self, args: dict[str, Any]) -> Any:
         channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
         await self._check_channel_access(channel)
         return await self._backend.edit_message(
             message=args["message_id"],
@@ -850,6 +869,7 @@ class BackendToolset(AbstractToolset[Any]):
 
     async def _call_add_reaction(self, args: dict[str, Any]) -> Any:
         channel = self._channel(args)
+        channel = await self._resolve_channel_full(channel)
         await self._check_channel_access(channel)
         await self._backend.add_reaction(
             message=args["message_id"],
