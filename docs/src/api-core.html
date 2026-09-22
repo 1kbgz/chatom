@@ -5563,6 +5563,13 @@ backend registry.</p>
 
 <p id="module-chatom.backend.backend">Backend base class for chatom.</p>
 <p>This module provides the base class that all backends must implement.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="chatom.backend.backend.AttachmentDownloadLimitError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">chatom.backend.backend.</span></span><span class="sig-name descname"><span class="pre">AttachmentDownloadLimitError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actual_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/chatom/backend/backend.html#AttachmentDownloadLimitError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.backend.backend.AttachmentDownloadLimitError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>Raised when an attachment cannot be downloaded within a byte limit.</p>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="chatom.backend.backend.Backend">
 <span class="sig-prename descclassname"><span class="pre">chatom.backend.backend.</span></span><span class="sig-name descname"><span class="pre">Backend</span></span><a class="headerlink" href="#chatom.backend.backend.Backend" title="Link to this definition">¶</a></dt>
@@ -6279,7 +6286,7 @@ a text-only placeholder.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="chatom.backend.backend.BackendBase.download_attachment">
-<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">download_attachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chatom.base.attachment.Attachment" title="chatom.base.attachment.Attachment"><span class="pre">Attachment</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chatom.base.message.Message" title="chatom.base.message.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../../_modules/chatom/backend/backend.html#BackendBase.download_attachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.backend.backend.BackendBase.download_attachment" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">download_attachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attachment</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chatom.base.attachment.Attachment" title="chatom.base.attachment.Attachment"><span class="pre">Attachment</span></a></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#chatom.base.message.Message" title="chatom.base.message.Message"><span class="pre">Message</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_bytes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="reference internal" href="../../_modules/chatom/backend/backend.html#BackendBase.download_attachment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#chatom.backend.backend.BackendBase.download_attachment" title="Link to this definition">¶</a></dt>
 <dd><p>Download the binary content of an attachment.</p>
 <p>Returns the raw bytes of a file/image/document that was received in
 chat.  The default implementation returns <code class="docutils literal notranslate"><span class="pre">attachment.data</span></code> if it
@@ -6297,14 +6304,21 @@ file <code class="docutils literal notranslate"><span class="pre">id</span></cod
 <li><p><strong>message</strong> – The message the attachment belongs to. Some backends
 (e.g. Symphony) require the message and channel context to
 resolve the download.</p></li>
+<li><p><strong>max_bytes</strong> – Maximum number of bytes to download. <code class="docutils literal notranslate"><span class="pre">None</span></code> disables
+the limit.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The raw file bytes.</p>
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>NotImplementedError</strong> – If the attachment cannot be resolved to a
-    downloadable source.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#chatom.backend.backend.AttachmentDownloadLimitError" title="chatom.backend.backend.AttachmentDownloadLimitError"><strong>AttachmentDownloadLimitError</strong></a> – If the attachment exceeds the limit
+    or the backend cannot enforce it safely.</p></li>
+<li><p><strong>NotImplementedError</strong> – If the attachment cannot be resolved to a
+    downloadable source.</p></li>
+<li><p><strong>ValueError</strong> – If <code class="docutils literal notranslate"><span class="pre">max_bytes</span></code> is not positive.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -7964,6 +7978,7 @@ to dynamically wrap any async method on the backend.</p>
 <li><a class="reference internal" href="#chatom.backend.backend_registry.get_backend_format"><code class="docutils literal notranslate"><span class="pre">get_backend_format()</span></code></a></li>
 <li><a class="reference internal" href="#chatom.backend.backend_registry.list_backends"><code class="docutils literal notranslate"><span class="pre">list_backends()</span></code></a></li>
 <li><a class="reference internal" href="#chatom.backend.backend_registry.register_backend"><code class="docutils literal notranslate"><span class="pre">register_backend()</span></code></a></li>
+<li><a class="reference internal" href="#chatom.backend.backend.AttachmentDownloadLimitError"><code class="docutils literal notranslate"><span class="pre">AttachmentDownloadLimitError</span></code></a></li>
 <li><a class="reference internal" href="#chatom.backend.backend.Backend"><code class="docutils literal notranslate"><span class="pre">Backend</span></code></a></li>
 <li><a class="reference internal" href="#chatom.backend.backend.BackendBase"><code class="docutils literal notranslate"><span class="pre">BackendBase</span></code></a><ul>
 <li><a class="reference internal" href="#chatom.backend.backend.BackendBase.name"><code class="docutils literal notranslate"><span class="pre">BackendBase.name</span></code></a></li>
