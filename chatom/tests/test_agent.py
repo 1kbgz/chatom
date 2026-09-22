@@ -5,7 +5,7 @@ from typing import Any
 
 import pytest
 
-from chatom.backend import BackendBase
+from chatom.backend import AttachmentDownloadLimitError, BackendBase
 from chatom.base import Channel, Image, Message, User
 from chatom.base.capabilities import (
     SLACK_CAPABILITIES,
@@ -28,6 +28,8 @@ class _MockBackend(BackendBase):
     _users: dict[str, User] = {}  # noqa: RUF012
     _channels: dict[str, Channel] = {}  # noqa: RUF012
     _messages: dict[str, list[Message]] = {}  # noqa: RUF012
+    _download_error: Exception | None = None
+    _download_max_bytes: int | None = None
     sent: list = []  # noqa: RUF012
     edited: list = []  # noqa: RUF012
     reactions: list = []  # noqa: RUF012
@@ -57,6 +59,8 @@ class _MockBackend(BackendBase):
         self.removed_reactions = []
         self.deleted = []
         self.presence_set = []
+        self._download_error = None
+        self._download_max_bytes = None
         return self
 
     async def connect(self) -> None:
@@ -190,7 +194,16 @@ class _MockBackend(BackendBase):
         )
         return Message(id="uploaded_1", content=content, channel=Channel(id=ch_id))
 
-    async def download_attachment(self, attachment: Any, *, message: Message | None = None) -> bytes:
+    async def download_attachment(
+        self,
+        attachment: Any,
+        *,
+        message: Message | None = None,
+        max_bytes: int | None = None,
+    ) -> bytes:
+        self._download_max_bytes = max_bytes
+        if self._download_error is not None:
+            raise self._download_error
         if attachment.data is not None:
             return attachment.data
         # Return deterministic bytes keyed off the attachment id for tests.
@@ -642,12 +655,34 @@ class TestBackendToolset:
         tool = MagicMock()
         result = await toolset.call_tool(
             "download_attachment",
-            {"attachment_id": "att1", "channel": {"id": "C1"}},
+            {"attachment_id": "att1", "channel": {"id": "C1"}, "max_bytes": 20},
             ctx,
             tool,
         )
         assert result["filename"] == "pic.png"
         assert base64.b64decode(result["data_base64"]) == b"bytes:att1"
+        assert mock_backend._download_max_bytes == 20
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("actual_size", [6, None])
+    async def test_call_download_attachment_maps_limit_error(self, mock_backend: _MockBackend, actual_size: int | None) -> None:
+        from unittest.mock import MagicMock
+
+        from chatom.agent.toolset import BackendToolset
+
+        msgs = mock_backend._messages["C1"]
+        msgs[0].attachments = [Image(id="att1", filename="pic.png", content_type="image/png")]
+        mock_backend._download_error = AttachmentDownloadLimitError(5, actual_size)
+
+        result = await BackendToolset(mock_backend).call_tool(
+            "download_attachment",
+            {"attachment_id": "att1", "channel": {"id": "C1"}, "max_bytes": 5},
+            MagicMock(),
+            MagicMock(),
+        )
+
+        assert result["error"] == "too_large"
+        assert (result.get("size") if actual_size is not None else "size" in result) == (actual_size if actual_size is not None else False)
 
     @pytest.mark.asyncio
     async def test_call_download_attachment_not_found(self, mock_backend: _MockBackend) -> None:

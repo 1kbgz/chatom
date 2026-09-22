@@ -19,6 +19,7 @@ For platform-specific functionality, import from the backend modules:
 """
 
 from .backend import (
+    AttachmentDownloadLimitError,
     Backend,
     BackendBase,
     BackendConfig,
@@ -193,6 +194,7 @@ __all__ = (
     "ActivityType",
     # Attachment
     "Attachment",
+    "AttachmentDownloadLimitError",
     "AttachmentType",
     # Backend
     "Backend",

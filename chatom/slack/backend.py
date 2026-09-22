@@ -671,6 +671,7 @@ class SlackBackend(BackendBase):
         attachment: Any,
         *,
         message: Message | None = None,
+        max_bytes: int | None = None,
     ) -> bytes:
         """Download a Slack attachment's bytes.
 
@@ -678,8 +679,11 @@ class SlackBackend(BackendBase):
         token; this override supplies it.  Falls back to ``files.info`` to
         resolve the private URL when the attachment only carries a file ID.
         """
+        if max_bytes is not None and max_bytes <= 0:
+            raise ValueError("max_bytes must be a positive integer")
+
         if attachment.data is not None:
-            return attachment.data
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
         token = self.config.bot_token_str
         headers = {"Authorization": f"Bearer {token}"} if token else None
@@ -693,9 +697,9 @@ class SlackBackend(BackendBase):
                 url = f.get("url_private_download") or f.get("url_private") or ""
 
         if url:
-            return await self._download_url(url, headers=headers)
+            return await self._download_url(url, headers=headers, max_bytes=max_bytes)
 
-        return await super().download_attachment(attachment, message=message)
+        return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
     async def edit_message(
         self,
