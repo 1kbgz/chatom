@@ -1,5 +1,7 @@
 """Tests for chatom format system."""
 
+import pytest
+
 from chatom.format import (
     DISCORD_MARKDOWN,
     HTML,
@@ -2988,6 +2990,92 @@ class TestBackendBaseDownloadAttachment:
         backend = self._backend()
         att = Attachment(id="a", filename="f.bin", data=b"hello")
         assert asyncio.run(backend.download_attachment(att)) == b"hello"
+
+    def test_inline_data_at_limit_returns(self):
+        import asyncio
+
+        from chatom.base import Attachment
+
+        backend = self._backend()
+        att = Attachment(id="a", filename="f.bin", data=b"hello")
+        assert asyncio.run(backend.download_attachment(att, max_bytes=5)) == b"hello"
+
+    def test_inline_data_over_limit_raises(self):
+        import asyncio
+
+        import pytest
+
+        from chatom.backend import AttachmentDownloadLimitError
+        from chatom.base import Attachment
+
+        backend = self._backend()
+        att = Attachment(id="a", filename="f.bin", data=b"hello!")
+        with pytest.raises(AttachmentDownloadLimitError) as exc_info:
+            asyncio.run(backend.download_attachment(att, max_bytes=5))
+
+        assert exc_info.value.max_bytes == 5
+        assert exc_info.value.actual_size == 6
+
+    def test_limit_error_distinguishes_unbounded_transport(self):
+        from chatom.backend import AttachmentDownloadLimitError
+
+        error = AttachmentDownloadLimitError(max_bytes=5, actual_size=4)
+
+        assert str(error) == "Attachment reports 4 bytes, but the download cannot be bounded to the 5-byte limit."
+
+    @pytest.mark.parametrize("max_bytes", [0, -1])
+    def test_invalid_limit_raises_before_download(self, max_bytes):
+        import asyncio
+
+        from chatom.base import Attachment
+
+        backend = self._backend()
+        att = Attachment(id="a", filename="f.bin", data=b"")
+        with pytest.raises(ValueError, match="positive"):
+            asyncio.run(backend.download_attachment(att, max_bytes=max_bytes))
+
+    @pytest.mark.parametrize(
+        ("headers", "data", "expected_read", "expected_size"),
+        [
+            ({"Content-Length": "6"}, b"hello!", None, 6),
+            ({}, b"hello!", 6, None),
+            ({"Content-Length": "1"}, b"hello!", 6, None),
+            ({}, b"hello", 6, False),
+        ],
+    )
+    def test_http_download_enforces_limit(self, monkeypatch, headers, data, expected_read, expected_size):
+        import asyncio
+
+        from chatom.backend import AttachmentDownloadLimitError
+        from chatom.base import Attachment
+
+        class Response:
+            def __init__(self):
+                self.headers = headers
+                self.read_size = None
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return None
+
+            def read(self, size=None):
+                self.read_size = size
+                return data if size is None else data[:size]
+
+        response = Response()
+        monkeypatch.setattr("urllib.request.urlopen", lambda *args, **kwargs: response)
+        backend = self._backend()
+        att = Attachment(id="a", filename="f.bin", url="https://example.com/f.bin")
+
+        if expected_size is not False:
+            with pytest.raises(AttachmentDownloadLimitError) as exc_info:
+                asyncio.run(backend.download_attachment(att, max_bytes=5))
+            assert exc_info.value.actual_size == expected_size
+        else:
+            assert asyncio.run(backend.download_attachment(att, max_bytes=5)) == b"hello"
+        assert response.read_size == expected_read
 
     def test_no_source_raises_not_implemented(self):
         import asyncio

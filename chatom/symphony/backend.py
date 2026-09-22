@@ -16,7 +16,7 @@ from typing import Any, ClassVar
 
 from pydantic import Field
 
-from ..backend import BackendBase
+from ..backend import AttachmentDownloadLimitError, BackendBase
 from ..base import (
     SYMPHONY_CAPABILITIES,
     Attachment,
@@ -897,6 +897,7 @@ class SymphonyBackend(BackendBase):
         attachment: Any,
         *,
         message: Message | None = None,
+        max_bytes: int | None = None,
     ) -> bytes:
         """Download a Symphony attachment's bytes.
 
@@ -908,8 +909,14 @@ class SymphonyBackend(BackendBase):
         """
         import base64
 
+        if max_bytes is not None and max_bytes <= 0:
+            raise ValueError("max_bytes must be a positive integer")
+
         if attachment.data is not None:
-            return attachment.data
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
+
+        if max_bytes is not None:
+            raise AttachmentDownloadLimitError(max_bytes, getattr(attachment, "size", None))
 
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")

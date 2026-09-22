@@ -13,7 +13,7 @@ from fastmcp import FastMCP
 from pydantic import BaseModel, Field
 
 from chatom.agent.toolset import resolve_history_bounds
-from chatom.backend import BackendBase
+from chatom.backend import AttachmentDownloadLimitError, BackendBase
 from chatom.base import Channel, User
 from chatom.base.capabilities import Capability
 
@@ -244,7 +244,17 @@ def _register_backend_tools(
         if found_att is None:
             return {"error": "not_found", "message": f"No attachment '{attachment_id}' found in recent history."}
 
-        data = await backend.download_attachment(found_att, message=found_msg)
+        try:
+            data = await backend.download_attachment(
+                found_att,
+                message=found_msg,
+                max_bytes=max_bytes,
+            )
+        except AttachmentDownloadLimitError as exc:
+            result: dict[str, Any] = {"error": "too_large", "message": str(exc)}
+            if exc.actual_size is not None:
+                result["size"] = exc.actual_size
+            return result
         if len(data) > max_bytes:
             return {"error": "too_large", "message": f"Attachment is {len(data)} bytes (limit {max_bytes}).", "size": len(data)}
 

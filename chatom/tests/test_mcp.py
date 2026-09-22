@@ -8,6 +8,7 @@ from typing import Any
 import pytest
 from fastmcp import Client
 
+from chatom.backend import AttachmentDownloadLimitError
 from chatom.base import Channel, Image, Message, User
 from chatom.base.capabilities import (
     SLACK_CAPABILITIES,
@@ -34,6 +35,8 @@ class _MockBackend:
         self._users = users or {}
         self._channels = channels or {}
         self._messages = messages or {}
+        self.download_error: Exception | None = None
+        self.download_max_bytes: int | None = None
         self.sent: list[dict[str, Any]] = []
         self.reactions: list[dict[str, Any]] = []
         self.uploaded: list[dict[str, Any]] = []
@@ -146,7 +149,16 @@ class _MockBackend:
         self.uploaded.append({"channel": ch_id, "data": data, "filename": filename, "content_type": content_type})
         return Message(id="uploaded_1", content=content, channel=Channel(id=ch_id))
 
-    async def download_attachment(self, attachment: Any, *, message: Message | None = None) -> bytes:
+    async def download_attachment(
+        self,
+        attachment: Any,
+        *,
+        message: Message | None = None,
+        max_bytes: int | None = None,
+    ) -> bytes:
+        self.download_max_bytes = max_bytes
+        if self.download_error is not None:
+            raise self.download_error
         if attachment.data is not None:
             return attachment.data
         return f"bytes:{getattr(attachment, 'id', '')}".encode()
@@ -466,10 +478,28 @@ class TestMcpClientIntegration:
 
             got = await client.call_tool(
                 "download_attachment",
-                {"attachment_id": "att1", "channel": {"id": "C1"}},
+                {"attachment_id": "att1", "channel": {"id": "C1"}, "max_bytes": 20},
             )
             got_data = got.data if hasattr(got, "data") and got.data is not None else got
             assert base64.b64decode(got_data["data_base64"]) == b"bytes:att1"
+            assert mock_backend.download_max_bytes == 20
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("actual_size", [6, None])
+    async def test_download_attachment_maps_limit_error(self, mock_backend: _MockBackend, actual_size: int | None) -> None:
+        mock_backend._messages["C1"][0].attachments = [Image(id="att1", filename="pic.png", content_type="image/png")]
+        mock_backend.download_error = AttachmentDownloadLimitError(5, actual_size)
+
+        mcp = build_mcp_server({"mock": mock_backend})
+        async with Client(mcp) as client:
+            result = await client.call_tool(
+                "download_attachment",
+                {"attachment_id": "att1", "channel": {"id": "C1"}, "max_bytes": 5},
+            )
+            data = result.data if hasattr(result, "data") and result.data is not None else result
+
+        assert data["error"] == "too_large"
+        assert (data.get("size") if actual_size is not None else "size" in data) == (actual_size if actual_size is not None else False)
 
     @pytest.mark.asyncio
     async def test_search_messages(self, mock_backend: _MockBackend) -> None:

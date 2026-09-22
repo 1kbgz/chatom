@@ -10,7 +10,7 @@ from pydantic_ai._run_context import RunContext
 from pydantic_ai.tools import ToolDefinition
 from pydantic_ai.toolsets.abstract import AbstractToolset, ToolsetTool
 
-from chatom.backend import BackendBase
+from chatom.backend import AttachmentDownloadLimitError, BackendBase
 from chatom.base import Channel, ChannelType, User
 from chatom.base.capabilities import Capability
 
@@ -972,7 +972,17 @@ class BackendToolset(AbstractToolset[Any]):
                 "size": found_att.size,
             }
 
-        data = await self._backend.download_attachment(found_att, message=found_msg)
+        try:
+            data = await self._backend.download_attachment(
+                found_att,
+                message=found_msg,
+                max_bytes=max_bytes,
+            )
+        except AttachmentDownloadLimitError as exc:
+            result: dict[str, Any] = {"error": "too_large", "message": str(exc)}
+            if exc.actual_size is not None:
+                result["size"] = exc.actual_size
+            return result
         if len(data) > max_bytes:
             return {
                 "error": "too_large",

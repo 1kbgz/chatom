@@ -6,9 +6,14 @@ objects. These tests exercise the pure extraction helpers with lightweight
 fakes so no platform SDK or network is required.
 """
 
+import asyncio
 from types import SimpleNamespace
+from unittest.mock import AsyncMock, MagicMock
 
-from chatom.base import AttachmentType
+import pytest
+
+from chatom.backend import AttachmentDownloadLimitError
+from chatom.base import Attachment, AttachmentType
 
 
 class TestSlackIncomingAttachments:
@@ -50,6 +55,32 @@ class TestSlackIncomingAttachments:
 
         assert _slack_attachments([]) == []
         assert _slack_attachments(None) == []
+
+    def test_download_forwards_limit_to_authenticated_url(self):
+        from chatom.slack import SlackBackend
+
+        backend = SlackBackend()
+        backend._download_url = AsyncMock(return_value=b"hello")
+        attachment = Attachment(id="F1", url="https://files.slack.com/f.bin")
+
+        assert asyncio.run(backend.download_attachment(attachment, max_bytes=5)) == b"hello"
+        backend._download_url.assert_awaited_once_with(
+            "https://files.slack.com/f.bin",
+            headers=None,
+            max_bytes=5,
+        )
+
+    def test_invalid_limit_fails_before_file_lookup(self):
+        from chatom.slack import SlackBackend
+
+        backend = SlackBackend()
+        backend.connected = True
+        backend._async_client = SimpleNamespace(files_info=AsyncMock())
+
+        with pytest.raises(ValueError, match="positive"):
+            asyncio.run(backend.download_attachment(Attachment(id="F1"), max_bytes=0))
+
+        backend._async_client.files_info.assert_not_awaited()
 
 
 class TestDiscordIncomingAttachments:
@@ -138,6 +169,70 @@ class TestTelegramIncomingAttachments:
         msg = SimpleNamespace(photo=None, document=None, video=None, audio=None, voice=None)
         assert _telegram_attachments(msg) == []
 
+    def test_download_rejects_reported_oversize_before_materializing(self):
+        from chatom.telegram import TelegramBackend
+
+        tg_file = SimpleNamespace(file_size=6, file_path="https://telegram/f.bin", download_as_bytearray=AsyncMock())
+        backend = TelegramBackend()
+        backend.connected = True
+        backend._bot = SimpleNamespace(get_file=AsyncMock(return_value=tg_file))
+
+        with pytest.raises(AttachmentDownloadLimitError) as exc_info:
+            asyncio.run(backend.download_attachment(Attachment(id="F1"), max_bytes=5))
+
+        assert exc_info.value.actual_size == 6
+        tg_file.download_as_bytearray.assert_not_awaited()
+
+    def test_invalid_limit_fails_before_file_lookup(self):
+        from chatom.telegram import TelegramBackend
+
+        backend = TelegramBackend()
+        backend.connected = True
+        backend._bot = SimpleNamespace(get_file=AsyncMock())
+
+        with pytest.raises(ValueError, match="positive"):
+            asyncio.run(backend.download_attachment(Attachment(id="F1"), max_bytes=0))
+
+        backend._bot.get_file.assert_not_awaited()
+
+    def test_bounded_download_uses_http_helper(self):
+        from chatom.telegram import TelegramBackend
+
+        tg_file = SimpleNamespace(file_size=1, file_path="https://telegram/f.bin", download_as_bytearray=AsyncMock())
+        backend = TelegramBackend()
+        backend.connected = True
+        backend._bot = SimpleNamespace(get_file=AsyncMock(return_value=tg_file))
+        backend._download_url = AsyncMock(return_value=b"hello")
+
+        assert asyncio.run(backend.download_attachment(Attachment(id="F1"), max_bytes=5)) == b"hello"
+        backend._download_url.assert_awaited_once_with("https://telegram/f.bin", max_bytes=5)
+        tg_file.download_as_bytearray.assert_not_awaited()
+
+    def test_bounded_download_without_http_path_fails_closed(self):
+        from chatom.telegram import TelegramBackend
+
+        tg_file = SimpleNamespace(file_size=None, file_path=None, download_as_bytearray=AsyncMock())
+        backend = TelegramBackend()
+        backend.connected = True
+        backend._bot = SimpleNamespace(get_file=AsyncMock(return_value=tg_file))
+
+        with pytest.raises(AttachmentDownloadLimitError) as exc_info:
+            asyncio.run(backend.download_attachment(Attachment(id="F1"), max_bytes=5))
+
+        assert exc_info.value.actual_size is None
+        tg_file.download_as_bytearray.assert_not_awaited()
+
+    def test_unbounded_download_retains_sdk_behavior(self):
+        from chatom.telegram import TelegramBackend
+
+        tg_file = SimpleNamespace(file_size=None, file_path=None, download_as_bytearray=AsyncMock(return_value=bytearray(b"hello")))
+        backend = TelegramBackend()
+        backend.connected = True
+        backend._bot = SimpleNamespace(get_file=AsyncMock(return_value=tg_file))
+
+        assert asyncio.run(backend.download_attachment(Attachment(id="F1"))) == b"hello"
+        tg_file.download_as_bytearray.assert_awaited_once()
+
 
 class TestSymphonyIncomingAttachments:
     def test_attachment_metadata_carries_ids(self):
@@ -162,3 +257,35 @@ class TestSymphonyIncomingAttachments:
         from chatom.symphony.backend import _symphony_attachments
 
         assert _symphony_attachments(None, "s", "m") == []
+
+    @pytest.mark.parametrize("size", [None, 4])
+    def test_bounded_download_fails_before_bdk_call(self, size):
+        from chatom.symphony import SymphonyBackend
+
+        message_service = SimpleNamespace(get_attachment=AsyncMock())
+        backend = SymphonyBackend()
+        backend._bdk = SimpleNamespace(messages=MagicMock(return_value=message_service))
+        attachment = Attachment(
+            id="A1",
+            size=size,
+            metadata={"stream_id": "S1", "message_id": "M1"},
+        )
+
+        with pytest.raises(AttachmentDownloadLimitError) as exc_info:
+            asyncio.run(backend.download_attachment(attachment, max_bytes=5))
+
+        assert exc_info.value.actual_size == size
+        message_service.get_attachment.assert_not_awaited()
+
+    def test_unbounded_download_retains_bdk_behavior(self):
+        import base64
+
+        from chatom.symphony import SymphonyBackend
+
+        message_service = SimpleNamespace(get_attachment=AsyncMock(return_value=base64.b64encode(b"hello")))
+        backend = SymphonyBackend()
+        backend._bdk = SimpleNamespace(messages=MagicMock(return_value=message_service))
+        attachment = Attachment(id="A1", metadata={"stream_id": "S1", "message_id": "M1"})
+
+        assert asyncio.run(backend.download_attachment(attachment)) == b"hello"
+        message_service.get_attachment.assert_awaited_once()
