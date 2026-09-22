@@ -19,9 +19,13 @@ keywords = [
     "chatbot",
     "messenger",
     "discord",
+    "irc",
+    "line",
+    "matrix",
     "slack",
     "symphony",
     "telegram",
+    "zulip",
     "mcp",
     "model-context-protocol",
     "agent",
@@ -70,11 +74,13 @@ develop = [
     # integrations
     "csp",
     "discord.py",
+    "matrix-nio>=0.25",
     "pydantic-ai>=0.4",
     "python-telegram-bot",
     "slack-sdk",
     "symphony-bdk-python",
     "whatsapp-python",
+    "zulip",
     # mcp
     "fastmcp>=2",
     "hydra-core>=1.3",
@@ -89,9 +95,13 @@ chatom-mcp = "chatom.mcp.cli:main"
 
 [project.entry-points."chatom.backends"]
 discord = "chatom.discord.backend:DiscordBackend"
+irc = "chatom.irc.backend:IRCBackend"
+line = "chatom.line.backend:LineBackend"
+matrix = "chatom.matrix.backend:MatrixBackend"
 slack = "chatom.slack.backend:SlackBackend"
 symphony = "chatom.symphony.backend:SymphonyBackend"
 telegram = "chatom.telegram.backend:TelegramBackend"
+zulip = "chatom.zulip.backend:ZulipBackend"
 
 [project.urls]
 Repository = "https://github.com/1kbgz/chatom"

@@ -16,9 +16,13 @@ from .authorization import (
 from .base import BaseModel, Field, Identifiable
 from .capabilities import (
     DISCORD_CAPABILITIES,
+    IRC_CAPABILITIES,
+    LINE_CAPABILITIES,
+    MATRIX_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
     TELEGRAM_CAPABILITIES,
+    ZULIP_CAPABILITIES,
     BackendCapabilities,
     Capability,
 )
@@ -74,9 +78,13 @@ Channel.model_rebuild()
 
 __all__ = (
     "DISCORD_CAPABILITIES",
+    "IRC_CAPABILITIES",
+    "LINE_CAPABILITIES",
+    "MATRIX_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
     "TELEGRAM_CAPABILITIES",
+    "ZULIP_CAPABILITIES",
     # Presence
     "Activity",
     "ActivityType",
