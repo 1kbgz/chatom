@@ -30,7 +30,7 @@ pip install slack-sdk discord.py matrix-nio symphony-bdk-python python-telegram-
 
 Optional integrations are available with `chatom[agent]` and `chatom[mcp]`.
 
-## One message, four backends
+## One message, every backend
 
 ```python
 from chatom import MessageBuilder
@@ -52,7 +52,13 @@ slack_content = message.render_for("slack")
 discord_content = message.render_for("discord")
 symphony_content = message.render_for("symphony")
 telegram_content = message.render_for("telegram")
+matrix_content = message.render_for("matrix")
+zulip_content = message.render_for("zulip")
+irc_content = message.render_for("irc")
+line_content = message.render_for("line")
 ```
+
+Each backend receives its own dialect: mrkdwn for Slack, Markdown for Discord and Zulip, HTML for Symphony and Matrix, Telegram's HTML subset, and plain text for IRC and LINE.
 
 Message construction stays unchanged. Only rendering and backend configuration know which platform receives it.
 

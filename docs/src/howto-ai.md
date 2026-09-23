@@ -48,7 +48,22 @@ export SLACK_BOT_TOKEN='xoxb-...'
 chatom-mcp +gateway=slack
 ```
 
-Built-in presets are `discord`, `slack`, `symphony`, `symphony_dev`, and `telegram`. The default transport is stdio.
+Built-in presets are `discord`, `irc`, `line`, `matrix`, `slack`, `symphony`, `symphony_dev`, `telegram`, and `zulip`. The default transport is stdio.
+
+Each preset reads its credentials from the environment:
+
+| Preset     | Environment variables                                        |
+| ---------- | ------------------------------------------------------------ |
+| `discord`  | `DISCORD_TOKEN`                                              |
+| `irc`      | `IRC_SERVER`, `IRC_NICKNAME`, `IRC_PASSWORD`                 |
+| `line`     | `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`           |
+| `matrix`   | `MATRIX_HOMESERVER`, `MATRIX_USER_ID`, `MATRIX_ACCESS_TOKEN` |
+| `slack`    | `SLACK_BOT_TOKEN`                                            |
+| `symphony` | `SYMPHONY_BOT_KEY`                                           |
+| `telegram` | `TELEGRAM_BOT_TOKEN`                                         |
+| `zulip`    | `ZULIP_SITE`, `ZULIP_EMAIL`, `ZULIP_API_KEY`                 |
+
+`IRC_NICKNAME` defaults to `chatom` and `IRC_PASSWORD` defaults to empty.
 
 Run a read-only HTTP server:
 
