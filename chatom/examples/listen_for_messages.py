@@ -1,214 +1,99 @@
 #!/usr/bin/env python
-"""Listen for Messages Example.
+"""Listen For Messages Example.
 
-This example demonstrates how to listen for incoming messages
-using real-time event streams.
+This example demonstrates how to consume inbound messages and respond
+with the reply, quote, and DM convenience methods.
 
-Environment Variables:
-    For Slack:
-        SLACK_BOT_TOKEN: Your Slack bot OAuth token
-        SLACK_APP_TOKEN: Your Slack app token (xapp-...) for Socket Mode
-        SLACK_TEST_CHANNEL_NAME: Channel to listen in
-
-    For Symphony:
-        SYMPHONY_HOST: Your Symphony pod hostname
-        SYMPHONY_BOT_USERNAME: Bot's service account username
-        SYMPHONY_BOT_PRIVATE_KEY_PATH: Path to RSA private key
-        SYMPHONY_TEST_ROOM_NAME: Room to listen in
+Backend construction and credentials live in `chatom.examples._backends`.
+See that module for the environment variables each backend reads.
 
 Usage:
     python -m chatom.examples.listen_for_messages --backend slack --timeout 60
+    python -m chatom.examples.listen_for_messages --backend matrix --timeout 60
+
+Note:
+    Slack needs Socket Mode, so SLACK_APP_TOKEN is required here in addition
+    to SLACK_BOT_TOKEN.
 """
 
 import argparse
 import asyncio
-import os
 import sys
 
-
-def get_env(name: str, required: bool = True) -> str | None:
-    """Get environment variable."""
-    value = os.environ.get(name)
-    if required and not value:
-        print(f"Missing required environment variable: {name}")
-        return None
-    return value
+from ._backends import BACKENDS, build_backend, resolve_channel, test_channel
 
 
-async def listen_slack(timeout: int) -> bool:
-    """Listen for messages on Slack using Socket Mode."""
-    from chatom.slack import SlackBackend, SlackConfig
+async def _handle(backend, message, channel_id: str) -> None:
+    """Print one inbound message and respond to its command, if any."""
+    if message.channel_id != channel_id:
+        return
 
-    bot_token = get_env("SLACK_BOT_TOKEN")
-    app_token = get_env("SLACK_APP_TOKEN")
-    channel_name = get_env("SLACK_TEST_CHANNEL_NAME")
+    author = "Unknown"
+    if message.author:
+        author = message.author.name or message.author_id
 
-    if not bot_token or not app_token or not channel_name:
-        return False
+    content = message.content or ""
+    print(f"📨 [{author}]: {content}")
 
-    config = SlackConfig(
-        bot_token=bot_token,
-        app_token=app_token,
-        socket_mode=True,
-    )
-    backend = SlackBackend(config=config)
+    mentioned_ids = message.get_mentioned_user_ids()
+    if mentioned_ids:
+        print(f"   (Mentioned: {mentioned_ids})")
 
-    await backend.connect()
+    if content.startswith("!help"):
+        await backend.send_message(**message.as_reply("Available commands: !help, !ping, !dm, !quote"))
+        print("   → Sent help reply in thread")
 
-    channel = await backend.fetch_channel(name=channel_name)
-    if not channel:
-        print(f"❌ Channel '{channel_name}' not found")
-        await backend.disconnect()
-        return False
+    elif content.startswith("!ping"):
+        await backend.send_message(**message.as_quote_reply("🏓 Pong!"))
+        print("   → Sent quoted pong reply")
 
-    print(f"👂 Listening for messages in #{channel_name}...")
-    print(f"   (Will stop after {timeout} seconds or Ctrl+C)")
-    print("   Try sending '!help', '!ping', or '!dm' to test responses")
-    print()
-
-    # Create a task that will cancel after timeout
-    async def listen_with_timeout():
-        try:
-            async for message in backend.listen():
-                # Filter to our test channel
-                if message.channel_id != channel.id:
-                    continue
-
-                author = "Unknown"
-                if message.author:
-                    author = message.author.name or message.author_id
-
-                content = message.content or ""
-                print(f"📨 [{author}]: {content}")
-
-                # Check if we're mentioned
-                mentioned_ids = message.get_mentioned_user_ids()
-                if mentioned_ids:
-                    print(f"   (Mentioned: {mentioned_ids})")
-
-                # Demo: Use convenience methods to respond to commands
-                if content.startswith("!help"):
-                    # Reply in thread using as_reply()
-                    await backend.send_message(**message.as_reply("Available commands: !help, !ping, !dm, !quote"))
-                    print("   → Sent help reply in thread")
-
-                elif content.startswith("!ping"):
-                    # Reply with quote using as_quote_reply()
-                    await backend.send_message(**message.as_quote_reply("🏓 Pong!"))
-                    print("   → Sent quoted pong reply")
-
-                elif content.startswith("!dm") and message.author:
-                    # DM the author using as_dm_to_author()
-                    await backend.send_dm(**message.as_dm_to_author("👋 You asked me to DM you!"))
-                    print(f"   → Sent DM to {author}")
-
-        except asyncio.CancelledError:
-            print("\n⏱️ Timeout reached")
-
-    try:
-        await asyncio.wait_for(listen_with_timeout(), timeout=timeout)
-    except TimeoutError:
-        pass
-    except KeyboardInterrupt:
-        print("\n⛔ Interrupted by user")
-
-    await backend.disconnect()
-    return True
-
-
-async def listen_symphony(timeout: int) -> bool:
-    """Listen for messages on Symphony using datafeed."""
-    from chatom.symphony import SymphonyBackend, SymphonyConfig
-
-    host = get_env("SYMPHONY_HOST")
-    bot_username = get_env("SYMPHONY_BOT_USERNAME")
-    room_name = get_env("SYMPHONY_TEST_ROOM_NAME")
-    private_key_path = get_env("SYMPHONY_BOT_PRIVATE_KEY_PATH", required=False)
-    private_key_content = get_env("SYMPHONY_BOT_PRIVATE_KEY_CONTENT", required=False)
-
-    if not host or not bot_username or not room_name:
-        return False
-
-    if not private_key_path and not private_key_content:
-        print("Missing: SYMPHONY_BOT_PRIVATE_KEY_PATH or SYMPHONY_BOT_PRIVATE_KEY_CONTENT")
-        return False
-
-    config_kwargs = {
-        "host": host,
-        "bot_username": bot_username,
-    }
-
-    if private_key_path:
-        config_kwargs["bot_private_key_path"] = private_key_path
-    elif private_key_content:
-        from pydantic import SecretStr
-
-        config_kwargs["bot_private_key_content"] = SecretStr(private_key_content)
-
-    config = SymphonyConfig(**config_kwargs)
-    backend = SymphonyBackend(config=config)
-
-    await backend.connect()
-
-    room = await backend.fetch_channel(name=room_name)
-    if not room:
-        print(f"❌ Room '{room_name}' not found")
-        await backend.disconnect()
-        return False
-
-    print(f"👂 Listening for messages in {room_name}...")
-    print(f"   (Will stop after {timeout} seconds or Ctrl+C)")
-    print()
-
-    async def listen_with_timeout():
-        try:
-            async for message in backend.listen():
-                if message.channel_id != room.id:
-                    continue
-
-                author = "Unknown"
-                if message.author:
-                    author = message.author.name or message.author_id
-
-                content = message.content or ""
-                print(f"📨 [{author}]: {content}")
-        except asyncio.CancelledError:
-            print("\n⏱️ Timeout reached")
-
-    try:
-        await asyncio.wait_for(listen_with_timeout(), timeout=timeout)
-    except TimeoutError:
-        pass
-    except KeyboardInterrupt:
-        print("\n⛔ Interrupted by user")
-
-    await backend.disconnect()
-    return True
+    elif content.startswith("!dm") and message.author:
+        await backend.send_dm(**message.as_dm_to_author("👋 You asked me to DM you!"))
+        print(f"   → Sent DM to {author}")
 
 
 async def main(backend_name: str, timeout: int) -> bool:
-    """Run the listen example."""
-    if backend_name == "discord":
-        print("⚠️ Discord listen example requires additional setup - see combined_e2e.py")
+    """Listen for inbound messages using any configured backend."""
+    backend = build_backend(backend_name, streaming=True)
+    channel_name = test_channel(backend_name) if backend else None
+    if not backend or not channel_name:
         return False
 
-    backends = {
-        "slack": lambda: listen_slack(timeout),
-        "symphony": lambda: listen_symphony(timeout),
-    }
+    await backend.connect()
+    try:
+        channel = await resolve_channel(backend, channel_name)
+        if not channel:
+            print(f"❌ Channel '{channel_name}' not found")
+            return False
 
-    if backend_name not in backends:
-        print(f"Unknown backend: {backend_name}")
-        return False
+        print(f"👂 Listening for messages in {channel_name}...")
+        print(f"   (Will stop after {timeout} seconds or Ctrl+C)")
+        print("   Try sending '!help', '!ping', or '!dm' to test responses")
+        print()
 
-    return await backends[backend_name]()
+        async def listen_with_timeout():
+            try:
+                async for message in backend.listen():
+                    await _handle(backend, message, channel.id)
+            except asyncio.CancelledError:
+                print("\n⏱️ Timeout reached")
+
+        try:
+            await asyncio.wait_for(listen_with_timeout(), timeout=timeout)
+        except TimeoutError:
+            pass
+        except KeyboardInterrupt:
+            print("\n⛔ Interrupted by user")
+        return True
+    finally:
+        await backend.disconnect()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Listen for messages example")
     parser.add_argument(
         "--backend",
-        choices=["slack", "discord", "symphony"],
+        choices=BACKENDS,
         default="slack",
         help="Backend to use",
     )
@@ -216,7 +101,7 @@ if __name__ == "__main__":
         "--timeout",
         type=int,
         default=60,
-        help="Timeout in seconds",
+        help="Seconds to listen before stopping",
     )
     args = parser.parse_args()
 
