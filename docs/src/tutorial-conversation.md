@@ -17,7 +17,7 @@ message = Message(
 )
 ```
 
-These models carry stable chat concepts. Backend packages extend them with fields specific to Discord, Slack, Symphony, or Telegram.
+These models carry stable chat concepts. Backend packages extend them with fields specific to Discord, IRC, LINE, Matrix, Slack, Symphony, Telegram, or Zulip.
 
 ## Create a reply
 

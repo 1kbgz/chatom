@@ -55,9 +55,13 @@ __all__ = (
 # now provides the authoritative source via entry points.
 BACKEND_FORMAT_MAP = {
     "discord": Format.DISCORD_MARKDOWN,
+    "irc": Format.PLAINTEXT,
+    "line": Format.PLAINTEXT,
+    "matrix": Format.HTML,
     "slack": Format.SLACK_MARKDOWN,
     "symphony": Format.SYMPHONY_MESSAGEML,
     "telegram": Format.TELEGRAM_HTML,
+    "zulip": Format.MARKDOWN,
 }
 
 

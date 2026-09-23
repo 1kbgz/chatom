@@ -1,0 +1,9 @@
+# @package _global_
+backends:
+  matrix:
+    _target_: chatom.matrix.MatrixBackend
+    config:
+      _target_: chatom.matrix.config.MatrixConfig
+      homeserver: ${oc.env:MATRIX_HOMESERVER}
+      user_id: ${oc.env:MATRIX_USER_ID}
+      access_token: ${oc.env:MATRIX_ACCESS_TOKEN}
