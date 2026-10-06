@@ -27,7 +27,7 @@ Full-coverage environment variables:
         DISCORD_GUILD_NAME: Server/guild name
 
     Telegram:
-        TELEGRAM_TOKEN: Your Telegram bot token
+        TELEGRAM_BOT_TOKEN: Your Telegram bot token
         TELEGRAM_TEST_USER_NAME: Username for mention tests
         TELEGRAM_TEST_CHAT_NAME or TELEGRAM_TEST_CHAT_ID: Test chat
 
@@ -3056,7 +3056,7 @@ class TelegramE2ETest:
 
     def __init__(self):
         """Initialize test configuration from environment."""
-        self.bot_token = get_env("TELEGRAM_TOKEN")
+        self.bot_token = get_env("TELEGRAM_BOT_TOKEN")
         self.chat_name = get_env("TELEGRAM_TEST_CHAT_NAME", required=False)
         self.chat_id = get_env("TELEGRAM_TEST_CHAT_ID", required=False)
         self.user_name = get_env("TELEGRAM_TEST_USER_NAME")
@@ -4696,7 +4696,7 @@ def _missing_symphony_env() -> list[str]:
 def _missing_telegram_env() -> list[str]:
     missing = _missing_env(
         (
-            "TELEGRAM_TOKEN",
+            "TELEGRAM_BOT_TOKEN",
             "TELEGRAM_TEST_USER_NAME",
         )
     )

@@ -3,7 +3,7 @@
 These tests run against a real Telegram bot when credentials are available.
 
 Environment Variables Required:
-    TELEGRAM_TOKEN: Telegram bot token
+    TELEGRAM_BOT_TOKEN: Telegram bot token
 
 Environment Variables Optional:
     TELEGRAM_TEST_CHAT_ID: Numeric chat ID for tests
@@ -16,8 +16,8 @@ from contextlib import asynccontextmanager
 import pytest
 
 pytestmark = pytest.mark.skipif(
-    not os.environ.get("TELEGRAM_TOKEN"),
-    reason="Telegram credentials not available (set TELEGRAM_TOKEN)",
+    not os.environ.get("TELEGRAM_BOT_TOKEN"),
+    reason="Telegram credentials not available (set TELEGRAM_BOT_TOKEN)",
 )
 
 
@@ -26,7 +26,7 @@ def telegram_config():
     """Create Telegram configuration from environment."""
     from chatom.telegram import TelegramConfig
 
-    return TelegramConfig(bot_token=os.environ.get("TELEGRAM_TOKEN", ""))
+    return TelegramConfig(bot_token=os.environ.get("TELEGRAM_BOT_TOKEN", ""))
 
 
 @pytest.fixture
