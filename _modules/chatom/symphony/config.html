@@ -415,6 +415,16 @@
         <span class="kc">None</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">"Path to a custom CA certificate bundle file."</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">use_internal_reactions</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
+        <span class="kc">False</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">"Opt in to emoji reactions through Symphony's internal maestro service. "</span>
+            <span class="s2">"Reactions are a real Symphony feature, but no public Agent or Pod REST endpoint exposes them to "</span>
+            <span class="s2">"bots, so this calls POST /maestro/reactions/v1/message, which backs the web client. That service "</span>
+            <span class="s2">"is not in Symphony's published API specification and may change without notice. Off by default."</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
     <span class="n">ssl_verify</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span>
         <span class="kc">True</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">"Whether to verify SSL certificates."</span><span class="p">,</span>

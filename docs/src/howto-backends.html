@@ -289,6 +289,32 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
 </div>
 <p>Pass secrets from environment variables or a secret manager in production.</p>
 </section>
+<section id="symphony-emoji-reactions">
+<h2>Symphony emoji reactions<a class="headerlink" href="#symphony-emoji-reactions" title="Link to this heading">¶</a></h2>
+<p>Symphony users react to messages with emoji, but no public Agent or Pod REST
+endpoint exposes reactions to a bot, so <code class="docutils literal notranslate"><span class="pre">SYMPHONY_CAPABILITIES</span></code> leaves
+<code class="docutils literal notranslate"><span class="pre">EMOJI_REACTIONS</span></code> out and <code class="docutils literal notranslate"><span class="pre">add_reaction</span></code> refuses by default.</p>
+<p>The web client reacts through an internal service, <code class="docutils literal notranslate"><span class="pre">POST</span> <span class="pre">/maestro/reactions/v1/message</span></code>, which accepts a bot’s session token.
+<code class="docutils literal notranslate"><span class="pre">use_internal_reactions</span></code> opts in to it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">symphony</span> <span class="o">=</span> <span class="n">SymphonyBackend</span><span class="p">(</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">SymphonyConfig</span><span class="p">(</span>
+        <span class="n">host</span><span class="o">=</span><span class="s2">"develop2.symphony.com"</span><span class="p">,</span>
+        <span class="n">bot_username</span><span class="o">=</span><span class="s2">"my-bot"</span><span class="p">,</span>
+        <span class="n">bot_private_key_path</span><span class="o">=</span><span class="s2">"/path/to/key.pem"</span><span class="p">,</span>
+        <span class="n">use_internal_reactions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="k">await</span> <span class="n">symphony</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">sent</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">"</span><span class="se">\N{THUMBS UP SIGN}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">await</span> <span class="n">symphony</span><span class="o">.</span><span class="n">remove_reaction</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">sent</span><span class="p">,</span> <span class="n">emoji</span><span class="o">=</span><span class="s2">"</span><span class="se">\N{THUMBS UP SIGN}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That service is not part of Symphony’s published API specification and may
+change without notice, which is why the flag defaults to off. An instance with
+the flag set declares <code class="docutils literal notranslate"><span class="pre">Capability.EMOJI_REACTIONS</span></code> so capability-gated callers
+see the truth, while the shared module constant stays unchanged.</p>
+<p>Reactions take the emoji character, not a shortname: the service answers
+<code class="docutils literal notranslate"><span class="pre">REACTIONS_INVALID_EMOJI</span></code> for <code class="docutils literal notranslate"><span class="pre">thumbsup</span></code> or an empty string.</p>
+</section>
 <section id="use-the-common-lifecycle">
 <h2>Use the common lifecycle<a class="headerlink" href="#use-the-common-lifecycle" title="Link to this heading">¶</a></h2>
 <p>The rest of the workflow is backend-independent:</p>
@@ -463,6 +489,7 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
             <ul>
 <li><a class="reference internal" href="#">Connect and send through a backend</a><ul>
 <li><a class="reference internal" href="#create-a-backend">Create a backend</a></li>
+<li><a class="reference internal" href="#symphony-emoji-reactions">Symphony emoji reactions</a></li>
 <li><a class="reference internal" href="#use-the-common-lifecycle">Use the common lifecycle</a></li>
 <li><a class="reference internal" href="#use-the-synchronous-facade">Use the synchronous facade</a></li>
 <li><a class="reference internal" href="#check-an-optional-operation">Check an optional operation</a></li>
