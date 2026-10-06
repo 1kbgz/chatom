@@ -275,3 +275,53 @@ async def test_user_detail_returns_none_when_both_fail():
     service = _FakeUserService(admin_allowed=False, by_ids_allowed=False)
 
     assert await SymphonyBackend._user_detail(service, 1) is None
+
+
+class TestInternalReactions:
+    """Reactions go through Symphony's internal maestro service, opt-in only."""
+
+    def test_message_id_is_converted_to_standard_base64(self):
+        """The reaction service matches on the padded, non-URL-safe alphabet."""
+        assert SymphonyBackend._standard_base64_message_id("XiIv3APOCgkFmgERKMwe8n___l7sy8bgbQ") == "XiIv3APOCgkFmgERKMwe8n///l7sy8bgbQ=="
+        assert SymphonyBackend._standard_base64_message_id("ab-cd_ef") == "ab+cd/ef"
+
+    def test_emoji_must_be_a_character(self):
+        """The service answers REACTIONS_INVALID_EMOJI for shortnames and blanks."""
+        assert SymphonyBackend._reaction_emoji("\N{THUMBS UP SIGN}") == "\N{THUMBS UP SIGN}"
+
+        for rejected in ("thumbsup", ":thumbsup:", "", "   "):
+            with pytest.raises(ValueError, match="Symphony reactions need"):
+                SymphonyBackend._reaction_emoji(rejected)
+
+    def test_emoji_object_needs_a_unicode_value(self):
+        from chatom.base import Emoji
+
+        assert SymphonyBackend._reaction_emoji(Emoji(name="thumbsup", unicode="\N{THUMBS UP SIGN}")) == "\N{THUMBS UP SIGN}"
+        with pytest.raises(ValueError, match="no unicode value"):
+            SymphonyBackend._reaction_emoji(Emoji(name="custom"))
+
+    def test_capability_is_declared_only_when_opted_in(self):
+        from chatom.base.capabilities import Capability
+        from chatom.symphony import SymphonyConfig
+
+        base = {"host": "pod.example.com", "bot_username": "bot"}
+        off = SymphonyBackend(config=SymphonyConfig(**base))
+        on = SymphonyBackend(config=SymphonyConfig(**base, use_internal_reactions=True))
+
+        assert not off.capabilities.supports(Capability.EMOJI_REACTIONS)
+        assert on.capabilities.supports(Capability.EMOJI_REACTIONS)
+
+        # The shared module-level constant must not be mutated.
+        from chatom.base import SYMPHONY_CAPABILITIES
+
+        assert not SYMPHONY_CAPABILITIES.supports(Capability.EMOJI_REACTIONS)
+
+    @pytest.mark.asyncio
+    async def test_reacting_without_the_flag_is_refused(self):
+        from chatom.symphony import SymphonyConfig
+
+        backend = SymphonyBackend(config=SymphonyConfig(host="pod.example.com", bot_username="bot"))
+        with pytest.raises(NotImplementedError, match="use_internal_reactions"):
+            await backend.add_reaction(message="abc", emoji="\N{THUMBS UP SIGN}")
+        with pytest.raises(NotImplementedError, match="use_internal_reactions"):
+            await backend.remove_reaction(message="abc", emoji="\N{THUMBS UP SIGN}")

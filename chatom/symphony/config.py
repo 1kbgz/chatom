@@ -157,6 +157,16 @@ class SymphonyConfig(BackendConfig):
         None,
         description="Path to a custom CA certificate bundle file.",
     )
+    use_internal_reactions: bool = Field(
+        False,
+        description=(
+            "Opt in to emoji reactions through Symphony's internal maestro service. "
+            "Reactions are a real Symphony feature, but no public Agent or Pod REST endpoint exposes them to "
+            "bots, so this calls POST /maestro/reactions/v1/message, which backs the web client. That service "
+            "is not in Symphony's published API specification and may change without notice. Off by default."
+        ),
+    )
+
     ssl_verify: bool = Field(
         True,
         description="Whether to verify SSL certificates.",

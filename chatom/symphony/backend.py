@@ -8,13 +8,17 @@ import asyncio
 import base64
 import contextlib
 import importlib
+import json
 import logging
 import re
+import time
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime, timedelta
 from typing import Any, ClassVar
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ..backend import AttachmentDownloadLimitError, BackendBase
 from ..base import (
@@ -22,7 +26,9 @@ from ..base import (
     Attachment,
     AttachmentType,
     BackendCapabilities,
+    Capability,
     Channel,
+    Emoji,
     Image,
     Message,
     MessageType,
@@ -187,6 +193,22 @@ class SymphonyBackend(BackendBase):
     _bdk: Any = None
     _bot_user_id_int: int | None = None
     _bot_user_name_cached: str | None = None
+
+    @model_validator(mode="after")
+    def _declare_reaction_capability(self) -> "SymphonyBackend":
+        """Advertise reactions only when the internal service is opted in to.
+
+        The module-level constant leaves EMOJI_REACTIONS out, because the public
+        API has no bot endpoint. With use_internal_reactions set, this instance
+        really can react, so the capability is added for that instance only.
+        """
+        if self.config.use_internal_reactions and self.capabilities is not None and not self.capabilities.supports(Capability.EMOJI_REACTIONS):
+            object.__setattr__(
+                self,
+                "capabilities",
+                self.capabilities.model_copy(update={"capabilities": self.capabilities.capabilities | {Capability.EMOJI_REACTIONS}}),
+            )
+        return self
 
     @property
     def bot_user_id(self) -> str | None:
@@ -1253,6 +1275,85 @@ class SymphonyBackend(BackendBase):
         except Exception:  # noqa: BLE001
             return None
 
+    # Symphony's reaction service, which backs the web client. Not in the
+    # published API specification; see SymphonyConfig.use_internal_reactions.
+    _REACTIONS_PATH = "/maestro/reactions/v1/message"
+
+    @staticmethod
+    def _standard_base64_message_id(message_id: str) -> str:
+        """Convert a message id to the padded, non-URL-safe form reactions want.
+
+        Symphony hands message ids out URL-safe and unpadded, but the reaction
+        service matches on the standard alphabet with padding.
+        """
+        converted = message_id.replace("-", "+").replace("_", "/")
+        return converted + "=" * (-len(converted) % 4)
+
+    @staticmethod
+    def _reaction_emoji(emoji: str | Emoji) -> str:
+        """Resolve a reaction to the literal emoji character the service wants.
+
+        The service rejects shortnames and empty strings with
+        ``REACTIONS_INVALID_EMOJI``, so anything that is not already a character
+        is refused here with a clearer message.
+        """
+        if isinstance(emoji, Emoji):
+            resolved = emoji.unicode or ""
+            if not resolved:
+                raise ValueError(f"Emoji {emoji.name!r} has no unicode value; Symphony reactions need the character itself")
+            return resolved
+        resolved = (emoji or "").strip()
+        if not resolved:
+            raise ValueError("Symphony reactions need a non-empty emoji")
+        if resolved.isascii():
+            raise ValueError(
+                f"Symphony reactions need the emoji character, not a shortname like {resolved!r}; "
+                'pass "\N{THUMBS UP SIGN}" or an Emoji with unicode set'
+            )
+        return resolved
+
+    async def _post_reaction(self, message: str | Message, emoji: str | Emoji | None, channel: str | Channel | None) -> None:
+        """Add or remove a reaction through Symphony's internal service.
+
+        Omitting the emoji removes this bot's reaction; the service rejects an
+        empty string, so removal has to leave the field out entirely.
+        """
+        if not self.config.use_internal_reactions:
+            raise NotImplementedError(
+                "Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot "
+                "to do so. Set SymphonyConfig.use_internal_reactions to opt in to the internal maestro service, which is "
+                "not part of Symphony's published API and may change without notice."
+            )
+        if self._bdk is None:
+            raise RuntimeError("Not connected to Symphony. Call connect() first.")
+        _, message_id = await self._resolve_message_id(message, channel)
+
+        payload: dict[str, Any] = {
+            "messageId": self._standard_base64_message_id(message_id),
+            "timestamp": int(time.time() * 1000),
+        }
+        if emoji is not None:
+            payload["emoji"] = self._reaction_emoji(emoji)
+
+        session_token = await self._bdk._bot_session.session_token
+        url = f"{self.config.scheme}://{self.config.host}:{self.config.port}{self._REACTIONS_PATH}"
+        request = Request(
+            url,
+            data=json.dumps(payload).encode(),
+            method="POST",
+            headers={"Content-Type": "application/json", "Accept": "application/json", "sessionToken": session_token},
+        )
+
+        def _send() -> None:
+            with urlopen(request, timeout=self.config.timeout) as response:
+                response.read()
+
+        try:
+            await asyncio.to_thread(_send)
+        except HTTPError as exc:
+            detail = exc.read().decode(errors="replace")
+            raise RuntimeError(f"Symphony reaction request failed ({exc.code}): {detail}") from exc
+
     async def add_reaction(
         self,
         message: str | Message,
@@ -1270,12 +1371,9 @@ class SymphonyBackend(BackendBase):
             channel: The stream containing the message (not used).
 
         Raises:
-            NotImplementedError: Symphony's REST API has no bot reaction endpoint.
+            NotImplementedError: Unless ``use_internal_reactions`` is set.
         """
-        raise NotImplementedError(
-            "Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot to do so. "
-            "Consider signals or inline forms instead."
-        )
+        await self._post_reaction(message, emoji, channel)
 
     async def remove_reaction(
         self,
@@ -1293,11 +1391,10 @@ class SymphonyBackend(BackendBase):
             channel: The stream containing the message (not used).
 
         Raises:
-            NotImplementedError: Symphony's REST API has no bot reaction endpoint.
+            NotImplementedError: Unless ``use_internal_reactions`` is set.
         """
-        raise NotImplementedError(
-            "Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot to do so."
-        )
+        # The service rejects an empty emoji, so removal omits the field.
+        await self._post_reaction(message, None, channel)
 
     def mention_user(self, user: User) -> str:
         """Format a user mention for Symphony.
