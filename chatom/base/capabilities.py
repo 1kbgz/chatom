@@ -9,9 +9,13 @@ from .base import BaseModel, Field
 
 __all__ = (
     "DISCORD_CAPABILITIES",
+    "IRC_CAPABILITIES",
+    "LINE_CAPABILITIES",
+    "MATRIX_CAPABILITIES",
     "SLACK_CAPABILITIES",
     "SYMPHONY_CAPABILITIES",
     "TELEGRAM_CAPABILITIES",
+    "ZULIP_CAPABILITIES",
     "BackendCapabilities",
     "Capability",
 )
@@ -316,4 +320,74 @@ TELEGRAM_CAPABILITIES = BackendCapabilities(
     max_message_length=4096,
     max_attachment_size=50 * 1024 * 1024,  # 50 MB
     max_attachments=10,
+)
+
+IRC_CAPABILITIES = BackendCapabilities(
+    capabilities=frozenset(
+        {
+            Capability.PLAINTEXT,
+            Capability.USER_MENTIONS,
+            Capability.CHANNEL_MENTIONS,
+            Capability.PRESENCE,
+        }
+    ),
+    max_message_length=400,
+    max_attachment_size=0,
+    max_attachments=0,
+    max_embeds=0,
+    max_reactions=0,
+)
+
+LINE_CAPABILITIES = BackendCapabilities(
+    capabilities=frozenset(
+        {
+            Capability.PLAINTEXT,
+            Capability.IMAGES,
+            Capability.FILES,
+            Capability.VIDEOS,
+            Capability.AUDIO,
+            Capability.REPLIES,
+            Capability.USER_MENTIONS,
+        }
+    ),
+    max_message_length=5000,
+    max_attachments=1,
+)
+
+MATRIX_CAPABILITIES = BackendCapabilities(
+    capabilities=frozenset(
+        {
+            Capability.PLAINTEXT,
+            Capability.HTML,
+            Capability.CODE_BLOCKS,
+            Capability.THREADS,
+            Capability.REPLIES,
+            Capability.USER_MENTIONS,
+            Capability.CHANNEL_MENTIONS,
+            Capability.EDITING,
+            Capability.DELETING,
+            Capability.PRESENCE,
+        }
+    )
+)
+
+ZULIP_CAPABILITIES = BackendCapabilities(
+    capabilities=frozenset(
+        {
+            Capability.PLAINTEXT,
+            Capability.MARKDOWN,
+            Capability.CODE_BLOCKS,
+            Capability.IMAGES,
+            Capability.FILES,
+            Capability.EMOJI_REACTIONS,
+            Capability.CUSTOM_EMOJI,
+            Capability.THREADS,
+            Capability.USER_MENTIONS,
+            Capability.CHANNEL_MENTIONS,
+            Capability.EDITING,
+            Capability.DELETING,
+            Capability.PRESENCE,
+        }
+    ),
+    max_message_length=10000,
 )
