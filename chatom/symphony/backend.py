@@ -1289,28 +1289,71 @@ class SymphonyBackend(BackendBase):
         converted = message_id.replace("-", "+").replace("_", "/")
         return converted + "=" * (-len(converted) % 4)
 
-    @staticmethod
-    def _reaction_emoji(emoji: str | Emoji) -> str:
+    # Shortnames are how Slack and the rest of chatom name reactions, so the
+    # common ones are translated rather than refused. Install the `emoji`
+    # package for the full set.
+    _SHORTNAME_FALLBACK: ClassVar[dict[str, str]] = {
+        "+1": "\N{THUMBS UP SIGN}",
+        "-1": "\N{THUMBS DOWN SIGN}",
+        "thumbsup": "\N{THUMBS UP SIGN}",
+        "thumbsdown": "\N{THUMBS DOWN SIGN}",
+        "eyes": "\N{EYES}",
+        "tada": "\N{PARTY POPPER}",
+        "rocket": "\N{ROCKET}",
+        "heart": "\N{HEAVY BLACK HEART}",
+        "white_check_mark": "\N{WHITE HEAVY CHECK MARK}",
+        "heavy_check_mark": "\N{HEAVY CHECK MARK}",
+        "x": "\N{CROSS MARK}",
+        "warning": "\N{WARNING SIGN}",
+        "fire": "\N{FIRE}",
+        "clap": "\N{CLAPPING HANDS SIGN}",
+        "pray": "\N{PERSON WITH FOLDED HANDS}",
+        "smile": "\N{SMILING FACE WITH OPEN MOUTH}",
+        "laughing": "\N{SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES}",
+        "cry": "\N{CRYING FACE}",
+        "100": "\N{HUNDRED POINTS SYMBOL}",
+    }
+
+    @classmethod
+    def _reaction_emoji(cls, emoji: str | Emoji) -> str:
         """Resolve a reaction to the literal emoji character the service wants.
 
-        The service rejects shortnames and empty strings with
-        ``REACTIONS_INVALID_EMOJI``, so anything that is not already a character
-        is refused here with a clearer message.
+        Reactions are named by shortname elsewhere in chatom, as Slack does, but
+        Symphony answers ``REACTIONS_INVALID_EMOJI`` for anything that is not the
+        character, so shortnames are translated here. The optional ``emoji``
+        package covers every shortname; without it a small common set is built
+        in and anything else has to arrive as the character or as an
+        :class:`~chatom.base.Emoji` carrying ``unicode``.
         """
         if isinstance(emoji, Emoji):
-            resolved = emoji.unicode or ""
+            resolved = emoji.unicode or cls._SHORTNAME_FALLBACK.get(emoji.name.strip(":").lower(), "")
             if not resolved:
                 raise ValueError(f"Emoji {emoji.name!r} has no unicode value; Symphony reactions need the character itself")
             return resolved
+
         resolved = (emoji or "").strip()
         if not resolved:
             raise ValueError("Symphony reactions need a non-empty emoji")
-        if resolved.isascii():
-            raise ValueError(
-                f"Symphony reactions need the emoji character, not a shortname like {resolved!r}; "
-                'pass "\N{THUMBS UP SIGN}" or an Emoji with unicode set'
-            )
-        return resolved
+        if not resolved.isascii():
+            return resolved
+
+        name = resolved.strip(":").lower()
+        try:
+            import emoji as emoji_lib
+        except ImportError:
+            pass
+        else:
+            converted = emoji_lib.emojize(f":{name}:", language="alias")
+            if converted != f":{name}:":
+                return converted
+
+        converted = cls._SHORTNAME_FALLBACK.get(name)
+        if converted:
+            return converted
+        raise ValueError(
+            f"Symphony reactions need the emoji character and {resolved!r} could not be translated; "
+            "pass the character itself, an Emoji with unicode set, or install the `emoji` package"
+        )
 
     async def _post_reaction(self, message: str | Message, emoji: str | Emoji | None, channel: str | Channel | None) -> None:
         """Add or remove a reaction through Symphony's internal service.
