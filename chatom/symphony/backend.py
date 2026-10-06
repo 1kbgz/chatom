@@ -1270,9 +1270,12 @@ class SymphonyBackend(BackendBase):
             channel: The stream containing the message (not used).
 
         Raises:
-            NotImplementedError: Symphony doesn't support emoji reactions.
+            NotImplementedError: Symphony's REST API has no bot reaction endpoint.
         """
-        raise NotImplementedError("Symphony does not support emoji reactions. Consider using signals or inline forms instead.")
+        raise NotImplementedError(
+            "Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot to do so. "
+            "Consider signals or inline forms instead."
+        )
 
     async def remove_reaction(
         self,
@@ -1290,9 +1293,11 @@ class SymphonyBackend(BackendBase):
             channel: The stream containing the message (not used).
 
         Raises:
-            NotImplementedError: Symphony doesn't support emoji reactions.
+            NotImplementedError: Symphony's REST API has no bot reaction endpoint.
         """
-        raise NotImplementedError("Symphony does not support emoji reactions")
+        raise NotImplementedError(
+            "Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot to do so."
+        )
 
     def mention_user(self, user: User) -> str:
         """Format a user mention for Symphony.
