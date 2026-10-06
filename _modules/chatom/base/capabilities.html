@@ -541,6 +541,10 @@
     <span class="n">max_reactions</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="c1"># EMOJI_REACTIONS is deliberately absent. Symphony users can react with emoji,</span>
+<span class="c1"># but the public Agent and Pod REST APIs expose no endpoint for a bot to add or</span>
+<span class="c1"># remove a reaction, so add_reaction raises. The capability gates bot operations,</span>
+<span class="c1"># so declaring it would advertise a tool that always fails.</span>
 <span class="n">SYMPHONY_CAPABILITIES</span> <span class="o">=</span> <span class="n">BackendCapabilities</span><span class="p">(</span>
     <span class="n">capabilities</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span>
         <span class="p">{</span>
@@ -550,7 +554,6 @@
             <span class="n">Capability</span><span class="o">.</span><span class="n">CODE_BLOCKS</span><span class="p">,</span>
             <span class="n">Capability</span><span class="o">.</span><span class="n">IMAGES</span><span class="p">,</span>
             <span class="n">Capability</span><span class="o">.</span><span class="n">FILES</span><span class="p">,</span>
-            <span class="n">Capability</span><span class="o">.</span><span class="n">EMOJI_REACTIONS</span><span class="p">,</span>
             <span class="n">Capability</span><span class="o">.</span><span class="n">USER_MENTIONS</span><span class="p">,</span>
             <span class="n">Capability</span><span class="o">.</span><span class="n">EDITING</span><span class="p">,</span>
             <span class="n">Capability</span><span class="o">.</span><span class="n">DELETING</span><span class="p">,</span>

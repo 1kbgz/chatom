@@ -1581,9 +1581,12 @@
 <span class="sd">            channel: The stream containing the message (not used).</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError: Symphony doesn't support emoji reactions.</span>
+<span class="sd">            NotImplementedError: Symphony's REST API has no bot reaction endpoint.</span>
 <span class="sd">        """</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Symphony does not support emoji reactions. Consider using signals or inline forms instead."</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">"Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot to do so. "</span>
+            <span class="s2">"Consider signals or inline forms instead."</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SymphonyBackend.remove_reaction">
@@ -1604,9 +1607,11 @@
 <span class="sd">            channel: The stream containing the message (not used).</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            NotImplementedError: Symphony doesn't support emoji reactions.</span>
+<span class="sd">            NotImplementedError: Symphony's REST API has no bot reaction endpoint.</span>
 <span class="sd">        """</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"Symphony does not support emoji reactions"</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">"Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot to do so."</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="SymphonyBackend.mention_user">
