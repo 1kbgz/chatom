@@ -220,3 +220,58 @@ class TestFetchMessagesDispatch:
         ts = [m.created_at for m in result]
         assert ts == sorted(ts, reverse=True)
         assert {m.id for m in result} == {m.message_id for m in all_messages[-10:]}
+
+
+class _FakeUserService:
+    """Stands in for the BDK user service, recording which endpoint was used."""
+
+    def __init__(self, *, admin_allowed: bool, by_ids_allowed: bool = True):
+        self.admin_allowed = admin_allowed
+        self.by_ids_allowed = by_ids_allowed
+        self.calls: list[str] = []
+
+    async def list_users_by_ids(self, ids):
+        self.calls.append("list_users_by_ids")
+        if not self.by_ids_allowed:
+            raise RuntimeError("not permitted")
+        return {"users": [{"id": ids[0], "display_name": "Tim Paine"}]}
+
+    async def get_user_detail(self, user_id):
+        self.calls.append("get_user_detail")
+        if not self.admin_allowed:
+            raise RuntimeError("(403) Forbidden")
+        return {"id": user_id, "display_name": "Tim Paine"}
+
+
+@pytest.mark.asyncio
+async def test_user_detail_prefers_the_non_admin_endpoint():
+    """A bot without admin rights must still resolve users.
+
+    Regression: _fetch_user_by_id called only get_user_detail, which is an admin
+    endpoint and returns 403 on a shared pod, so every lookup by id came back
+    None even though list_users_by_ids carries the same fields.
+    """
+    service = _FakeUserService(admin_allowed=False)
+
+    detail = await SymphonyBackend._user_detail(service, 349026222366053)
+
+    assert detail is not None
+    assert service.calls == ["list_users_by_ids"]
+
+
+@pytest.mark.asyncio
+async def test_user_detail_falls_back_to_admin_endpoint():
+    """If the non-admin endpoint is unavailable, the admin one is still tried."""
+    service = _FakeUserService(admin_allowed=True, by_ids_allowed=False)
+
+    detail = await SymphonyBackend._user_detail(service, 1)
+
+    assert detail is not None
+    assert service.calls == ["list_users_by_ids", "get_user_detail"]
+
+
+@pytest.mark.asyncio
+async def test_user_detail_returns_none_when_both_fail():
+    service = _FakeUserService(admin_allowed=False, by_ids_allowed=False)
+
+    assert await SymphonyBackend._user_detail(service, 1) is None

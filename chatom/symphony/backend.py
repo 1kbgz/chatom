@@ -48,7 +48,6 @@ try:
     from symphony.bdk.core.service.datafeed.real_time_event_listener import RealTimeEventListener
     from symphony.bdk.gen.agent_model.v4_initiator import V4Initiator
     from symphony.bdk.gen.agent_model.v4_message_sent import V4MessageSent
-    from symphony.bdk.gen.pod_model.user_id_list import UserIdList
     from symphony.bdk.gen.pod_model.user_search_query import UserSearchQuery
     from symphony.bdk.gen.pod_model.v2_room_search_criteria import V2RoomSearchCriteria
     from symphony.bdk.gen.pod_model.v3_room_attributes import V3RoomAttributes
@@ -59,6 +58,13 @@ except ImportError:
     _bdk_config_module = None
     _presence_service_module = None
     _symphony_bdk_module = None
+
+try:
+    # Removed in symphony-bdk-python 3.x, where v1_im_create_post takes a plain
+    # list of user ids. Kept optional so 2.x, which requires the wrapper, works too.
+    from symphony.bdk.gen.pod_model.user_id_list import UserIdList
+except ImportError:
+    UserIdList = None
 
 SymphonyBdk: Any = getattr(_symphony_bdk_module, "SymphonyBdk", None)
 BdkConfig: Any = getattr(_bdk_config_module, "BdkConfig", None)
@@ -406,11 +412,35 @@ class SymphonyBackend(BackendBase):
         except Exception:  # noqa: BLE001
             return None
 
+    @staticmethod
+    async def _user_detail(user_service: Any, user_id: int) -> Any:
+        """Look up one user, preferring the endpoint a non-admin bot can call.
+
+        ``get_user_detail`` is an admin endpoint and returns 403 for a bot
+        without admin entitlements, which is the normal case on a shared pod.
+        ``list_users_by_ids`` carries the same fields and needs no privileges,
+        so it is tried first and the admin call is only a fallback.
+        """
+        try:
+            results = await user_service.list_users_by_ids([user_id])
+            users = results.get("users", []) if isinstance(results, dict) else getattr(results, "users", None) or []
+            if users:
+                return users[0]
+        except Exception:  # noqa: BLE001, S110
+            pass
+        try:
+            return await user_service.get_user_detail(user_id)
+        except Exception:  # noqa: BLE001
+            log.debug("Could not fetch detail for Symphony user %s", user_id)
+            return None
+
     async def _fetch_user_by_id(self, user_id: str) -> SymphonyUser | None:
         """Fetch a user by ID from the Symphony API."""
         try:
             user_service = self._bdk.users()
-            user_data = await user_service.get_user_detail(int(user_id))
+            user_data = await self._user_detail(user_service, int(user_id))
+            if user_data is None:
+                return None
 
             # Handle both dict and object responses
             if isinstance(user_data, dict):
@@ -577,11 +607,10 @@ class SymphonyBackend(BackendBase):
         try:
             stream_service = self._bdk.streams()
             membership_list = await stream_service.list_room_members(channel_id)
-            members: list[User] = []
-            if membership_list and membership_list.value:
-                for member in membership_list.value:
-                    members.append(SymphonyUser(id=str(member.id)))
-            return members
+            # symphony-bdk-python 2.x returns a wrapper with .value; 3.x returns
+            # the list directly.
+            entries = getattr(membership_list, "value", membership_list) or []
+            return [SymphonyUser(id=str(member.id)) for member in entries]
         except Exception:
             log.exception("Error fetching room members for %s", channel_id)
             return []
@@ -1362,8 +1391,9 @@ class SymphonyBackend(BackendBase):
             # Use the underlying v1/im/create API which supports both 1:1 IMs and MIMs
             # The caller (bot) is implicitly included as a participant
             # Note: create_im_admin requires admin privileges and excludes the caller
+            uid_list = UserIdList(value=int_user_ids) if UserIdList is not None else int_user_ids
             stream = await stream_service._streams_api.v1_im_create_post(
-                uid_list=UserIdList(value=int_user_ids),
+                uid_list=uid_list,
                 session_token=await stream_service._auth_session.session_token,
             )
 
