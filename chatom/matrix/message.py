@@ -14,6 +14,7 @@ class MatrixMessage(Message):
     event_type: str = Field(default="m.room.message", description="Matrix event type.")
     transaction_id: str = Field(default="", description="Client transaction ID when available.")
     relates_to: dict[str, Any] = Field(default_factory=dict, description="Matrix relation data.")
+    replacement_event_id: str = Field(default="", description="Event ID of the m.replace event when this message has been edited.")
 
     @property
     def event_id(self) -> str:

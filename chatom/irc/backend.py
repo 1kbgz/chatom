@@ -193,7 +193,11 @@ class IRCBackend(BackendBase):
         if command in {"PRIVMSG", "NOTICE"} and len(params) >= 2:
             message = self._make_message(tags, prefix, command, params[0], params[1])
             self._remember_message(message)
-            await self._messages.put(message)
+            # Messages replayed inside a CHATHISTORY batch are history, not live
+            # traffic; they belong in the store only, or streaming consumers
+            # would reprocess them every time fetch_messages() runs.
+            if tags.get("batch") not in self._history_batches:
+                await self._messages.put(message)
         elif command == "AWAY" and prefix:
             user = IRCUser.from_prefix(prefix)
             self._presence[user.id] = IRCPresence(

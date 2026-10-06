@@ -164,3 +164,40 @@ async def test_live_backend_requires_server() -> None:
 
     with pytest.raises(ValueError, match="server is required"):
         await backend.connect()
+
+
+@pytest.mark.asyncio
+async def test_chathistory_batch_is_not_delivered_as_live_traffic() -> None:
+    """Replayed CHATHISTORY messages belong to history only.
+
+    Regression: batch members were queued for stream_messages(), so every
+    fetch_messages() call made streaming consumers reprocess old messages.
+    """
+    backend = IRCBackend(config=IRCConfig(nickname="bot"))
+    backend.connected = True
+
+    await backend._handle_line("BATCH +hist chathistory #chatom")
+    await backend._handle_line("@batch=hist;msgid=old-1 :alice!user@example.org PRIVMSG #chatom :replayed")
+    await backend._handle_line("BATCH -hist")
+
+    history = await backend.fetch_messages("#chatom")
+    assert [message.id for message in history] == ["old-1"]
+    assert backend._messages.empty()
+
+    # Live traffic after the batch closes is still streamed.
+    await backend._handle_line("@msgid=live-1 :alice!user@example.org PRIVMSG #chatom :live")
+    assert backend._messages.qsize() == 1
+    streamed = backend._messages.get_nowait()
+    assert streamed is not None and streamed.id == "live-1"
+
+
+@pytest.mark.asyncio
+async def test_non_history_batch_is_still_delivered_live() -> None:
+    """Only chathistory batches are suppressed; other batch types stream."""
+    backend = IRCBackend(config=IRCConfig(nickname="bot"))
+    backend.connected = True
+
+    await backend._handle_line("BATCH +netjoin netjoin")
+    await backend._handle_line("@batch=netjoin;msgid=live-2 :alice!user@example.org PRIVMSG #chatom :grouped")
+
+    assert backend._messages.qsize() == 1

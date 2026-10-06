@@ -1,9 +1,11 @@
 """Zulip backend implementation."""
 
 import asyncio
+import base64
 import re
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime
+from io import BytesIO
 from typing import Any, ClassVar
 
 from pydantic import Field, PrivateAttr
@@ -11,6 +13,7 @@ from pydantic import Field, PrivateAttr
 from ..backend import BackendBase
 from ..base import (
     ZULIP_CAPABILITIES,
+    Attachment,
     Avatar,
     BackendCapabilities,
     Channel,
@@ -275,27 +278,104 @@ class ZulipBackend(BackendBase):
         channel_id = await self._resolve_channel_id(channel)
         before_id = self._bound_id(before)
         after_id = self._bound_id(after)
-        request: dict[str, Any] = {
-            "anchor": before_id or after_id or "newest",
-            "num_before": 0 if after_id and not before_id else limit,
-            "num_after": limit if after_id and not before_id else 0,
-            "include_anchor": not (before_id or after_id),
-            "narrow": [{"operator": "channel", "operand": int(channel_id) if channel_id.isdigit() else channel_id}],
-            "apply_markdown": False,
-        }
-        response = await self._call(self._client.get_messages, request)
-        messages: list[Message] = [self._message_from_api(item) for item in response.get("messages", [])]
-        if after_id:
-            messages = [message for message in messages if int(message.id) > int(after_id)]
-        if before_id:
-            messages = [message for message in messages if int(message.id) < int(before_id)]
-        if isinstance(after, datetime):
-            after_dt = after if after.tzinfo else after.replace(tzinfo=UTC)
-            messages = [message for message in messages if message.created_at and message.created_at >= after_dt]
-        if isinstance(before, datetime):
-            before_dt = before if before.tzinfo else before.replace(tzinfo=UTC)
-            messages = [message for message in messages if message.created_at and message.created_at <= before_dt]
-        return sorted(messages, key=lambda message: int(message.id or 0), reverse=True)[:limit]
+        forward = bool(after_id and not before_id)
+        narrow = [{"operator": "channel", "operand": int(channel_id) if channel_id.isdigit() else channel_id}]
+
+        def within_bounds(messages: list[Message]) -> list[Message]:
+            if after_id:
+                messages = [message for message in messages if int(message.id) > int(after_id)]
+            if before_id:
+                messages = [message for message in messages if int(message.id) < int(before_id)]
+            if isinstance(after, datetime):
+                after_dt = after if after.tzinfo else after.replace(tzinfo=UTC)
+                messages = [message for message in messages if message.created_at and message.created_at >= after_dt]
+            if isinstance(before, datetime):
+                before_dt = before if before.tzinfo else before.replace(tzinfo=UTC)
+                messages = [message for message in messages if message.created_at and message.created_at <= before_dt]
+            return messages
+
+        # Page from the anchor until enough messages fall inside the requested
+        # range; a single request returns `limit` rows before any filtering.
+        anchor: Any = before_id or after_id or "newest"
+        collected: dict[str, Message] = {}
+        matching: list[Message] = []
+        while True:
+            request: dict[str, Any] = {
+                "anchor": anchor,
+                "num_before": 0 if forward else limit,
+                "num_after": limit if forward else 0,
+                "include_anchor": not (before_id or after_id),
+                "narrow": narrow,
+                "apply_markdown": False,
+            }
+            response = await self._call(self._client.get_messages, request)
+            batch = [self._message_from_api(item) for item in response.get("messages", [])]
+            for message in batch:
+                collected.setdefault(str(message.id), message)
+            matching = within_bounds(list(collected.values()))
+            if len(matching) >= limit or not batch:
+                break
+            if response.get("found_oldest" if not forward else "found_newest"):
+                break
+            # Step the anchor past this page and keep going.
+            ids = [int(message.id) for message in batch if message.id]
+            if not ids:
+                break
+            next_anchor = max(ids) + 1 if forward else min(ids) - 1
+            if next_anchor == anchor:
+                break
+            anchor = next_anchor
+        return sorted(matching, key=lambda message: int(message.id or 0), reverse=True)[:limit]
+
+    async def upload_file(
+        self,
+        channel: str | Channel,
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Upload a file to Zulip and post it as a message link.
+
+        Zulip stores uploads separately from messages: ``user_uploads``
+        returns a URI which is then referenced from Markdown content.
+        """
+        self._ensure_connected()
+        upload = BytesIO(data)
+        upload.name = filename
+        response = await self._call(self._client.upload_file, upload)
+        uri = response.get("uri") or response.get("url") or ""
+        if not uri:
+            raise RuntimeError("Zulip upload did not return a URI")
+        link = f"[{title or filename}]({uri})"
+        body = f"{content}\n\n{link}" if content else link
+        return await self.send_message(channel, body, **kwargs)
+
+    async def download_attachment(
+        self,
+        attachment: Attachment,
+        *,
+        message: Message | None = None,
+        max_bytes: int | None = None,
+    ) -> bytes:
+        """Download a Zulip upload, authenticating with the bot's API key.
+
+        Zulip ``user_uploads`` URLs are relative to the realm and require
+        credentials, so a plain public GET is not enough.
+        """
+        if attachment.data is not None:
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
+
+        url = (attachment.url or "").strip()
+        if not url:
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
+        if not url.startswith(("http://", "https://")):
+            url = f"{self.config.site.rstrip('/')}/{url.lstrip('/')}"
+
+        credentials = base64.b64encode(f"{self.config.email}:{self.config.api_key_str}".encode()).decode()
+        return await self._download_url(url, headers={"Authorization": f"Basic {credentials}"}, max_bytes=max_bytes)
 
     @staticmethod
     def _topic_from_thread(thread: Any) -> str | None:

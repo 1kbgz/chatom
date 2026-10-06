@@ -1,10 +1,11 @@
 """Focused tests for Zulip models, API mapping, and mock backend."""
 
+import base64
 from datetime import UTC, datetime
 
 import pytest
 
-from chatom.base import Channel, Message, Presence, Thread, User
+from chatom.base import Attachment, Channel, Message, Presence, Thread, User
 from chatom.base.conversion import get_backend_type
 from chatom.zulip import (
     MockZulipBackend,
@@ -219,3 +220,114 @@ async def test_mock_backend_preserves_topic_and_tracks_operations():
     assert backend.added_reactions == [(sent.id, "thumbsup")]
     assert backend.deleted_messages == [sent.id]
     assert [message.content for message in await backend.fetch_messages("7")] == ["Earlier"]
+
+
+class PagingZulipClient(FakeZulipClient):
+    """Fake client that serves channel history one message per request."""
+
+    def __init__(self, total: int) -> None:
+        super().__init__()
+        self.requests: list[dict] = []
+        self._by_id = {
+            message_id: {
+                "id": message_id,
+                "type": "stream",
+                "stream_id": 7,
+                "display_recipient": "Denmark",
+                "subject": "Castle",
+                "content": f"message {message_id}",
+                "content_type": "text/x-markdown",
+                "sender_id": 2,
+                "sender_full_name": "Iago",
+                "sender_email": "iago@example.com",
+                "timestamp": 1_700_000_000 + message_id,
+            }
+            for message_id in range(1, total + 1)
+        }
+
+    def get_messages(self, request):
+        self.requests.append(dict(request))
+        anchor = request["anchor"]
+        newest = max(self._by_id)
+        anchor_id = newest if anchor == "newest" else int(anchor)
+        if request["num_after"]:
+            candidates = sorted(mid for mid in self._by_id if mid >= anchor_id)
+        else:
+            candidates = sorted((mid for mid in self._by_id if mid <= anchor_id), reverse=True)
+        # One message per page, so a correct implementation has to keep paging.
+        page = candidates[:1]
+        return {
+            "result": "success",
+            "messages": [self._by_id[mid] for mid in page],
+            "found_oldest": not request["num_after"] and min(self._by_id) in page,
+            "found_newest": bool(request["num_after"]) and newest in page,
+        }
+
+
+@pytest.mark.asyncio
+async def test_fetch_messages_pages_until_limit_is_satisfied():
+    """History must page rather than return one request's worth.
+
+    Regression: a single get_messages call was filtered client-side, so
+    fewer than `limit` messages came back even when more existed.
+    """
+    instance = ZulipBackend(config=ZulipConfig(site="https://example.zulipchat.com", email="chatom@example.com", api_key="secret"))
+    instance._client = PagingZulipClient(total=5)
+    instance.connected = True
+
+    messages = await instance.fetch_messages("7", limit=3)
+
+    assert [message.id for message in messages] == ["5", "4", "3"]
+    assert len(instance._client.requests) >= 3
+
+
+@pytest.mark.asyncio
+async def test_fetch_messages_stops_at_oldest_message():
+    """Paging terminates on found_oldest instead of spinning."""
+    instance = ZulipBackend(config=ZulipConfig(site="https://example.zulipchat.com", email="chatom@example.com", api_key="secret"))
+    instance._client = PagingZulipClient(total=2)
+    instance.connected = True
+
+    messages = await instance.fetch_messages("7", limit=50)
+
+    assert [message.id for message in messages] == ["2", "1"]
+
+
+@pytest.mark.asyncio
+async def test_upload_file_posts_upload_then_links_it(backend):
+    """FILES is declared, so upload_file must actually work."""
+    uploaded = {}
+
+    def upload_file(file_obj):
+        uploaded["name"] = file_obj.name
+        uploaded["data"] = file_obj.read()
+        return {"result": "success", "uri": "/user_uploads/1/ab/report.pdf"}
+
+    backend._client.upload_file = upload_file
+    backend.connected = True
+
+    await backend.upload_file("7", b"PDF-BYTES", filename="report.pdf", content="Latest numbers")
+
+    assert uploaded == {"name": "report.pdf", "data": b"PDF-BYTES"}
+    assert backend._client.sent_request["content"] == "Latest numbers\n\n[report.pdf](/user_uploads/1/ab/report.pdf)"
+
+
+@pytest.mark.asyncio
+async def test_download_attachment_authenticates_relative_uri(backend, monkeypatch):
+    """Zulip uploads are realm-relative and need the bot's credentials."""
+    captured = {}
+
+    async def fake_download(self, url, headers=None, max_bytes=None):
+        captured["url"] = url
+        captured["headers"] = headers
+        return b"PDF-BYTES"
+
+    monkeypatch.setattr(ZulipBackend, "_download_url", fake_download)
+    backend.connected = True
+
+    data = await backend.download_attachment(Attachment(id="1", url="/user_uploads/1/ab/report.pdf"))
+
+    assert data == b"PDF-BYTES"
+    assert captured["url"] == "https://example.zulipchat.com/user_uploads/1/ab/report.pdf"
+    expected = base64.b64encode(b"chatom@example.com:secret").decode()
+    assert captured["headers"] == {"Authorization": f"Basic {expected}"}

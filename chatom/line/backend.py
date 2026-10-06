@@ -15,7 +15,7 @@ from urllib.request import Request, urlopen
 from pydantic import Field, PrivateAttr
 
 from ..backend import BackendBase
-from ..base import LINE_CAPABILITIES, BackendCapabilities, Channel, Message, Presence, PresenceStatus, User
+from ..base import LINE_CAPABILITIES, Attachment, BackendCapabilities, Channel, Message, Presence, PresenceStatus, User
 from ..format import Format
 from .channel import LineChannel
 from .config import LineConfig
@@ -46,8 +46,11 @@ class LineBackend(BackendBase):
     config: LineConfig = Field(default_factory=LineConfig)
 
     _bot_user_id: str | None = PrivateAttr(default=None)
-    _message_queue: asyncio.Queue[LineMessage] = PrivateAttr(default_factory=asyncio.Queue)
+    # One queue per active stream_messages() consumer. A single shared queue
+    # would let a channel-filtered consumer discard other channels' messages.
+    _subscribers: list[tuple[str | None, asyncio.Queue[LineMessage]]] = PrivateAttr(default_factory=list)
     _message_cache: dict[str, list[LineMessage]] = PrivateAttr(default_factory=dict)
+    _seen_event_ids: set[str] = PrivateAttr(default_factory=set)
 
     @property
     def bot_user_id(self) -> str | None:
@@ -217,13 +220,20 @@ class LineBackend(BackendBase):
             message = LineMessage.from_webhook_event(event)
             if message is None or message.channel is None:
                 continue
+            # LINE retries deliveries, so the same event can arrive repeatedly.
+            if message.id:
+                if message.id in self._seen_event_ids:
+                    continue
+                self._seen_event_ids.add(message.id)
             channel = message.channel
             if isinstance(channel, LineChannel):
                 self.channels.add(channel)
             if isinstance(message.author, LineUser):
                 self.users.add(message.author)
             self._message_cache.setdefault(channel.id, []).append(message)
-            self._message_queue.put_nowait(message)
+            for channel_filter, queue in self._subscribers:
+                if channel_filter is None or channel_filter == channel.id:
+                    queue.put_nowait(message)
             messages.append(message)
         return messages
 
@@ -235,13 +245,117 @@ class LineBackend(BackendBase):
     ) -> AsyncIterator[Message]:
         self._ensure_connected()
         channel_id = await self._resolve_channel_id(channel) if channel is not None else None
-        while self.connected:
-            message = await self._message_queue.get()
-            if channel_id and message.channel_id != channel_id:
-                continue
-            if skip_own and self._bot_user_id and message.author_id == self._bot_user_id:
-                continue
-            yield message
+        queue: asyncio.Queue[LineMessage] = asyncio.Queue()
+        subscription = (channel_id, queue)
+        self._subscribers.append(subscription)
+        try:
+            while self.connected:
+                message = await queue.get()
+                if skip_own and self._bot_user_id and message.author_id == self._bot_user_id:
+                    continue
+                yield message
+        finally:
+            self._subscribers.remove(subscription)
+
+    async def upload_file(
+        self,
+        channel: str | Channel,
+        data: bytes,
+        filename: str = "file",
+        content_type: str = "",
+        title: str = "",
+        content: str = "",
+        **kwargs: Any,
+    ) -> Message:
+        """Send a media message to a LINE conversation.
+
+        LINE has no endpoint that accepts raw bytes for outbound messages:
+        image, video, and audio messages reference a publicly reachable
+        HTTPS URL that the LINE platform fetches. Pass that URL as
+        ``original_content_url`` (plus ``preview_image_url`` for image and
+        video, and ``duration`` in milliseconds for video and audio).
+        """
+        self._ensure_connected()
+        original_content_url = kwargs.pop("original_content_url", "")
+        if not original_content_url:
+            raise ValueError(
+                "LINE cannot upload raw bytes; host the file and pass original_content_url "
+                "(see https://developers.line.biz/en/reference/messaging-api/#image-message)"
+            )
+        if not original_content_url.startswith("https://"):
+            raise ValueError("LINE requires original_content_url to be an HTTPS URL")
+
+        kind = (kwargs.pop("message_type", "") or self._media_type(content_type, filename)).lower()
+        if kind not in ("image", "video", "audio"):
+            raise ValueError(f"LINE supports image, video, and audio messages, not {kind!r}")
+
+        native_message: dict[str, Any] = {"type": kind, "originalContentUrl": original_content_url}
+        if kind in ("image", "video"):
+            preview = kwargs.pop("preview_image_url", "") or original_content_url
+            native_message["previewImageUrl"] = preview
+        if kind in ("video", "audio"):
+            duration = kwargs.pop("duration", None)
+            if duration is None:
+                raise ValueError(f"LINE {kind} messages require duration in milliseconds")
+            native_message["duration"] = int(duration)
+
+        channel_id = await self._resolve_channel_id(channel)
+        reply_token = kwargs.pop("reply_token", None)
+        if reply_token:
+            path = "/v2/bot/message/reply"
+            payload: dict[str, Any] = {"replyToken": reply_token, "messages": [native_message]}
+        else:
+            path = "/v2/bot/message/push"
+            payload = {"to": channel_id, "messages": [native_message]}
+        response = await asyncio.to_thread(self._request_json, "POST", path, payload)
+
+        cached_channel = self.channels.get_by_id(channel_id)
+        line_channel = cached_channel if isinstance(cached_channel, LineChannel) else LineChannel(id=channel_id)
+        message = LineMessage.from_api_response(response, content=content or title or filename, channel=line_channel)
+        self._message_cache.setdefault(channel_id, []).append(message)
+        return message
+
+    @staticmethod
+    def _media_type(content_type: str, filename: str) -> str:
+        """Infer a LINE message type from a MIME type or filename."""
+        mime = (content_type or "").lower()
+        for kind in ("image", "video", "audio"):
+            if mime.startswith(f"{kind}/"):
+                return kind
+        suffix = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+        if suffix in ("jpg", "jpeg", "png", "gif"):
+            return "image"
+        if suffix in ("mp4", "mov"):
+            return "video"
+        if suffix in ("m4a", "mp3", "aac"):
+            return "audio"
+        return "file"
+
+    async def download_attachment(
+        self,
+        attachment: Attachment,
+        *,
+        message: Message | None = None,
+        max_bytes: int | None = None,
+    ) -> bytes:
+        """Download content LINE received, via the data API.
+
+        Inbound image, video, audio, and file events carry no URL; their
+        bytes are fetched by message ID from ``api-data.line.me``.
+        """
+        if attachment.data is not None:
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
+
+        message_id = (getattr(attachment, "id", "") or "").strip()
+        if not message_id and message is not None:
+            message_id = (message.id or "").strip()
+        if not message_id:
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
+
+        self._ensure_connected()
+        url = f"{self.config.data_api_url.rstrip('/')}/v2/bot/message/{quote(message_id)}/content"
+        headers = {"Authorization": f"Bearer {self.config.channel_access_token_str}"}
+        return await self._download_url(url, headers=headers, max_bytes=max_bytes)
 
     async def get_bot_info(self) -> User | None:
         if not self._bot_user_id:

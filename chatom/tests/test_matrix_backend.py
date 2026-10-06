@@ -1,6 +1,8 @@
 """Focused tests for the Matrix backend."""
 
 import asyncio
+import sys
+import types
 from datetime import UTC, datetime
 
 import pytest
@@ -168,3 +170,124 @@ async def test_encrypted_room_is_explicitly_unsupported(backend):
 
     with pytest.raises(NotImplementedError, match="end-to-end encrypted"):
         await backend.send_message("!encrypted:example.org", "Nope")
+
+
+@pytest.fixture
+def nio_stub(monkeypatch):
+    """Provide the one nio symbol fetch_messages imports.
+
+    matrix-nio is an optional dependency, so the history tests stub it
+    rather than requiring the SDK to be installed.
+    """
+    module = types.ModuleType("nio")
+    module.MessageDirection = types.SimpleNamespace(back="b", front="f")
+    monkeypatch.setitem(sys.modules, "nio", module)
+    return module
+
+
+class _Response:
+    """Stand-in for a nio response object (no name ending in 'Error')."""
+
+    def __init__(self, **fields):
+        self.__dict__.update(fields)
+
+
+class FakeNioClient:
+    """Minimal nio client recording room_messages/room_send calls."""
+
+    def __init__(self, pages):
+        self._pages = list(pages)
+        self.history_requests = []
+        self.sent = []
+        self.rooms = {}
+
+    async def room_messages(self, room_id, start=None, direction=None, limit=None):
+        self.history_requests.append({"room_id": room_id, "start": start, "limit": limit})
+        if not self._pages:
+            return _Response(chunk=[], end=None)
+        chunk, end = self._pages.pop(0)
+        return _Response(chunk=chunk, end=end)
+
+    async def room_send(self, room_id=None, message_type=None, content=None, **kwargs):
+        self.sent.append({"room_id": room_id, "content": content})
+        return _Response(event_id="$replacement")
+
+
+def _event(event_id: str, ts: int) -> dict:
+    return {
+        "type": "m.room.message",
+        "event_id": event_id,
+        "sender": "@alice:example.org",
+        "origin_server_ts": ts,
+        "content": {"msgtype": "m.text", "body": event_id},
+    }
+
+
+def _live_backend(client) -> MatrixBackend:
+    backend = MatrixBackend(
+        config=MatrixConfig(
+            homeserver="https://example.org",
+            user_id="@bot:example.org",
+            access_token="token",
+            device_id="DEVICE",
+        )
+    )
+    backend._client = client
+    backend.connected = True
+    backend._next_batch = "s0"
+    backend._bot_user_id = "@bot:example.org"
+    return backend
+
+
+@pytest.mark.asyncio
+async def test_fetch_messages_pages_until_limit_is_satisfied(nio_stub) -> None:
+    """History must page, not return one short chunk.
+
+    Regression: a single room_messages call returned fewer than `limit`
+    messages even when the room had more.
+    """
+    client = FakeNioClient(
+        pages=[
+            ([_event("$e1", 1_700_000_003_000)], "s1"),
+            ([_event("$e2", 1_700_000_002_000)], "s2"),
+            ([_event("$e3", 1_700_000_001_000)], "s3"),
+        ]
+    )
+    backend = _live_backend(client)
+
+    messages = await backend.fetch_messages("!room:example.org", limit=3)
+
+    assert [message.id for message in messages] == ["$e1", "$e2", "$e3"]
+    assert len(client.history_requests) == 3
+    assert [request["start"] for request in client.history_requests] == ["s0", "s1", "s2"]
+
+
+@pytest.mark.asyncio
+async def test_fetch_messages_stops_when_history_is_exhausted(nio_stub) -> None:
+    """Paging terminates when the server stops advancing the token."""
+    client = FakeNioClient(pages=[([_event("$only", 1_700_000_000_000)], None)])
+    backend = _live_backend(client)
+
+    messages = await backend.fetch_messages("!room:example.org", limit=50)
+
+    assert [message.id for message in messages] == ["$only"]
+    assert len(client.history_requests) == 1
+
+
+@pytest.mark.asyncio
+async def test_edit_message_reports_the_original_event_id() -> None:
+    """Edits must identify the original event, not the m.replace event.
+
+    Regression: returning the replacement id meant delete_message() on the
+    result redacted only the edit and left the original message visible.
+    """
+    client = FakeNioClient(pages=[])
+    backend = _live_backend(client)
+
+    edited = await backend.edit_message("$original", "updated", channel="!room:example.org")
+
+    assert edited.id == "$original"
+    assert edited.replacement_event_id == "$replacement"
+    assert edited.is_edited
+    relation = client.sent[0]["content"]["m.relates_to"]
+    assert relation == {"rel_type": "m.replace", "event_id": "$original"}

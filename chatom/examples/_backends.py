@@ -23,7 +23,7 @@ Environment Variables:
 
     Matrix:
         MATRIX_HOMESERVER, MATRIX_USER_ID, MATRIX_ACCESS_TOKEN,
-        MATRIX_TEST_ROOM_ALIAS, MATRIX_TEST_USER_ID
+        MATRIX_DEVICE_ID, MATRIX_TEST_ROOM_ALIAS, MATRIX_TEST_USER_ID
 
     Zulip:
         ZULIP_SITE, ZULIP_EMAIL, ZULIP_API_KEY, ZULIP_TEST_CHANNEL_NAME,
@@ -179,14 +179,16 @@ def _build_matrix(streaming: bool = False):
     homeserver = get_env("MATRIX_HOMESERVER")
     user_id = get_env("MATRIX_USER_ID")
     access_token = get_env("MATRIX_ACCESS_TOKEN")
-    if not homeserver or not user_id or not access_token:
+    # restore_login() needs the device the token was issued for.
+    device_id = get_env("MATRIX_DEVICE_ID")
+    if not homeserver or not user_id or not access_token or not device_id:
         return None
     return MatrixBackend(
         config=MatrixConfig(
             homeserver=homeserver,
             user_id=user_id,
             access_token=access_token,
-            device_id=os.environ.get("MATRIX_DEVICE_ID", ""),
+            device_id=device_id,
         )
     )
 

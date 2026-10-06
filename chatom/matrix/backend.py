@@ -299,19 +299,34 @@ class MatrixBackend(BackendBase):
         if not self._next_batch:
             return []
 
-        response = await self._client.room_messages(
-            room_id,
-            start=self._next_batch,
-            direction=MessageDirection.back,
-            limit=max(limit, 1),
-        )
-        self._raise_for_error(response, "Matrix message history failed")
-        messages: list[Message] = []
-        for event in getattr(response, "chunk", []):
-            message = self._parse_message_event(event, room_id)
-            if message is not None:
-                messages.append(message)
-        return self._filter_message_bounds(messages, before, after)[:limit]
+        # Page backwards until enough messages satisfy the requested range;
+        # one chunk is not enough once before/after bounds filter most of it away.
+        raw: list[Message] = []
+        filtered: list[Message] = []
+        start: str = self._next_batch
+        while True:
+            response = await self._client.room_messages(
+                room_id,
+                start=start,
+                direction=MessageDirection.back,
+                limit=max(limit, 1),
+            )
+            self._raise_for_error(response, "Matrix message history failed")
+            chunk = getattr(response, "chunk", [])
+            for event in chunk:
+                message = self._parse_message_event(event, room_id)
+                if message is not None:
+                    raw.append(message)
+            filtered = self._filter_message_bounds(raw, before, after)
+            if len(filtered) >= limit:
+                break
+            # No pagination token, no events, or a token that does not advance
+            # means the room history is exhausted.
+            end = getattr(response, "end", None)
+            if not chunk or not end or end == start:
+                break
+            start = end
+        return filtered[:limit]
 
     @staticmethod
     def _filter_message_bounds(
@@ -448,8 +463,12 @@ class MatrixBackend(BackendBase):
             **kwargs,
         )
         self._raise_for_error(response, "Matrix edit failed")
+        # Report the original event, not the m.replace event: redacting the
+        # replacement would only drop the edit and leave the original visible.
+        # The replacement is kept on the message for callers that need it.
         return MatrixMessage(
-            id=getattr(response, "event_id", ""),
+            id=event_id,
+            replacement_event_id=getattr(response, "event_id", ""),
             content=new_content["body"],
             formatted_content=new_content.get("formatted_body", ""),
             author=MatrixUser(id=self._bot_user_id or self.config.user_id),

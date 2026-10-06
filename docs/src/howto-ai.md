@@ -52,16 +52,16 @@ Built-in presets are `discord`, `irc`, `line`, `matrix`, `slack`, `symphony`, `s
 
 Each preset reads its credentials from the environment:
 
-| Preset     | Environment variables                                        |
-| ---------- | ------------------------------------------------------------ |
-| `discord`  | `DISCORD_TOKEN`                                              |
-| `irc`      | `IRC_SERVER`, `IRC_NICKNAME`, `IRC_PASSWORD`                 |
-| `line`     | `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`           |
-| `matrix`   | `MATRIX_HOMESERVER`, `MATRIX_USER_ID`, `MATRIX_ACCESS_TOKEN` |
-| `slack`    | `SLACK_BOT_TOKEN`                                            |
-| `symphony` | `SYMPHONY_BOT_KEY`                                           |
-| `telegram` | `TELEGRAM_BOT_TOKEN`                                         |
-| `zulip`    | `ZULIP_SITE`, `ZULIP_EMAIL`, `ZULIP_API_KEY`                 |
+| Preset     | Environment variables                                                            |
+| ---------- | -------------------------------------------------------------------------------- |
+| `discord`  | `DISCORD_TOKEN`                                                                  |
+| `irc`      | `IRC_SERVER`, `IRC_NICKNAME`, `IRC_PASSWORD`                                     |
+| `line`     | `LINE_CHANNEL_ACCESS_TOKEN`, `LINE_CHANNEL_SECRET`                               |
+| `matrix`   | `MATRIX_HOMESERVER`, `MATRIX_USER_ID`, `MATRIX_ACCESS_TOKEN`, `MATRIX_DEVICE_ID` |
+| `slack`    | `SLACK_BOT_TOKEN`                                                                |
+| `symphony` | `SYMPHONY_BOT_KEY`                                                               |
+| `telegram` | `TELEGRAM_BOT_TOKEN`                                                             |
+| `zulip`    | `ZULIP_SITE`, `ZULIP_EMAIL`, `ZULIP_API_KEY`                                     |
 
 `IRC_NICKNAME` defaults to `chatom` and `IRC_PASSWORD` defaults to empty.
 
