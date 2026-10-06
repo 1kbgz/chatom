@@ -19,11 +19,12 @@ Environment Variables:
         SYMPHONY_BOT_PRIVATE_KEY_CONTENT
 
     Telegram:
-        TELEGRAM_TOKEN, TELEGRAM_TEST_CHAT_NAME, TELEGRAM_TEST_USER_NAME
+        TELEGRAM_BOT_TOKEN, TELEGRAM_TEST_CHAT_NAME, TELEGRAM_TEST_USER_NAME
 
     Matrix:
-        MATRIX_HOMESERVER, MATRIX_USER_ID, MATRIX_ACCESS_TOKEN,
-        MATRIX_DEVICE_ID, MATRIX_TEST_ROOM_ALIAS, MATRIX_TEST_USER_ID
+        MATRIX_HOMESERVER, MATRIX_USER_ID, MATRIX_TEST_ROOM,
+        MATRIX_TEST_USER_ID, and either MATRIX_ACCESS_TOKEN with
+        MATRIX_DEVICE_ID, or MATRIX_PASSWORD
 
     Zulip:
         ZULIP_SITE, ZULIP_EMAIL, ZULIP_API_KEY, ZULIP_TEST_CHANNEL_NAME,
@@ -31,7 +32,7 @@ Environment Variables:
 
     IRC:
         IRC_SERVER, IRC_TEST_CHANNEL, IRC_TEST_USER_NICK, and optionally
-        IRC_NICKNAME and IRC_PASSWORD
+        IRC_NICKNAME, IRC_PASSWORD, and IRC_PORT
 
     LINE:
         LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET, LINE_TEST_CHANNEL_ID,
@@ -69,7 +70,7 @@ _CHANNEL_ENV = {
     "discord": "DISCORD_TEST_CHANNEL_NAME",
     "symphony": "SYMPHONY_TEST_ROOM_NAME",
     "telegram": "TELEGRAM_TEST_CHAT_NAME",
-    "matrix": "MATRIX_TEST_ROOM_ALIAS",
+    "matrix": "MATRIX_TEST_ROOM",
     "zulip": "ZULIP_TEST_CHANNEL_NAME",
     "irc": "IRC_TEST_CHANNEL",
     "line": "LINE_TEST_CHANNEL_ID",
@@ -86,8 +87,10 @@ _USER_ENV = {
     "line": "LINE_TEST_USER_ID",
 }
 
-# Backends that address channels by opaque id rather than by human-readable name.
-_ID_ADDRESSED = frozenset({"line"})
+# Backends whose fetch_channel() resolves the identifier as an id rather than a
+# display name: LINE conversations are opaque ids, Matrix takes a room id or a
+# #alias it resolves, and IRC takes the #channel itself.
+_ID_ADDRESSED = frozenset({"line", "matrix", "irc"})
 
 
 def get_env(name: str, required: bool = True) -> str | None:
@@ -167,7 +170,7 @@ def _build_symphony(streaming: bool = False):
 def _build_telegram(streaming: bool = False):
     from chatom.telegram import TelegramBackend, TelegramConfig
 
-    token = get_env("TELEGRAM_TOKEN")
+    token = get_env("TELEGRAM_BOT_TOKEN")
     if not token:
         return None
     return TelegramBackend(config=TelegramConfig(bot_token=token))
@@ -178,17 +181,28 @@ def _build_matrix(streaming: bool = False):
 
     homeserver = get_env("MATRIX_HOMESERVER")
     user_id = get_env("MATRIX_USER_ID")
-    access_token = get_env("MATRIX_ACCESS_TOKEN")
-    # restore_login() needs the device the token was issued for.
-    device_id = get_env("MATRIX_DEVICE_ID")
-    if not homeserver or not user_id or not access_token or not device_id:
+    if not homeserver or not user_id:
         return None
+
+    # Either an access token, which restore_login() pairs with the device it
+    # was issued for, or a password for a fresh login.
+    access_token = os.environ.get("MATRIX_ACCESS_TOKEN", "")
+    device_id = os.environ.get("MATRIX_DEVICE_ID", "")
+    password = os.environ.get("MATRIX_PASSWORD", "")
+    if access_token and not device_id:
+        print("MATRIX_ACCESS_TOKEN needs MATRIX_DEVICE_ID; set MATRIX_PASSWORD instead to log in fresh")
+        return None
+    if not access_token and not password:
+        print("Missing required environment variable: MATRIX_ACCESS_TOKEN (with MATRIX_DEVICE_ID) or MATRIX_PASSWORD")
+        return None
+
     return MatrixBackend(
         config=MatrixConfig(
             homeserver=homeserver,
             user_id=user_id,
             access_token=access_token,
             device_id=device_id,
+            password=password,
         )
     )
 
@@ -214,6 +228,7 @@ def _build_irc(streaming: bool = False):
     return IRCBackend(
         config=IRCConfig(
             server=server,
+            port=int(os.environ.get("IRC_PORT") or 6697),
             nickname=os.environ.get("IRC_NICKNAME", "chatom"),
             password=os.environ.get("IRC_PASSWORD", ""),
             channels=[channel],
