@@ -27,8 +27,9 @@ Environment Variables:
         MATRIX_DEVICE_ID, or MATRIX_PASSWORD
 
     Zulip:
-        ZULIP_SITE, ZULIP_EMAIL, ZULIP_API_KEY, ZULIP_TEST_CHANNEL_NAME,
-        ZULIP_TEST_USER_EMAIL
+        ZULIP_TEST_CHANNEL_NAME, ZULIP_TEST_USER_EMAIL, and either
+        ZULIP_CONFIG_FILE (a downloaded zuliprc) or ZULIP_SITE with
+        ZULIP_EMAIL and ZULIP_API_KEY
 
     IRC:
         IRC_SERVER, IRC_TEST_CHANNEL, IRC_TEST_USER_NICK, and optionally
@@ -209,6 +210,12 @@ def _build_matrix(streaming: bool = False):
 
 def _build_zulip(streaming: bool = False):
     from chatom.zulip import ZulipBackend, ZulipConfig
+
+    # A zuliprc carries the site, email, and key together, and ZulipConfig
+    # gives it precedence over the explicit values.
+    config_file = os.environ.get("ZULIP_CONFIG_FILE", "")
+    if config_file:
+        return ZulipBackend(config=ZulipConfig(config_file=config_file))
 
     site = get_env("ZULIP_SITE")
     email = get_env("ZULIP_EMAIL")
