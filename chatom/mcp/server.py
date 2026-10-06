@@ -7,6 +7,8 @@ served, tool names are prefixed with the backend name
 
 from __future__ import annotations
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager, suppress
 from typing import Any
 
 from fastmcp import FastMCP
@@ -17,7 +19,7 @@ from chatom.backend import AttachmentDownloadLimitError, BackendBase
 from chatom.base import Channel, User
 from chatom.base.capabilities import Capability
 
-__all__ = ("build_mcp_server",)
+__all__ = ("build_mcp_server", "connected_backends")
 
 
 class ChannelRef(BaseModel):
@@ -367,6 +369,25 @@ def _register_backend_tools(
         return {"ok": True, "message_id": getattr(sent, "id", "") or ""}
 
 
+@asynccontextmanager
+async def connected_backends(backends: dict[str, BackendBase]) -> AsyncIterator[dict[str, BackendBase]]:
+    """Connect every backend for the duration of the context.
+
+    Backends that connected successfully are disconnected on the way out,
+    in reverse order, even when a later connect fails.
+    """
+    connected: list[BackendBase] = []
+    try:
+        for backend in backends.values():
+            await backend.connect()
+            connected.append(backend)
+        yield backends
+    finally:
+        for backend in reversed(connected):
+            with suppress(Exception):
+                await backend.disconnect()
+
+
 def build_mcp_server(
     backends: dict[str, BackendBase],
     *,
@@ -374,6 +395,7 @@ def build_mcp_server(
     read_only: bool = False,
     enabled_tools: set[str] | None = None,
     disabled_tools: set[str] | None = None,
+    manage_connections: bool = False,
 ) -> FastMCP:
     """Build a FastMCP server from one or more chatom backends.
 
@@ -387,11 +409,23 @@ def build_mcp_server(
         disabled_tools: Optional deny-list of (unprefixed) tool names that are
             never registered, even if otherwise available. Useful for omitting
             destructive tools such as ``delete_message``.
+        manage_connections: If True, connect every backend when the server
+            starts and disconnect them when it stops. Callers that own the
+            backend lifecycle themselves should leave this False.
 
     Returns:
         A configured :class:`FastMCP` server ready to run.
     """
-    mcp = FastMCP(name)
+    if manage_connections:
+
+        @asynccontextmanager
+        async def lifespan(_server: FastMCP) -> AsyncIterator[dict]:
+            async with connected_backends(backends):
+                yield {}
+
+        mcp = FastMCP(name, lifespan=lifespan)
+    else:
+        mcp = FastMCP(name)
     single = len(backends) == 1
     for bname, backend in backends.items():
         prefix = "" if single else bname
