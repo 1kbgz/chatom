@@ -529,3 +529,63 @@ class TestMcpClientIntegration:
             )
             data = result.data if hasattr(result, "data") and result.data is not None else result
             assert data["name"] == "Alice"
+
+
+@pytest.mark.asyncio
+async def test_connected_backends_connects_and_disconnects_each():
+    """The MCP CLI must connect the backends it builds.
+
+    Regression: gateway presets instantiated backends but never connected
+    them, so every tool call failed against a disconnected backend.
+    """
+    from chatom.mcp.server import connected_backends
+
+    class _LifecycleBackend(_MockBackend):
+        def __init__(self) -> None:
+            super().__init__()
+            self.connected = False
+
+        async def connect(self) -> None:
+            self.connected = True
+
+        async def disconnect(self) -> None:
+            self.connected = False
+
+    first, second = _LifecycleBackend(), _LifecycleBackend()
+
+    async with connected_backends({"slack": first, "discord": second}) as backends:
+        assert backends == {"slack": first, "discord": second}
+        assert first.connected
+        assert second.connected
+
+    assert not first.connected
+    assert not second.connected
+
+
+@pytest.mark.asyncio
+async def test_connected_backends_unwinds_when_a_connect_fails():
+    """A later failure must not leave earlier backends connected."""
+    from chatom.mcp.server import connected_backends
+
+    class _LifecycleBackend(_MockBackend):
+        def __init__(self) -> None:
+            super().__init__()
+            self.connected = False
+
+        async def connect(self) -> None:
+            self.connected = True
+
+        async def disconnect(self) -> None:
+            self.connected = False
+
+    class _FailingBackend(_LifecycleBackend):
+        async def connect(self) -> None:
+            raise ConnectionError("nope")
+
+    good = _LifecycleBackend()
+
+    with pytest.raises(ConnectionError):
+        async with connected_backends({"slack": good, "discord": _FailingBackend()}):
+            pass
+
+    assert not good.connected

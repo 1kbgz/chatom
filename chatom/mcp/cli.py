@@ -47,6 +47,9 @@ def main() -> None:
         read_only=cfg.server.read_only,
         enabled_tools=set(enabled) if enabled else None,
         disabled_tools=set(disabled) if disabled else None,
+        # The CLI owns the backends it just built, so it connects them for
+        # the server's lifetime. Tools fail without a live connection.
+        manage_connections=True,
     )
 
     transport_value: str = cfg.server.transport
