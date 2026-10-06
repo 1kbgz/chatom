@@ -270,6 +270,9 @@ SLACK_CAPABILITIES = BackendCapabilities(
     max_reactions=23,
 )
 
+# Symphony has no emoji reactions; SymphonyBackend.add_reaction raises
+# NotImplementedError and points at signals or inline forms instead, so the
+# capability must not be declared.
 SYMPHONY_CAPABILITIES = BackendCapabilities(
     capabilities=frozenset(
         {
@@ -279,7 +282,6 @@ SYMPHONY_CAPABILITIES = BackendCapabilities(
             Capability.CODE_BLOCKS,
             Capability.IMAGES,
             Capability.FILES,
-            Capability.EMOJI_REACTIONS,
             Capability.USER_MENTIONS,
             Capability.EDITING,
             Capability.DELETING,
