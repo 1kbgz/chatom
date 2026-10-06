@@ -312,8 +312,12 @@ endpoint exposes reactions to a bot, so <code class="docutils literal notranslat
 change without notice, which is why the flag defaults to off. An instance with
 the flag set declares <code class="docutils literal notranslate"><span class="pre">Capability.EMOJI_REACTIONS</span></code> so capability-gated callers
 see the truth, while the shared module constant stays unchanged.</p>
-<p>Reactions take the emoji character, not a shortname: the service answers
-<code class="docutils literal notranslate"><span class="pre">REACTIONS_INVALID_EMOJI</span></code> for <code class="docutils literal notranslate"><span class="pre">thumbsup</span></code> or an empty string.</p>
+<p>Symphony itself answers <code class="docutils literal notranslate"><span class="pre">REACTIONS_INVALID_EMOJI</span></code> for a shortname, so common
+shortnames are translated: <code class="docutils literal notranslate"><span class="pre">&quot;:thumbsup:&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;thumbsup&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;+1&quot;</span></code> all become
+👍, matching how reactions are named for the other backends. Install the
+optional <code class="docutils literal notranslate"><span class="pre">emoji</span></code> package to cover every shortname; without it a small built-in
+set is translated and anything else has to arrive as the character or as an
+<code class="docutils literal notranslate"><span class="pre">Emoji</span></code> carrying <code class="docutils literal notranslate"><span class="pre">unicode</span></code>.</p>
 </section>
 <section id="use-the-common-lifecycle">
 <h2>Use the common lifecycle<a class="headerlink" href="#use-the-common-lifecycle" title="Link to this heading">¶</a></h2>

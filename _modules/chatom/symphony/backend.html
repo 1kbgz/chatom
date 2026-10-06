@@ -1598,28 +1598,71 @@
         <span class="n">converted</span> <span class="o">=</span> <span class="n">message_id</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"-"</span><span class="p">,</span> <span class="s2">"+"</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">converted</span> <span class="o">+</span> <span class="s2">"="</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">converted</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span><span class="p">)</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">_reaction_emoji</span><span class="p">(</span><span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Emoji</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># Shortnames are how Slack and the rest of chatom name reactions, so the</span>
+    <span class="c1"># common ones are translated rather than refused. Install the `emoji`</span>
+    <span class="c1"># package for the full set.</span>
+    <span class="n">_SHORTNAME_FALLBACK</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"+1"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{THUMBS UP SIGN}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"-1"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{THUMBS DOWN SIGN}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"thumbsup"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{THUMBS UP SIGN}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"thumbsdown"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{THUMBS DOWN SIGN}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"eyes"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{EYES}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"tada"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{PARTY POPPER}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"rocket"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{ROCKET}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"heart"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{HEAVY BLACK HEART}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"white_check_mark"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{WHITE HEAVY CHECK MARK}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"heavy_check_mark"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{HEAVY CHECK MARK}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"x"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{CROSS MARK}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"warning"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{WARNING SIGN}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"fire"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{FIRE}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"clap"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{CLAPPING HANDS SIGN}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"pray"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{PERSON WITH FOLDED HANDS}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"smile"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{SMILING FACE WITH OPEN MOUTH}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"laughing"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"cry"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{CRYING FACE}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"100"</span><span class="p">:</span> <span class="s2">"</span><span class="se">\N{HUNDRED POINTS SYMBOL}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reaction_emoji</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Emoji</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Resolve a reaction to the literal emoji character the service wants.</span>
 
-<span class="sd">        The service rejects shortnames and empty strings with</span>
-<span class="sd">        ``REACTIONS_INVALID_EMOJI``, so anything that is not already a character</span>
-<span class="sd">        is refused here with a clearer message.</span>
+<span class="sd">        Reactions are named by shortname elsewhere in chatom, as Slack does, but</span>
+<span class="sd">        Symphony answers ``REACTIONS_INVALID_EMOJI`` for anything that is not the</span>
+<span class="sd">        character, so shortnames are translated here. The optional ``emoji``</span>
+<span class="sd">        package covers every shortname; without it a small common set is built</span>
+<span class="sd">        in and anything else has to arrive as the character or as an</span>
+<span class="sd">        :class:`~chatom.base.Emoji` carrying ``unicode``.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">emoji</span><span class="p">,</span> <span class="n">Emoji</span><span class="p">):</span>
-            <span class="n">resolved</span> <span class="o">=</span> <span class="n">emoji</span><span class="o">.</span><span class="n">unicode</span> <span class="ow">or</span> <span class="s2">""</span>
+            <span class="n">resolved</span> <span class="o">=</span> <span class="n">emoji</span><span class="o">.</span><span class="n">unicode</span> <span class="ow">or</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_SHORTNAME_FALLBACK</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">emoji</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s2">""</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Emoji </span><span class="si">{</span><span class="n">emoji</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> has no unicode value; Symphony reactions need the character itself"</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">resolved</span>
+
         <span class="n">resolved</span> <span class="o">=</span> <span class="p">(</span><span class="n">emoji</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Symphony reactions need a non-empty emoji"</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">resolved</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">"Symphony reactions need the emoji character, not a shortname like </span><span class="si">{</span><span class="n">resolved</span><span class="si">!r}</span><span class="s2">; "</span>
-                <span class="s1">'pass "</span><span class="se">\N{THUMBS UP SIGN}</span><span class="s1">" or an Emoji with unicode set'</span>
-            <span class="p">)</span>
-        <span class="k">return</span> <span class="n">resolved</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">resolved</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">resolved</span>
+
+        <span class="n">name</span> <span class="o">=</span> <span class="n">resolved</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">":"</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">emoji</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">emoji_lib</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">converted</span> <span class="o">=</span> <span class="n">emoji_lib</span><span class="o">.</span><span class="n">emojize</span><span class="p">(</span><span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="s2">"alias"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">converted</span> <span class="o">!=</span> <span class="sa">f</span><span class="s2">":</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">converted</span>
+
+        <span class="n">converted</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_SHORTNAME_FALLBACK</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">converted</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">converted</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Symphony reactions need the emoji character and </span><span class="si">{</span><span class="n">resolved</span><span class="si">!r}</span><span class="s2"> could not be translated; "</span>
+            <span class="s2">"pass the character itself, an Emoji with unicode set, or install the `emoji` package"</span>
+        <span class="p">)</span>
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_post_reaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Message</span><span class="p">,</span> <span class="n">emoji</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Emoji</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Add or remove a reaction through Symphony's internal service.</span>

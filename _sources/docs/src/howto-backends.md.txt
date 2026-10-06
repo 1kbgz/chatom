@@ -58,8 +58,12 @@ change without notice, which is why the flag defaults to off. An instance with
 the flag set declares `Capability.EMOJI_REACTIONS` so capability-gated callers
 see the truth, while the shared module constant stays unchanged.
 
-Reactions take the emoji character, not a shortname: the service answers
-`REACTIONS_INVALID_EMOJI` for `thumbsup` or an empty string.
+Symphony itself answers `REACTIONS_INVALID_EMOJI` for a shortname, so common
+shortnames are translated: `":thumbsup:"`, `"thumbsup"`, and `"+1"` all become
+👍, matching how reactions are named for the other backends. Install the
+optional `emoji` package to cover every shortname; without it a small built-in
+set is translated and anything else has to arrive as the character or as an
+`Emoji` carrying `unicode`.
 
 ## Use the common lifecycle
 
