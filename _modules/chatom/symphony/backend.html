@@ -304,7 +304,6 @@
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.core.service.datafeed.real_time_event_listener</span><span class="w"> </span><span class="kn">import</span> <span class="n">RealTimeEventListener</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.agent_model.v4_initiator</span><span class="w"> </span><span class="kn">import</span> <span class="n">V4Initiator</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.agent_model.v4_message_sent</span><span class="w"> </span><span class="kn">import</span> <span class="n">V4MessageSent</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.pod_model.user_id_list</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdList</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.pod_model.user_search_query</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserSearchQuery</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.pod_model.v2_room_search_criteria</span><span class="w"> </span><span class="kn">import</span> <span class="n">V2RoomSearchCriteria</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.pod_model.v3_room_attributes</span><span class="w"> </span><span class="kn">import</span> <span class="n">V3RoomAttributes</span>
@@ -315,6 +314,13 @@
     <span class="n">_bdk_config_module</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_presence_service_module</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">_symphony_bdk_module</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Removed in symphony-bdk-python 3.x, where v1_im_create_post takes a plain</span>
+    <span class="c1"># list of user ids. Kept optional so 2.x, which requires the wrapper, works too.</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.pod_model.user_id_list</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdList</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">UserIdList</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="n">SymphonyBdk</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_symphony_bdk_module</span><span class="p">,</span> <span class="s2">"SymphonyBdk"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 <span class="n">BdkConfig</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_bdk_config_module</span><span class="p">,</span> <span class="s2">"BdkConfig"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -679,11 +685,35 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># noqa: BLE001</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_user_detail</span><span class="p">(</span><span class="n">user_service</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Look up one user, preferring the endpoint a non-admin bot can call.</span>
+
+<span class="sd">        ``get_user_detail`` is an admin endpoint and returns 403 for a bot</span>
+<span class="sd">        without admin entitlements, which is the normal case on a shared pod.</span>
+<span class="sd">        ``list_users_by_ids`` carries the same fields and needs no privileges,</span>
+<span class="sd">        so it is tried first and the admin call is only a fallback.</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_service</span><span class="o">.</span><span class="n">list_users_by_ids</span><span class="p">([</span><span class="n">user_id</span><span class="p">])</span>
+            <span class="n">users</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"users"</span><span class="p">,</span> <span class="p">[])</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="s2">"users"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">users</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">users</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># noqa: BLE001, S110</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">user_service</span><span class="o">.</span><span class="n">get_user_detail</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># noqa: BLE001</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Could not fetch detail for Symphony user </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">user_id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fetch_user_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SymphonyUser</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""Fetch a user by ID from the Symphony API."""</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">user_service</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bdk</span><span class="o">.</span><span class="n">users</span><span class="p">()</span>
-            <span class="n">user_data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">user_service</span><span class="o">.</span><span class="n">get_user_detail</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
+            <span class="n">user_data</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_detail</span><span class="p">(</span><span class="n">user_service</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">user_id</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">user_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
 
             <span class="c1"># Handle both dict and object responses</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
@@ -855,11 +885,10 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">stream_service</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bdk</span><span class="o">.</span><span class="n">streams</span><span class="p">()</span>
             <span class="n">membership_list</span> <span class="o">=</span> <span class="k">await</span> <span class="n">stream_service</span><span class="o">.</span><span class="n">list_room_members</span><span class="p">(</span><span class="n">channel_id</span><span class="p">)</span>
-            <span class="n">members</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">User</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="n">membership_list</span> <span class="ow">and</span> <span class="n">membership_list</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">membership_list</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                    <span class="n">members</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">id</span><span class="p">)))</span>
-            <span class="k">return</span> <span class="n">members</span>
+            <span class="c1"># symphony-bdk-python 2.x returns a wrapper with .value; 3.x returns</span>
+            <span class="c1"># the list directly.</span>
+            <span class="n">entries</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">membership_list</span><span class="p">,</span> <span class="s2">"value"</span><span class="p">,</span> <span class="n">membership_list</span><span class="p">)</span> <span class="ow">or</span> <span class="p">[]</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">member</span><span class="o">.</span><span class="n">id</span><span class="p">))</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">entries</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="n">log</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">"Error fetching room members for </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">channel_id</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">[]</span></div>
@@ -1694,8 +1723,9 @@
             <span class="c1"># Use the underlying v1/im/create API which supports both 1:1 IMs and MIMs</span>
             <span class="c1"># The caller (bot) is implicitly included as a participant</span>
             <span class="c1"># Note: create_im_admin requires admin privileges and excludes the caller</span>
+            <span class="n">uid_list</span> <span class="o">=</span> <span class="n">UserIdList</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">int_user_ids</span><span class="p">)</span> <span class="k">if</span> <span class="n">UserIdList</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">int_user_ids</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">stream_service</span><span class="o">.</span><span class="n">_streams_api</span><span class="o">.</span><span class="n">v1_im_create_post</span><span class="p">(</span>
-                <span class="n">uid_list</span><span class="o">=</span><span class="n">UserIdList</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">int_user_ids</span><span class="p">),</span>
+                <span class="n">uid_list</span><span class="o">=</span><span class="n">uid_list</span><span class="p">,</span>
                 <span class="n">session_token</span><span class="o">=</span><span class="k">await</span> <span class="n">stream_service</span><span class="o">.</span><span class="n">_auth_session</span><span class="o">.</span><span class="n">session_token</span><span class="p">,</span>
             <span class="p">)</span>
 
