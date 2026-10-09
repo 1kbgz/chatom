@@ -6,6 +6,8 @@ This module provides the Slack-specific Message class.
 from enum import Enum
 from typing import TYPE_CHECKING, Any
 
+from pydantic import model_validator
+
 from chatom.base import Field, Message, Organization, Thread, User
 
 from .user import SlackUser
@@ -183,10 +185,12 @@ class SlackMessage(Message):
         """Check if this message is from a bot."""
         return self.bot_id is not None or self.subtype == SlackMessageSubtype.BOT_MESSAGE
 
-    @property
-    def is_edited(self) -> bool:
-        """Check if this message was edited."""
-        return self.edited is not None
+    @model_validator(mode="before")
+    @classmethod
+    def _set_edit_status(cls, data: Any) -> Any:
+        if isinstance(data, dict) and "is_edited" not in data and data.get("edited") is not None:
+            return {**data, "is_edited": True}
+        return data
 
     @property
     def has_blocks(self) -> bool:

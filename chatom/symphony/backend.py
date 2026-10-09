@@ -914,7 +914,7 @@ class SymphonyBackend(BackendBase):
         Sends the file as an attachment via the Symphony BDK message API.
         The binary data is written to a temporary file and its open binary
         handle is passed to the BDK's attachment parameter.
-        Images require matching PNG or JPEG filenames, MIME types, and signatures.
+        Images require matching PNG, JPEG, or GIF filenames, MIME types, and signatures.
         """
         import mimetypes
         import os
@@ -930,10 +930,10 @@ class SymphonyBackend(BackendBase):
         media_type = (content_type or filename_type).partition(";")[0].strip().lower()
         log.info("Symphony upload filename=%r content_type=%r size=%d", filename, media_type, len(data))
         if media_type.startswith("image/") or filename_type.startswith("image/"):
-            signatures = {"image/png": b"\x89PNG\r\n\x1a\n", "image/jpeg": b"\xff\xd8\xff"}
+            signatures = {"image/png": b"\x89PNG\r\n\x1a\n", "image/jpeg": b"\xff\xd8\xff", "image/gif": (b"GIF87a", b"GIF89a")}
             if media_type not in signatures or filename_type != media_type or not data.startswith(signatures[media_type]):
                 log.warning("Symphony upload rejected filename=%r content_type=%r size=%d", filename, media_type, len(data))
-                raise ValueError("Use PNG or JPEG with a matching filename, MIME type, and file signature for Symphony image uploads.")
+                raise ValueError("Use PNG or JPEG, or GIF, with a matching filename, MIME type, and file signature for Symphony image uploads.")
 
         channel_id = await self._resolve_channel_id(channel)
 
@@ -1005,9 +1005,6 @@ class SymphonyBackend(BackendBase):
         if attachment.data is not None:
             return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
-        if max_bytes is not None:
-            raise AttachmentDownloadLimitError(max_bytes, getattr(attachment, "size", None))
-
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
 
@@ -1023,6 +1020,40 @@ class SymphonyBackend(BackendBase):
             )
 
         message_service = self._bdk.messages()
+        if max_bytes is not None:
+            size = getattr(attachment, "size", None)
+            if size is not None and size > max_bytes:
+                raise AttachmentDownloadLimitError(max_bytes, size)
+            api = getattr(message_service, "_attachment_api", None)
+            if api is None or not hasattr(self._bdk, "bot_session"):
+                raise AttachmentDownloadLimitError(max_bytes, size)
+            session = self._bdk.bot_session()
+            response = await api.v1_stream_sid_attachment_get(
+                sid=stream_id,
+                file_id=attachment_id,
+                message_id=message_id,
+                session_token=await session.session_token,
+                key_manager_token=await session.key_manager_token,
+                _preload_content=False,
+            )
+            try:
+                if response.status != 200:
+                    raise RuntimeError(f"Symphony attachment download returned HTTP {response.status}.")
+                encoded_limit = 4 * ((max_bytes + 2) // 3) + 2
+                encoded_data = bytearray()
+                while chunk := await response.content.read(65_536):
+                    encoded_data.extend(chunk)
+                    if len(encoded_data) > encoded_limit:
+                        raise AttachmentDownloadLimitError(max_bytes)
+                encoded_value = bytes(encoded_data)
+                if encoded_value.startswith(b'"'):
+                    encoded_value = json.loads(encoded_value)
+                data = base64.b64decode(encoded_value, validate=True)
+                if len(data) > max_bytes:
+                    raise AttachmentDownloadLimitError(max_bytes, len(data))
+                return data
+            finally:
+                response.release()
         encoded = await message_service.get_attachment(
             stream_id=stream_id,
             message_id=message_id,

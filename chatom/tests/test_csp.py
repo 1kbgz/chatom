@@ -7,7 +7,7 @@ channel name resolution.
 
 import asyncio
 import threading
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from queue import Queue
 
 import pytest
@@ -334,6 +334,37 @@ class TestSendMessagesThread:
         assert len(mock_backend.sent_messages) == 1
         assert mock_backend.sent_messages[0].content == "Hello!"
         assert mock_backend.sent_messages[0].channel_id == "C123"
+
+    def test_send_callback_receives_actual_platform_message_id(self, mock_backend):
+        from unittest.mock import Mock
+
+        queue = Queue()
+        original = Message(channel=Channel(id="C123"), content="Hello!")
+        queue.put(original)
+        queue.put(None)
+        callback = Mock()
+        _send_messages_thread(queue, mock_backend, on_sent=callback)
+        callback.assert_called_once_with(original, mock_backend.sent_messages[0])
+        assert callback.call_args.args[1].id == "msg_0"
+
+    def test_legacy_publish_override_preserves_send_callback(self, mock_backend):
+        from unittest.mock import Mock
+
+        class LegacyAdapter(BackendAdapter):
+            def publish(self, msg):
+                return super().publish(msg)
+
+        adapter = LegacyAdapter(mock_backend)
+        callback = Mock()
+        adapter.set_message_callback(callback)
+
+        @csp.graph
+        def graph():
+            adapter.publish(csp.const(Message(channel=Channel(id="C123"), content="Reply")))
+
+        csp.run(graph, starttime=datetime(2026, 1, 1, tzinfo=UTC), endtime=timedelta(milliseconds=10))
+        callback.assert_called_once()
+        assert callback.call_args.args[1].id == "msg_0"
 
     def test_send_multiple_messages(self, mock_backend):
         """Test sending multiple messages."""
