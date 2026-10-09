@@ -326,7 +326,7 @@
     <span class="c1"># list of user ids. Kept optional so 2.x, which requires the wrapper, works too.</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">symphony.bdk.gen.pod_model.user_id_list</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserIdList</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">UserIdList</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">UserIdList</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="n">SymphonyBdk</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_symphony_bdk_module</span><span class="p">,</span> <span class="s2">"SymphonyBdk"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 <span class="n">BdkConfig</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_bdk_config_module</span><span class="p">,</span> <span class="s2">"BdkConfig"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
@@ -1033,12 +1033,22 @@
 <span class="w">        </span><span class="sd">"""Convert raw V4Message objects to SymphonyMessage instances."""</span>
         <span class="n">messages</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages_data</span><span class="p">:</span>
+            <span class="n">author</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+                <span class="n">display_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="s2">"display_name"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+                <span class="n">username</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="s2">"username"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="s2">""</span>
+                <span class="n">author</span> <span class="o">=</span> <span class="n">SymphonyUser</span><span class="p">(</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">display_name</span> <span class="ow">or</span> <span class="n">username</span><span class="p">,</span>
+                    <span class="n">display_name</span><span class="o">=</span><span class="n">display_name</span><span class="p">,</span>
+                    <span class="n">handle</span><span class="o">=</span><span class="n">username</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">SymphonyMessage</span><span class="p">(</span>
                     <span class="nb">id</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span>
                     <span class="n">content</span><span class="o">=</span><span class="n">msg</span><span class="o">.</span><span class="n">message</span><span class="p">,</span>
                     <span class="n">created_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">tz</span><span class="o">=</span><span class="n">UTC</span><span class="p">),</span>
-                    <span class="n">author</span><span class="o">=</span><span class="n">SymphonyUser</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">user_id</span><span class="p">))</span> <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">user</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">author</span><span class="o">=</span><span class="n">author</span><span class="p">,</span>
                     <span class="n">channel</span><span class="o">=</span><span class="n">SymphonyChannel</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">),</span>
                     <span class="n">attachments</span><span class="o">=</span><span class="n">_symphony_attachments</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">"attachments"</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">channel_id</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">message_id</span><span class="p">),</span>
                 <span class="p">)</span>
@@ -1192,18 +1202,21 @@
 <span class="w">        </span><span class="sd">"""Upload a file to a Symphony stream.</span>
 
 <span class="sd">        Sends the file as an attachment via the Symphony BDK message API.</span>
-<span class="sd">        The binary data is written to a temporary file which is passed to</span>
-<span class="sd">        the BDK's attachment parameter.</span>
+<span class="sd">        The binary data is written to a temporary file and its open binary</span>
+<span class="sd">        handle is passed to the BDK's attachment parameter.</span>
 <span class="sd">        """</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">mimetypes</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">xml.etree</span><span class="w"> </span><span class="kn">import</span> <span class="n">ElementTree</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">defusedxml.ElementTree</span><span class="w"> </span><span class="kn">import</span> <span class="n">fromstring</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bdk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Symphony not connected"</span><span class="p">)</span>
 
         <span class="n">channel_id</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_channel_id</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
-        <span class="c1"># Symphony BDK expects file paths for attachments, so write to temp</span>
         <span class="n">fd</span><span class="p">,</span> <span class="n">tmp_path</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="sa">f</span><span class="s2">"_</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
@@ -1213,12 +1226,21 @@
             <span class="n">body</span> <span class="o">=</span> <span class="n">content</span> <span class="ow">or</span> <span class="n">title</span> <span class="ow">or</span> <span class="n">filename</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">body</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"&lt;messageML&gt;"</span><span class="p">):</span>
                 <span class="n">body</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"&lt;messageML&gt;</span><span class="si">{</span><span class="n">body</span><span class="si">}</span><span class="s2">&lt;/messageML&gt;"</span>
+            <span class="n">media_type</span> <span class="o">=</span> <span class="n">content_type</span> <span class="ow">or</span> <span class="n">mimetypes</span><span class="o">.</span><span class="n">guess_type</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">""</span>
+            <span class="k">if</span> <span class="n">media_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"image/"</span><span class="p">):</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="n">fromstring</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+                <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s2">"img"</span><span class="p">,</span> <span class="p">{</span><span class="s2">"src"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"cid:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">tmp_path</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
+                <span class="n">body</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"unicode"</span><span class="p">)</span>
 
-            <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message_service</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
-                <span class="n">stream_id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">,</span>
-                <span class="n">message</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
-                <span class="n">attachment</span><span class="o">=</span><span class="p">[</span><span class="n">tmp_path</span><span class="p">],</span>
-            <span class="p">)</span>
+            <span class="n">attachment</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="nb">open</span><span class="p">,</span> <span class="n">tmp_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="k">await</span> <span class="n">message_service</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+                    <span class="n">stream_id</span><span class="o">=</span><span class="n">channel_id</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="n">body</span><span class="p">,</span>
+                    <span class="n">attachment</span><span class="o">=</span><span class="p">[</span><span class="n">attachment</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">to_thread</span><span class="p">(</span><span class="n">attachment</span><span class="o">.</span><span class="n">close</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">SymphonyMessage</span><span class="p">(</span>
                 <span class="nb">id</span><span class="o">=</span><span class="n">result</span><span class="o">.</span><span class="n">message_id</span><span class="p">,</span>
