@@ -743,6 +743,25 @@ class TestBackendToolset:
         assert result["error"] == "invalid_data"
 
     @pytest.mark.asyncio
+    async def test_call_upload_file_validation_error(self, mock_backend: _MockBackend, monkeypatch) -> None:
+        import base64
+        from unittest.mock import MagicMock
+
+        from chatom.agent.toolset import BackendToolset
+
+        async def reject_upload(self, **kwargs):
+            raise ValueError("Use PNG or JPEG for image uploads.")
+
+        monkeypatch.setattr(type(mock_backend), "upload_file", reject_upload)
+        result = await BackendToolset(mock_backend).call_tool(
+            "upload_file",
+            {"channel": {"id": "C1"}, "filename": "drawing.svg", "data_base64": base64.b64encode(b"<svg/>").decode("ascii")},
+            MagicMock(),
+            MagicMock(),
+        )
+        assert result == {"error": "invalid_file", "message": "Use PNG or JPEG for image uploads."}
+
+    @pytest.mark.asyncio
     async def test_call_unknown_tool_raises(self, mock_backend: _MockBackend) -> None:
         from chatom.agent.toolset import BackendToolset
 

@@ -262,12 +262,15 @@ class TestSymphonyIncomingAttachments:
         assert _symphony_attachments(None, "s", "m") == []
 
     @pytest.mark.parametrize("upload_fails", [False, True])
-    @pytest.mark.parametrize("filename,content_type", [("image.png", "image/png"), ("image.png", ""), ("notes.txt", "text/plain")])
+    @pytest.mark.parametrize(
+        "filename,content_type", [("image.png", "image/png"), ("image.png", ""), ("image.jpg", "image/jpeg"), ("notes.txt", "text/plain")]
+    )
     @pytest.mark.parametrize("content", ["", "<messageML><b>Caption</b></messageML>"])
-    def test_upload_passes_open_binary_attachment_to_bdk(self, upload_fails, filename, content_type, content):
+    def test_upload_passes_open_binary_attachment_to_bdk(self, upload_fails, filename, content_type, content, caplog):
         from chatom.symphony import SymphonyBackend
 
-        data = b"\x89PNG\r\n\x1a\nimage-bytes"
+        caplog.set_level("INFO", logger="chatom.symphony.backend")
+        data = b"\xff\xd8\xffimage-bytes" if filename.endswith(".jpg") else b"\x89PNG\r\n\x1a\nimage-bytes"
         received = {}
 
         async def send_message(**kwargs):
@@ -276,7 +279,7 @@ class TestSymphonyIncomingAttachments:
             assert not attachment.closed
             assert attachment.read() == data
             assert Path(attachment.name).suffix == Path(filename).suffix
-            if filename.endswith(".png"):
+            if filename.endswith((".png", ".jpg")):
                 assert f"cid:{Path(attachment.name).name}" in kwargs["message"]
                 assert "<img" in kwargs["message"]
             else:
@@ -300,6 +303,38 @@ class TestSymphonyIncomingAttachments:
         attachment = received["attachment"]
         assert attachment.closed
         assert not Path(attachment.name).exists()
+        expected_type = content_type or "image/png"
+        assert f"filename={filename!r}" in caplog.text
+        assert f"content_type={expected_type!r}" in caplog.text
+        assert f"size={len(data)}" in caplog.text
+        assert "image-bytes" not in caplog.text
+        assert "<b>Caption</b>" not in caplog.text
+        if upload_fails:
+            assert "Symphony upload failed" in caplog.text
+
+    @pytest.mark.parametrize(
+        "filename,content_type,data",
+        [
+            ("drawing.svg", "", b"<svg></svg>"),
+            ("drawing.png", "image/png", b"<svg></svg>"),
+            ("drawing.png", "image/jpeg", b"\xff\xd8\xffimage-bytes"),
+        ],
+    )
+    def test_upload_rejects_unsupported_or_mislabeled_images(self, filename, content_type, data, caplog):
+        from chatom.symphony import SymphonyBackend
+
+        message_service = SimpleNamespace(send_message=AsyncMock(return_value=SimpleNamespace(message_id="IMAGE1", timestamp=1000)))
+        backend = SymphonyBackend()
+        backend._resolve_channel_id = AsyncMock(return_value="STREAM1")
+        backend._bdk = SimpleNamespace(messages=MagicMock(return_value=message_service))
+
+        with pytest.raises(ValueError, match="PNG or JPEG"):
+            asyncio.run(backend.upload_file("STREAM1", data, filename=filename, content_type=content_type))
+
+        message_service.send_message.assert_not_awaited()
+        assert f"filename={filename!r}" in caplog.text
+        assert f"size={len(data)}" in caplog.text
+        assert "<svg>" not in caplog.text
 
     @pytest.mark.parametrize("size", [None, 4])
     def test_bounded_download_fails_before_bdk_call(self, size):
