@@ -54,6 +54,21 @@ class TestMessageIdentifiers:
         assert _message_identifiers(message) is None
 
 
+class TestMessageAuthors:
+    def test_history_preserves_author_display_name(self):
+        backend = SymphonyBackend()
+        message = _make_v4_message("message-1", 1000, user_id=1001)
+        message.user.display_name = "Taylor Example"
+        message.user.username = "texample"
+
+        converted = backend._convert_messages([message], "stream-1")[0]
+
+        assert converted.author.id == "1001"
+        assert converted.author.name == "Taylor Example"
+        assert converted.author.display_name == "Taylor Example"
+        assert converted.author.handle == "texample"
+
+
 @pytest.fixture
 def backend():
     """Create a SymphonyBackend with mocked internals."""
