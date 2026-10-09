@@ -70,7 +70,7 @@ try:
     # list of user ids. Kept optional so 2.x, which requires the wrapper, works too.
     from symphony.bdk.gen.pod_model.user_id_list import UserIdList
 except ImportError:
-    UserIdList = None
+    UserIdList: Any = None
 
 SymphonyBdk: Any = getattr(_symphony_bdk_module, "SymphonyBdk", None)
 BdkConfig: Any = getattr(_bdk_config_module, "BdkConfig", None)
@@ -751,12 +751,22 @@ class SymphonyBackend(BackendBase):
         """Convert raw V4Message objects to SymphonyMessage instances."""
         messages: list[Message] = []
         for msg in messages_data:
+            author = None
+            if msg.user:
+                display_name = getattr(msg.user, "display_name", None) or ""
+                username = getattr(msg.user, "username", None) or ""
+                author = SymphonyUser(
+                    id=str(msg.user.user_id),
+                    name=display_name or username,
+                    display_name=display_name,
+                    handle=username,
+                )
             messages.append(
                 SymphonyMessage(
                     id=msg.message_id,
                     content=msg.message,
                     created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=UTC),
-                    author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
+                    author=author,
                     channel=SymphonyChannel(id=channel_id),
                     attachments=_symphony_attachments(getattr(msg, "attachments", None), channel_id, msg.message_id),
                 )
@@ -902,18 +912,21 @@ class SymphonyBackend(BackendBase):
         """Upload a file to a Symphony stream.
 
         Sends the file as an attachment via the Symphony BDK message API.
-        The binary data is written to a temporary file which is passed to
-        the BDK's attachment parameter.
+        The binary data is written to a temporary file and its open binary
+        handle is passed to the BDK's attachment parameter.
         """
+        import mimetypes
         import os
         import tempfile
+        from xml.etree import ElementTree
+
+        from defusedxml.ElementTree import fromstring
 
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
 
         channel_id = await self._resolve_channel_id(channel)
 
-        # Symphony BDK expects file paths for attachments, so write to temp
         fd, tmp_path = tempfile.mkstemp(suffix=f"_{filename}")
         try:
             os.write(fd, data)
@@ -923,12 +936,21 @@ class SymphonyBackend(BackendBase):
             body = content or title or filename
             if not body.strip().startswith("<messageML>"):
                 body = f"<messageML>{body}</messageML>"
+            media_type = content_type or mimetypes.guess_type(filename)[0] or ""
+            if media_type.startswith("image/"):
+                root = fromstring(body)
+                ElementTree.SubElement(root, "img", {"src": f"cid:{os.path.basename(tmp_path)}"})
+                body = ElementTree.tostring(root, encoding="unicode")
 
-            result = await message_service.send_message(
-                stream_id=channel_id,
-                message=body,
-                attachment=[tmp_path],
-            )
+            attachment = await asyncio.to_thread(open, tmp_path, "rb")
+            try:
+                result = await message_service.send_message(
+                    stream_id=channel_id,
+                    message=body,
+                    attachment=[attachment],
+                )
+            finally:
+                await asyncio.to_thread(attachment.close)
 
             return SymphonyMessage(
                 id=result.message_id,

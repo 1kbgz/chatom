@@ -7,6 +7,7 @@ fakes so no platform SDK or network is required.
 """
 
 import asyncio
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
@@ -246,17 +247,59 @@ class TestSymphonyIncomingAttachments:
         assert len(atts) == 2
         img = atts[0]
         assert img.attachment_type == AttachmentType.IMAGE
+        assert img.content_type == "image/png"
         assert img.id == "A1"
         # The stream/message IDs required to download are stored in metadata.
         assert img.metadata == {"stream_id": "STREAM1", "message_id": "MSG1"}
         doc = atts[1]
         assert doc.attachment_type == AttachmentType.DOCUMENT
+        assert doc.content_type == "application/pdf"
         assert doc.metadata["message_id"] == "MSG1"
 
     def test_empty(self):
         from chatom.symphony.backend import _symphony_attachments
 
         assert _symphony_attachments(None, "s", "m") == []
+
+    @pytest.mark.parametrize("upload_fails", [False, True])
+    @pytest.mark.parametrize("filename,content_type", [("image.png", "image/png"), ("image.png", ""), ("notes.txt", "text/plain")])
+    @pytest.mark.parametrize("content", ["", "<messageML><b>Caption</b></messageML>"])
+    def test_upload_passes_open_binary_attachment_to_bdk(self, upload_fails, filename, content_type, content):
+        from chatom.symphony import SymphonyBackend
+
+        data = b"\x89PNG\r\n\x1a\nimage-bytes"
+        received = {}
+
+        async def send_message(**kwargs):
+            attachment = kwargs["attachment"][0]
+            received["attachment"] = attachment
+            assert not attachment.closed
+            assert attachment.read() == data
+            assert Path(attachment.name).suffix == Path(filename).suffix
+            if filename.endswith(".png"):
+                assert f"cid:{Path(attachment.name).name}" in kwargs["message"]
+                assert "<img" in kwargs["message"]
+            else:
+                assert "<img" not in kwargs["message"]
+            if content:
+                assert "<b>Caption</b>" in kwargs["message"]
+            if upload_fails:
+                raise RuntimeError("SDK upload failure")
+            return SimpleNamespace(message_id="IMAGE1", timestamp=1000)
+
+        backend = SymphonyBackend()
+        backend._resolve_channel_id = AsyncMock(return_value="STREAM1")
+        backend._bdk = SimpleNamespace(messages=MagicMock(return_value=SimpleNamespace(send_message=send_message)))
+
+        if upload_fails:
+            with pytest.raises(RuntimeError, match="SDK upload failure"):
+                asyncio.run(backend.upload_file("STREAM1", data, filename=filename, content_type=content_type, content=content))
+        else:
+            sent = asyncio.run(backend.upload_file("STREAM1", data, filename=filename, content_type=content_type, content=content))
+            assert sent.id == "IMAGE1"
+        attachment = received["attachment"]
+        assert attachment.closed
+        assert not Path(attachment.name).exists()
 
     @pytest.mark.parametrize("size", [None, 4])
     def test_bounded_download_fails_before_bdk_call(self, size):
