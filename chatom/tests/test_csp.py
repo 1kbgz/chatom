@@ -7,7 +7,7 @@ channel name resolution.
 
 import asyncio
 import threading
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from queue import Queue
 
 import pytest
@@ -362,7 +362,7 @@ class TestSendMessagesThread:
         def graph():
             adapter.publish(csp.const(Message(channel=Channel(id="C123"), content="Reply")))
 
-        csp.run(graph, starttime=datetime(2026, 1, 1), endtime=timedelta(milliseconds=10))
+        csp.run(graph, starttime=datetime(2026, 1, 1, tzinfo=UTC), endtime=timedelta(milliseconds=10))
         callback.assert_called_once()
         assert callback.call_args.args[1].id == "msg_0"
 
