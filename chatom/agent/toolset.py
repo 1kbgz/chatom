@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import asyncio
 import logging
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime, timedelta
 from typing import Any, cast
+from zipfile import BadZipFile
 
 from pydantic import BaseModel as PydanticBaseModel, Field, TypeAdapter
 from pydantic_ai._run_context import RunContext
@@ -230,6 +233,27 @@ class UploadFileParams(PydanticBaseModel):
     content: str = Field(default="", description="Optional message text to accompany the file.")
 
 
+class CreateFileParams(PydanticBaseModel):
+    channel: ChannelRef
+    filename: str = Field(description="Filename ending in .txt, .csv, .xlsx, .pdf, or .docx.", max_length=200)
+    text: str = Field(default="", max_length=50_000)
+    columns: list[str] = Field(default_factory=list, max_length=100)
+    rows: list[list[str | int | float | bool | None]] = Field(default_factory=list, max_length=10_000)
+    sheet_name: str = Field(default="Data", max_length=31)
+    content: str = Field(default="", description="Optional caption.")
+
+
+class ReadFileParams(DownloadAttachmentParams):
+    max_chars: int = Field(default=50_000, ge=1, le=200_000)
+
+
+class GenerateImageParams(PydanticBaseModel):
+    channel: ChannelRef
+    prompt: str = Field(description="Describe the image to generate. This tool generates and attaches the PNG directly.", max_length=8_000)
+    filename: str = Field(default="generated.png", max_length=200)
+    content: str = Field(default="")
+
+
 class GetBotInfoParams(PydanticBaseModel):
     """Parameters for retrieving the bot's own profile (none required)."""
 
@@ -408,6 +432,27 @@ _TOOL_DESCRIPTORS: list[dict[str, Any]] = [
         "capability": Capability.FILES,
         "write": True,
     },
+    {
+        "name": "create_file",
+        "description": "Create and attach a real TXT, CSV, XLSX, PDF, or DOCX file from text and structured rows. Do not invent binary data or give the user code to run.",
+        "params_model": CreateFileParams,
+        "capability": Capability.FILES,
+        "write": True,
+    },
+    {
+        "name": "read_file",
+        "description": "Read an attached TXT, CSV, XLSX, PDF, or DOCX into text and tables. Use attachment/message IDs from the incoming message or list_recent_attachments.",
+        "params_model": ReadFileParams,
+        "capability": Capability.FILES,
+        "write": False,
+    },
+    {
+        "name": "generate_image",
+        "description": "Generate an image using the image provider and attach its PNG here. Choose defaults when unspecified; use this instead of SVG/HTML code or fabricated base64.",
+        "params_model": GenerateImageParams,
+        "capability": Capability.FILES,
+        "write": True,
+    },
 ]
 
 
@@ -452,12 +497,14 @@ class BackendToolset(AbstractToolset[Any]):
         disabled_tools: set[str] | None = None,
         max_tool_calls: int = 0,
         per_tool_limits: dict[str, int] | None = None,
+        image_generator: Callable[[str], Awaitable[bytes]] | None = None,
     ) -> None:
         self._backend = backend
         self._read_only = read_only
         self._max_retries = max_retries
         self._policy = access_policy or AccessPolicy()
         self._disabled_tools = disabled_tools or set()
+        self._image_generator = image_generator
         # Per-run tool call budget. 0 disables the total cap; per-tool limits
         # may still apply. A single BackendToolset instance is expected to back
         # exactly one agent run, so these counters scope naturally to a run.
@@ -555,6 +602,8 @@ class BackendToolset(AbstractToolset[Any]):
     def _should_include(self, desc: dict[str, Any]) -> bool:
         """Decide whether a tool descriptor should be exposed."""
         if desc["name"] in self._disabled_tools:
+            return False
+        if desc["name"] == "generate_image" and self._image_generator is None:
             return False
         if desc["write"] and self._read_only:
             return False
@@ -889,13 +938,22 @@ class BackendToolset(AbstractToolset[Any]):
         return {"ok": True}
 
     async def _call_delete_message(self, args: dict[str, Any]) -> Any:
-        channel = self._channel(args)
+        channel = await self._resolve_channel_full(self._channel(args))
         await self._check_channel_access(channel)
+        messages = await self._backend.fetch_messages(channel=channel, limit=self._policy.max_messages_per_request)
+        target = next((message for message in messages or [] if message.id == args["message_id"]), None)
+        if target is None:
+            return {"error": "not_found", "message": "Cannot verify the target message in this channel's recent history."}
+        identity = await self._backend.get_bot_info()
+        if identity is None or not identity.id or target.author_id != identity.id:
+            return {"error": "access_denied", "message": "Only messages authored by this bot can be deleted."}
+        if target.channel_id and self._backend.normalize_channel_id(target.channel_id) != self._backend.normalize_channel_id(channel.id):
+            return {"error": "access_denied", "message": "Target message belongs to another channel."}
         await self._backend.delete_message(
             message=args["message_id"],
             channel=channel,
         )
-        return {"ok": True}
+        return {"ok": True, "message_id": args["message_id"]}
 
     async def _call_set_presence(self, args: dict[str, Any]) -> Any:
         await self._backend.set_presence(
@@ -1027,3 +1085,72 @@ class BackendToolset(AbstractToolset[Any]):
         except ValueError as exc:
             return {"error": "invalid_file", "message": str(exc)}
         return {"ok": True, "message_id": getattr(sent, "id", "") or ""}
+
+    async def _call_create_file(self, args: dict[str, Any]) -> Any:
+        from pathlib import Path
+
+        from .files import create_document
+
+        channel = await self._resolve_channel_full(self._channel(args))
+        await self._check_channel_access(channel)
+        if Path(args["filename"]).name != args["filename"]:
+            return {"error": "invalid_file", "message": "Use a filename without a directory path."}
+        try:
+            data, media_type = await asyncio.to_thread(
+                create_document,
+                args["filename"],
+                text=args["text"],
+                columns=args["columns"],
+                rows=args["rows"],
+                sheet_name=args["sheet_name"],
+            )
+            sent = await self._backend.upload_file(channel, data, filename=args["filename"], content_type=media_type, content=args["content"])
+        except (ValueError, ImportError) as exc:
+            return {"error": "invalid_file", "message": str(exc)}
+        except (RuntimeError, OSError) as exc:
+            logger.warning("File creation/upload failed: %s", type(exc).__name__)
+            return {"error": "file_failed", "message": f"File creation or upload failed ({type(exc).__name__})."}
+        return {"ok": True, "message_id": sent.id, "filename": args["filename"], "content_type": media_type, "size": len(data)}
+
+    async def _call_read_file(self, args: dict[str, Any]) -> Any:
+        import base64
+
+        from .files import read_document
+
+        downloaded = await self._call_download_attachment(args)
+        if "error" in downloaded:
+            return downloaded
+        try:
+            return await asyncio.to_thread(
+                read_document,
+                base64.b64decode(downloaded["data_base64"], validate=True),
+                downloaded["filename"],
+                downloaded["content_type"],
+                max_bytes=args["max_bytes"],
+                max_chars=args["max_chars"],
+            )
+        except (ValueError, ImportError) as exc:
+            return {"error": "invalid_file", "message": str(exc)}
+        except (RuntimeError, OSError, BadZipFile, KeyError) as exc:
+            return {"error": "read_failed", "message": f"File reading failed ({type(exc).__name__})."}
+
+    async def _call_generate_image(self, args: dict[str, Any]) -> Any:
+        from pathlib import Path
+
+        channel = await self._resolve_channel_full(self._channel(args))
+        await self._check_channel_access(channel)
+        if Path(args["filename"]).name != args["filename"] or not args["filename"].lower().endswith(".png"):
+            return {"error": "invalid_file", "message": "Use a PNG filename without a directory path."}
+        try:
+            assert self._image_generator is not None
+            data = await self._image_generator(args["prompt"])
+            if not data.startswith(b"\x89PNG\r\n\x1a\n") or len(data) > 5_000_000:
+                raise ValueError("The image provider must return PNG bytes within the file limit.")
+            sent = await self._backend.upload_file(channel, data, filename=args["filename"], content_type="image/png", content=args["content"])
+        except (ValueError, RuntimeError, OSError) as exc:
+            logger.warning("Image generation/upload failed: %s", type(exc).__name__)
+            return {
+                "error": "generation_failed",
+                "message": str(exc) if isinstance(exc, ValueError) else f"Image generation or upload failed ({type(exc).__name__}).",
+            }
+        return {"ok": True, "message_id": sent.id, "filename": args["filename"], "content_type": "image/png", "size": len(data)}

@@ -373,6 +373,8 @@ class TestBackendToolset:
             "list_recent_attachments",
             "download_attachment",
             "upload_file",
+            "read_file",
+            "create_file",
         }
         assert set(tools.keys()) == expected_names
 
@@ -387,7 +389,16 @@ class TestBackendToolset:
         ctx.retries = {}
         tools = await toolset.get_tools(ctx)
 
-        write_tools = {"send_message", "edit_message", "add_reaction", "remove_reaction", "delete_message", "set_presence", "upload_file"}
+        write_tools = {
+            "send_message",
+            "edit_message",
+            "add_reaction",
+            "remove_reaction",
+            "delete_message",
+            "set_presence",
+            "upload_file",
+            "create_file",
+        }
         assert write_tools.isdisjoint(set(tools.keys()))
         assert "read_channel_history" in tools
         assert "lookup_user" in tools
@@ -584,6 +595,7 @@ class TestBackendToolset:
     async def test_call_delete_message(self, mock_backend: _MockBackend) -> None:
         from chatom.agent.toolset import BackendToolset
 
+        mock_backend._messages["C1"] = [Message(id="bot-response", author=User(id="BOT1", is_bot=True), channel=Channel(id="C1"))]
         toolset = BackendToolset(mock_backend)
         from unittest.mock import MagicMock
 
@@ -591,12 +603,22 @@ class TestBackendToolset:
         tool = MagicMock()
         result = await toolset.call_tool(
             "delete_message",
-            {"message_id": "m1", "channel": {"id": "C1"}},
+            {"message_id": "bot-response", "channel": {"id": "C1"}},
             ctx,
             tool,
         )
-        assert result == {"ok": True}
-        assert mock_backend.deleted[0]["message_id"] == "m1"
+        assert result == {"ok": True, "message_id": "bot-response"}
+        assert mock_backend.deleted[0]["message_id"] == "bot-response"
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize("author_id,exists", [("U1", True), ("BOT1", False)])
+    async def test_delete_rejects_other_authors_or_channels(self, mock_backend: _MockBackend, author_id, exists) -> None:
+        from chatom.agent.toolset import BackendToolset
+
+        mock_backend._messages["C1"] = [Message(id="target", author=User(id=author_id), channel=Channel(id="C1"))] if exists else []
+        result = await BackendToolset(mock_backend).call("delete_message", {"message_id": "target", "channel": {"id": "C1"}})
+        assert result["error"] in {"access_denied", "not_found"}
+        assert not mock_backend.deleted
 
     @pytest.mark.asyncio
     async def test_call_set_presence(self, mock_backend: _MockBackend) -> None:
