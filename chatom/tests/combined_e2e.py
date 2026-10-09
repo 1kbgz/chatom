@@ -27,7 +27,7 @@ Full-coverage environment variables:
         DISCORD_GUILD_NAME: Server/guild name
 
     Telegram:
-        TELEGRAM_TOKEN: Your Telegram bot token
+        TELEGRAM_BOT_TOKEN: Your Telegram bot token
         TELEGRAM_TEST_USER_NAME: Username for mention tests
         TELEGRAM_TEST_CHAT_NAME or TELEGRAM_TEST_CHAT_ID: Test chat
 
@@ -89,6 +89,21 @@ def get_env(name: str, required: bool = True) -> str | None:
 def require_interactive_e2e() -> bool:
     """Return whether interactive e2e timeouts should fail."""
     return os.environ.get("CHATOM_E2E_REQUIRE_INTERACTIVE", "").lower() in {"1", "true", "yes"}
+
+
+def inbound_timeout_e2e() -> float:
+    """Seconds to wait for a human to send the inbound test message.
+
+    Thirty seconds is enough when someone is watching the room, but not when the
+    run is being driven from elsewhere, so CHATOM_E2E_INBOUND_TIMEOUT raises it.
+    """
+    raw = os.environ.get("CHATOM_E2E_INBOUND_TIMEOUT", "30")
+    try:
+        timeout = float(raw)
+    except ValueError:
+        print(f"Ignoring non-numeric CHATOM_E2E_INBOUND_TIMEOUT={raw!r}; using 30")
+        return 30.0
+    return timeout if timeout > 0 else 30.0
 
 
 class SlackE2ETest:
@@ -803,7 +818,7 @@ class SlackE2ETest:
                 .add_text(".\n\nExample: ")
                 .add_italic(f"@{bot_name} hello this is a test message")
                 .add_text("\n\nYou have ")
-                .add_bold("30 seconds")
+                .add_bold(f"{inbound_timeout_e2e():.0f} seconds")
                 .add_text(" to respond...")
             )
             await self.backend.send_message(self.channel_id, prompt_msg.render(Format.SLACK_MARKDOWN))
@@ -812,14 +827,14 @@ class SlackE2ETest:
 
             # Wait for message with timeout
             try:
-                await asyncio.wait_for(receive_task, timeout=30.0)
+                await asyncio.wait_for(receive_task, timeout=inbound_timeout_e2e())
             except TimeoutError:
                 receive_task.cancel()
                 try:
                     await receive_task
                 except asyncio.CancelledError:
                     pass
-                self.log("Timeout waiting for inbound message (30s)", success=require_interactive_e2e() is False)
+                self.log(f"Timeout waiting for inbound message ({inbound_timeout_e2e():.0f}s)", success=require_interactive_e2e() is False)
                 return
 
             if received_message:
@@ -1756,7 +1771,7 @@ class DiscordE2ETest:
                 .add_text(".\n\nExample: ")
                 .add_italic(f"@{bot_name} hello this is a test message")
                 .add_text("\n\nYou have ")
-                .add_bold("30 seconds")
+                .add_bold(f"{inbound_timeout_e2e():.0f} seconds")
                 .add_text(" to respond...")
             )
             await self.backend.send_message(self.channel_id, prompt_msg.render(Format.DISCORD_MARKDOWN))
@@ -1765,14 +1780,14 @@ class DiscordE2ETest:
 
             # Wait for message with timeout
             try:
-                await asyncio.wait_for(receive_task, timeout=30.0)
+                await asyncio.wait_for(receive_task, timeout=inbound_timeout_e2e())
             except TimeoutError:
                 receive_task.cancel()
                 try:
                     await receive_task
                 except asyncio.CancelledError:
                     pass
-                self.log("Timeout waiting for inbound message (30s)", success=require_interactive_e2e() is False)
+                self.log(f"Timeout waiting for inbound message ({inbound_timeout_e2e():.0f}s)", success=require_interactive_e2e() is False)
                 return
 
             if received_message:
@@ -2038,6 +2053,11 @@ class SymphonyE2ETest:
             config_kwargs["user_search_url"] = self.user_search_url
         if self.user_lookup_url:
             config_kwargs["user_lookup_url"] = self.user_lookup_url
+
+        # Reactions ride on Symphony's internal service, which chatom keeps behind
+        # an explicit opt-in. Exercise it when the environment asks for it.
+        if os.environ.get("SYMPHONY_USE_INTERNAL_REACTIONS", "").lower() in {"1", "true", "yes"}:
+            config_kwargs["use_internal_reactions"] = True
 
         config = SymphonyConfig(**config_kwargs)
 
@@ -2836,7 +2856,7 @@ class SymphonyE2ETest:
                 .add_text(".\n\nExample: ")
                 .add_italic(f"@{bot_display_name} hello this is a test message")
                 .add_text("\n\nYou have ")
-                .add_bold("30 seconds")
+                .add_bold(f"{inbound_timeout_e2e():.0f} seconds")
                 .add_text(" to respond...")
             )
             prompt_result = await self.backend.send_message(self.stream_id, prompt_msg.render(Format.SYMPHONY_MESSAGEML))
@@ -2848,15 +2868,20 @@ class SymphonyE2ETest:
             # skip_own=True and skip_history=True are defaults, so we just get user messages
             received_message = None
             try:
-                async with asyncio.timeout(30.0):
+                async with asyncio.timeout(inbound_timeout_e2e()):
                     async for message in self.backend.stream_messages(channel=self.stream_id):
                         # First message from a user after stream started - that's the one we want
                         received_message = message
                         break
 
             except TimeoutError:
-                self.log("Timeout waiting for inbound message (30s)", success=require_interactive_e2e() is False)
-                timeout_msg = FormattedMessage().add_text("⏰ ").add_bold("[E2E Test] Timeout").add_text(" - No message received within 30 seconds.")
+                self.log(f"Timeout waiting for inbound message ({inbound_timeout_e2e():.0f}s)", success=require_interactive_e2e() is False)
+                timeout_msg = (
+                    FormattedMessage()
+                    .add_text("⏰ ")
+                    .add_bold("[E2E Test] Timeout")
+                    .add_text(f" - No message received within {inbound_timeout_e2e():.0f} seconds.")
+                )
                 await self.backend.send_message(self.stream_id, timeout_msg.render(Format.SYMPHONY_MESSAGEML))
                 return
 
@@ -3056,7 +3081,7 @@ class TelegramE2ETest:
 
     def __init__(self):
         """Initialize test configuration from environment."""
-        self.bot_token = get_env("TELEGRAM_TOKEN")
+        self.bot_token = get_env("TELEGRAM_BOT_TOKEN")
         self.chat_name = get_env("TELEGRAM_TEST_CHAT_NAME", required=False)
         self.chat_id = get_env("TELEGRAM_TEST_CHAT_ID", required=False)
         self.user_name = get_env("TELEGRAM_TEST_USER_NAME")
@@ -3803,7 +3828,7 @@ class TelegramE2ETest:
                 .add_text("\n\nPlease send a message in this chat.\n")
                 .add_text(f"Example: @{bot_name} hello this is a test message\n\n")
                 .add_text("You have ")
-                .add_bold("30 seconds")
+                .add_bold(f"{inbound_timeout_e2e():.0f} seconds")
                 .add_text(" to respond...")
             )
             await self.backend.send_message(self.chat_id, prompt_msg.render(Format.HTML))
@@ -3812,14 +3837,14 @@ class TelegramE2ETest:
 
             # Wait for message with timeout
             try:
-                await asyncio.wait_for(receive_task, timeout=30.0)
+                await asyncio.wait_for(receive_task, timeout=inbound_timeout_e2e())
             except TimeoutError:
                 receive_task.cancel()
                 try:
                     await receive_task
                 except asyncio.CancelledError:
                     pass
-                self.log("Timeout waiting for inbound message (30s)", success=require_interactive_e2e() is False)
+                self.log(f"Timeout waiting for inbound message ({inbound_timeout_e2e():.0f}s)", success=require_interactive_e2e() is False)
                 return
 
             if received_message:
@@ -4696,7 +4721,7 @@ def _missing_symphony_env() -> list[str]:
 def _missing_telegram_env() -> list[str]:
     missing = _missing_env(
         (
-            "TELEGRAM_TOKEN",
+            "TELEGRAM_BOT_TOKEN",
             "TELEGRAM_TEST_USER_NAME",
         )
     )

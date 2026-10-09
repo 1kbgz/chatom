@@ -31,6 +31,40 @@ telegram = TelegramBackend(config=TelegramConfig(bot_token="..."))
 
 Pass secrets from environment variables or a secret manager in production.
 
+## Symphony emoji reactions
+
+Symphony users react to messages with emoji, but no public Agent or Pod REST
+endpoint exposes reactions to a bot, so `SYMPHONY_CAPABILITIES` leaves
+`EMOJI_REACTIONS` out and `add_reaction` refuses by default.
+
+The web client reacts through an internal service, `POST /maestro/reactions/v1/message`, which accepts a bot's session token.
+`use_internal_reactions` opts in to it:
+
+```python
+symphony = SymphonyBackend(
+    config=SymphonyConfig(
+        host="develop2.symphony.com",
+        bot_username="my-bot",
+        bot_private_key_path="/path/to/key.pem",
+        use_internal_reactions=True,
+    )
+)
+await symphony.add_reaction(message=sent, emoji="\N{THUMBS UP SIGN}")
+await symphony.remove_reaction(message=sent, emoji="\N{THUMBS UP SIGN}")
+```
+
+That service is not part of Symphony's published API specification and may
+change without notice, which is why the flag defaults to off. An instance with
+the flag set declares `Capability.EMOJI_REACTIONS` so capability-gated callers
+see the truth, while the shared module constant stays unchanged.
+
+Symphony itself answers `REACTIONS_INVALID_EMOJI` for a shortname, so common
+shortnames are translated: `":thumbsup:"`, `"thumbsup"`, and `"+1"` all become
+👍, matching how reactions are named for the other backends. Install the
+optional `emoji` package to cover every shortname; without it a small built-in
+set is translated and anything else has to arrive as the character or as an
+`Emoji` carrying `unicode`.
+
 ## Use the common lifecycle
 
 The rest of the workflow is backend-independent:

@@ -37,6 +37,7 @@ from ..base import (
 from ..format.variant import Format
 
 __all__ = (
+    "AttachmentDownloadLimitError",
     "Backend",
     "BackendBase",
     "SyncHelper",
@@ -45,6 +46,26 @@ __all__ = (
 
 # Type variable for backend subclasses
 B = TypeVar("B", bound="BackendBase")
+
+
+class AttachmentDownloadLimitError(ValueError):
+    """Raised when an attachment cannot be downloaded within a byte limit."""
+
+    def __init__(self, max_bytes: int, actual_size: int | None = None) -> None:
+        self.max_bytes = max_bytes
+        self.actual_size = actual_size
+        if actual_size is None:
+            message = f"Attachment download cannot be proven to fit within the {max_bytes}-byte limit."
+        elif actual_size > max_bytes:
+            message = f"Attachment is {actual_size} bytes which exceeds the {max_bytes}-byte limit."
+        else:
+            message = f"Attachment reports {actual_size} bytes, but the download cannot be bounded to the {max_bytes}-byte limit."
+        super().__init__(message)
+
+
+def _validate_max_bytes(max_bytes: int | None) -> None:
+    if max_bytes is not None and max_bytes <= 0:
+        raise ValueError("max_bytes must be a positive integer")
 
 
 class SyncHelper:
@@ -1053,6 +1074,7 @@ class BackendBase(BaseModel):
         attachment: Attachment,
         *,
         message: Message | None = None,
+        max_bytes: int | None = None,
     ) -> bytes:
         """Download the binary content of an attachment.
 
@@ -1072,29 +1094,42 @@ class BackendBase(BaseModel):
             message: The message the attachment belongs to. Some backends
                 (e.g. Symphony) require the message and channel context to
                 resolve the download.
+            max_bytes: Maximum number of bytes to download. ``None`` disables
+                the limit.
 
         Returns:
             The raw file bytes.
 
         Raises:
+            AttachmentDownloadLimitError: If the attachment exceeds the limit
+                or the backend cannot enforce it safely.
             NotImplementedError: If the attachment cannot be resolved to a
                 downloadable source.
+            ValueError: If ``max_bytes`` is not positive.
 
         Example:
             >>> for att in message.attachments:
             ...     data = await backend.download_attachment(att, message=message)
             ...     Path(att.filename).write_bytes(data)
         """
+        _validate_max_bytes(max_bytes)
         if attachment.data is not None:
+            if max_bytes is not None and len(attachment.data) > max_bytes:
+                raise AttachmentDownloadLimitError(max_bytes, len(attachment.data))
             return attachment.data
         url = (attachment.url or "").strip()
         if url:
-            return await self._download_url(url)
+            return await self._download_url(url, max_bytes=max_bytes)
         raise NotImplementedError(
             f"{self.__class__.__name__} cannot download attachment {attachment.id or attachment.filename!r}: no data or url available"
         )
 
-    async def _download_url(self, url: str, headers: dict | None = None) -> bytes:
+    async def _download_url(
+        self,
+        url: str,
+        headers: dict | None = None,
+        max_bytes: int | None = None,
+    ) -> bytes:
         """Download bytes from an ``http(s)`` URL in a worker thread.
 
         Only ``http`` and ``https`` schemes are allowed to avoid local-file
@@ -1110,6 +1145,7 @@ class BackendBase(BaseModel):
         import urllib.request
         from urllib.parse import urlparse
 
+        _validate_max_bytes(max_bytes)
         scheme = urlparse(url).scheme.lower()
         if scheme not in ("http", "https"):
             raise ValueError(f"Refusing to download non-http(s) URL: {url!r}")
@@ -1117,7 +1153,20 @@ class BackendBase(BaseModel):
         def _get() -> bytes:
             req = urllib.request.Request(url, headers=headers or {})
             with urllib.request.urlopen(req, timeout=30) as resp:
-                return resp.read()
+                if max_bytes is None:
+                    return resp.read()
+                content_length = resp.headers.get("Content-Length")
+                if content_length is not None:
+                    try:
+                        actual_size = int(content_length)
+                    except ValueError:
+                        actual_size = None
+                    if actual_size is not None and actual_size > max_bytes:
+                        raise AttachmentDownloadLimitError(max_bytes, actual_size)
+                data = resp.read(max_bytes + 1)
+                if len(data) > max_bytes:
+                    raise AttachmentDownloadLimitError(max_bytes)
+                return data
 
         loop = asyncio.get_event_loop()
         return await loop.run_in_executor(None, _get)

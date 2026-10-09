@@ -270,6 +270,10 @@ SLACK_CAPABILITIES = BackendCapabilities(
     max_reactions=23,
 )
 
+# EMOJI_REACTIONS is deliberately absent. Symphony users can react with emoji,
+# but the public Agent and Pod REST APIs expose no endpoint for a bot to add or
+# remove a reaction, so add_reaction raises. The capability gates bot operations,
+# so declaring it would advertise a tool that always fails.
 SYMPHONY_CAPABILITIES = BackendCapabilities(
     capabilities=frozenset(
         {
@@ -279,7 +283,6 @@ SYMPHONY_CAPABILITIES = BackendCapabilities(
             Capability.CODE_BLOCKS,
             Capability.IMAGES,
             Capability.FILES,
-            Capability.EMOJI_REACTIONS,
             Capability.USER_MENTIONS,
             Capability.EDITING,
             Capability.DELETING,

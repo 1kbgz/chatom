@@ -8,7 +8,7 @@ from typing import Any, ClassVar
 
 from pydantic import Field
 
-from ..backend import BackendBase
+from ..backend import AttachmentDownloadLimitError, BackendBase
 from ..base import (
     BackendCapabilities,
     Capability,
@@ -397,6 +397,7 @@ class TelegramBackend(BackendBase):
         attachment: Any,
         *,
         message: Message | None = None,
+        max_bytes: int | None = None,
     ) -> bytes:
         """Download an attachment's bytes from Telegram.
 
@@ -404,17 +405,28 @@ class TelegramBackend(BackendBase):
         attachment ``id``), which is resolved to a temporary download via
         ``getFile``.
         """
+        if max_bytes is not None and max_bytes <= 0:
+            raise ValueError("max_bytes must be a positive integer")
+
         if attachment.data is not None:
-            return attachment.data
+            return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
         file_id = (getattr(attachment, "id", "") or "").strip()
         if file_id:
             self._ensure_connected()
             tg_file = await self._bot.get_file(file_id)
+            if max_bytes is not None:
+                file_size = getattr(tg_file, "file_size", None)
+                if file_size is not None and file_size > max_bytes:
+                    raise AttachmentDownloadLimitError(max_bytes, file_size)
+                file_path = (getattr(tg_file, "file_path", None) or "").strip()
+                if not file_path.startswith(("http://", "https://")):
+                    raise AttachmentDownloadLimitError(max_bytes)
+                return await self._download_url(file_path, max_bytes=max_bytes)
             data = await tg_file.download_as_bytearray()
             return bytes(data)
 
-        return await super().download_attachment(attachment, message=message)
+        return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
     async def edit_message(
         self,
