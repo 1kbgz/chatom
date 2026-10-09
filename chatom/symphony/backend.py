@@ -914,6 +914,7 @@ class SymphonyBackend(BackendBase):
         Sends the file as an attachment via the Symphony BDK message API.
         The binary data is written to a temporary file and its open binary
         handle is passed to the BDK's attachment parameter.
+        Images require matching PNG or JPEG filenames, MIME types, and signatures.
         """
         import mimetypes
         import os
@@ -924,6 +925,15 @@ class SymphonyBackend(BackendBase):
 
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
+
+        filename_type = mimetypes.guess_type(filename)[0] or ""
+        media_type = (content_type or filename_type).partition(";")[0].strip().lower()
+        log.info("Symphony upload filename=%r content_type=%r size=%d", filename, media_type, len(data))
+        if media_type.startswith("image/") or filename_type.startswith("image/"):
+            signatures = {"image/png": b"\x89PNG\r\n\x1a\n", "image/jpeg": b"\xff\xd8\xff"}
+            if media_type not in signatures or filename_type != media_type or not data.startswith(signatures[media_type]):
+                log.warning("Symphony upload rejected filename=%r content_type=%r size=%d", filename, media_type, len(data))
+                raise ValueError("Use PNG or JPEG with a matching filename, MIME type, and file signature for Symphony image uploads.")
 
         channel_id = await self._resolve_channel_id(channel)
 
@@ -936,7 +946,6 @@ class SymphonyBackend(BackendBase):
             body = content or title or filename
             if not body.strip().startswith("<messageML>"):
                 body = f"<messageML>{body}</messageML>"
-            media_type = content_type or mimetypes.guess_type(filename)[0] or ""
             if media_type.startswith("image/"):
                 root = fromstring(body)
                 ElementTree.SubElement(root, "img", {"src": f"cid:{os.path.basename(tmp_path)}"})
@@ -960,6 +969,14 @@ class SymphonyBackend(BackendBase):
                 channel=SymphonyChannel(id=channel_id),
             )
         except Exception as e:
+            log.warning(
+                "Symphony upload failed filename=%r content_type=%r size=%d status=%r error_type=%s",
+                filename,
+                media_type,
+                len(data),
+                getattr(e, "status", None),
+                type(e).__name__,
+            )
             raise RuntimeError(f"Failed to upload file: {e}") from e
         finally:
             with contextlib.suppress(OSError):

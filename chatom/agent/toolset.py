@@ -1016,11 +1016,14 @@ class BackendToolset(AbstractToolset[Any]):
 
             content_type = mimetypes.guess_type(args["filename"])[0] or ""
 
-        sent = await self._backend.upload_file(
-            channel=channel,
-            data=data,
-            filename=args["filename"],
-            content_type=content_type,
-            content=args.get("content", ""),
-        )
+        try:
+            sent = await self._backend.upload_file(
+                channel=channel,
+                data=data,
+                filename=args["filename"],
+                content_type=content_type,
+                content=args.get("content", ""),
+            )
+        except ValueError as exc:
+            return {"error": "invalid_file", "message": str(exc)}
         return {"ok": True, "message_id": getattr(sent, "id", "") or ""}
