@@ -25,29 +25,19 @@ lint-py:  ## lint python with ruff
 	python -m ruff format --check chatom
 
 lint-docs:  ## lint docs with mdformat and codespell
-<<<<<<< before updating
 	python -m mdformat --check README.md docs/src
 	python -m codespell_lib README.md docs/src
-=======
-	python -m mdformat --check README.md $(wildcard docs/src) 
-	python -m codespell_lib README.md $(wildcard docs/src) 
->>>>>>> after updating
 
 fix-py:  ## autoformat python code with ruff
 	python -m ruff check --fix chatom
 	python -m ruff format chatom
 
 fix-docs:  ## autoformat docs with mdformat and codespell
-<<<<<<< before updating
 	python -m mdformat README.md docs/src
 	python -m codespell_lib --write README.md docs/src
 
 docs:  ## build documentation with Yardang
 	yardang build
-=======
-	python -m mdformat README.md $(wildcard docs/src) 
-	python -m codespell_lib --write README.md $(wildcard docs/src) 
->>>>>>> after updating
 
 lint: lint-py lint-docs  ## run all linters
 lints: lint
@@ -64,7 +54,6 @@ check-dist:  ## check python sdist and wheel with check-dist
 
 check-types: ## check python types with ty
 	ty check --python $$(which python)
-<<<<<<< before updating
 	@count=$$(grep -r "# ty: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
 	if [ $$count -ge 15 ]; then \
 		echo "Error: Found $$count type: ignore comments (max 14 allowed)"; \
@@ -72,8 +61,6 @@ check-types: ## check python types with ty
 	else \
 		echo "Type ignore count: $$count (limit: 14)"; \
 	fi
-=======
->>>>>>> after updating
 
 checks: check-dist check-types
 
