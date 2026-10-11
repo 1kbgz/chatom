@@ -5,7 +5,7 @@ Start with the unified frontend tutorial. It runs without platform credentials a
 ```{toctree}
 :maxdepth: 1
 
-Tutorial: one message for four backends <tutorial-unified-frontend>
+Tutorial: one message for every backend <tutorial-unified-frontend>
 Tutorial: model a conversation <tutorial-conversation>
 ```
 

@@ -4,7 +4,7 @@ Install Chatom and the SDKs for the platforms you use:
 
 ```bash
 pip install chatom
-pip install slack-sdk discord.py symphony-bdk-python python-telegram-bot
+pip install slack-sdk discord.py matrix-nio symphony-bdk-python python-telegram-bot zulip
 ```
 
 ## Create a backend
@@ -13,12 +13,26 @@ Each adapter accepts its own configuration model:
 
 ```python
 from chatom.discord import DiscordBackend, DiscordConfig
+from chatom.irc import IRCBackend, IRCConfig
+from chatom.line import LineBackend, LineConfig
+from chatom.matrix import MatrixBackend, MatrixConfig
 from chatom.slack import SlackBackend, SlackConfig
 from chatom.symphony import SymphonyBackend, SymphonyConfig
 from chatom.telegram import TelegramBackend, TelegramConfig
+from chatom.zulip import ZulipBackend, ZulipConfig
 
 slack = SlackBackend(config=SlackConfig(bot_token="xoxb-..."))
 discord = DiscordBackend(config=DiscordConfig(token="..."))
+irc = IRCBackend(config=IRCConfig(server="irc.example.org", channels=["#operations"]))
+line = LineBackend(config=LineConfig(channel_access_token="...", channel_secret="..."))
+matrix = MatrixBackend(
+    config=MatrixConfig(
+        homeserver="https://matrix.example.org",
+        user_id="@chatom:example.org",
+        access_token="...",
+        device_id="CHATOM",
+    )
+)
 symphony = SymphonyBackend(
     config=SymphonyConfig(
         host="company.symphony.com",
@@ -27,6 +41,9 @@ symphony = SymphonyBackend(
     )
 )
 telegram = TelegramBackend(config=TelegramConfig(bot_token="..."))
+zulip = ZulipBackend(
+    config=ZulipConfig(site="https://example.zulipchat.com", email="chatom@example.com", api_key="...")
+)
 ```
 
 Pass secrets from environment variables or a secret manager in production.

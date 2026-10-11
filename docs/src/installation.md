@@ -17,9 +17,13 @@ Install only the platform SDKs your application uses:
 ```bash
 pip install slack-sdk
 pip install discord.py
+pip install matrix-nio
 pip install symphony-bdk-python
 pip install python-telegram-bot
+pip install zulip
 ```
+
+IRC and LINE use Python's standard library and require no additional SDK.
 
 Importing common Chatom models and formatting does not require those SDKs. Constructing a concrete backend does.
 

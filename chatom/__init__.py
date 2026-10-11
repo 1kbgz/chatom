@@ -31,9 +31,13 @@ from .backend import (
 )
 from .base import (
     DISCORD_CAPABILITIES,
+    IRC_CAPABILITIES,
+    LINE_CAPABILITIES,
+    MATRIX_CAPABILITIES,
     SLACK_CAPABILITIES,
     SYMPHONY_CAPABILITIES,
     TELEGRAM_CAPABILITIES,
+    ZULIP_CAPABILITIES,
     # Presence
     Activity,
     ActivityType,
@@ -104,9 +108,13 @@ from .enums import (
     ALL_BACKENDS,
     BACKEND,
     DISCORD,
+    IRC,
+    LINE,
+    MATRIX,
     SLACK,
     SYMPHONY,
     TELEGRAM,
+    ZULIP,
 )
 from .format import (
     BACKEND_FORMAT_MAP,
@@ -178,7 +186,13 @@ __all__ = (
     "DISCORD_MARKDOWN",
     "FORMAT",
     "HTML",
+    "IRC",
+    "IRC_CAPABILITIES",
+    "LINE",
+    "LINE_CAPABILITIES",
     "MARKDOWN",
+    "MATRIX",
+    "MATRIX_CAPABILITIES",
     "PLAINTEXT",
     "SLACK",
     "SLACK_CAPABILITIES",
@@ -189,6 +203,8 @@ __all__ = (
     "TELEGRAM",
     "TELEGRAM_CAPABILITIES",
     "TELEGRAM_HTML",
+    "ZULIP",
+    "ZULIP_CAPABILITIES",
     # Presence
     "Activity",
     "ActivityType",

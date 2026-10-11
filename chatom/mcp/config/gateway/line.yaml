@@ -1,0 +1,8 @@
+# @package _global_
+backends:
+  line:
+    _target_: chatom.line.LineBackend
+    config:
+      _target_: chatom.line.config.LineConfig
+      channel_access_token: ${oc.env:LINE_CHANNEL_ACCESS_TOKEN}
+      channel_secret: ${oc.env:LINE_CHANNEL_SECRET}

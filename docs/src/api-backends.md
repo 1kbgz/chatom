@@ -1,6 +1,6 @@
 # Backend APIs
 
-Concrete configuration, models, mention helpers, backends, and testing backends for Discord, Slack, Symphony, and Telegram.
+Concrete configuration, models, mention helpers, backends, and testing backends for Discord, IRC, LINE, Matrix, Slack, Symphony, Telegram, and Zulip.
 
 ## Discord
 
@@ -38,6 +38,114 @@ Concrete configuration, models, mention helpers, backends, and testing backends 
    :member-order: bysource
 
 .. automodule:: chatom.discord.testing
+   :members:
+   :member-order: bysource
+```
+
+## IRC
+
+```{eval-rst}
+.. automodule:: chatom.irc.config
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.user
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.channel
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.message
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.presence
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.mention
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.backend
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.irc.testing
+   :members:
+   :member-order: bysource
+```
+
+## LINE
+
+```{eval-rst}
+.. automodule:: chatom.line.config
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.user
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.channel
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.message
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.presence
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.mention
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.backend
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.line.testing
+   :members:
+   :member-order: bysource
+```
+
+## Matrix
+
+```{eval-rst}
+.. automodule:: chatom.matrix.config
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.user
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.channel
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.message
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.presence
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.mention
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.backend
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.matrix.testing
    :members:
    :member-order: bysource
 ```
@@ -146,6 +254,42 @@ Concrete configuration, models, mention helpers, backends, and testing backends 
    :member-order: bysource
 
 .. automodule:: chatom.telegram.testing
+   :members:
+   :member-order: bysource
+```
+
+## Zulip
+
+```{eval-rst}
+.. automodule:: chatom.zulip.config
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.user
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.channel
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.message
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.presence
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.mention
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.backend
+   :members:
+   :member-order: bysource
+
+.. automodule:: chatom.zulip.testing
    :members:
    :member-order: bysource
 ```

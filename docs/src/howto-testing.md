@@ -4,7 +4,14 @@ Each backend package exports an in-memory mock with the same asynchronous fronte
 
 ```python
 import pytest
+from chatom.discord import MockDiscordBackend
+from chatom.irc import MockIRCBackend
+from chatom.line import MockLineBackend
+from chatom.matrix import MockMatrixBackend
 from chatom.slack import MockSlackBackend
+from chatom.symphony import MockSymphonyBackend
+from chatom.telegram import MockTelegramBackend
+from chatom.zulip import MockZulipBackend
 
 
 @pytest.mark.asyncio
@@ -23,14 +30,23 @@ async def test_announcement():
     assert backend.get_sent_messages() == [sent]
 ```
 
-Equivalent mocks are exported as {class}`chatom.discord.MockDiscordBackend`, {class}`chatom.symphony.MockSymphonyBackend`, and {class}`chatom.telegram.MockTelegramBackend`.
+Equivalent mocks are exported by every backend package.
 
 Parameterize a common behavior test to verify frontend portability:
 
 ```python
 @pytest.mark.parametrize(
     "backend_factory",
-    [MockSlackBackend, MockDiscordBackend, MockSymphonyBackend, MockTelegramBackend],
+    [
+        MockDiscordBackend,
+        MockIRCBackend,
+        MockLineBackend,
+        MockMatrixBackend,
+        MockSlackBackend,
+        MockSymphonyBackend,
+        MockTelegramBackend,
+        MockZulipBackend,
+    ],
 )
 @pytest.mark.asyncio
 async def test_message_workflow(backend_factory):

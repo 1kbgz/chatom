@@ -23,7 +23,7 @@ def build_status_message():
 
 def main():
     message = build_status_message()
-    for backend in ("slack", "discord", "symphony", "telegram"):
+    for backend in ("slack", "discord", "symphony", "telegram", "matrix", "zulip", "irc", "line"):
         print(f"--- {backend} ---")
         print(message.render_for(backend))
 

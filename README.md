@@ -5,14 +5,14 @@
 
 # Chatom
 
-A unified Python frontend for Discord, Slack, Symphony, Telegram, and other chat backends.
+A unified Python frontend for Discord, IRC, LINE, Matrix, Slack, Symphony, Telegram, and Zulip.
 
 [![Build Status](https://github.com/1kbgz/chatom/actions/workflows/build.yaml/badge.svg?branch=main&event=push)](https://github.com/1kbgz/chatom/actions/workflows/build.yaml)
 [![codecov](https://codecov.io/gh/1kbgz/chatom/branch/main/graph/badge.svg?token=IubQKhtRoK)](https://codecov.io/gh/1kbgz/chatom)
 [![License](https://img.shields.io/github/license/1kbgz/chatom)](https://github.com/1kbgz/chatom)
 [![PyPI](https://img.shields.io/pypi/v/chatom.svg)](https://pypi.python.org/pypi/chatom)
 
-Chatom lets application code use one set of users, channels, messages, formatting nodes, interactions, and backend operations. Platform adapters translate that frontend to Discord, Slack, Symphony, or Telegram at the edge. The same models also feed cross-platform bridges, pydantic-ai tools, MCP servers, and CSP graphs.
+Chatom lets application code use one set of users, channels, messages, formatting nodes, interactions, and backend operations. Platform adapters translate that frontend to Discord, IRC, LINE, Matrix, Slack, Symphony, Telegram, or Zulip at the edge. The same models also feed cross-platform bridges, pydantic-ai tools, MCP servers, and CSP graphs.
 
 ## Install
 
@@ -25,12 +25,12 @@ pip install chatom
 Install the SDKs for the backends you use:
 
 ```bash
-pip install slack-sdk discord.py symphony-bdk-python python-telegram-bot
+pip install slack-sdk discord.py matrix-nio symphony-bdk-python python-telegram-bot zulip
 ```
 
 Optional integrations are available with `chatom[agent]` and `chatom[mcp]`.
 
-## One message, four backends
+## One message, every backend
 
 ```python
 from chatom import MessageBuilder
@@ -52,7 +52,13 @@ slack_content = message.render_for("slack")
 discord_content = message.render_for("discord")
 symphony_content = message.render_for("symphony")
 telegram_content = message.render_for("telegram")
+matrix_content = message.render_for("matrix")
+zulip_content = message.render_for("zulip")
+irc_content = message.render_for("irc")
+line_content = message.render_for("line")
 ```
+
+Each backend receives its own dialect: mrkdwn for Slack, Markdown for Discord and Zulip, HTML for Symphony and Matrix, Telegram's HTML subset, and plain text for IRC and LINE.
 
 Message construction stays unchanged. Only rendering and backend configuration know which platform receives it.
 
@@ -76,7 +82,7 @@ finally:
 - Model promotion and demotion between common and backend-specific types
 - Identity mapping and message forwarding between platforms
 - Agent, MCP, and CSP integrations built on the same backend contract
-- In-memory Discord, Slack, Symphony, and Telegram backends for tests
+- In-memory backends for all supported platforms
 
 ## Documentation
 
