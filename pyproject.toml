@@ -61,6 +61,7 @@ develop = [
     "codespell",
     "hatchling",
     "mdformat",
+    "mdformat-frontmatter",
     "mdformat-tables>=1",
     "pytest",
     "pytest-asyncio",
@@ -124,7 +125,7 @@ replace = 'version = "{new_version}"'
 [tool.coverage.run]
 branch = true
 omit = [
-    "chatom/tests/integration/",
+    "chatom/tests/integration/*",
     "chatom/examples/",
     "chatom/tests/*_e2e.py",
 ]
