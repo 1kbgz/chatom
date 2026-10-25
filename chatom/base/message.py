@@ -175,7 +175,7 @@ class Message(Identifiable):
         default_factory=list,
         description="Rich embeds in the message.",
     )
-    components: Any | None = Field(
+    components: Any = Field(
         default=None,
         description=(
             "Interactive UI components attached to the message. "
