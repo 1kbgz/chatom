@@ -52,9 +52,8 @@ format: fix
 check-dist:  ## check python sdist and wheel with check-dist
 	check-dist -v
 
-<<<<<<< before updating
-check-types: ## check python types with ty
-	ty check --python $$(which python)
+check-types:  ## check python types with ty
+	python -m ty check
 	@count=$$(grep -r "# ty: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
 	if [ $$count -ge 15 ]; then \
 		echo "Error: Found $$count type: ignore comments (max 14 allowed)"; \
@@ -62,10 +61,6 @@ check-types: ## check python types with ty
 	else \
 		echo "Type ignore count: $$count (limit: 14)"; \
 	fi
-=======
-check-types:  ## check python types with ty
-	python -m ty check
->>>>>>> after updating
 
 checks: check-dist check-types
 

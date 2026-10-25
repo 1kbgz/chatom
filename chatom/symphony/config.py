@@ -120,7 +120,7 @@ class SymphonyConfig(BackendConfig):
     proxy_password: SecretStr | None = None
 
     # Connection settings
-    timeout: int = Field(default=30, description="Request timeout in seconds")
+    timeout: int = Field(default=30, description="Request timeout in seconds")  # ty: ignore[invalid-mutable-override]
 
     # Error handling and retry configuration
     error_room: str | None = Field(
