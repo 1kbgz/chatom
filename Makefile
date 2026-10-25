@@ -52,6 +52,7 @@ format: fix
 check-dist:  ## check python sdist and wheel with check-dist
 	check-dist -v
 
+<<<<<<< before updating
 check-types: ## check python types with ty
 	ty check --python $$(which python)
 	@count=$$(grep -r "# ty: ignore" --include="*.py" chatom | wc -l | tr -d ' '); \
@@ -61,6 +62,10 @@ check-types: ## check python types with ty
 	else \
 		echo "Type ignore count: $$count (limit: 14)"; \
 	fi
+=======
+check-types:  ## check python types with ty
+	python -m ty check
+>>>>>>> after updating
 
 checks: check-dist check-types
 
