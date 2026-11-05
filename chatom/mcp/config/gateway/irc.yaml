@@ -1,0 +1,9 @@
+# @package _global_
+backends:
+  irc:
+    _target_: chatom.irc.IRCBackend
+    config:
+      _target_: chatom.irc.config.IRCConfig
+      server: ${oc.env:IRC_SERVER}
+      nickname: ${oc.env:IRC_NICKNAME,chatom}
+      password: ${oc.env:IRC_PASSWORD,""}

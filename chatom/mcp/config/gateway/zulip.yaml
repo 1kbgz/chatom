@@ -1,0 +1,9 @@
+# @package _global_
+backends:
+  zulip:
+    _target_: chatom.zulip.ZulipBackend
+    config:
+      _target_: chatom.zulip.config.ZulipConfig
+      site: ${oc.env:ZULIP_SITE}
+      email: ${oc.env:ZULIP_EMAIL}
+      api_key: ${oc.env:ZULIP_API_KEY}

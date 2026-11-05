@@ -6,7 +6,7 @@ Chat platforms disagree on identifiers, markup, threading, presence, interaction
 
 {class}`chatom.User`, {class}`chatom.Channel`, {class}`chatom.Message`, {class}`chatom.Thread`, and related models describe concepts shared by chat systems. Platform packages subclass those models when an API exposes additional information. Code that only needs the common fields can remain unaware of the concrete backend.
 
-The same split applies to operations. {class}`chatom.BackendBase` defines connection, lookup, history, sending, event streaming, and optional chat operations. Discord, Slack, Symphony, and Telegram backends present that common interface while retaining their platform-specific configuration and models.
+The same split applies to operations. {class}`chatom.BackendBase` defines connection, lookup, history, sending, event streaming, and optional chat operations. The Discord, IRC, LINE, Matrix, Slack, Symphony, Telegram, and Zulip backends present that common interface while retaining their platform-specific configuration and models.
 
 ```mermaid
 graph LR
@@ -15,14 +15,18 @@ graph LR
     Models --> Backend[BackendBase interface]
     Format --> Backend
     Backend --> Discord
+    Backend --> IRC
+    Backend --> LINE
+    Backend --> Matrix
     Backend --> Slack
     Backend --> Symphony
     Backend --> Telegram
+    Backend --> Zulip
 ```
 
 ## Formatting at the boundary
 
-Rich text is represented as a tree of nodes such as {class}`chatom.Bold`, {class}`chatom.Link`, {class}`chatom.Table`, and {class}`chatom.UserMention`. Rendering is delayed until the destination is known. This preserves intent: a bold node can become Slack mrkdwn, Discord Markdown, MessageML, or Telegram HTML without platform conditionals in message-building code.
+Rich text is represented as a tree of nodes such as {class}`chatom.Bold`, {class}`chatom.Link`, {class}`chatom.Table`, and {class}`chatom.UserMention`. Rendering is delayed until the destination is known. This preserves intent: a bold node can become Slack mrkdwn, Discord or Zulip Markdown, MessageML, Matrix HTML, or Telegram HTML without platform conditionals in message-building code. On IRC and LINE, which have no inline markup at all, the same node degrades to plain text rather than leaking literal asterisks into the channel.
 
 Interactive components and embeds follow the same rule. A {class}`chatom.format.Button` or {class}`chatom.format.FormattedEmbed` retains structure and produces a backend payload only when requested.
 
@@ -31,6 +35,8 @@ Interactive components and embeds follow the same rule. A {class}`chatom.format.
 A unified interface does not imply that every platform supports every operation. Each backend exposes {class}`chatom.BackendCapabilities`. Integrations use those declarations to omit unsupported tools or choose a fallback.
 
 Required backend methods cover the minimum lifecycle and messaging contract. Reactions, editing, presence, file transfer, interactions, channel management, and other operations are capability-dependent. Applications can share their main path while handling a platform difference where it matters.
+
+IRC is the clearest illustration. It declares only plain text, mentions, and presence — no reactions, no file transfer, no search, no threads. Code that queries capabilities before offering those operations works unchanged against IRC and Slack alike; code that assumes every platform behaves like Slack does not.
 
 ## Conversion and bridging
 

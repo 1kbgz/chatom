@@ -2,8 +2,9 @@ from typing import Literal, Union
 
 DISCORD = "discord"
 # EMAIL = "email"
-# IRC = "irc"
-# MATRIX = "matrix"
+IRC = "irc"
+LINE = "line"
+MATRIX = "matrix"
 # MATTERMOST = "mattermost"
 # MESSENGER = "messenger"
 SLACK = "slack"
@@ -11,14 +12,15 @@ SYMPHONY = "symphony"
 # TEAMS = "teams"
 TELEGRAM = "telegram"
 # WHATSAPP = "whatsapp"
-# ZULIP = "zulip"
+ZULIP = "zulip"
 
-BACKEND = Union[Literal["discord", "slack", "symphony", "telegram"], str]  # noqa: UP007
+BACKEND = Union[Literal["discord", "irc", "line", "matrix", "slack", "symphony", "telegram", "zulip"], str]  # noqa: UP007
 ALL_BACKENDS = [
     DISCORD,
     # EMAIL,
-    # IRC,
-    # MATRIX,
+    IRC,
+    LINE,
+    MATRIX,
     # MATTERMOST,
     # MESSENGER,
     SLACK,
@@ -26,15 +28,16 @@ ALL_BACKENDS = [
     # TEAMS,
     TELEGRAM,
     # WHATSAPP,
-    # ZULIP,
+    ZULIP,
 ]
 
 __all__ = (
     "BACKEND",
     "DISCORD",
     # "EMAIL",
-    # "IRC",
-    # "MATRIX",
+    "IRC",
+    "LINE",
+    "MATRIX",
     # "MATTERMOST",
     # "MESSENGER",
     "SLACK",
@@ -42,5 +45,5 @@ __all__ = (
     # "TEAMS",
     "TELEGRAM",
     # "WHATSAPP",
-    # "ZULIP",
+    "ZULIP",
 )

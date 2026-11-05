@@ -1,6 +1,6 @@
-# One message for four backends
+# One message for every backend
 
-In this tutorial you will build one rich message and render it for Slack, Discord, Symphony, and Telegram. No credentials or network connection are required.
+In this tutorial you will build one rich message and render it for all eight backends: Slack, Discord, Symphony, Telegram, Matrix, Zulip, IRC, and LINE. No credentials or network connection are required.
 
 ## Build the message
 
@@ -32,8 +32,24 @@ Notice how the outputs differ:
 
 - Slack uses mrkdwn and a fixed-width table.
 - Discord uses Discord-flavored Markdown and a Markdown table.
-- Symphony uses MessageML elements.
+- Symphony and Matrix use HTML elements.
 - Telegram uses its supported HTML subset and a preformatted table.
+- Zulip uses standard Markdown.
+- IRC and LINE fall back to plain text: the heading becomes uppercase, bullets become `•`, and the table becomes fixed-width columns.
+
+IRC and LINE are the interesting cases. Neither supports inline markup, so the renderer does not emit `**bold**` that would show up literally in the channel. It degrades to a plain-text form that still reads correctly:
+
+```text
+DEPLOYMENT STATUS
+The same message object is ready for every configured backend.
+Environment: production
+• API: healthy
+• Workers: healthy
+Service | State
+--------+--------
+API     | healthy
+Workers | healthy
+```
 
 No conditional rendering logic appears in the application. {meth}`chatom.FormattedMessage.render_for` selects the platform format at the boundary.
 
