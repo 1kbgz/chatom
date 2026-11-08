@@ -3,8 +3,9 @@
 Start with the unified frontend tutorial. It runs without platform credentials and shows Chatom's central idea: application code constructs one message, while each backend receives its own native markup.
 
 ```{toctree}
-:maxdepth: 1
-
+---
+maxdepth: 1
+---
 Tutorial: one message for four backends <tutorial-unified-frontend>
 Tutorial: model a conversation <tutorial-conversation>
 ```
