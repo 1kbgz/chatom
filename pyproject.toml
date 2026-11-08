@@ -61,7 +61,7 @@ develop = [
     "codespell",
     "hatchling",
     "mdformat",
-    "mdformat-frontmatter",
+    "mdformat-myst",
     "mdformat-tables>=1",
     "pytest",
     "pytest-asyncio",
@@ -198,7 +198,7 @@ section-order = [
 ]
 
 [tool.ty.rules]
-unresolved-import = "ignore"
+import-not-found = "ignore"
 
 [tool.ty.src]
 exclude = [

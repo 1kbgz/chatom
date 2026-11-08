@@ -7,8 +7,10 @@ In this tutorial you will build one rich message and render it for Slack, Discor
 Chatom's frontend consists of backend-independent models and formatting nodes. Build a status message with the fluent {class}`chatom.MessageBuilder`:
 
 ```{literalinclude} ../../chatom/examples/unified_frontend.py
-:language: python
-:pyobject: build_status_message
+---
+language: python
+pyobject: build_status_message
+---
 ```
 
 The object contains structure, not platform markup. The heading, list, and table remain typed nodes until rendering.
@@ -18,8 +20,10 @@ The object contains structure, not platform markup. The heading, list, and table
 Render the same object with each backend name:
 
 ```{literalinclude} ../../chatom/examples/unified_frontend.py
-:language: python
-:pyobject: main
+---
+language: python
+pyobject: main
+---
 ```
 
 Run the complete example:
