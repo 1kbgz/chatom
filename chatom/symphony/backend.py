@@ -8,13 +8,17 @@ import asyncio
 import base64
 import contextlib
 import importlib
+import json
 import logging
 import re
+import time
 from collections.abc import AsyncIterator
 from datetime import UTC, datetime, timedelta
 from typing import Any, ClassVar
+from urllib.error import HTTPError
+from urllib.request import Request, urlopen
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from ..backend import AttachmentDownloadLimitError, BackendBase
 from ..base import (
@@ -22,7 +26,9 @@ from ..base import (
     Attachment,
     AttachmentType,
     BackendCapabilities,
+    Capability,
     Channel,
+    Emoji,
     Image,
     Message,
     MessageType,
@@ -64,7 +70,7 @@ try:
     # list of user ids. Kept optional so 2.x, which requires the wrapper, works too.
     from symphony.bdk.gen.pod_model.user_id_list import UserIdList
 except ImportError:
-    UserIdList = None
+    UserIdList: Any = None
 
 SymphonyBdk: Any = getattr(_symphony_bdk_module, "SymphonyBdk", None)
 BdkConfig: Any = getattr(_bdk_config_module, "BdkConfig", None)
@@ -187,6 +193,22 @@ class SymphonyBackend(BackendBase):
     _bdk: Any = None
     _bot_user_id_int: int | None = None
     _bot_user_name_cached: str | None = None
+
+    @model_validator(mode="after")
+    def _declare_reaction_capability(self) -> "SymphonyBackend":
+        """Advertise reactions only when the internal service is opted in to.
+
+        The module-level constant leaves EMOJI_REACTIONS out, because the public
+        API has no bot endpoint. With use_internal_reactions set, this instance
+        really can react, so the capability is added for that instance only.
+        """
+        if self.config.use_internal_reactions and self.capabilities is not None and not self.capabilities.supports(Capability.EMOJI_REACTIONS):
+            object.__setattr__(
+                self,
+                "capabilities",
+                self.capabilities.model_copy(update={"capabilities": self.capabilities.capabilities | {Capability.EMOJI_REACTIONS}}),
+            )
+        return self
 
     @property
     def bot_user_id(self) -> str | None:
@@ -729,12 +751,22 @@ class SymphonyBackend(BackendBase):
         """Convert raw V4Message objects to SymphonyMessage instances."""
         messages: list[Message] = []
         for msg in messages_data:
+            author = None
+            if msg.user:
+                display_name = getattr(msg.user, "display_name", None) or ""
+                username = getattr(msg.user, "username", None) or ""
+                author = SymphonyUser(
+                    id=str(msg.user.user_id),
+                    name=display_name or username,
+                    display_name=display_name,
+                    handle=username,
+                )
             messages.append(
                 SymphonyMessage(
                     id=msg.message_id,
                     content=msg.message,
                     created_at=datetime.fromtimestamp(msg.timestamp / 1000, tz=UTC),
-                    author=SymphonyUser(id=str(msg.user.user_id)) if msg.user else None,
+                    author=author,
                     channel=SymphonyChannel(id=channel_id),
                     attachments=_symphony_attachments(getattr(msg, "attachments", None), channel_id, msg.message_id),
                 )
@@ -880,18 +912,31 @@ class SymphonyBackend(BackendBase):
         """Upload a file to a Symphony stream.
 
         Sends the file as an attachment via the Symphony BDK message API.
-        The binary data is written to a temporary file which is passed to
-        the BDK's attachment parameter.
+        The binary data is written to a temporary file and its open binary
+        handle is passed to the BDK's attachment parameter.
+        Images require matching PNG, JPEG, or GIF filenames, MIME types, and signatures.
         """
+        import mimetypes
         import os
         import tempfile
+        from xml.etree import ElementTree
+
+        from defusedxml.ElementTree import fromstring
 
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
 
+        filename_type = mimetypes.guess_type(filename)[0] or ""
+        media_type = (content_type or filename_type).partition(";")[0].strip().lower()
+        log.info("Symphony upload filename=%r content_type=%r size=%d", filename, media_type, len(data))
+        if media_type.startswith("image/") or filename_type.startswith("image/"):
+            signatures = {"image/png": b"\x89PNG\r\n\x1a\n", "image/jpeg": b"\xff\xd8\xff", "image/gif": (b"GIF87a", b"GIF89a")}
+            if media_type not in signatures or filename_type != media_type or not data.startswith(signatures[media_type]):
+                log.warning("Symphony upload rejected filename=%r content_type=%r size=%d", filename, media_type, len(data))
+                raise ValueError("Use PNG or JPEG, or GIF, with a matching filename, MIME type, and file signature for Symphony image uploads.")
+
         channel_id = await self._resolve_channel_id(channel)
 
-        # Symphony BDK expects file paths for attachments, so write to temp
         fd, tmp_path = tempfile.mkstemp(suffix=f"_{filename}")
         try:
             os.write(fd, data)
@@ -901,12 +946,20 @@ class SymphonyBackend(BackendBase):
             body = content or title or filename
             if not body.strip().startswith("<messageML>"):
                 body = f"<messageML>{body}</messageML>"
+            if media_type.startswith("image/"):
+                root = fromstring(body)
+                ElementTree.SubElement(root, "img", {"src": f"cid:{os.path.basename(tmp_path)}"})
+                body = ElementTree.tostring(root, encoding="unicode")
 
-            result = await message_service.send_message(
-                stream_id=channel_id,
-                message=body,
-                attachment=[tmp_path],
-            )
+            attachment = await asyncio.to_thread(open, tmp_path, "rb")
+            try:
+                result = await message_service.send_message(
+                    stream_id=channel_id,
+                    message=body,
+                    attachment=[attachment],
+                )
+            finally:
+                await asyncio.to_thread(attachment.close)
 
             return SymphonyMessage(
                 id=result.message_id,
@@ -916,6 +969,14 @@ class SymphonyBackend(BackendBase):
                 channel=SymphonyChannel(id=channel_id),
             )
         except Exception as e:
+            log.warning(
+                "Symphony upload failed filename=%r content_type=%r size=%d status=%r error_type=%s",
+                filename,
+                media_type,
+                len(data),
+                getattr(e, "status", None),
+                type(e).__name__,
+            )
             raise RuntimeError(f"Failed to upload file: {e}") from e
         finally:
             with contextlib.suppress(OSError):
@@ -944,9 +1005,6 @@ class SymphonyBackend(BackendBase):
         if attachment.data is not None:
             return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
-        if max_bytes is not None:
-            raise AttachmentDownloadLimitError(max_bytes, getattr(attachment, "size", None))
-
         if self._bdk is None:
             raise RuntimeError("Symphony not connected")
 
@@ -962,6 +1020,40 @@ class SymphonyBackend(BackendBase):
             )
 
         message_service = self._bdk.messages()
+        if max_bytes is not None:
+            size = getattr(attachment, "size", None)
+            if size is not None and size > max_bytes:
+                raise AttachmentDownloadLimitError(max_bytes, size)
+            api = getattr(message_service, "_attachment_api", None)
+            if api is None or not hasattr(self._bdk, "bot_session"):
+                raise AttachmentDownloadLimitError(max_bytes, size)
+            session = self._bdk.bot_session()
+            response = await api.v1_stream_sid_attachment_get(
+                sid=stream_id,
+                file_id=attachment_id,
+                message_id=message_id,
+                session_token=await session.session_token,
+                key_manager_token=await session.key_manager_token,
+                _preload_content=False,
+            )
+            try:
+                if response.status != 200:
+                    raise RuntimeError(f"Symphony attachment download returned HTTP {response.status}.")
+                encoded_limit = 4 * ((max_bytes + 2) // 3) + 2
+                encoded_data = bytearray()
+                while chunk := await response.content.read(65_536):
+                    encoded_data.extend(chunk)
+                    if len(encoded_data) > encoded_limit:
+                        raise AttachmentDownloadLimitError(max_bytes)
+                encoded_value = bytes(encoded_data)
+                if encoded_value.startswith(b'"'):
+                    encoded_value = json.loads(encoded_value)
+                data = base64.b64decode(encoded_value, validate=True)
+                if len(data) > max_bytes:
+                    raise AttachmentDownloadLimitError(max_bytes, len(data))
+                return data
+            finally:
+                response.release()
         encoded = await message_service.get_attachment(
             stream_id=stream_id,
             message_id=message_id,
@@ -1253,6 +1345,128 @@ class SymphonyBackend(BackendBase):
         except Exception:  # noqa: BLE001
             return None
 
+    # Symphony's reaction service, which backs the web client. Not in the
+    # published API specification; see SymphonyConfig.use_internal_reactions.
+    _REACTIONS_PATH = "/maestro/reactions/v1/message"
+
+    @staticmethod
+    def _standard_base64_message_id(message_id: str) -> str:
+        """Convert a message id to the padded, non-URL-safe form reactions want.
+
+        Symphony hands message ids out URL-safe and unpadded, but the reaction
+        service matches on the standard alphabet with padding.
+        """
+        converted = message_id.replace("-", "+").replace("_", "/")
+        return converted + "=" * (-len(converted) % 4)
+
+    # Shortnames are how Slack and the rest of chatom name reactions, so the
+    # common ones are translated rather than refused. Install the `emoji`
+    # package for the full set.
+    _SHORTNAME_FALLBACK: ClassVar[dict[str, str]] = {
+        "+1": "\N{THUMBS UP SIGN}",
+        "-1": "\N{THUMBS DOWN SIGN}",
+        "thumbsup": "\N{THUMBS UP SIGN}",
+        "thumbsdown": "\N{THUMBS DOWN SIGN}",
+        "eyes": "\N{EYES}",
+        "tada": "\N{PARTY POPPER}",
+        "rocket": "\N{ROCKET}",
+        "heart": "\N{HEAVY BLACK HEART}",
+        "white_check_mark": "\N{WHITE HEAVY CHECK MARK}",
+        "heavy_check_mark": "\N{HEAVY CHECK MARK}",
+        "x": "\N{CROSS MARK}",
+        "warning": "\N{WARNING SIGN}",
+        "fire": "\N{FIRE}",
+        "clap": "\N{CLAPPING HANDS SIGN}",
+        "pray": "\N{PERSON WITH FOLDED HANDS}",
+        "smile": "\N{SMILING FACE WITH OPEN MOUTH}",
+        "laughing": "\N{SMILING FACE WITH OPEN MOUTH AND TIGHTLY-CLOSED EYES}",
+        "cry": "\N{CRYING FACE}",
+        "100": "\N{HUNDRED POINTS SYMBOL}",
+    }
+
+    @classmethod
+    def _reaction_emoji(cls, emoji: str | Emoji) -> str:
+        """Resolve a reaction to the literal emoji character the service wants.
+
+        Reactions are named by shortname elsewhere in chatom, as Slack does, but
+        Symphony answers ``REACTIONS_INVALID_EMOJI`` for anything that is not the
+        character, so shortnames are translated here. The optional ``emoji``
+        package covers every shortname; without it a small common set is built
+        in and anything else has to arrive as the character or as an
+        :class:`~chatom.base.Emoji` carrying ``unicode``.
+        """
+        if isinstance(emoji, Emoji):
+            resolved = emoji.unicode or cls._SHORTNAME_FALLBACK.get(emoji.name.strip(":").lower(), "")
+            if not resolved:
+                raise ValueError(f"Emoji {emoji.name!r} has no unicode value; Symphony reactions need the character itself")
+            return resolved
+
+        resolved = (emoji or "").strip()
+        if not resolved:
+            raise ValueError("Symphony reactions need a non-empty emoji")
+        if not resolved.isascii():
+            return resolved
+
+        name = resolved.strip(":").lower()
+        try:
+            import emoji as emoji_lib
+        except ImportError:
+            pass
+        else:
+            converted = emoji_lib.emojize(f":{name}:", language="alias")
+            if converted != f":{name}:":
+                return converted
+
+        converted = cls._SHORTNAME_FALLBACK.get(name)
+        if converted:
+            return converted
+        raise ValueError(
+            f"Symphony reactions need the emoji character and {resolved!r} could not be translated; "
+            "pass the character itself, an Emoji with unicode set, or install the `emoji` package"
+        )
+
+    async def _post_reaction(self, message: str | Message, emoji: str | Emoji | None, channel: str | Channel | None) -> None:
+        """Add or remove a reaction through Symphony's internal service.
+
+        Omitting the emoji removes this bot's reaction; the service rejects an
+        empty string, so removal has to leave the field out entirely.
+        """
+        if not self.config.use_internal_reactions:
+            raise NotImplementedError(
+                "Symphony users can react with emoji, but the public Agent and Pod REST APIs expose no endpoint for a bot "
+                "to do so. Set SymphonyConfig.use_internal_reactions to opt in to the internal maestro service, which is "
+                "not part of Symphony's published API and may change without notice."
+            )
+        if self._bdk is None:
+            raise RuntimeError("Not connected to Symphony. Call connect() first.")
+        _, message_id = await self._resolve_message_id(message, channel)
+
+        payload: dict[str, Any] = {
+            "messageId": self._standard_base64_message_id(message_id),
+            "timestamp": int(time.time() * 1000),
+        }
+        if emoji is not None:
+            payload["emoji"] = self._reaction_emoji(emoji)
+
+        session_token = await self._bdk._bot_session.session_token
+        url = f"{self.config.scheme}://{self.config.host}:{self.config.port}{self._REACTIONS_PATH}"
+        request = Request(
+            url,
+            data=json.dumps(payload).encode(),
+            method="POST",
+            headers={"Content-Type": "application/json", "Accept": "application/json", "sessionToken": session_token},
+        )
+
+        def _send() -> None:
+            with urlopen(request, timeout=self.config.timeout) as response:
+                response.read()
+
+        try:
+            await asyncio.to_thread(_send)
+        except HTTPError as exc:
+            detail = exc.read().decode(errors="replace")
+            raise RuntimeError(f"Symphony reaction request failed ({exc.code}): {detail}") from exc
+
     async def add_reaction(
         self,
         message: str | Message,
@@ -1270,9 +1484,9 @@ class SymphonyBackend(BackendBase):
             channel: The stream containing the message (not used).
 
         Raises:
-            NotImplementedError: Symphony doesn't support emoji reactions.
+            NotImplementedError: Unless ``use_internal_reactions`` is set.
         """
-        raise NotImplementedError("Symphony does not support emoji reactions. Consider using signals or inline forms instead.")
+        await self._post_reaction(message, emoji, channel)
 
     async def remove_reaction(
         self,
@@ -1290,9 +1504,10 @@ class SymphonyBackend(BackendBase):
             channel: The stream containing the message (not used).
 
         Raises:
-            NotImplementedError: Symphony doesn't support emoji reactions.
+            NotImplementedError: Unless ``use_internal_reactions`` is set.
         """
-        raise NotImplementedError("Symphony does not support emoji reactions")
+        # The service rejects an empty emoji, so removal omits the field.
+        await self._post_reaction(message, None, channel)
 
     def mention_user(self, user: User) -> str:
         """Format a user mention for Symphony.

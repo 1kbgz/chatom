@@ -8,6 +8,7 @@ import asyncio
 import contextlib
 import logging
 import threading
+from collections.abc import Callable
 from queue import Queue
 
 import csp
@@ -328,7 +329,7 @@ def message_reader(
     )
 
 
-def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
+def _send_messages_thread(msg_queue: Queue, backend: BackendBase, on_sent: Callable[[Message, Message], None] | None = None):
     """Thread function to send messages from queue using the backend.
 
     Uses asyncio.run() which properly sets up the task context
@@ -389,11 +390,13 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase):
                         content_to_send = str(kwargs.pop("content"))
                     else:
                         content_to_send = msg.content
-                    await thread_backend.send_message(
+                    sent = await thread_backend.send_message(
                         channel=msg.channel_id,
                         content=content_to_send,
                         **kwargs,
                     )
+                    if on_sent is not None:
+                        on_sent(msg, sent)
 
                     # Upload any attachments with binary data
                     for att in upload_attachments:

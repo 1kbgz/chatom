@@ -7,7 +7,7 @@ served, tool names are prefixed with the backend name
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager, suppress
 from typing import Any
 
@@ -370,7 +370,7 @@ def _register_backend_tools(
 
 
 @asynccontextmanager
-async def connected_backends(backends: dict[str, BackendBase]) -> AsyncIterator[dict[str, BackendBase]]:
+async def connected_backends(backends: dict[str, BackendBase]) -> AsyncGenerator[dict[str, BackendBase], None]:
     """Connect every backend for the duration of the context.
 
     Backends that connected successfully are disconnected on the way out,
@@ -419,7 +419,7 @@ def build_mcp_server(
     if manage_connections:
 
         @asynccontextmanager
-        async def lifespan(_server: FastMCP) -> AsyncIterator[dict]:
+        async def lifespan(_server: FastMCP) -> AsyncGenerator[dict, None]:
             async with connected_backends(backends):
                 yield {}
 

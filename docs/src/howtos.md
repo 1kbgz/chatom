@@ -3,8 +3,9 @@
 Use these guides when you know the result you need.
 
 ```{toctree}
-:maxdepth: 1
-
+---
+maxdepth: 1
+---
 Connect and send through a backend <howto-backends>
 Format rich messages <howto-formatting>
 Bridge messages between platforms <howto-bridge>

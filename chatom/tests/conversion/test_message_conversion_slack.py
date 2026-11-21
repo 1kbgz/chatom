@@ -137,6 +137,32 @@ class TestSlackMessageConversion:
 class TestSlackMessageProperties:
     """Tests for SlackMessage computed properties."""
 
+    def test_edit_status_defaults_to_false_and_is_writable(self):
+        from chatom.slack import SlackMessage
+
+        message = SlackMessage(id="m1")
+        assert message.is_edited is False
+        message.is_edited = True
+        assert message.is_edited is True
+        message.is_edited = False
+        assert message.is_edited is False
+
+    def test_edit_status_preserves_explicit_flag(self):
+        from chatom.slack import SlackMessage
+
+        message = SlackMessage(id="m1", is_edited=True)
+        assert message.is_edited is True
+
+    def test_edit_status_uses_slack_metadata(self):
+        from chatom.slack import SlackMessage
+
+        edited = {"user": "U12345", "ts": "1234567890.123456"}
+        message = SlackMessage(id="m1", edited=edited)
+        assert message.is_edited is True
+        parsed = SlackMessage.from_api_response({"ts": "m1", "edited": edited})
+        assert parsed.is_edited is True
+        assert parsed.model_dump()["is_edited"] is True
+
     def test_is_thread_reply_true(self):
         """Test is_thread_reply returns True when in a thread."""
         from chatom.slack import SlackMessage

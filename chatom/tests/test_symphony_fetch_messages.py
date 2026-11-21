@@ -54,6 +54,21 @@ class TestMessageIdentifiers:
         assert _message_identifiers(message) is None
 
 
+class TestMessageAuthors:
+    def test_history_preserves_author_display_name(self):
+        backend = SymphonyBackend()
+        message = _make_v4_message("message-1", 1000, user_id=1001)
+        message.user.display_name = "Taylor Example"
+        message.user.username = "texample"
+
+        converted = backend._convert_messages([message], "stream-1")[0]
+
+        assert converted.author.id == "1001"
+        assert converted.author.name == "Taylor Example"
+        assert converted.author.display_name == "Taylor Example"
+        assert converted.author.handle == "texample"
+
+
 @pytest.fixture
 def backend():
     """Create a SymphonyBackend with mocked internals."""
@@ -275,3 +290,76 @@ async def test_user_detail_returns_none_when_both_fail():
     service = _FakeUserService(admin_allowed=False, by_ids_allowed=False)
 
     assert await SymphonyBackend._user_detail(service, 1) is None
+
+
+class TestInternalReactions:
+    """Reactions go through Symphony's internal maestro service, opt-in only."""
+
+    def test_message_id_is_converted_to_standard_base64(self):
+        """The reaction service matches on the padded, non-URL-safe alphabet."""
+        assert SymphonyBackend._standard_base64_message_id("XiIv3APOCgkFmgERKMwe8n___l7sy8bgbQ") == "XiIv3APOCgkFmgERKMwe8n///l7sy8bgbQ=="
+        assert SymphonyBackend._standard_base64_message_id("ab-cd_ef") == "ab+cd/ef"
+
+    def test_character_passes_through(self):
+        assert SymphonyBackend._reaction_emoji("\N{THUMBS UP SIGN}") == "\N{THUMBS UP SIGN}"
+
+    @pytest.mark.parametrize(
+        ("shortname", "expected"),
+        [
+            (":thumbsup:", "\N{THUMBS UP SIGN}"),
+            ("thumbsup", "\N{THUMBS UP SIGN}"),
+            ("+1", "\N{THUMBS UP SIGN}"),
+            ("white_check_mark", "\N{WHITE HEAVY CHECK MARK}"),
+            ("ROCKET", "\N{ROCKET}"),
+        ],
+    )
+    def test_shortnames_are_translated(self, shortname, expected):
+        """Reactions are named by shortname elsewhere in chatom, as Slack does.
+
+        Symphony answers REACTIONS_INVALID_EMOJI for a shortname, so refusing
+        one would make callers special-case Symphony, which is what the common
+        frontend exists to avoid.
+        """
+        assert SymphonyBackend._reaction_emoji(shortname) == expected
+
+    def test_blank_and_untranslatable_are_refused(self):
+        for rejected in ("", "   "):
+            with pytest.raises(ValueError, match="non-empty"):
+                SymphonyBackend._reaction_emoji(rejected)
+        with pytest.raises(ValueError, match="could not be translated"):
+            SymphonyBackend._reaction_emoji("definitely_not_an_emoji")
+
+    def test_emoji_object_needs_a_unicode_value(self):
+        from chatom.base import Emoji
+
+        assert SymphonyBackend._reaction_emoji(Emoji(name="thumbsup", unicode="\N{THUMBS UP SIGN}")) == "\N{THUMBS UP SIGN}"
+        # Falls back to the name when unicode is absent but the name is known.
+        assert SymphonyBackend._reaction_emoji(Emoji(name="thumbsup")) == "\N{THUMBS UP SIGN}"
+        with pytest.raises(ValueError, match="no unicode value"):
+            SymphonyBackend._reaction_emoji(Emoji(name="custom-company-logo"))
+
+    def test_capability_is_declared_only_when_opted_in(self):
+        from chatom.base.capabilities import Capability
+        from chatom.symphony import SymphonyConfig
+
+        base = {"host": "pod.example.com", "bot_username": "bot"}
+        off = SymphonyBackend(config=SymphonyConfig(**base))
+        on = SymphonyBackend(config=SymphonyConfig(**base, use_internal_reactions=True))
+
+        assert not off.capabilities.supports(Capability.EMOJI_REACTIONS)
+        assert on.capabilities.supports(Capability.EMOJI_REACTIONS)
+
+        # The shared module-level constant must not be mutated.
+        from chatom.base import SYMPHONY_CAPABILITIES
+
+        assert not SYMPHONY_CAPABILITIES.supports(Capability.EMOJI_REACTIONS)
+
+    @pytest.mark.asyncio
+    async def test_reacting_without_the_flag_is_refused(self):
+        from chatom.symphony import SymphonyConfig
+
+        backend = SymphonyBackend(config=SymphonyConfig(host="pod.example.com", bot_username="bot"))
+        with pytest.raises(NotImplementedError, match="use_internal_reactions"):
+            await backend.add_reaction(message="abc", emoji="\N{THUMBS UP SIGN}")
+        with pytest.raises(NotImplementedError, match="use_internal_reactions"):
+            await backend.remove_reaction(message="abc", emoji="\N{THUMBS UP SIGN}")

@@ -238,7 +238,7 @@ class BackendBase(BaseModel):
         default_factory=ChannelRegistry,
         description="Registry of cached channels.",
     )
-    config: Any | None = Field(
+    config: Any = Field(
         default=None,
         description="Backend-specific configuration. Subclasses override with their config type.",
     )

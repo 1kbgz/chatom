@@ -94,7 +94,7 @@ class BackendAdapter:
         )
 
     @csp.node
-    def _write_message(self, msg: ts[Message]):
+    def _write_message(self, msg: ts[Message], on_sent: object = None):
         """Internal node for writing messages."""
         with csp.state():
             s_queue: Queue | None = None
@@ -104,7 +104,7 @@ class BackendAdapter:
             s_queue = Queue(maxsize=0)
             s_thread = threading.Thread(
                 target=_send_messages_thread,
-                args=(s_queue, self._backend),
+                args=(s_queue, self._backend, on_sent),
                 daemon=True,
             )
             s_thread.start()
@@ -119,7 +119,7 @@ class BackendAdapter:
             s_queue.put(msg)
 
     @csp.graph
-    def publish(self, msg: ts[Message]):
+    def publish(self, msg: ts[Message], on_sent: object = None):
         """Publish messages to the backend.
 
         Args:
@@ -134,7 +134,12 @@ class BackendAdapter:
             ...     ))
             ...     adapter.publish(response)
         """
-        self._write_message(msg=msg)
+        callback = on_sent if on_sent is not None else getattr(self, "_message_sent_callback", None)
+        self._write_message(msg=msg, on_sent=callback)
+
+    def set_message_callback(self, callback) -> None:
+        """Observe posted messages without changing platform publish overrides."""
+        self._message_sent_callback = callback
 
     @csp.node
     def _set_presence(self, presence: ts[str], timeout: float = 5.0):

@@ -174,7 +174,7 @@ from .format import (
 )
 from .handlers import InteractionHandler, InteractionRegistry
 
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 __all__ = (
     "ALL_BACKENDS",
