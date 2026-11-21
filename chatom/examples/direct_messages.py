@@ -35,6 +35,8 @@ async def main(backend_name: str) -> bool:
         user = await backend.fetch_user(name=user_name)
         if not user:
             user = await backend.fetch_user(handle=user_name)
+        if not user and "@" in user_name:
+            user = await backend.fetch_user(email=user_name)
         if not user:
             print(f"❌ User '{user_name}' not found")
             return False

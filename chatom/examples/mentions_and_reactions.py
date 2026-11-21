@@ -44,6 +44,8 @@ async def main(backend_name: str) -> bool:
         user = await backend.fetch_user(name=user_name)
         if not user:
             user = await backend.fetch_user(handle=user_name)
+        if not user and "@" in user_name:
+            user = await backend.fetch_user(email=user_name)
         if not user:
             print(f"❌ User '{user_name}' not found")
             return False
@@ -61,7 +63,8 @@ async def main(backend_name: str) -> bool:
         print(f"✅ Sent message with mentions: {sent.id}")
 
         if backend.capabilities.supports(Capability.EMOJI_REACTIONS):
-            await backend.add_reaction(message=sent, emoji="thumbsup")
+            thumbs_up = "thumbs_up" if backend_name == "zulip" else "thumbsup"
+            await backend.add_reaction(message=sent, emoji=thumbs_up)
             print("✅ Added 👍 reaction")
 
             await backend.add_reaction(message=sent, emoji="rocket")
@@ -69,7 +72,7 @@ async def main(backend_name: str) -> bool:
 
             await asyncio.sleep(1)
 
-            await backend.remove_reaction(message=sent, emoji="thumbsup")
+            await backend.remove_reaction(message=sent, emoji=thumbs_up)
             print("✅ Removed 👍 reaction")
         else:
             print(f"⏭️  {backend.display_name} does not support reactions")
