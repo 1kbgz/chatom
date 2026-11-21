@@ -1,6 +1,7 @@
 """Async IRC/IRCv3 backend implemented with Python's stream primitives."""
 
 import asyncio
+import re
 import ssl
 import uuid
 from collections.abc import AsyncIterator
@@ -19,6 +20,34 @@ from .presence import IRCPresence
 from .user import IRCUser
 
 __all__ = ("IRC_CAPABILITIES", "IRCBackend")
+
+# RPL_ENDOFNAMES, or a numeric saying the JOIN was refused, ends the wait for a
+# configured channel.
+_JOIN_FINISHED = frozenset({"366", "403", "405", "471", "473", "474", "475"})
+
+# A PRIVMSG is one line of at most 512 bytes, including the prefix the server
+# adds when it relays the message, so long text is sent in smaller pieces.
+_MAX_TEXT_BYTES = 400
+# Characters RFC 2812 allows in a nickname. A nick counts as mentioned only
+# when it is not part of a longer nick, the same rule clients use to highlight.
+_NICK_CHARS = r"\w\-\[\]\\`^{}|"
+
+# Pause between the lines of a multi-line message so a long reply does not
+# trip the server's flood limit and get the bot disconnected.
+_LINE_DELAY_SECONDS = 0.3
+
+
+def _irc_lines(content: str) -> list[str]:
+    """Split text into the non-blank pieces IRC can send as separate PRIVMSGs."""
+    pieces: list[str] = []
+    for line in content.splitlines():
+        if not line.strip():
+            continue
+        while line:
+            piece = line.encode()[:_MAX_TEXT_BYTES].decode(errors="ignore")
+            pieces.append(piece)
+            line = line[len(piece) :]
+    return pieces
 
 
 def _unescape_tag(value: str) -> str:
@@ -82,6 +111,7 @@ class IRCBackend(BackendBase):
     _enabled_capabilities: set[str] = PrivateAttr(default_factory=set)
     _history_waiters: dict[str, asyncio.Future[None]] = PrivateAttr(default_factory=dict)
     _history_batches: dict[str, str] = PrivateAttr(default_factory=dict)
+    _pending_joins: dict[str, asyncio.Event] = PrivateAttr(default_factory=dict)
 
     model_config = {"arbitrary_types_allowed": True}  # noqa: RUF012
 
@@ -111,6 +141,7 @@ class IRCBackend(BackendBase):
         )
         self._messages = asyncio.Queue()
         self._welcome = asyncio.Event()
+        self._pending_joins = {channel.casefold(): asyncio.Event() for channel in self.config.channels}
         self._reader_task = asyncio.create_task(self._read_loop())
         if self.config.password_str:
             await self._send_command("PASS", self.config.password_str)
@@ -122,6 +153,15 @@ class IRCBackend(BackendBase):
         except Exception:
             await self.disconnect()
             raise
+        # Wait for each configured channel's member list so fetch_user() can
+        # resolve who is there. A channel that never answers does not fail connect.
+        try:
+            await asyncio.wait_for(
+                asyncio.gather(*(event.wait() for event in self._pending_joins.values())),
+                timeout=self.config.timeout,
+            )
+        except TimeoutError:
+            pass
 
     async def disconnect(self) -> None:
         writer, task = self._writer, self._reader_task
@@ -198,6 +238,19 @@ class IRCBackend(BackendBase):
             # would reprocess them every time fetch_messages() runs.
             if tags.get("batch") not in self._history_batches:
                 await self._messages.put(message)
+        elif command == "353" and len(params) >= 4:
+            # RPL_NAMREPLY: the channel's member list, each nick carrying zero or
+            # more membership prefixes such as @ or +.
+            for entry in params[-1].split():
+                self._remember_nick(entry.lstrip("~&@%+"))
+        elif command in _JOIN_FINISHED and len(params) >= 2:
+            event = self._pending_joins.pop(params[1].casefold(), None)
+            if event is not None:
+                event.set()
+        elif command == "JOIN" and prefix:
+            self._remember_nick(IRCUser.from_prefix(prefix))
+        elif command == "NICK" and prefix and params:
+            self._remember_nick(params[-1])
         elif command == "AWAY" and prefix:
             user = IRCUser.from_prefix(prefix)
             # AWAY without a message means the user is back.
@@ -206,6 +259,16 @@ class IRCBackend(BackendBase):
                 status=PresenceStatus.IDLE if params else PresenceStatus.ONLINE,
                 away_message=params[-1] if params else "",
             )
+
+    def _remember_nick(self, user: "str | IRCUser") -> None:
+        """Add a nick seen in a channel to the user directory, except the bot itself."""
+        if isinstance(user, str):
+            # A bare nick must not replace a cached user that has a full hostmask.
+            if self.users.get_by_id(user) is not None:
+                return
+            user = IRCUser(id=user, name=user, handle=user, nickname=user)
+        if user.id and user.id.casefold() != self.config.nickname.casefold():
+            self.users.add(user)
 
     async def _handle_cap(self, params: list[str]) -> None:
         if len(params) < 2:
@@ -266,11 +329,18 @@ class IRCBackend(BackendBase):
                 pass
         message_id = tags.get("msgid") or uuid.uuid4().hex
         self._presence[author.id] = IRCPresence(user=author, status=PresenceStatus.ONLINE, last_seen=timestamp)
+        nickname = self.config.nickname
+        mentions: list[User] = []
+        if author.id.casefold() != nickname.casefold() and re.search(
+            rf"(?<![{_NICK_CHARS}]){re.escape(nickname)}(?![{_NICK_CHARS}])", content, re.IGNORECASE
+        ):
+            mentions.append(IRCUser(id=nickname, name=nickname, handle=nickname, nickname=nickname, is_bot=True))
         return IRCMessage(
             id=message_id,
             content=content,
             author=author,
             channel=channel,
+            mentions=mentions,
             created_at=timestamp,
             message_type=MessageType.SYSTEM if command == "NOTICE" else MessageType.DEFAULT,
             is_system=command == "NOTICE",
@@ -369,9 +439,13 @@ class IRCBackend(BackendBase):
     async def send_message(self, channel: str | Channel, content: str, **kwargs: Any) -> IRCMessage:
         self._ensure_connected()
         channel_id = await self._resolve_channel_id(channel)
-        if not content:
+        lines = _irc_lines(content)
+        if not lines:
             raise ValueError("IRC message content cannot be empty")
-        await self._send_command("PRIVMSG", channel_id, trailing=content)
+        for index, line in enumerate(lines):
+            if index:
+                await asyncio.sleep(_LINE_DELAY_SECONDS)
+            await self._send_command("PRIVMSG", channel_id, trailing=line)
         timestamp = datetime.now(UTC)
         author = IRCUser(id=self.config.nickname, name=self.config.nickname, handle=self.config.nickname, nickname=self.config.nickname, is_bot=True)
         message = IRCMessage(

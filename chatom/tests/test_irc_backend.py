@@ -329,6 +329,10 @@ async def test_connect_negotiates_capabilities_and_joins_channels() -> None:
             return [f":srv CAP bot ACK :{line[len('CAP REQ :') :]}"]
         if line == "CAP END":
             return [":srv 001 bot :Welcome"]
+        if line == "JOIN #a":
+            return [":srv 353 bot = #a :bot @alice", ":srv 366 bot #a :End of /NAMES list."]
+        if line == "JOIN #b":
+            return [":srv 474 bot #b :Cannot join channel (+b)"]
         return []
 
     async with irc_server(script) as server:
@@ -343,6 +347,8 @@ async def test_connect_negotiates_capabilities_and_joins_channels() -> None:
         assert backend._server_capabilities >= {"sasl", "multi-prefix", "batch"}
         assert backend._enabled_capabilities == {"batch", "draft/chathistory", "message-tags"}
         assert backend.supports_server_history
+        assert backend._pending_joins == {}
+        assert await backend.fetch_user(name="alice") is not None
 
         await backend.disconnect()
         await server.wait_for_line("QUIT :chatom disconnect")
@@ -632,6 +638,87 @@ async def test_away_notifications_update_presence() -> None:
 
 
 @pytest.mark.asyncio
+async def test_connect_does_not_fail_when_a_channel_never_answers() -> None:
+    async with irc_server(welcome_on_user) as server:
+        config = IRCConfig(server="127.0.0.1", port=server.port, use_tls=False, nickname="bot", timeout=0.2, channels=["#silent"])
+        backend = IRCBackend(config=config)
+        await backend.connect()
+
+        assert backend.connected
+        assert "#silent" in backend._pending_joins
+        await backend._handle_line(":srv 366 bot #other :End of /NAMES list.")
+        assert "#silent" in backend._pending_joins
+        await backend.disconnect()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("line", "mentioned"),
+    [
+        (":alice!u@h PRIVMSG #chatom :bot: !help", True),
+        (":alice!u@h PRIVMSG #chatom :hey @BOT, help", True),
+        (":alice!u@h PRIVMSG #chatom :ask the bot", True),
+        (":alice!u@h PRIVMSG #chatom :robot or bot_ or bot-2 or [bot]x", False),
+        (":bot!b@h PRIVMSG #chatom :bot talking about bot", False),
+    ],
+)
+async def test_bot_nick_as_a_word_is_a_mention(line: str, mentioned: bool) -> None:
+    backend, _ = attached_backend()
+
+    await backend._handle_line(line)
+
+    message = backend._messages.get_nowait()
+    assert [user.id for user in message.mentions] == (["bot"] if mentioned else [])
+    if mentioned:
+        assert message.mentions[0].is_bot
+
+
+@pytest.mark.asyncio
+async def test_names_reply_makes_members_fetchable() -> None:
+    backend, _ = attached_backend()
+
+    await backend._handle_line(":srv 353 bot = #chatom :bot @alice +bob ~carol dave")
+    await backend._handle_line(":srv 353 bot = #chatom")
+
+    for nick in ("alice", "bob", "carol", "dave"):
+        user = await backend.fetch_user(name=nick)
+        assert user is not None
+        assert user.nickname == nick
+    me = await backend.fetch_user("bot")
+    assert me is not None
+    assert me.is_bot
+
+
+@pytest.mark.asyncio
+async def test_names_reply_keeps_known_hostmask() -> None:
+    backend, _ = attached_backend()
+
+    await backend._handle_line(":alice!user@example.org PRIVMSG #chatom :hi")
+    await backend._handle_line(":srv 353 bot = #chatom :@alice")
+
+    user = await backend.fetch_user(name="alice")
+    assert user is not None
+    assert user.hostmask == "alice!user@example.org"
+
+
+@pytest.mark.asyncio
+async def test_join_and_nick_change_update_users() -> None:
+    backend, _ = attached_backend()
+
+    await backend._handle_line(":erin!e@host JOIN #chatom")
+    await backend._handle_line(":bot!b@host JOIN #chatom")
+    await backend._handle_line("JOIN #chatom")
+    await backend._handle_line(":erin!e@host NICK erin_")
+    await backend._handle_line(":erin!e@host NICK")
+
+    joined = await backend.fetch_user(name="erin")
+    assert joined is not None
+    assert joined.hostmask == "erin!e@host"
+    assert await backend.fetch_user(name="erin_") is not None
+    assert backend.users.get_by_id("bot") is None
+
+
+@pytest.mark.asyncio
 async def test_duplicate_message_ids_are_stored_once() -> None:
     backend, _ = attached_backend()
 
@@ -736,13 +823,31 @@ async def test_send_message_writes_privmsg_and_records_history() -> None:
 
 
 @pytest.mark.asyncio
+async def test_send_message_splits_lines_and_long_text(monkeypatch: pytest.MonkeyPatch) -> None:
+    backend, writer = attached_backend()
+    monkeypatch.setattr(irc_backend_module, "_LINE_DELAY_SECONDS", 0)
+    long_line = "é" * 250
+
+    sent = await backend.send_message("#chatom", f"first\r\n\n  \nsecond\n{long_line}")
+
+    assert writer.lines[:2] == ["PRIVMSG #chatom :first", "PRIVMSG #chatom :second"]
+    pieces = [line.removeprefix("PRIVMSG #chatom :") for line in writer.lines[2:]]
+    assert "".join(pieces) == long_line
+    assert all(len(piece.encode()) <= 400 for piece in pieces)
+    assert len(pieces) == 2
+    assert sent.content.startswith("first")
+
+
+@pytest.mark.asyncio
 async def test_send_message_rejects_bad_input_and_missing_writer() -> None:
     backend, writer = attached_backend()
 
     with pytest.raises(ValueError, match="cannot be empty"):
         await backend.send_message("#chatom", "")
+    with pytest.raises(ValueError, match="cannot be empty"):
+        await backend.send_message("#chatom", "\n  \n")
     with pytest.raises(ValueError, match="CR or LF"):
-        await backend.send_message("#chatom", "line1\nline2")
+        await backend._send_command("PRIVMSG", "#chatom", trailing="line1\nline2")
     assert writer.lines == []
 
     backend._writer = None
