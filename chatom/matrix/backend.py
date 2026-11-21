@@ -260,19 +260,25 @@ class MatrixBackend(BackendBase):
         new_content = content.get("m.new_content") if relation.get("rel_type") == "m.replace" else None
         if new_content:
             body = new_content.get("body", body)
+        shown = new_content or content
+        # Clients that follow intentional mentions list them in m.mentions;
+        # older ones only link the user with a matrix.to URL in formatted_body.
+        mentioned = (shown.get("m.mentions") or {}).get("user_ids") or self.mention_pattern.findall(shown.get("formatted_body", ""))
+        mentions = [MatrixUser(id=user_id, name=user_id, handle=user_id) for user_id in dict.fromkeys(mentioned)]
 
         return MatrixMessage(
             id=event_id,
             content=body,
-            formatted_content=(new_content or content).get("formatted_body", ""),
+            formatted_content=shown.get("formatted_body", ""),
             author=MatrixUser(id=sender, name=sender, handle=sender) if sender else None,
+            mentions=mentions,
             channel=MatrixChannel(id=room_id, name=room_id),
             thread=Thread(id=thread_id) if thread_id else None,
             reference=(MessageReference(message_id=reply_event_id, channel_id=room_id) if reply_event_id else None),
             message_type=MessageType.REPLY if reply_event_id else MessageType.DEFAULT,
             created_at=created_at,
             is_edited=bool(new_content),
-            msgtype=(new_content or content).get("msgtype", "m.text"),
+            msgtype=shown.get("msgtype", "m.text"),
             event_type=event_type,
             transaction_id=(source.get("unsigned") or {}).get("transaction_id", ""),
             relates_to=relation,

@@ -698,6 +698,26 @@ def test_parse_event_ignores_non_message_events() -> None:
     assert backend._parse_message_event(member_event, "!room:example.org") is None
 
 
+@pytest.mark.parametrize(
+    ("content", "expected"),
+    [
+        ({"body": "chatom-bot: /help", "m.mentions": {"user_ids": ["@bot:example.org", "@bot:example.org"]}}, ["@bot:example.org"]),
+        (
+            {"body": "bot: hi", "formatted_body": '<a href="https://matrix.to/#/@bot:example.org">bot</a>: hi'},
+            ["@bot:example.org"],
+        ),
+        ({"body": "no one", "m.mentions": {}}, []),
+    ],
+)
+def test_parse_event_reads_mentions(content, expected) -> None:
+    backend = MatrixBackend()
+    event = {"type": "m.room.message", "event_id": "$m", "sender": "@alice:example.org", "content": {"msgtype": "m.text", **content}}
+
+    message = backend._parse_message_event(event, "!room:example.org")
+
+    assert [user.id for user in message.mentions] == expected
+
+
 def test_parse_event_reads_attribute_style_events() -> None:
     backend = MatrixBackend()
     event = types.SimpleNamespace(
