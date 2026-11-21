@@ -240,6 +240,10 @@ class ZulipBackend(BackendBase):
         created_at = datetime.fromtimestamp(timestamp, tz=UTC) if timestamp is not None else None
         content = data.get("content", "") or ""
         is_html = data.get("content_type") == "text/html"
+        flags = data.get("flags", []) or []
+        # Zulip flags belong to the user making the request, which here is
+        # always the bot, so "mentioned" means the bot itself was mentioned.
+        mentions = [self._bot_user] if "mentioned" in flags and self._bot_user is not None else []
         return ZulipMessage(
             id=str(data.get("id", "")),
             content=content,
@@ -255,7 +259,8 @@ class ZulipBackend(BackendBase):
             recipient_id=data.get("recipient_id"),
             sender_email=data.get("sender_email", "") or "",
             client=data.get("client", "") or "",
-            flags=data.get("flags", []) or [],
+            flags=flags,
+            mentions=mentions,
             zulip_reactions=data.get("reactions", []) or [],
             reactions=reactions,
         )
@@ -521,7 +526,8 @@ class ZulipBackend(BackendBase):
                     last_event_id = max(last_event_id, event.get("id", last_event_id))
                     if event.get("type") != "message":
                         continue
-                    message = self._message_from_api(event.get("message", {}))
+                    # A message event carries the bot's flags beside the message, not in it.
+                    message = self._message_from_api({**event.get("message", {}), "flags": event.get("flags", [])})
                     if channel_id and message.channel_id != channel_id:
                         continue
                     if skip_own and self._bot_user_id and message.author_id == self._bot_user_id:

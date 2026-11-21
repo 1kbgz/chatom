@@ -766,6 +766,20 @@ async def test_message_from_api_group_message_excludes_bot_and_sorts_ids(backend
 
 
 @pytest.mark.asyncio
+async def test_message_from_api_mentioned_flag_means_the_bot(backend):
+    data = {"id": 12, "type": "stream", "stream_id": 7, "display_recipient": "general", "sender_id": 2, "content": "@**csp-bot** /help"}
+
+    assert backend._message_from_api({**data, "flags": ["mentioned"]}).mentions == []
+
+    await backend.connect()
+    mentioned = backend._message_from_api({**data, "flags": ["read", "mentioned"]})
+    unmentioned = backend._message_from_api({**data, "flags": ["read"]})
+
+    assert [user.id for user in mentioned.mentions] == [backend._bot_user.id]
+    assert unmentioned.mentions == []
+
+
+@pytest.mark.asyncio
 async def test_message_from_api_tolerates_malformed_private_recipient(backend):
     message = backend._message_from_api({"id": 11, "type": "private", "display_recipient": "oops", "sender_id": 2})
 
@@ -1065,6 +1079,22 @@ async def test_stream_messages_can_include_own_messages_across_all_channels(reco
     assert message.id == "60"
     assert message.author.id == "1"
     assert recording._client.register_args == (["message"], [])
+
+
+@pytest.mark.asyncio
+async def test_stream_messages_reads_flags_from_the_event(recording):
+    await recording.connect()
+    recording._client.event_batches = [[{**stream_event(1, 70), "flags": ["mentioned"]}, stream_event(2, 71)]]
+    stream = recording.stream_messages()
+
+    mentioned = await anext(stream)
+    plain = await anext(stream)
+    await stream.aclose()
+
+    assert mentioned.flags == ["mentioned"]
+    assert [user.id for user in mentioned.mentions] == [recording._bot_user.id]
+    assert plain.flags == []
+    assert plain.mentions == []
 
 
 @pytest.mark.asyncio
