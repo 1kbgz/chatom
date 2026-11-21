@@ -626,7 +626,9 @@ async def test_away_notifications_update_presence() -> None:
 
     await backend._handle_line(":alice!u@h AWAY")
     returned = await backend.get_presence("alice")
-    assert returned is not None and returned.away_message == ""
+    assert returned is not None
+    assert returned.status == PresenceStatus.ONLINE
+    assert returned.away_message == ""
 
 
 @pytest.mark.asyncio

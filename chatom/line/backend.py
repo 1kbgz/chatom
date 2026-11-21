@@ -104,7 +104,7 @@ class LineBackend(BackendBase):
             if cached and cached.name:
                 return cached
             try:
-                data = await asyncio.to_thread(self._request_json, "GET", f"/v2/bot/profile/{quote(str(user_id))}")
+                data = await asyncio.to_thread(self._request_json, "GET", f"/v2/bot/profile/{quote(str(user_id), safe='')}")
             except ConnectionError:
                 return cached
             user = LineUser.from_api(data)
@@ -133,7 +133,7 @@ class LineBackend(BackendBase):
             if cached and cached.name:
                 return cached
             try:
-                data = await asyncio.to_thread(self._request_json, "GET", f"/v2/bot/group/{quote(str(channel_id))}/summary")
+                data = await asyncio.to_thread(self._request_json, "GET", f"/v2/bot/group/{quote(str(channel_id), safe='')}/summary")
             except ConnectionError:
                 return cached
             channel = LineChannel.from_group_summary(data)
@@ -353,7 +353,7 @@ class LineBackend(BackendBase):
             return await super().download_attachment(attachment, message=message, max_bytes=max_bytes)
 
         self._ensure_connected()
-        url = f"{self.config.data_api_url.rstrip('/')}/v2/bot/message/{quote(message_id)}/content"
+        url = f"{self.config.data_api_url.rstrip('/')}/v2/bot/message/{quote(message_id, safe='')}/content"
         headers = {"Authorization": f"Bearer {self.config.channel_access_token_str}"}
         return await self._download_url(url, headers=headers, max_bytes=max_bytes)
 

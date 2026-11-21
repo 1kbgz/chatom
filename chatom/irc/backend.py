@@ -200,9 +200,10 @@ class IRCBackend(BackendBase):
                 await self._messages.put(message)
         elif command == "AWAY" and prefix:
             user = IRCUser.from_prefix(prefix)
+            # AWAY without a message means the user is back.
             self._presence[user.id] = IRCPresence(
                 user=user,
-                status=PresenceStatus.IDLE,
+                status=PresenceStatus.IDLE if params else PresenceStatus.ONLINE,
                 away_message=params[-1] if params else "",
             )
 

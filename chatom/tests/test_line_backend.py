@@ -726,6 +726,16 @@ async def test_download_attachment_uses_data_api_with_bearer_token(urlopen: _Fak
 
 
 @pytest.mark.asyncio
+async def test_download_attachment_escapes_slashes_in_message_id(urlopen: _FakeUrlopen) -> None:
+    urlopen.push(_FakeResponse(b"x"))
+    backend = _backend(data_api_url="https://data.example.test/")
+
+    await backend.download_attachment(Attachment(id="a/../b"))
+
+    assert urlopen.requests[0].full_url == "https://data.example.test/v2/bot/message/a%2F..%2Fb/content"
+
+
+@pytest.mark.asyncio
 async def test_download_attachment_falls_back_to_message_id(urlopen: _FakeUrlopen) -> None:
     urlopen.push(_FakeResponse(b"abc"))
     backend = _backend()
