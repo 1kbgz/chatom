@@ -225,6 +225,13 @@ class TestTextNodes:
         # Just verify it renders without error
         assert result is not None
 
+    def test_channel_mention_keeps_existing_hash_prefix(self):
+        """A name that already carries # is not prefixed again."""
+        assert ChannelMention(channel_id="##chatom-test", display_name="##chatom-test").render(Format.PLAINTEXT) == "##chatom-test"
+        assert ChannelMention(channel_id="#python").render(Format.TELEGRAM_HTML) == "#python"
+        assert ChannelMention(channel_id="456", display_name="general").render(Format.PLAINTEXT) == "#general"
+        assert ">#general</span>" in ChannelMention(channel_id="456", display_name="general").render(Format.HTML)
+
 
 class TestDocument:
     """Tests for Document node."""

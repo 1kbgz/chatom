@@ -507,11 +507,12 @@ class ChannelMention(TextNode):
 
         if fmt == Format.DISCORD_MARKDOWN or fmt == Format.SLACK_MARKDOWN:
             return f"<#{self.channel_id}>"
-        elif fmt == Format.TELEGRAM_HTML:
-            return f"#{self.display_name or self.channel_id}"
-        elif fmt in (Format.HTML,):
-            return f'<span class="channel-mention" data-channel-id="{self.channel_id}">#{self.display_name or self.channel_id}</span>'
-        return f"#{self.display_name or self.channel_id}"
+        label = self.display_name or self.channel_id
+        # IRC channel names already start with # (or ## on libera.chat).
+        tag = label if label.startswith("#") else f"#{label}"
+        if fmt in (Format.HTML,):
+            return f'<span class="channel-mention" data-channel-id="{self.channel_id}">{tag}</span>'
+        return tag
 
 
 class Emoji(TextNode):
