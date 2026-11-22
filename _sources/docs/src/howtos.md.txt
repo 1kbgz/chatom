@@ -6,6 +6,8 @@ Use these guides when you know the result you need.
 ---
 maxdepth: 1
 ---
+Set up a Slack bot <howto-setup-slack>
+Set up a Discord bot <howto-setup-discord>
 Connect and send through a backend <howto-backends>
 Format rich messages <howto-formatting>
 Bridge messages between platforms <howto-bridge>
