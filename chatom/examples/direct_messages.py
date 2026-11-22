@@ -63,7 +63,8 @@ async def main(backend_name: str) -> bool:
         # Method 3: as_dm_to_author() for replying privately to a message
         print("\n📝 Demonstrating as_dm_to_author() pattern:")
         print("   In a real bot, you would use this to respond privately:")
-        print("   await backend.send_dm(**message.as_dm_to_author('Private response'))")
+        print("   dm = message.as_dm_to_author('Private response')")
+        print("   await backend.send_message(dm.channel, dm.content)")
         return True
     finally:
         await backend.disconnect()

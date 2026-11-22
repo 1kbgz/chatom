@@ -134,7 +134,9 @@ def _build_discord(streaming: bool = False):
     token = get_env("DISCORD_TOKEN")
     if not token or not get_env("DISCORD_GUILD_NAME"):
         return None
-    return DiscordBackend(config=DiscordConfig(token=token, intents=["guilds", "guild_messages"]))
+    # message_content is a privileged intent: enable it on the bot's page in the
+    # Developer Portal, or messages that don't mention the bot arrive empty.
+    return DiscordBackend(config=DiscordConfig(token=token, intents=["guilds", "guild_messages", "message_content"]))
 
 
 def _build_symphony(streaming: bool = False):
