@@ -701,6 +701,9 @@ window.runMermaid = runMermaid;</script>
 <span class="c1"># A user link in formatted_body, which is how clients mention someone.</span>
 <span class="n">_MATRIX_TO_USER</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">'https://matrix\.to/#/(@[^"&lt;]+)'</span><span class="p">)</span>
 
+<span class="c1"># An HTML tag or character reference, which marks content as HTML rather than plain text.</span>
+<span class="n">_HTML_MARKUP</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"&lt;/?[A-Za-z][^&gt;]*&gt;|&amp;(?:#\d+|#x[0-9A-Fa-f]+|[A-Za-z]+);"</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="MatrixBackend">
 <a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend">[docs]</a>
@@ -1077,7 +1080,8 @@ window.runMermaid = runMermaid;</script>
             <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"MatrixBackend MVP does not support end-to-end encrypted rooms"</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_message_content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">formatted</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">formatted</span><span class="p">:</span>
+        <span class="c1"># Content with no tags or entities is plain text; as HTML its newlines would collapse.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">formatted</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">_HTML_MARKUP</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
             <span class="k">return</span> <span class="p">{</span><span class="s2">"msgtype"</span><span class="p">:</span> <span class="s2">"m.text"</span><span class="p">,</span> <span class="s2">"body"</span><span class="p">:</span> <span class="n">content</span><span class="p">}</span>
         <span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate_mentions</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span>
