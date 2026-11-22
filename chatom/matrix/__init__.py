@@ -3,6 +3,7 @@
 from .backend import MATRIX_CAPABILITIES, MatrixBackend
 from .channel import MatrixChannel
 from .config import MatrixConfig
+from .e2ee import MatrixE2EEBackend
 from .mention import mention_channel, mention_user
 from .message import MatrixMessage
 from .presence import MatrixPresence, MatrixPresenceState
@@ -14,6 +15,7 @@ __all__ = (
     "MatrixBackend",
     "MatrixChannel",
     "MatrixConfig",
+    "MatrixE2EEBackend",
     "MatrixMessage",
     "MatrixPresence",
     "MatrixPresenceState",

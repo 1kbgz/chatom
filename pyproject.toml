@@ -83,6 +83,7 @@ develop = [
     "csp",
     "discord.py",
     "matrix-nio>=0.25",
+    "matrix-sdk-python>=0.18",
     "pydantic-ai>=0.4",
     "python-telegram-bot",
     "slack-sdk",
@@ -105,6 +106,7 @@ chatom-mcp = "chatom.mcp.cli:main"
 discord = "chatom.discord.backend:DiscordBackend"
 irc = "chatom.irc.backend:IRCBackend"
 matrix = "chatom.matrix.backend:MatrixBackend"
+matrix_e2ee = "chatom.matrix.e2ee:MatrixE2EEBackend"
 slack = "chatom.slack.backend:SlackBackend"
 symphony = "chatom.symphony.backend:SymphonyBackend"
 telegram = "chatom.telegram.backend:TelegramBackend"

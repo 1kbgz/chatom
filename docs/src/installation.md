@@ -23,7 +23,7 @@ pip install python-telegram-bot
 pip install zulip
 ```
 
-IRC uses Python's standard library and requires no additional SDK.
+IRC uses Python's standard library and requires no additional SDK. For end-to-end encrypted Matrix rooms, also install `matrix-sdk-python`.
 
 Importing common Chatom models and formatting does not require those SDKs. Constructing a concrete backend does.
 

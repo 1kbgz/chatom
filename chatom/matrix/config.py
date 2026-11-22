@@ -18,10 +18,11 @@ class MatrixConfig(BackendConfig):
     password: SecretStr = Field(default=SecretStr(""), description="Password used when no access token is supplied.")
     device_id: str = Field(default="", description="Existing Matrix device ID.")
     device_name: str = Field(default="chatom", description="Device name used for password login.")
-    store_path: str = Field(default="", description="matrix-nio store directory.")
+    store_path: str = Field(default="", description="Directory for the client's store, including encryption keys.")
+    recovery_key: SecretStr = Field(default=SecretStr(""), description="Recovery key used to cross-sign a new encrypted device.")
     sync_timeout: int = Field(default=30000, description="Long-poll timeout in milliseconds.")
 
-    @field_validator("access_token", "password", mode="before")
+    @field_validator("access_token", "password", "recovery_key", mode="before")
     @classmethod
     def _load_secret(cls, value):
         """Load credentials from an existing file path."""
@@ -41,3 +42,8 @@ class MatrixConfig(BackendConfig):
     def password_str(self) -> str:
         """Return unwrapped password."""
         return self.password.get_secret_value()
+
+    @property
+    def recovery_key_str(self) -> str:
+        """Return unwrapped recovery key."""
+        return self.recovery_key.get_secret_value()
