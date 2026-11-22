@@ -46,6 +46,29 @@ zulip = ZulipBackend(
 
 Pass secrets from environment variables or a secret manager in production.
 
+## Matrix encrypted rooms
+
+`MatrixBackend` uses matrix-nio and cannot read or post in end-to-end encrypted rooms. `MatrixE2EEBackend` has the same interface and uses [matrix-sdk-python](https://pypi.org/project/matrix-sdk-python/), which wraps matrix-rust-sdk:
+
+```python
+from chatom.matrix import MatrixConfig, MatrixE2EEBackend
+
+matrix = MatrixE2EEBackend(
+    config=MatrixConfig(
+        homeserver="https://matrix.example.org",
+        user_id="@chatom:example.org",
+        password="...",
+        device_id="CHATOM",
+        store_path="/var/lib/chatom/matrix",
+        recovery_key="...",
+    )
+)
+```
+
+`store_path` holds the device's encryption keys and the login session, so keep it on persistent storage. The first connect logs in with the password and saves the session there; later connects restore it and keep the same device. Two processes must not share a store.
+
+Clients that exclude insecure devices only share room keys with devices their owner has cross-signed. If the account already has a cross-signing identity, for example from signing in with Element, `recovery_key` lets a new device restore that identity and sign itself. Matrix presence is not available through this backend.
+
 ## Symphony emoji reactions
 
 Symphony users react to messages with emoji, but no public Agent or Pod REST
