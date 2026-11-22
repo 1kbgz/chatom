@@ -36,6 +36,10 @@ __all__ = ("MATRIX_CAPABILITIES", "MatrixBackend")
 _log = getLogger(__name__)
 
 
+# A user link in formatted_body, which is how clients mention someone.
+_MATRIX_TO_USER = re.compile(r'https://matrix\.to/#/(@[^"<]+)')
+
+
 class MatrixBackend(BackendBase):
     """Unencrypted Matrix client-server backend.
 
@@ -46,7 +50,7 @@ class MatrixBackend(BackendBase):
     name: ClassVar[str] = "matrix"
     display_name: ClassVar[str] = "Matrix"
     format: ClassVar[Format] = Format.HTML
-    mention_pattern: ClassVar[re.Pattern[str] | None] = re.compile(r'https://matrix\.to/#/(@[^"<]+)')
+    mention_pattern: ClassVar[re.Pattern[str] | None] = _MATRIX_TO_USER
 
     user_class: ClassVar[type] = MatrixUser
     channel_class: ClassVar[type] = MatrixChannel
@@ -263,7 +267,7 @@ class MatrixBackend(BackendBase):
         shown = new_content or content
         # Clients that follow intentional mentions list them in m.mentions;
         # older ones only link the user with a matrix.to URL in formatted_body.
-        mentioned = (shown.get("m.mentions") or {}).get("user_ids") or self.mention_pattern.findall(shown.get("formatted_body", ""))
+        mentioned = (shown.get("m.mentions") or {}).get("user_ids") or _MATRIX_TO_USER.findall(shown.get("formatted_body", ""))
         mentions = [MatrixUser(id=user_id, name=user_id, handle=user_id) for user_id in dict.fromkeys(mentioned)]
 
         return MatrixMessage(
