@@ -57,19 +57,22 @@ async def main(backend_name: str) -> bool:
             await asyncio.sleep(0.5)
 
         # Method 2: the as_reply() convenience method
-        reply2 = await backend.send_message(**parent.as_reply("Reply #2 using parent.as_reply() convenience method!"))
+        draft = parent.as_reply("Reply #2 using parent.as_reply() convenience method!")
+        reply2 = await backend.send_message(draft.channel, draft.content, reply_to=draft.reply_to)
         print(f"✅ Sent second reply using as_reply(): {reply2.id}")
 
         await asyncio.sleep(0.5)
 
         # Method 3: continue the thread using as_thread_reply()
-        reply3 = await backend.send_message(**reply2.as_thread_reply("Reply #3 using as_thread_reply() to continue the thread."))
+        draft = reply2.as_thread_reply("Reply #3 using as_thread_reply() to continue the thread.")
+        reply3 = await backend.send_message(draft.channel, draft.content, thread=draft.thread)
         print(f"✅ Sent third reply using as_thread_reply(): {reply3.id}")
 
         await asyncio.sleep(0.5)
 
         # Method 4: quote reply using as_quote_reply()
-        reply4 = await backend.send_message(**parent.as_quote_reply("✅ Thread complete! This is a quoted reply."))
+        draft = parent.as_quote_reply("✅ Thread complete! This is a quoted reply.")
+        reply4 = await backend.send_message(draft.channel, draft.content, reply_to=draft.reply_to)
         print(f"✅ Sent quoted reply using as_quote_reply(): {reply4.id}")
 
         if not supports_threads:

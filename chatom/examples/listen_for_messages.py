@@ -40,15 +40,17 @@ async def _handle(backend, message, channel_id: str) -> None:
         print(f"   (Mentioned: {mentioned_ids})")
 
     if content.startswith("!help"):
-        await backend.send_message(**message.as_reply("Available commands: !help, !ping, !dm, !quote"))
+        await backend.reply_in_thread(message, "Available commands: !help, !ping, !dm, !quote")
         print("   → Sent help reply in thread")
 
     elif content.startswith("!ping"):
-        await backend.send_message(**message.as_quote_reply("🏓 Pong!"))
+        reply = message.as_quote_reply("🏓 Pong!")
+        await backend.send_message(reply.channel, reply.content, reply_to=reply.reply_to)
         print("   → Sent quoted pong reply")
 
     elif content.startswith("!dm") and message.author:
-        await backend.send_dm(**message.as_dm_to_author("👋 You asked me to DM you!"))
+        dm = message.as_dm_to_author("👋 You asked me to DM you!")
+        await backend.send_message(dm.channel, dm.content)
         print(f"   → Sent DM to {author}")
 
 
