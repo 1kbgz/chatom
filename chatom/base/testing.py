@@ -131,7 +131,7 @@ class MockBackendMixin:
         user = self._user_class.model_validate(user_data)
         self._data.mock_users[id] = user
         if hasattr(self, "users") and hasattr(self.users, "add"):
-            self.users.add(user)  # ty: ignore[call-non-callable]
+            self.users.add(user)  # ty: ignore[not-callable]
         return user
 
     def add_mock_channel_data(
@@ -158,7 +158,7 @@ class MockBackendMixin:
         channel = self._channel_class.model_validate(channel_data)
         self._data.mock_channels[id] = channel
         if hasattr(self, "channels") and hasattr(self.channels, "add"):
-            self.channels.add(channel)  # ty: ignore[call-non-callable]
+            self.channels.add(channel)  # ty: ignore[not-callable]
         if id not in self._data.mock_messages:
             self._data.mock_messages[id] = []
         return channel
@@ -241,9 +241,9 @@ class MockBackendMixin:
         """Reset all mock data and tracking stores."""
         self._data.reset()
         if hasattr(self, "users") and hasattr(self.users, "clear"):
-            self.users.clear()  # ty: ignore[call-non-callable]
+            self.users.clear()  # ty: ignore[not-callable]
         if hasattr(self, "channels") and hasattr(self.channels, "clear"):
-            self.channels.clear()  # ty: ignore[call-non-callable]
+            self.channels.clear()  # ty: ignore[not-callable]
 
     @property
     def sent_messages_data(self) -> list[Any]:

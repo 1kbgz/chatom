@@ -14,14 +14,15 @@ class TestEnums:
 
     def test_backend_values(self):
         """Test that backend constants have expected values."""
-        from chatom.enums import DISCORD, SLACK, SYMPHONY
+        from chatom.enums import DISCORD, IRC, MATRIX, SLACK, SYMPHONY, ZULIP
 
         assert DISCORD == "discord"
         # assert EMAIL == "email"
-        # assert IRC == "irc"
-        # assert MATRIX == "matrix"
+        assert IRC == "irc"
+        assert MATRIX == "matrix"
         assert SLACK == "slack"
         assert SYMPHONY == "symphony"
+        assert ZULIP == "zulip"
 
     def test_all_backends_count(self):
         """Test that ALL_BACKENDS has expected count."""
