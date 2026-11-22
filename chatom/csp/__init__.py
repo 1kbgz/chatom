@@ -32,10 +32,12 @@ if HAS_CSP:
     from .adapter import BackendAdapter
     from .interactions import interaction_reader
     from .nodes import message_reader, message_writer
+    from .runner import BackendRunner
 
     __all__ = (
         "HAS_CSP",
         "BackendAdapter",
+        "BackendRunner",
         "interaction_reader",
         "message_reader",
         "message_writer",
