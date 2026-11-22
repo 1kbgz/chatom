@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>One message for four backends &#8212; chatom v0.2.2</title>
+    <title>One message for every backend &#8212; chatom v0.2.2</title>
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/fuma.css?v=ca04d621" />
     <link rel="stylesheet" type="text/css" href="../../_static/fuma-code.css?v=a950e949" />
@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=88c24c6a" />
     <script src="../../_static/documentation_options.js?v=000c92bf"></script>
@@ -21,7 +21,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="../../_static/fuma.js?v=9c325f6c"></script>
     <script src="../../_static/js/custom.js?v=956e5d78"></script>
@@ -94,7 +94,7 @@
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link fd-current" href="#">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -233,13 +233,13 @@
       <a href="tutorials.html">Tutorials</a>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="fd-icon "><path d="m9 18 6-6-6-6"/></svg>
     </li>
-    <li aria-current="page">One message for four backends</li>
+    <li aria-current="page">One message for every backend</li>
   </ol>
 </nav>
       <div class="fd-prose">
-  <section class="tex2jax_ignore mathjax_ignore" id="one-message-for-four-backends">
-<h1>One message for four backends<a class="headerlink" href="#one-message-for-four-backends" title="Link to this heading">¶</a></h1>
-<p>In this tutorial you will build one rich message and render it for Slack, Discord, Symphony, and Telegram. No credentials or network connection are required.</p>
+  <section class="tex2jax_ignore mathjax_ignore" id="one-message-for-every-backend">
+<h1>One message for every backend<a class="headerlink" href="#one-message-for-every-backend" title="Link to this heading">¶</a></h1>
+<p>In this tutorial you will build one rich message and render it for all seven backends: Slack, Discord, Symphony, Telegram, Matrix, Zulip, and IRC. No credentials or network connection are required.</p>
 <section id="build-the-message">
 <h2>Build the message<a class="headerlink" href="#build-the-message" title="Link to this heading">¶</a></h2>
 <p>Chatom’s frontend consists of backend-independent models and formatting nodes. Build a status message with the fluent <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.MessageBuilder</span></code>:</p>
@@ -268,7 +268,7 @@
 <p>Render the same object with each backend name:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
     <span class="n">message</span> <span class="o">=</span> <span class="n">build_status_message</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"slack"</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">,</span> <span class="s2">"symphony"</span><span class="p">,</span> <span class="s2">"telegram"</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"slack"</span><span class="p">,</span> <span class="s2">"discord"</span><span class="p">,</span> <span class="s2">"symphony"</span><span class="p">,</span> <span class="s2">"telegram"</span><span class="p">,</span> <span class="s2">"matrix"</span><span class="p">,</span> <span class="s2">"zulip"</span><span class="p">,</span> <span class="s2">"irc"</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"--- </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2"> ---"</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="n">backend</span><span class="p">))</span>
 </pre></div>
@@ -281,9 +281,23 @@
 <ul class="simple">
 <li><p>Slack uses mrkdwn and a fixed-width table.</p></li>
 <li><p>Discord uses Discord-flavored Markdown and a Markdown table.</p></li>
-<li><p>Symphony uses MessageML elements.</p></li>
+<li><p>Symphony and Matrix use HTML elements.</p></li>
 <li><p>Telegram uses its supported HTML subset and a preformatted table.</p></li>
+<li><p>Zulip uses standard Markdown.</p></li>
+<li><p>IRC falls back to plain text: the heading becomes uppercase, bullets become <code class="docutils literal notranslate"><span class="pre">•</span></code>, and the table becomes fixed-width columns.</p></li>
 </ul>
+<p>IRC is the interesting case. It does not support inline markup, so the renderer does not emit <code class="docutils literal notranslate"><span class="pre">**bold**</span></code> that would show up literally in the channel. It degrades to a plain-text form that still reads correctly:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>DEPLOYMENT STATUS
+The same message object is ready for every configured backend.
+Environment: production
+• API: healthy
+• Workers: healthy
+Service | State
+--------+--------
+API     | healthy
+Workers | healthy
+</pre></div>
+</div>
 <p>No conditional rendering logic appears in the application. <code class="xref py py-meth docutils literal notranslate"><span class="pre">chatom.FormattedMessage.render_for()</span></code> selects the platform format at the boundary.</p>
 </section>
 <section id="send-the-rendered-result">

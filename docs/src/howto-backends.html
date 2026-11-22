@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=88c24c6a" />
     <script src="../../_static/documentation_options.js?v=000c92bf"></script>
@@ -21,7 +21,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="../../_static/fuma.js?v=9c325f6c"></script>
     <script src="../../_static/js/custom.js?v=956e5d78"></script>
@@ -94,7 +94,7 @@
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link" href="tutorial-unified-frontend.html">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -268,19 +268,31 @@
 <h1>Connect and send through a backend<a class="headerlink" href="#connect-and-send-through-a-backend" title="Link to this heading">¶</a></h1>
 <p>Install Chatom and the SDKs for the platforms you use:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>chatom
-pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="w"> </span>discord.py<span class="w"> </span>symphony-bdk-python<span class="w"> </span>python-telegram-bot
+pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="w"> </span>discord.py<span class="w"> </span>matrix-nio<span class="w"> </span>symphony-bdk-python<span class="w"> </span>python-telegram-bot<span class="w"> </span>zulip
 </pre></div>
 </div>
 <section id="create-a-backend">
 <h2>Create a backend<a class="headerlink" href="#create-a-backend" title="Link to this heading">¶</a></h2>
 <p>Each adapter accepts its own configuration model:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiscordBackend</span><span class="p">,</span> <span class="n">DiscordConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.irc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IRCBackend</span><span class="p">,</span> <span class="n">IRCConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">MatrixBackend</span><span class="p">,</span> <span class="n">MatrixConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">SlackBackend</span><span class="p">,</span> <span class="n">SlackConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.symphony</span><span class="w"> </span><span class="kn">import</span> <span class="n">SymphonyBackend</span><span class="p">,</span> <span class="n">SymphonyConfig</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.telegram</span><span class="w"> </span><span class="kn">import</span> <span class="n">TelegramBackend</span><span class="p">,</span> <span class="n">TelegramConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.zulip</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZulipBackend</span><span class="p">,</span> <span class="n">ZulipConfig</span>
 
 <span class="n">slack</span> <span class="o">=</span> <span class="n">SlackBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">SlackConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">"xoxb-..."</span><span class="p">))</span>
 <span class="n">discord</span> <span class="o">=</span> <span class="n">DiscordBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">DiscordConfig</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="s2">"..."</span><span class="p">))</span>
+<span class="n">irc</span> <span class="o">=</span> <span class="n">IRCBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">IRCConfig</span><span class="p">(</span><span class="n">server</span><span class="o">=</span><span class="s2">"irc.example.org"</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="p">[</span><span class="s2">"#operations"</span><span class="p">]))</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">MatrixBackend</span><span class="p">(</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">MatrixConfig</span><span class="p">(</span>
+        <span class="n">homeserver</span><span class="o">=</span><span class="s2">"https://matrix.example.org"</span><span class="p">,</span>
+        <span class="n">user_id</span><span class="o">=</span><span class="s2">"@chatom:example.org"</span><span class="p">,</span>
+        <span class="n">access_token</span><span class="o">=</span><span class="s2">"..."</span><span class="p">,</span>
+        <span class="n">device_id</span><span class="o">=</span><span class="s2">"CHATOM"</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
 <span class="n">symphony</span> <span class="o">=</span> <span class="n">SymphonyBackend</span><span class="p">(</span>
     <span class="n">config</span><span class="o">=</span><span class="n">SymphonyConfig</span><span class="p">(</span>
         <span class="n">host</span><span class="o">=</span><span class="s2">"company.symphony.com"</span><span class="p">,</span>
@@ -289,6 +301,9 @@ pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="
     <span class="p">)</span>
 <span class="p">)</span>
 <span class="n">telegram</span> <span class="o">=</span> <span class="n">TelegramBackend</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">TelegramConfig</span><span class="p">(</span><span class="n">bot_token</span><span class="o">=</span><span class="s2">"..."</span><span class="p">))</span>
+<span class="n">zulip</span> <span class="o">=</span> <span class="n">ZulipBackend</span><span class="p">(</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">ZulipConfig</span><span class="p">(</span><span class="n">site</span><span class="o">=</span><span class="s2">"https://example.zulipchat.com"</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="s2">"chatom@example.com"</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">"..."</span><span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <p>Pass secrets from environment variables or a secret manager in production.</p>

@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../../_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/custom.css?v=88c24c6a" />
     <script src="../../../_static/documentation_options.js?v=000c92bf"></script>
@@ -20,7 +20,7 @@
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../../_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../../_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="../../../_static/fuma.js?v=9c325f6c"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
@@ -498,7 +498,7 @@ window.runMermaid = runMermaid;</script>
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link" href="../../../docs/src/tutorial-unified-frontend.html">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -636,9 +636,12 @@ window.runMermaid = runMermaid;</script>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">"DISCORD_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"IRC_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"MATRIX_CAPABILITIES"</span><span class="p">,</span>
     <span class="s2">"SLACK_CAPABILITIES"</span><span class="p">,</span>
     <span class="s2">"SYMPHONY_CAPABILITIES"</span><span class="p">,</span>
     <span class="s2">"TELEGRAM_CAPABILITIES"</span><span class="p">,</span>
+    <span class="s2">"ZULIP_CAPABILITIES"</span><span class="p">,</span>
     <span class="s2">"BackendCapabilities"</span><span class="p">,</span>
     <span class="s2">"Capability"</span><span class="p">,</span>
 <span class="p">)</span>
@@ -961,6 +964,60 @@ window.runMermaid = runMermaid;</script>
     <span class="n">max_message_length</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span>
     <span class="n">max_attachment_size</span><span class="o">=</span><span class="mi">50</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>  <span class="c1"># 50 MB</span>
     <span class="n">max_attachments</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">IRC_CAPABILITIES</span> <span class="o">=</span> <span class="n">BackendCapabilities</span><span class="p">(</span>
+    <span class="n">capabilities</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">PLAINTEXT</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">USER_MENTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">CHANNEL_MENTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">PRESENCE</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+    <span class="n">max_message_length</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+    <span class="n">max_attachment_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">max_attachments</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">max_embeds</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">max_reactions</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">MATRIX_CAPABILITIES</span> <span class="o">=</span> <span class="n">BackendCapabilities</span><span class="p">(</span>
+    <span class="n">capabilities</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">PLAINTEXT</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">HTML</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">CODE_BLOCKS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">THREADS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">REPLIES</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">USER_MENTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">CHANNEL_MENTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">EDITING</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">DELETING</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">PRESENCE</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">ZULIP_CAPABILITIES</span> <span class="o">=</span> <span class="n">BackendCapabilities</span><span class="p">(</span>
+    <span class="n">capabilities</span><span class="o">=</span><span class="nb">frozenset</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">PLAINTEXT</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">MARKDOWN</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">CODE_BLOCKS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">IMAGES</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">FILES</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">EMOJI_REACTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">CUSTOM_EMOJI</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">THREADS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">USER_MENTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">CHANNEL_MENTIONS</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">EDITING</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">DELETING</span><span class="p">,</span>
+            <span class="n">Capability</span><span class="o">.</span><span class="n">PRESENCE</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">),</span>
+    <span class="n">max_message_length</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 

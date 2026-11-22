@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=88c24c6a" />
     <script src="../../_static/documentation_options.js?v=000c92bf"></script>
@@ -21,7 +21,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="../../_static/fuma.js?v=9c325f6c"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
@@ -501,7 +501,7 @@ window.runMermaid = runMermaid;</script>
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link" href="tutorial-unified-frontend.html">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -644,7 +644,7 @@ window.runMermaid = runMermaid;</script>
 <section id="one-application-vocabulary">
 <h2>One application vocabulary<a class="headerlink" href="#one-application-vocabulary" title="Link to this heading">¶</a></h2>
 <p><code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.User</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Channel</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Message</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Thread</span></code>, and related models describe concepts shared by chat systems. Platform packages subclass those models when an API exposes additional information. Code that only needs the common fields can remain unaware of the concrete backend.</p>
-<p>The same split applies to operations. <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.BackendBase</span></code> defines connection, lookup, history, sending, event streaming, and optional chat operations. Discord, Slack, Symphony, and Telegram backends present that common interface while retaining their platform-specific configuration and models.</p>
+<p>The same split applies to operations. <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.BackendBase</span></code> defines connection, lookup, history, sending, event streaming, and optional chat operations. The Discord, IRC, Matrix, Slack, Symphony, Telegram, and Zulip backends present that common interface while retaining their platform-specific configuration and models.</p>
 <pre  class="mermaid">
         graph LR
     App[Application code] --&gt; Models[Chatom models]
@@ -652,19 +652,23 @@ window.runMermaid = runMermaid;</script>
     Models --&gt; Backend[BackendBase interface]
     Format --&gt; Backend
     Backend --&gt; Discord
+    Backend --&gt; IRC
+    Backend --&gt; Matrix
     Backend --&gt; Slack
     Backend --&gt; Symphony
     Backend --&gt; Telegram
+    Backend --&gt; Zulip
     </pre></section>
 <section id="formatting-at-the-boundary">
 <h2>Formatting at the boundary<a class="headerlink" href="#formatting-at-the-boundary" title="Link to this heading">¶</a></h2>
-<p>Rich text is represented as a tree of nodes such as <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Bold</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Link</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Table</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.UserMention</span></code>. Rendering is delayed until the destination is known. This preserves intent: a bold node can become Slack mrkdwn, Discord Markdown, MessageML, or Telegram HTML without platform conditionals in message-building code.</p>
+<p>Rich text is represented as a tree of nodes such as <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Bold</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Link</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.Table</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.UserMention</span></code>. Rendering is delayed until the destination is known. This preserves intent: a bold node can become Slack mrkdwn, Discord or Zulip Markdown, MessageML, Matrix HTML, or Telegram HTML without platform conditionals in message-building code. On IRC, which has no inline markup at all, the same node degrades to plain text rather than leaking literal asterisks into the channel.</p>
 <p>Interactive components and embeds follow the same rule. A <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.format.Button</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.format.FormattedEmbed</span></code> retains structure and produces a backend payload only when requested.</p>
 </section>
 <section id="capabilities-make-differences-explicit">
 <h2>Capabilities make differences explicit<a class="headerlink" href="#capabilities-make-differences-explicit" title="Link to this heading">¶</a></h2>
 <p>A unified interface does not imply that every platform supports every operation. Each backend exposes <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.BackendCapabilities</span></code>. Integrations use those declarations to omit unsupported tools or choose a fallback.</p>
 <p>Required backend methods cover the minimum lifecycle and messaging contract. Reactions, editing, presence, file transfer, interactions, channel management, and other operations are capability-dependent. Applications can share their main path while handling a platform difference where it matters.</p>
+<p>IRC is the clearest illustration. It declares only plain text, mentions, and presence — no reactions, no file transfer, no search, no threads. Code that queries capabilities before offering those operations works unchanged against IRC and Slack alike; code that assumes every platform behaves like Slack does not.</p>
 </section>
 <section id="conversion-and-bridging">
 <h2>Conversion and bridging<a class="headerlink" href="#conversion-and-bridging" title="Link to this heading">¶</a></h2>

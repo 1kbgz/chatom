@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=88c24c6a" />
     <script src="_static/documentation_options.js?v=000c92bf"></script>
@@ -20,7 +20,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="_static/fuma.js?v=9c325f6c"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
@@ -498,7 +498,7 @@ window.runMermaid = runMermaid;</script>
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link" href="docs/src/tutorial-unified-frontend.html">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -642,12 +642,19 @@ window.runMermaid = runMermaid;</script>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.discord.user.DiscordUser.accent_color">accent_color (chatom.discord.user.DiscordUser attribute)</a>, <a href="docs/src/api-backends.html#id7">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.access_token">access_token (chatom.matrix.config.MatrixConfig attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.access_token_str">access_token_str (chatom.matrix.config.MatrixConfig property)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.account">account (chatom.irc.user.IRCUser attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.account_type">account_type (chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id133">[1]</a>
 </li>
@@ -710,19 +717,31 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.add_mock_channel">add_mock_channel() (chatom.discord.testing.MockDiscordBackend method)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.add_mock_channel">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.add_mock_channel">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.add_mock_channel">(chatom.slack.testing.MockSlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.add_mock_channel">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.add_mock_channel">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.add_mock_message">add_mock_message() (chatom.discord.testing.MockDiscordBackend method)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.add_mock_message">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.add_mock_message">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.add_mock_message">(chatom.slack.testing.MockSlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.add_mock_message">(chatom.symphony.testing.MockSymphonyBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.add_mock_message">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.add_mock_message">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.add_mock_stream">add_mock_stream() (chatom.symphony.testing.MockSymphonyBackend method)</a>
@@ -730,11 +749,17 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.add_mock_user">add_mock_user() (chatom.discord.testing.MockDiscordBackend method)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.add_mock_user">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.add_mock_user">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.add_mock_user">(chatom.slack.testing.MockSlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.add_mock_user">(chatom.symphony.testing.MockSymphonyBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.add_mock_user">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.add_mock_user">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.add_raw">add_raw() (chatom.format.message.FormattedMessage method)</a>
@@ -758,6 +783,10 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.add_reaction">(chatom.telegram.testing.MockTelegramBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.add_reaction">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.add_reaction">(chatom.zulip.testing.MockZulipBackend method)</a>
+</li>
       </ul></li>
       <li><a href="docs/src/api-format.html#chatom.format.components.ComponentContainer.add_row">add_row() (chatom.format.components.ComponentContainer method)</a>
 </li>
@@ -769,10 +798,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.add_select">(chatom.format.message.FormattedMessage method)</a>
 </li>
       </ul></li>
-      <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.add_table">add_table() (chatom.format.message.FormattedMessage method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.add_table">add_table() (chatom.format.message.FormattedMessage method)</a>
+</li>
       <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.add_text">add_text() (chatom.format.message.FormattedMessage method)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.components.Modal.add_text_input">add_text_input() (chatom.format.components.Modal method)</a>
@@ -780,7 +809,11 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEventType.ADDED">ADDED (chatom.base.reaction.ReactionEventType attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.added_reactions">added_reactions (chatom.slack.testing.MockSlackBackend property)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.added_reactions">(chatom.zulip.testing.MockZulipBackend property)</a>
 </li>
+      </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.user.TelegramUser.added_to_attachment_menu">added_to_attachment_menu (chatom.telegram.user.TelegramUser attribute)</a>, <a href="docs/src/api-backends.html#id183">[1]</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.ADMIN_COMMANDS">ADMIN_COMMANDS (chatom.base.authorization.Permission attribute)</a>
@@ -788,6 +821,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.agent_host">agent_host (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id113">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.agent_port">agent_port (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id114">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.aliases">aliases (chatom.matrix.channel.MatrixChannel attribute)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.table.TableCell.alignment">alignment (chatom.format.table.TableCell attribute)</a>, <a href="docs/src/api-format.html#id37">[1]</a>
 </li>
@@ -802,6 +837,10 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.channel.ChannelType.ANNOUNCEMENT">ANNOUNCEMENT (chatom.base.channel.ChannelType attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.api_key">api_key (chatom.zulip.config.ZulipConfig attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.api_key_str">api_key_str (chatom.zulip.config.ZulipConfig property)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend_config.BackendConfig.api_token">api_token (chatom.backend.backend_config.BackendConfig attribute)</a>, <a href="docs/src/api-core.html#id139">[1]</a>
 </li>
@@ -897,12 +936,22 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.user.User.avatar">avatar (chatom.base.user.User attribute)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.avatar_mxc">avatar_mxc (chatom.matrix.channel.MatrixChannel attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.user.MatrixUser.avatar_mxc">(chatom.matrix.user.MatrixUser attribute)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.user.User.avatar_url">avatar_url (chatom.base.user.User attribute)</a>
 
       <ul>
         <li><a href="docs/src/api-core.html#id5">(chatom.base.user.User property)</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.away">away (chatom.irc.user.IRCUser attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.presence.IRCPresence.away_message">away_message (chatom.irc.presence.IRCPresence attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -953,12 +1002,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.bot_private_key_content">bot_private_key_content (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id107">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.bot_private_key_path">bot_private_key_path (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id106">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.bot_private_key_str">bot_private_key_str (chatom.symphony.config.SymphonyConfig property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.discord.config.DiscordConfig.bot_token">bot_token (chatom.discord.config.DiscordConfig attribute)</a>
 
       <ul>
@@ -978,6 +1027,10 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.bot_user_id">bot_user_id (chatom.discord.backend.DiscordBackend property)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.bot_user_id">(chatom.irc.backend.IRCBackend property)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.bot_user_id">(chatom.matrix.backend.MatrixBackend property)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.bot_user_id">(chatom.slack.backend.SlackBackend property)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.bot_user_id">(chatom.symphony.backend.SymphonyBackend property)</a>
@@ -988,6 +1041,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.bot_user_name">bot_user_name (chatom.discord.backend.DiscordBackend property)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.bot_user_name">(chatom.matrix.backend.MatrixBackend property)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.bot_user_name">(chatom.slack.backend.SlackBackend property)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.bot_user_name">(chatom.symphony.backend.SymphonyBackend property)</a>
@@ -1019,12 +1074,18 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.conversion.can_promote">can_promote() (in module chatom.base.conversion)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.canonical_alias">canonical_alias (chatom.matrix.channel.MatrixChannel attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.capabilities">capabilities (chatom.backend.backend.BackendBase attribute)</a>, <a href="docs/src/api-core.html#id147">[1]</a>
 
       <ul>
         <li><a href="docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.capabilities">(chatom.base.capabilities.BackendCapabilities attribute)</a>, <a href="docs/src/api-core.html#id117">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.capabilities">(chatom.discord.backend.DiscordBackend attribute)</a>, <a href="docs/src/api-backends.html#id42">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.capabilities">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.capabilities">(chatom.matrix.backend.MatrixBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.capabilities">(chatom.slack.backend.SlackBackend attribute)</a>, <a href="docs/src/api-backends.html#id97">[1]</a>
 </li>
@@ -1033,6 +1094,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.capabilities">(chatom.symphony.testing.MockSymphonyBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.capabilities">(chatom.telegram.backend.TelegramBackend attribute)</a>, <a href="docs/src/api-backends.html#id201">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.capabilities">(chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability">Capability (class in chatom.base.capabilities)</a>
@@ -1054,11 +1117,17 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.channel_class">channel_class (chatom.discord.backend.DiscordBackend attribute)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.channel_class">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.channel_class">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.channel_class">(chatom.slack.backend.SlackBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.channel_class">(chatom.symphony.backend.SymphonyBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.channel_class">(chatom.telegram.backend.TelegramBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.channel_class">(chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.interaction.Interaction.channel_id">channel_id (chatom.base.interaction.Interaction property)</a>
@@ -1095,6 +1164,8 @@ window.runMermaid = runMermaid;</script>
 
       <ul>
         <li><a href="docs/src/api-core.html#chatom.base.connection.Connection.channels">(chatom.base.connection.Connection attribute)</a>, <a href="docs/src/api-core.html#id138">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.channels">(chatom.irc.config.IRCConfig attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.channel.ChannelType">ChannelType (class in chatom.base.channel)</a>
@@ -1372,6 +1443,118 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li>
+    chatom.irc.backend
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.backend">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.channel
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.channel">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.config
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.mention
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.mention">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.message
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.message">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.presence
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.presence">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.testing
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.testing">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.irc.user
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.user">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.backend
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.backend">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.channel
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.channel">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.config
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.mention
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.mention">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.message
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.message">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.presence
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.presence">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.testing
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.testing">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.matrix.user
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.user">module</a>
+</li>
+      </ul></li>
+      <li>
     chatom.slack.backend
 
       <ul>
@@ -1420,6 +1603,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#module-chatom.slack.testing">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     chatom.slack.user
 
@@ -1441,8 +1626,6 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#module-chatom.symphony.channel">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     chatom.symphony.config
 
@@ -1541,6 +1724,62 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#module-chatom.telegram.user">module</a>
 </li>
       </ul></li>
+      <li>
+    chatom.zulip.backend
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.backend">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.channel
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.channel">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.config
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.mention
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.mention">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.message
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.message">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.presence
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.presence">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.testing
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.testing">module</a>
+</li>
+      </ul></li>
+      <li>
+    chatom.zulip.user
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.user">module</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.AuthorizationPolicy.check_permissions">check_permissions() (chatom.base.authorization.AuthorizationPolicy method)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.text.Bold.child">child (chatom.format.text.Bold attribute)</a>, <a href="docs/src/api-format.html#id0">[1]</a>
@@ -1585,6 +1824,14 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend_registry.BackendRegistry.clear_instances">clear_instances() (chatom.backend.backend_registry.BackendRegistry class method)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.client">client (chatom.zulip.message.ZulipMessage attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.presence.ZulipPresence.client">(chatom.zulip.presence.ZulipPresence attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.client_name">client_name (chatom.zulip.config.ZulipConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.discord.presence.DiscordPresence.client_status">client_status (chatom.discord.presence.DiscordPresence attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.SyncHelper.close">close() (chatom.backend.backend.SyncHelper method)</a>
@@ -1602,6 +1849,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-core.html#chatom.base.embed.Embed.color">color (chatom.base.embed.Embed attribute)</a>, <a href="docs/src/api-core.html#id61">[1]</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.table.TableCell.colspan">colspan (chatom.format.table.TableCell attribute)</a>, <a href="docs/src/api-format.html#id35">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.message.IRCMessage.command">command (chatom.irc.message.IRCMessage attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.config.DiscordConfig.command_prefix">command_prefix (chatom.discord.config.DiscordConfig attribute)</a>, <a href="docs/src/api-backends.html#id3">[1]</a>
 </li>
@@ -1624,6 +1873,10 @@ window.runMermaid = runMermaid;</script>
       <ul>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.config">(chatom.discord.backend.DiscordBackend attribute)</a>, <a href="docs/src/api-backends.html#id43">[1]</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.config">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.config">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.config">(chatom.slack.backend.SlackBackend attribute)</a>, <a href="docs/src/api-backends.html#id98">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.config">(chatom.symphony.backend.SymphonyBackend attribute)</a>, <a href="docs/src/api-backends.html#id164">[1]</a>
@@ -1632,7 +1885,11 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.config">(chatom.telegram.backend.TelegramBackend attribute)</a>, <a href="docs/src/api-backends.html#id202">[1]</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.config">(chatom.zulip.backend.ZulipBackend attribute)</a>
+</li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.config_file">config_file (chatom.zulip.config.ZulipConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.CONFIGURE_BOT">CONFIGURE_BOT (chatom.base.authorization.Permission attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.connect">connect() (chatom.backend.backend.BackendBase method)</a>
@@ -1643,6 +1900,14 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.connect">(chatom.discord.backend.DiscordBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.connect">(chatom.discord.testing.MockDiscordBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.connect">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.connect">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.connect">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.connect">(chatom.matrix.testing.MockMatrixBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.connect">(chatom.slack.backend.SlackBackend method)</a>
 </li>
@@ -1655,6 +1920,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.connect">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.connect">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.connect">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.connect">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.config.TelegramConfig.connect_timeout">connect_timeout (chatom.telegram.config.TelegramConfig attribute)</a>, <a href="docs/src/api-backends.html#id174">[1]</a>
@@ -1779,6 +2048,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyChannel.cross_pod">cross_pod (chatom.symphony.channel.SymphonyChannel attribute)</a>, <a href="docs/src/api-backends.html#id137">[1]</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.presence.MatrixPresence.currently_active">currently_active (chatom.matrix.presence.MatrixPresence attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.presence.ActivityType.CUSTOM">CUSTOM (chatom.base.presence.ActivityType attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.CUSTOM_EMOJI">CUSTOM_EMOJI (chatom.base.capabilities.Capability attribute)</a>
@@ -1817,6 +2088,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.config.SlackConfig.default_channel">default_channel (chatom.slack.config.SlackConfig attribute)</a>, <a href="docs/src/api-backends.html#id48">[1]</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.default_topic">default_topic (chatom.zulip.config.ZulipConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-format.html#chatom.format.components.TextInput.default_value">default_value (chatom.format.components.TextInput attribute)</a>, <a href="docs/src/api-format.html#id86">[1]</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.delete_message">delete_message() (chatom.backend.backend.BackendBase method)</a>
@@ -1825,6 +2098,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.delete_message">(chatom.discord.backend.DiscordBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.delete_message">(chatom.discord.testing.MockDiscordBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.delete_message">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.delete_message">(chatom.matrix.testing.MockMatrixBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.delete_message">(chatom.slack.backend.SlackBackend method)</a>
 </li>
@@ -1838,17 +2115,25 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.delete_message">(chatom.telegram.testing.MockTelegramBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.delete_message">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.delete_message">(chatom.zulip.testing.MockZulipBackend method)</a>
+</li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.DELETE_MESSAGES">DELETE_MESSAGES (chatom.base.authorization.Permission attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.deleted_messages">deleted_messages (chatom.discord.testing.MockDiscordBackend property)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.deleted_messages">(chatom.matrix.testing.MockMatrixBackend property)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.deleted_messages">(chatom.slack.testing.MockSlackBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.deleted_messages">(chatom.symphony.testing.MockSymphonyBackend attribute)</a>, <a href="docs/src/api-backends.html#id171">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.deleted_messages">(chatom.telegram.testing.MockTelegramBackend property)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.deleted_messages">(chatom.zulip.testing.MockZulipBackend property)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.DELETING">DELETING (chatom.base.capabilities.Capability attribute)</a>
@@ -1866,10 +2151,16 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel.description">(chatom.telegram.channel.TelegramChannel attribute)</a>, <a href="docs/src/api-backends.html#id185">[1]</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.channel.ZulipChannel.description">(chatom.zulip.channel.ZulipChannel attribute)</a>
+</li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.presence.DiscordPresence.desktop_status">desktop_status (chatom.discord.presence.DiscordPresence attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.presence.Activity.details">details (chatom.base.presence.Activity attribute)</a>, <a href="docs/src/api-core.html#id97">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.device_id">device_id (chatom.matrix.config.MatrixConfig attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.device_name">device_name (chatom.matrix.config.MatrixConfig attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.diagnostic">diagnostic (chatom.symphony.message.SymphonyMessage attribute)</a>, <a href="docs/src/api-backends.html#id149">[1]</a>
 </li>
@@ -1890,6 +2181,14 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.disconnect">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.disconnect">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.disconnect">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.disconnect">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.disconnect">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.disconnect">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.disconnect">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -1901,6 +2200,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.disconnect">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.disconnect">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.disconnect">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.disconnect">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1946,6 +2249,10 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-format.html#chatom.format.text.UserMention.display_name">(chatom.format.text.UserMention attribute)</a>, <a href="docs/src/api-format.html#id28">[1]</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.display_name">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.display_name">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.display_name">(chatom.slack.backend.SlackBackend attribute)</a>, <a href="docs/src/api-backends.html#id95">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.display_name">(chatom.slack.testing.MockSlackBackend attribute)</a>
@@ -1959,6 +2266,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.display_name">(chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id126">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.display_name">(chatom.telegram.backend.TelegramBackend attribute)</a>, <a href="docs/src/api-backends.html#id199">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.display_name">(chatom.zulip.backend.ZulipBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.display_name">(chatom.zulip.testing.MockZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.channel.Channel.dm_to">dm_to() (chatom.base.channel.Channel class method)</a>
@@ -1976,6 +2287,8 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.download_attachment">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.download_attachment">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -1990,6 +2303,10 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.edit_message">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.edit_message">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.edit_message">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.edit_message">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.edit_message">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -2002,6 +2319,10 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.edit_message">(chatom.telegram.testing.MockTelegramBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.edit_message">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.edit_message">(chatom.zulip.testing.MockZulipBackend method)</a>
+</li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.EDIT_MESSAGES">EDIT_MESSAGES (chatom.base.authorization.Permission attribute)</a>
 </li>
@@ -2012,6 +2333,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.edited_messages">edited_messages (chatom.discord.testing.MockDiscordBackend property)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.edited_messages">(chatom.matrix.testing.MockMatrixBackend property)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.edited_messages">(chatom.symphony.testing.MockSymphonyBackend attribute)</a>, <a href="docs/src/api-backends.html#id170">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.edited_messages">(chatom.telegram.testing.MockTelegramBackend property)</a>
@@ -2020,15 +2343,19 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.EDITING">EDITING (chatom.base.capabilities.Capability attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.user.User.email">email (chatom.base.user.User attribute)</a>, <a href="docs/src/api-core.html#id2">[1]</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.email">(chatom.zulip.config.ZulipConfig attribute)</a>
 </li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.connection.UserRegistry.email_to_user">email_to_user() (chatom.base.connection.UserRegistry method)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.embed.FormattedEmbed.embed">embed (chatom.format.embed.FormattedEmbed attribute)</a>, <a href="docs/src/api-format.html#id53">[1]</a>
 </li>
-      <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.embed">embed() (chatom.format.message.MessageBuilder method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.embed">embed() (chatom.format.message.MessageBuilder method)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.EMBEDS">EMBEDS (chatom.base.capabilities.Capability attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.message.Message.embeds">embeds (chatom.base.message.Message attribute)</a>, <a href="docs/src/api-core.html#id35">[1]</a>
@@ -2037,6 +2364,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.embeds">(chatom.format.message.FormattedMessage attribute)</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.emit_message">emit_message() (chatom.irc.testing.MockIRCBackend method)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.reaction.Reaction.emoji">emoji (chatom.base.reaction.Reaction attribute)</a>, <a href="docs/src/api-core.html#id86">[1]</a>
 
       <ul>
@@ -2048,6 +2377,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.EMOJI_REACTIONS">EMOJI_REACTIONS (chatom.base.capabilities.Capability attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.encrypted">encrypted (chatom.matrix.channel.MatrixChannel attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.mention.ChannelMentionMatch.end">end (chatom.base.mention.ChannelMentionMatch attribute)</a>, <a href="docs/src/api-core.html#id125">[1]</a>
 
@@ -2061,8 +2392,14 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.error_room">error_room (chatom.symphony.config.SymphonyConfig attribute)</a>
 </li>
-      <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEvent.event_type">event_type (chatom.base.reaction.ReactionEvent attribute)</a>, <a href="docs/src/api-core.html#id93">[1]</a>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.event_id">event_id (chatom.matrix.message.MatrixMessage property)</a>
 </li>
+      <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEvent.event_type">event_type (chatom.base.reaction.ReactionEvent attribute)</a>, <a href="docs/src/api-core.html#id93">[1]</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.event_type">(chatom.matrix.message.MatrixMessage attribute)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.EVERYONE_MENTION">EVERYONE_MENTION (chatom.base.capabilities.Capability attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.EXECUTE_COMMANDS">EXECUTE_COMMANDS (chatom.base.authorization.Permission attribute)</a>
@@ -2094,6 +2431,12 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.fetch_channel">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.fetch_channel">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.fetch_channel">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.fetch_channel">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.fetch_channel">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.fetch_channel">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -2105,6 +2448,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.fetch_channel">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.fetch_channel">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.fetch_channel">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.fetch_channel">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.fetch_channel_by_name">fetch_channel_by_name() (chatom.discord.backend.DiscordBackend method)</a>
@@ -2124,6 +2471,12 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.fetch_messages">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.fetch_messages">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.fetch_messages">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.fetch_messages">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.fetch_messages">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.fetch_messages">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -2135,6 +2488,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.fetch_messages">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.fetch_messages">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.fetch_messages">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.fetch_messages">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.fetch_new_messages">fetch_new_messages() (chatom.backend.backend.BackendBase method)</a>
@@ -2158,6 +2515,12 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.fetch_user">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.fetch_user">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.fetch_user">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.fetch_user">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.fetch_user">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.fetch_user">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -2169,6 +2532,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.fetch_user">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.fetch_user">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.fetch_user">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.fetch_user">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.fetch_user_by_name">fetch_user_by_name() (chatom.discord.backend.DiscordBackend method)</a>
@@ -2189,7 +2556,11 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.FILES">FILES (chatom.base.capabilities.Capability attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.slack.message.SlackMessage.files">files (chatom.slack.message.SlackMessage attribute)</a>, <a href="docs/src/api-backends.html#id84">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.channel.ZulipChannel.first_message_id">first_message_id (chatom.zulip.channel.ZulipChannel attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.first_name">first_name (chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id124">[1]</a>
 
@@ -2198,15 +2569,21 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.flags">flags (chatom.discord.message.DiscordMessage attribute)</a>, <a href="docs/src/api-backends.html#id33">[1]</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.flags">(chatom.zulip.message.ZulipMessage attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.embed.Embed.footer">footer (chatom.base.embed.Embed attribute)</a>, <a href="docs/src/api-core.html#id64">[1]</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.format">format (chatom.backend.backend.BackendBase attribute)</a>, <a href="docs/src/api-core.html#id146">[1]</a>
 
       <ul>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.format">(chatom.discord.backend.DiscordBackend attribute)</a>, <a href="docs/src/api-backends.html#id41">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.format">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.format">(chatom.matrix.backend.MatrixBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.format">(chatom.slack.backend.SlackBackend attribute)</a>, <a href="docs/src/api-backends.html#id96">[1]</a>
 </li>
@@ -2215,6 +2592,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.format">(chatom.symphony.testing.MockSymphonyBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.format">(chatom.telegram.backend.TelegramBackend attribute)</a>, <a href="docs/src/api-backends.html#id200">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.format">(chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-format.html#chatom.format.variant.Format">Format (class in chatom.format.variant)</a>
@@ -2261,6 +2640,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.FORWARDING">FORWARDING (chatom.base.capabilities.Capability attribute)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.channel.ZulipChannel.from_api">from_api() (chatom.zulip.channel.ZulipChannel class method)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.from_api_response">from_api_response() (chatom.discord.message.DiscordMessage class method)</a>
 
       <ul>
@@ -2297,6 +2678,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.message.TelegramMessage.from_formatted">(chatom.telegram.message.TelegramMessage class method)</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.from_prefix">from_prefix() (chatom.irc.user.IRCUser class method)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel.from_telegram_chat">from_telegram_chat() (chatom.telegram.channel.TelegramChannel class method)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.message.TelegramMessage.from_telegram_message">from_telegram_message() (chatom.telegram.message.TelegramMessage class method)</a>
@@ -2319,6 +2702,8 @@ window.runMermaid = runMermaid;</script>
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.presence.MatrixPresenceState.generic">generic (chatom.matrix.presence.MatrixPresenceState property)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyChannel.generic_channel_type">generic_channel_type (chatom.symphony.channel.SymphonyChannel property)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.presence.SlackPresence.generic_status">generic_status (chatom.slack.presence.SlackPresence property)</a>
@@ -2344,11 +2729,19 @@ window.runMermaid = runMermaid;</script>
       <ul>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.get_bot_info">(chatom.discord.backend.DiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.get_bot_info">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.get_bot_info">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.get_bot_info">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.get_bot_info">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.get_bot_info">(chatom.symphony.backend.SymphonyBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.get_bot_info">(chatom.telegram.backend.TelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.get_bot_info">(chatom.zulip.backend.ZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.connection.UserRegistry.get_by_email">get_by_email() (chatom.base.connection.UserRegistry method)</a>
@@ -2402,6 +2795,12 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_presence">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.get_presence">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.get_presence">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.get_presence">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.get_presence">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.get_presence">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -2413,6 +2812,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.get_presence">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.get_presence">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.get_presence">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.get_presence">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.get_presence_updates">get_presence_updates() (chatom.discord.testing.MockDiscordBackend method)</a>
@@ -2519,10 +2922,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.message.TelegramMessage.has_protected_content">(chatom.telegram.message.TelegramMessage attribute)</a>, <a href="docs/src/api-backends.html#id196">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.has_rsa_auth">has_rsa_auth (chatom.symphony.config.SymphonyConfig property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.slack.config.SlackConfig.has_socket_mode">has_socket_mode (chatom.slack.config.SlackConfig property)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.has_thread">has_thread (chatom.discord.message.DiscordMessage property)</a>
@@ -2551,7 +2954,21 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.attachment.FormattedImage.height">(chatom.format.attachment.FormattedImage attribute)</a>, <a href="docs/src/api-format.html#id52">[1]</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.homeserver">homeserver (chatom.matrix.config.MatrixConfig attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.user.MatrixUser.homeserver">(chatom.matrix.user.MatrixUser property)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.host">host (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id101">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.message.IRCMessage.hostmask">hostmask (chatom.irc.message.IRCMessage attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.hostmask">(chatom.irc.user.IRCUser property)</a>
+</li>
+      </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.hostname">hostname (chatom.irc.user.IRCUser attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.HTML">HTML (chatom.base.capabilities.Capability attribute)</a>
 
@@ -2625,6 +3042,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.components.Modal.inputs">inputs (chatom.format.components.Modal attribute)</a>, <a href="docs/src/api-format.html#id67">[1]</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.insecure">insecure (chatom.zulip.config.ZulipConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.discord.config.DiscordConfig.intents">intents (chatom.discord.config.DiscordConfig attribute)</a>, <a href="docs/src/api-backends.html#id2">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.interaction">interaction (chatom.discord.message.DiscordMessage attribute)</a>, <a href="docs/src/api-backends.html#id34">[1]</a>
@@ -2643,10 +3062,20 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel.invite_link">invite_link (chatom.telegram.channel.TelegramChannel attribute)</a>, <a href="docs/src/api-backends.html#id186">[1]</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.channel.ZulipChannel.invite_only">invite_only (chatom.zulip.channel.ZulipChannel attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.INVITE_USERS">INVITE_USERS (chatom.base.authorization.Permission attribute)</a>
 </li>
-      <li><a href="docs/src/api-backends.html#chatom.slack.user.SlackUser.is_admin">is_admin (chatom.slack.user.SlackUser attribute)</a>, <a href="docs/src/api-backends.html#id54">[1]</a>
+      <li><a href="docs/src/api-backends.html#chatom.irc.message.IRCMessage.irc_tags">irc_tags (chatom.irc.message.IRCMessage attribute)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.user.ZulipUser.is_active">is_active (chatom.zulip.user.ZulipUser attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.slack.user.SlackUser.is_admin">is_admin (chatom.slack.user.SlackUser attribute)</a>, <a href="docs/src/api-backends.html#id54">[1]</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.user.ZulipUser.is_admin">(chatom.zulip.user.ZulipUser attribute)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.channel.Channel.is_archived">is_archived (chatom.base.channel.Channel attribute)</a>, <a href="docs/src/api-core.html#id8">[1]</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.AuthorizationPolicy.is_authorized">is_authorized() (chatom.base.authorization.AuthorizationPolicy method)</a>
@@ -2679,12 +3108,12 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.is_copy_disabled">is_copy_disabled (chatom.symphony.message.SymphonyMessage attribute)</a>, <a href="docs/src/api-backends.html#id153">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.is_crossposted">is_crossposted (chatom.discord.message.DiscordMessage property)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.reaction.Emoji.is_custom">is_custom (chatom.base.reaction.Emoji attribute)</a>, <a href="docs/src/api-core.html#id84">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-core.html#chatom.base.channel.Channel.is_direct_message">is_direct_message (chatom.base.channel.Channel property)</a>
 
       <ul>
@@ -2740,7 +3169,11 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.slack.channel.SlackChannel.is_org_shared">is_org_shared (chatom.slack.channel.SlackChannel attribute)</a>, <a href="docs/src/api-backends.html#id70">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.user.SlackUser.is_owner">is_owner (chatom.slack.user.SlackUser attribute)</a>, <a href="docs/src/api-backends.html#id55">[1]</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.user.ZulipUser.is_owner">(chatom.zulip.user.ZulipUser attribute)</a>
 </li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.message.Message.is_pinned">is_pinned (chatom.base.message.Message attribute)</a>, <a href="docs/src/api-core.html#id30">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.user.TelegramUser.is_premium">is_premium (chatom.telegram.user.TelegramUser attribute)</a>, <a href="docs/src/api-backends.html#id182">[1]</a>
@@ -2801,6 +3234,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.is_voice_message">is_voice_message (chatom.discord.message.DiscordMessage property)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.channel.ZulipChannel.is_web_public">is_web_public (chatom.zulip.channel.ZulipChannel attribute)</a>
+</li>
       <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.italic">italic() (chatom.format.message.MessageBuilder method)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.text.OrderedList.items">items (chatom.format.text.OrderedList attribute)</a>, <a href="docs/src/api-format.html#id17">[1]</a>
@@ -2819,11 +3254,13 @@ window.runMermaid = runMermaid;</script>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-core.html#chatom.base.message.MessageType.JOIN">JOIN (chatom.base.message.MessageType attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.join_channel">join_channel() (chatom.backend.backend.BackendBase method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.join_room">join_room() (chatom.backend.backend.BackendBase method)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.join_rule">join_rule (chatom.matrix.channel.MatrixChannel attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2836,6 +3273,8 @@ window.runMermaid = runMermaid;</script>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.key_manager_port">key_manager_port (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id118">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.channel.IRCChannel.key_required">key_required (chatom.irc.channel.IRCChannel attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2854,6 +3293,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-format.html#chatom.format.text.CodeBlock.language">language (chatom.format.text.CodeBlock attribute)</a>, <a href="docs/src/api-format.html#id5">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.user.TelegramUser.language_code">language_code (chatom.telegram.user.TelegramUser attribute)</a>, <a href="docs/src/api-backends.html#id181">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.presence.MatrixPresence.last_active_ago">last_active_ago (chatom.matrix.presence.MatrixPresence attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.presence.SlackPresence.last_activity">last_activity (chatom.slack.presence.SlackPresence attribute)</a>, <a href="docs/src/api-backends.html#id93">[1]</a>
 </li>
@@ -2889,10 +3330,10 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.text.Heading.level">level (chatom.format.text.Heading attribute)</a>, <a href="docs/src/api-format.html#id11">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.line_break">line_break() (chatom.format.message.MessageBuilder method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-format.html#chatom.format.components.ButtonStyle.LINK">LINK (chatom.format.components.ButtonStyle attribute)</a>
 </li>
       <li><a href="docs/src/api-integrations.html#chatom.bridge.IdentityMapper.link">link() (chatom.bridge.IdentityMapper method)</a>
@@ -2921,6 +3362,12 @@ window.runMermaid = runMermaid;</script>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.listen">listen() (chatom.backend.backend.BackendBase method)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.listen_for_messages">listen_for_messages() (chatom.irc.backend.IRCBackend method)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.listen_for_messages">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.presence.ActivityType.LISTENING">LISTENING (chatom.base.presence.ActivityType attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.location">location (chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id130">[1]</a>
@@ -2959,6 +3406,12 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.variant.Format.MARKDOWN">(chatom.format.variant.Format attribute)</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.matrix_identifier">matrix_identifier (chatom.matrix.channel.MatrixChannel property)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.presence.MatrixPresence.matrix_presence">matrix_presence (chatom.matrix.presence.MatrixPresence attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.presence.MatrixPresenceState">MatrixPresenceState (class in chatom.matrix.presence)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.max_attachment_size">max_attachment_size (chatom.base.capabilities.BackendCapabilities attribute)</a>, <a href="docs/src/api-core.html#id119">[1]</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.max_attachments">max_attachments (chatom.base.capabilities.BackendCapabilities attribute)</a>, <a href="docs/src/api-core.html#id120">[1]</a>
@@ -2987,6 +3440,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-core.html#chatom.base.organization.Organization.member_count">(chatom.base.organization.Organization attribute)</a>, <a href="docs/src/api-core.html#id14">[1]</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.user.MatrixUser.membership">membership (chatom.matrix.user.MatrixUser attribute)</a>
+</li>
       <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.mention">mention() (chatom.format.message.FormattedMessage method)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.mention_channel">mention_channel() (chatom.backend.backend.BackendBase method)</a>
@@ -3006,9 +3461,15 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.mention.mention_channel">(in module chatom.discord.mention)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.mention.mention_channel">(in module chatom.irc.mention)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.mention.mention_channel">(in module chatom.matrix.mention)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.mention.mention_channel">(in module chatom.slack.mention)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.mention.mention_channel">(in module chatom.telegram.mention)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.mention.mention_channel">(in module chatom.zulip.mention)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.mention_channel_all">mention_channel_all() (chatom.backend.backend.BackendBase method)</a>
@@ -3050,9 +3511,13 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-core.html#chatom.base.user.User.mention_name">mention_name (chatom.base.user.User property)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.user.MatrixUser.mention_name">(chatom.matrix.user.MatrixUser property)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.user.SlackUser.mention_name">(chatom.slack.user.SlackUser property)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.mention_name">(chatom.symphony.user.SymphonyUser property)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.user.ZulipUser.mention_name">(chatom.zulip.user.ZulipUser property)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.mention_pattern">mention_pattern (chatom.backend.backend.BackendBase attribute)</a>
@@ -3060,9 +3525,13 @@ window.runMermaid = runMermaid;</script>
       <ul>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.mention_pattern">(chatom.discord.backend.DiscordBackend attribute)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.mention_pattern">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.mention_pattern">(chatom.slack.backend.SlackBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.mention_pattern">(chatom.symphony.backend.SymphonyBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.mention_pattern">(chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.mention_roles">mention_roles (chatom.discord.message.DiscordMessage attribute)</a>, <a href="docs/src/api-backends.html#id28">[1]</a>
@@ -3084,11 +3553,17 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.mention.mention_user">(in module chatom.discord.mention)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.mention.mention_user">(in module chatom.irc.mention)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.mention.mention_user">(in module chatom.matrix.mention)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.mention.mention_user">(in module chatom.slack.mention)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.mention.mention_user">(in module chatom.symphony.mention)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.mention.mention_user">(in module chatom.telegram.mention)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.mention.mention_user">(in module chatom.zulip.mention)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.mention.mention_user_by_email">mention_user_by_email() (in module chatom.symphony.mention)</a>
@@ -3116,6 +3591,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEvent.message">message (chatom.base.reaction.ReactionEvent attribute)</a>, <a href="docs/src/api-core.html#id90">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.message_class">message_class (chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.thread.Thread.message_count">message_count (chatom.base.thread.Thread attribute)</a>, <a href="docs/src/api-core.html#id18">[1]</a>
 </li>
@@ -3147,8 +3624,6 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-integrations.html#chatom.bridge.MessageBridge">MessageBridge (class in chatom.bridge)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder">MessageBuilder (class in chatom.format.message)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.message.MessageType">MessageType (class in chatom.base.message)</a>
@@ -3163,6 +3638,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.message.FormattedMessage.metadata">(chatom.format.message.FormattedMessage attribute)</a>, <a href="docs/src/api-format.html#id89">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.metadata">metadata() (chatom.format.message.MessageBuilder method)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyStreamType.MIM">MIM (chatom.symphony.channel.SymphonyStreamType attribute)</a>
@@ -3206,6 +3683,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.Config">MockSymphonyBackend.Config (class in chatom.symphony.testing)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.interaction.InteractionType.MODAL_SUBMIT">MODAL_SUBMIT (chatom.base.interaction.InteractionType attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.channel.IRCChannel.modes">modes (chatom.irc.channel.IRCChannel attribute)</a>
 </li>
       <li>
     module
@@ -3287,6 +3766,38 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-integrations.html#module-chatom.handlers">chatom.handlers</a>
 </li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.backend">chatom.irc.backend</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.channel">chatom.irc.channel</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.config">chatom.irc.config</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.mention">chatom.irc.mention</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.message">chatom.irc.message</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.presence">chatom.irc.presence</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.testing">chatom.irc.testing</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.irc.user">chatom.irc.user</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.backend">chatom.matrix.backend</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.channel">chatom.matrix.channel</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.config">chatom.matrix.config</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.mention">chatom.matrix.mention</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.message">chatom.matrix.message</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.presence">chatom.matrix.presence</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.testing">chatom.matrix.testing</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.matrix.user">chatom.matrix.user</a>
+</li>
         <li><a href="docs/src/api-backends.html#module-chatom.slack.backend">chatom.slack.backend</a>
 </li>
         <li><a href="docs/src/api-backends.html#module-chatom.slack.channel">chatom.slack.channel</a>
@@ -3335,7 +3846,27 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#module-chatom.telegram.user">chatom.telegram.user</a>
 </li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.backend">chatom.zulip.backend</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.channel">chatom.zulip.channel</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.config">chatom.zulip.config</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.mention">chatom.zulip.mention</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.message">chatom.zulip.message</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.presence">chatom.zulip.presence</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.testing">chatom.zulip.testing</a>
+</li>
+        <li><a href="docs/src/api-backends.html#module-chatom.zulip.user">chatom.zulip.user</a>
+</li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.message.IRCMessage.msgid">msgid (chatom.irc.message.IRCMessage property)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.msgtype">msgtype (chatom.matrix.message.MatrixMessage attribute)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.multiplier">multiplier (chatom.symphony.config.SymphonyConfig attribute)</a>
 </li>
   </ul></td>
@@ -3369,6 +3900,10 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-format.html#chatom.format.text.Emoji.name">(chatom.format.text.Emoji attribute)</a>, <a href="docs/src/api-format.html#id7">[1]</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.name">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.name">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.name">(chatom.slack.backend.SlackBackend attribute)</a>, <a href="docs/src/api-backends.html#id94">[1]</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.name">(chatom.slack.testing.MockSlackBackend attribute)</a>
@@ -3379,6 +3914,10 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.name">(chatom.telegram.backend.TelegramBackend attribute)</a>, <a href="docs/src/api-backends.html#id198">[1]</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.name">(chatom.zulip.backend.ZulipBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.name">(chatom.zulip.testing.MockZulipBackend attribute)</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -3386,6 +3925,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.connection.UserRegistry.name_to_user">name_to_user() (chatom.base.connection.UserRegistry method)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.nickname">nickname (chatom.irc.config.IRCConfig attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.nickname">(chatom.irc.user.IRCUser attribute)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.node">node() (chatom.format.message.MessageBuilder method)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.nonce">nonce (chatom.discord.message.DiscordMessage attribute)</a>, <a href="docs/src/api-backends.html#id30">[1]</a>
@@ -3462,6 +4007,18 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.mention.parse_mentions">parse_mentions() (in module chatom.base.mention)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.password">password (chatom.irc.config.IRCConfig attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.password">(chatom.matrix.config.MatrixConfig attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.password_str">password_str (chatom.irc.config.IRCConfig property)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.password_str">(chatom.matrix.config.MatrixConfig property)</a>
+</li>
+      </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.slack.message.SlackMessage.permalink">permalink (chatom.slack.message.SlackMessage property)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission">Permission (class in chatom.base.authorization)</a>
@@ -3496,8 +4053,12 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.config.TelegramConfig.pool_timeout">pool_timeout (chatom.telegram.config.TelegramConfig attribute)</a>, <a href="docs/src/api-backends.html#id177">[1]</a>
 </li>
-      <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.port">port (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id102">[1]</a>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.port">port (chatom.irc.config.IRCConfig attribute)</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.port">(chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id102">[1]</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.discord.channel.DiscordChannel.position">position (chatom.discord.channel.DiscordChannel attribute)</a>, <a href="docs/src/api-backends.html#id10">[1]</a>
@@ -3507,6 +4068,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyStreamType.POST">POST (chatom.symphony.channel.SymphonyStreamType attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.user.MatrixUser.power_level">power_level (chatom.matrix.user.MatrixUser attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.guild.DiscordGuild.preferred_locale">preferred_locale (chatom.discord.guild.DiscordGuild attribute)</a>, <a href="docs/src/api-backends.html#id19">[1]</a>
 </li>
@@ -3523,11 +4086,17 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.presence_class">presence_class (chatom.discord.backend.DiscordBackend attribute)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.presence_class">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.presence_class">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.presence_class">(chatom.slack.backend.SlackBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.presence_class">(chatom.symphony.backend.SymphonyBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.presence_class">(chatom.telegram.backend.TelegramBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.presence_class">(chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.presence_url">presence_url (chatom.symphony.config.SymphonyConfig attribute)</a>
@@ -3567,6 +4136,10 @@ window.runMermaid = runMermaid;</script>
 
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.queue_message">queue_message() (chatom.zulip.testing.MockZulipBackend method)</a>
+</li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-format.html#chatom.format.message.MessageBuilder.quote">quote() (chatom.format.message.MessageBuilder method)</a>
 </li>
@@ -3608,7 +4181,11 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.user.SlackUser.real_name">real_name (chatom.slack.user.SlackUser attribute)</a>, <a href="docs/src/api-backends.html#id51">[1]</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.realname">realname (chatom.irc.config.IRCConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.AuthorizationResult.reason">reason (chatom.base.authorization.AuthorizationResult attribute)</a>, <a href="docs/src/api-core.html#id132">[1]</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.recipient_id">recipient_id (chatom.zulip.message.ZulipMessage attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.message.Message.reference">reference (chatom.base.message.Message attribute)</a>, <a href="docs/src/api-core.html#id37">[1]</a>
 </li>
@@ -3632,6 +4209,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.register_room">register_room() (chatom.symphony.config.SymphonyRoomMapper method)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.relates_to">relates_to (chatom.matrix.message.MatrixMessage attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.SimpleAuthorizationPolicy.remove_admin">remove_admin() (chatom.base.authorization.SimpleAuthorizationPolicy method)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.remove_reaction">remove_reaction() (chatom.backend.backend.BackendBase method)</a>
@@ -3652,6 +4231,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.remove_reaction">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.remove_reaction">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.remove_reaction">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.remove_reaction">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEventType.REMOVED">REMOVED (chatom.base.reaction.ReactionEventType attribute)</a>
@@ -3740,6 +4323,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.message.SymphonyMessage.rendered_content">rendered_content (chatom.symphony.message.SymphonyMessage property)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.replacement_event_id">replacement_event_id (chatom.matrix.message.MatrixMessage attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.REPLIES">REPLIES (chatom.base.capabilities.Capability attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.message.MessageType.REPLY">REPLY (chatom.base.message.MessageType attribute)</a>
@@ -3790,17 +4375,23 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.RICH_TEXT">RICH_TEXT (chatom.base.capabilities.Capability attribute)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.user.ZulipUser.role">role (chatom.zulip.user.ZulipUser attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.ROLE_MENTIONS">ROLE_MENTIONS (chatom.base.capabilities.Capability attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.roles">roles (chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id134">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyStreamType.ROOM">ROOM (chatom.symphony.channel.SymphonyStreamType attribute)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.room_id">room_id (chatom.matrix.message.MatrixMessage property)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.room_info_url">room_info_url (chatom.symphony.config.SymphonyConfig attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.room_members_url">room_members_url (chatom.symphony.config.SymphonyConfig attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.room_search_url">room_search_url (chatom.symphony.config.SymphonyConfig attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.channel.MatrixChannel.room_version">room_version (chatom.matrix.channel.MatrixChannel attribute)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.components.ComponentContainer.rows">rows (chatom.format.components.ComponentContainer attribute)</a>, <a href="docs/src/api-format.html#id62">[1]</a>
 
@@ -3845,6 +4436,14 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.send_message">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.send_message">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.send_message">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.send_message">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.send_message">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.send_message">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.send_message">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -3857,16 +4456,26 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.send_message">(chatom.telegram.testing.MockTelegramBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.send_message">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.send_message">(chatom.zulip.testing.MockZulipBackend method)</a>
+</li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.Permission.SEND_MESSAGES">SEND_MESSAGES (chatom.base.authorization.Permission attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.send_notice">send_notice() (chatom.backend.backend.BackendBase method)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.sender_email">sender_email (chatom.zulip.message.ZulipMessage attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.message.SlackMessage.sender_id">sender_id (chatom.slack.message.SlackMessage property)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.sent_messages">sent_messages (chatom.discord.testing.MockDiscordBackend property)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.sent_messages">(chatom.irc.testing.MockIRCBackend property)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.sent_messages">(chatom.matrix.testing.MockMatrixBackend property)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.sent_messages">(chatom.slack.testing.MockSlackBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#id99">(chatom.slack.testing.MockSlackBackend property)</a>
@@ -3875,7 +4484,11 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.sent_messages">(chatom.telegram.testing.MockTelegramBackend property)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.sent_messages">(chatom.zulip.testing.MockZulipBackend property)</a>
+</li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.server">server (chatom.irc.config.IRCConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.session_auth_host">session_auth_host (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id115">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.session_auth_port">session_auth_port (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id116">[1]</a>
@@ -3887,6 +4500,10 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.set_mock_presence">set_mock_presence() (chatom.discord.testing.MockDiscordBackend method)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.testing.MockIRCBackend.set_mock_presence">(chatom.irc.testing.MockIRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.set_mock_presence">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.set_mock_presence">(chatom.slack.testing.MockSlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.testing.MockSymphonyBackend.set_mock_presence">(chatom.symphony.testing.MockSymphonyBackend method)</a>
@@ -3901,6 +4518,12 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.discord.testing.MockDiscordBackend.set_presence">(chatom.discord.testing.MockDiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.set_presence">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.set_presence">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.set_presence">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.set_presence">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.slack.testing.MockSlackBackend.set_presence">(chatom.slack.testing.MockSlackBackend method)</a>
@@ -3912,6 +4535,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.set_presence">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.testing.MockTelegramBackend.set_presence">(chatom.telegram.testing.MockTelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.set_presence">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.set_presence">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyRoomMapper.set_stream_service">set_stream_service() (chatom.symphony.config.SymphonyRoomMapper method)</a>
@@ -3928,9 +4555,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.config.SlackConfig.signing_secret">signing_secret (chatom.slack.config.SlackConfig attribute)</a>, <a href="docs/src/api-backends.html#id46">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.slack.config.SlackConfig.signing_secret_str">signing_secret_str (chatom.slack.config.SlackConfig property)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.authorization.SimpleAuthorizationPolicy">SimpleAuthorizationPolicy (class in chatom.base.authorization)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.config.ZulipConfig.site">site (chatom.zulip.config.ZulipConfig attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.attachment.Attachment.size">size (chatom.base.attachment.Attachment attribute)</a>, <a href="docs/src/api-core.html#id51">[1]</a>
 
@@ -3938,8 +4569,6 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.attachment.FormattedAttachment.size">(chatom.format.attachment.FormattedAttachment attribute)</a>, <a href="docs/src/api-format.html#id43">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.slack.channel.SlackChannel.slack_channel_type">slack_channel_type (chatom.slack.channel.SlackChannel property)</a>
 </li>
       <li><a href="docs/src/api-format.html#chatom.format.variant.Format.SLACK_MARKDOWN">SLACK_MARKDOWN (chatom.format.variant.Format attribute)</a>
@@ -3988,6 +4617,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.stop_presence_heartbeat">stop_presence_heartbeat() (chatom.backend.backend.BackendBase method)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.store_path">store_path (chatom.matrix.config.MatrixConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyChannel.stream_id">stream_id (chatom.symphony.channel.SymphonyChannel property)</a>
 
       <ul>
@@ -4001,11 +4632,21 @@ window.runMermaid = runMermaid;</script>
       <ul>
         <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.stream_messages">(chatom.discord.backend.DiscordBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.stream_messages">(chatom.irc.backend.IRCBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.stream_messages">(chatom.matrix.backend.MatrixBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.testing.MockMatrixBackend.stream_messages">(chatom.matrix.testing.MockMatrixBackend method)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.stream_messages">(chatom.slack.backend.SlackBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.stream_messages">(chatom.symphony.backend.SymphonyBackend method)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.stream_messages">(chatom.telegram.backend.TelegramBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.stream_messages">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.testing.MockZulipBackend.stream_messages">(chatom.zulip.testing.MockZulipBackend method)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.channel.SymphonyChannel.stream_type">stream_type (chatom.symphony.channel.SymphonyChannel attribute)</a>, <a href="docs/src/api-backends.html#id135">[1]</a>
@@ -4020,6 +4661,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-format.html#chatom.format.components.TextInput.style">(chatom.format.components.TextInput attribute)</a>, <a href="docs/src/api-format.html#id82">[1]</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.subject">subject (chatom.zulip.message.ZulipMessage property)</a>
+</li>
       <li><a href="docs/src/api-format.html#chatom.format.components.Modal.submit_label">submit_label (chatom.format.components.Modal attribute)</a>, <a href="docs/src/api-format.html#id65">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.message.SlackMessage.subscribed">subscribed (chatom.slack.message.SlackMessage attribute)</a>, <a href="docs/src/api-backends.html#id82">[1]</a>
@@ -4033,6 +4676,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.supports_all">supports_all() (chatom.base.capabilities.BackendCapabilities method)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.BackendCapabilities.supports_any">supports_any() (chatom.base.capabilities.BackendCapabilities method)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.supports_server_history">supports_server_history (chatom.irc.backend.IRCBackend property)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.discord.message.DiscordMessage.suppresses_embeds">suppresses_embeds (chatom.discord.message.DiscordMessage property)</a>
 </li>
@@ -4056,6 +4701,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.BackendBase.sync">sync (chatom.backend.backend.BackendBase property)</a>
 </li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.sync_timeout">sync_timeout (chatom.matrix.config.MatrixConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.backend.backend.SyncHelper">SyncHelper (class in chatom.backend.backend)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.message.MessageType.SYSTEM">SYSTEM (chatom.base.message.MessageType attribute)</a>
@@ -4075,6 +4722,8 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-core.html#chatom.base.capabilities.Capability.TABLES">TABLES (chatom.base.capabilities.Capability attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.message.Message.tags">tags (chatom.base.message.Message property)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.message.IRCMessage.target">target (chatom.irc.message.IRCMessage attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.slack.message.SlackMessage.team">team (chatom.slack.message.SlackMessage attribute)</a>
 
@@ -4130,8 +4779,6 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.telegram.config.TelegramConfig.timeout">(chatom.telegram.config.TelegramConfig attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-core.html#chatom.base.embed.Embed.timestamp">timestamp (chatom.base.embed.Embed attribute)</a>, <a href="docs/src/api-core.html#id62">[1]</a>
 
       <ul>
@@ -4140,6 +4787,10 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.symphony.presence.SymphonyPresence.timestamp">(chatom.symphony.presence.SymphonyPresence attribute)</a>, <a href="docs/src/api-backends.html#id159">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.user.ZulipUser.timezone">timezone (chatom.zulip.user.ZulipUser attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.embed.Embed.title">title (chatom.base.embed.Embed attribute)</a>, <a href="docs/src/api-core.html#id58">[1]</a>
 
       <ul>
@@ -4154,6 +4805,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.title">(chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id129">[1]</a>
 </li>
       </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.tls_verify">tls_verify (chatom.irc.config.IRCConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.to_bdk_config">to_bdk_config() (chatom.symphony.config.SymphonyConfig method)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.base.BaseModel.to_dict">to_dict() (chatom.base.base.BaseModel method)</a>
@@ -4181,6 +4834,12 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.discord.config.DiscordConfig.token">token (chatom.discord.config.DiscordConfig attribute)</a>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.channel.Channel.topic">topic (chatom.base.channel.Channel attribute)</a>, <a href="docs/src/api-core.html#id6">[1]</a>
+
+      <ul>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.topic">(chatom.zulip.message.ZulipMessage attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="docs/src/api-backends.html#chatom.matrix.message.MatrixMessage.transaction_id">transaction_id (chatom.matrix.message.MatrixMessage attribute)</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.trust_store_path">trust_store_path (chatom.symphony.config.SymphonyConfig attribute)</a>, <a href="docs/src/api-backends.html#id119">[1]</a>
 </li>
@@ -4233,6 +4892,8 @@ window.runMermaid = runMermaid;</script>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.upload_file">(chatom.telegram.backend.TelegramBackend method)</a>
 </li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.upload_file">(chatom.zulip.backend.ZulipBackend method)</a>
+</li>
       </ul></li>
       <li><a href="docs/src/api-core.html#chatom.base.attachment.Attachment.url">url (chatom.base.attachment.Attachment attribute)</a>, <a href="docs/src/api-core.html#id48">[1]</a>
 
@@ -4260,8 +4921,8 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.use_internal_reactions">use_internal_reactions (chatom.symphony.config.SymphonyConfig attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.use_tls">use_tls (chatom.irc.config.IRCConfig attribute)</a>
+</li>
       <li><a href="docs/src/api-core.html#chatom.base.interaction.Interaction.user">user (chatom.base.interaction.Interaction attribute)</a>, <a href="docs/src/api-core.html#id109">[1]</a>
 
       <ul>
@@ -4272,14 +4933,22 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEvent.user">(chatom.base.reaction.ReactionEvent attribute)</a>, <a href="docs/src/api-core.html#id91">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.user_class">user_class (chatom.discord.backend.DiscordBackend attribute)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.backend.IRCBackend.user_class">(chatom.irc.backend.IRCBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.backend.MatrixBackend.user_class">(chatom.matrix.backend.MatrixBackend attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.slack.backend.SlackBackend.user_class">(chatom.slack.backend.SlackBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.symphony.backend.SymphonyBackend.user_class">(chatom.symphony.backend.SymphonyBackend attribute)</a>
 </li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.backend.TelegramBackend.user_class">(chatom.telegram.backend.TelegramBackend attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.zulip.backend.ZulipBackend.user_class">(chatom.zulip.backend.ZulipBackend attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.symphony.config.SymphonyConfig.user_detail_url">user_detail_url (chatom.symphony.config.SymphonyConfig attribute)</a>
@@ -4292,6 +4961,8 @@ window.runMermaid = runMermaid;</script>
         <li><a href="docs/src/api-core.html#chatom.base.reaction.ReactionEvent.user_id">(chatom.base.reaction.ReactionEvent property)</a>
 </li>
         <li><a href="docs/src/api-format.html#chatom.format.text.UserMention.user_id">(chatom.format.text.UserMention attribute)</a>, <a href="docs/src/api-format.html#id27">[1]</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.matrix.config.MatrixConfig.user_id">(chatom.matrix.config.MatrixConfig attribute)</a>
 </li>
       </ul></li>
       <li><a href="docs/src/api-backends.html#chatom.discord.channel.DiscordChannel.user_limit">user_limit (chatom.discord.channel.DiscordChannel attribute)</a>, <a href="docs/src/api-backends.html#id15">[1]</a>
@@ -4308,9 +4979,13 @@ window.runMermaid = runMermaid;</script>
 </li>
       <li><a href="docs/src/api-core.html#chatom.base.connection.UserRegistry.user_to_name">user_to_name() (chatom.base.connection.UserRegistry method)</a>
 </li>
-      <li><a href="docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel.username">username (chatom.telegram.channel.TelegramChannel attribute)</a>
+      <li><a href="docs/src/api-backends.html#chatom.irc.config.IRCConfig.username">username (chatom.irc.config.IRCConfig attribute)</a>
 
       <ul>
+        <li><a href="docs/src/api-backends.html#chatom.irc.user.IRCUser.username">(chatom.irc.user.IRCUser attribute)</a>
+</li>
+        <li><a href="docs/src/api-backends.html#chatom.telegram.channel.TelegramChannel.username">(chatom.telegram.channel.TelegramChannel attribute)</a>
+</li>
         <li><a href="docs/src/api-backends.html#chatom.telegram.user.TelegramUser.username">(chatom.telegram.user.TelegramUser attribute)</a>, <a href="docs/src/api-backends.html#id180">[1]</a>
 </li>
       </ul></li>
@@ -4385,6 +5060,20 @@ window.runMermaid = runMermaid;</script>
       <li><a href="docs/src/api-backends.html#chatom.symphony.user.SymphonyUser.work_phone">work_phone (chatom.symphony.user.SymphonyUser attribute)</a>, <a href="docs/src/api-backends.html#id131">[1]</a>
 </li>
       <li><a href="docs/src/api-backends.html#chatom.telegram.config.TelegramConfig.write_timeout">write_timeout (chatom.telegram.config.TelegramConfig attribute)</a>, <a href="docs/src/api-backends.html#id176">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.message.ZulipMessage.zulip_reactions">zulip_reactions (chatom.zulip.message.ZulipMessage attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.presence.ZulipPresence.zulip_status">zulip_status (chatom.zulip.presence.ZulipPresence attribute)</a>
+</li>
+      <li><a href="docs/src/api-backends.html#chatom.zulip.presence.ZulipPresenceStatus">ZulipPresenceStatus (class in chatom.zulip.presence)</a>
 </li>
   </ul></td>
 </tr></table>

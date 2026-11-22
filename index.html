@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="_static/styles/custom.css?v=88c24c6a" />
     <script src="_static/documentation_options.js?v=000c92bf"></script>
@@ -21,7 +21,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="_static/fuma.js?v=9c325f6c"></script>
     <script src="_static/js/custom.js?v=956e5d78"></script>
@@ -93,7 +93,7 @@
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link" href="docs/src/tutorial-unified-frontend.html">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -215,7 +215,7 @@
     <a href="#install">Install</a>
   </li>
   <li class="fd-toc-item" data-depth="1">
-    <a href="#one-message-four-backends">One message, four backends</a>
+    <a href="#one-message-every-backend">One message, every backend</a>
   </li>
   <li class="fd-toc-item" data-depth="1">
     <a href="#what-the-frontend-covers">What the frontend covers</a>
@@ -241,12 +241,12 @@
 </p>
 <section class="tex2jax_ignore mathjax_ignore" id="chatom">
 <h1>Chatom<a class="headerlink" href="#chatom" title="Link to this heading">¶</a></h1>
-<p>A unified Python frontend for Discord, Slack, Symphony, Telegram, and other chat backends.</p>
+<p>A unified Python frontend for Discord, IRC, Matrix, Slack, Symphony, Telegram, and Zulip.</p>
 <p><a class="reference external" href="https://github.com/1kbgz/chatom/actions/workflows/build.yaml"><img alt="Build Status" src="https://github.com/1kbgz/chatom/actions/workflows/build.yaml/badge.svg?branch=main&amp;event=push" /></a>
 <a class="reference external" href="https://codecov.io/gh/1kbgz/chatom"><img alt="codecov" src="https://codecov.io/gh/1kbgz/chatom/branch/main/graph/badge.svg?token=IubQKhtRoK" /></a>
 <a class="reference external" href="https://github.com/1kbgz/chatom"><img alt="License" src="https://img.shields.io/github/license/1kbgz/chatom" /></a>
 <a class="reference external" href="https://pypi.python.org/pypi/chatom"><img alt="PyPI" src="https://img.shields.io/pypi/v/chatom.svg" /></a></p>
-<p>Chatom lets application code use one set of users, channels, messages, formatting nodes, interactions, and backend operations. Platform adapters translate that frontend to Discord, Slack, Symphony, or Telegram at the edge. The same models also feed cross-platform bridges, pydantic-ai tools, MCP servers, and CSP graphs.</p>
+<p>Chatom lets application code use one set of users, channels, messages, formatting nodes, interactions, and backend operations. Platform adapters translate that frontend to Discord, IRC, Matrix, Slack, Symphony, Telegram, or Zulip at the edge. The same models also feed cross-platform bridges, pydantic-ai tools, MCP servers, and CSP graphs.</p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h2>
 <p>Chatom requires Python 3.11 or newer.</p>
@@ -254,13 +254,13 @@
 </pre></div>
 </div>
 <p>Install the SDKs for the backends you use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="w"> </span>discord.py<span class="w"> </span>symphony-bdk-python<span class="w"> </span>python-telegram-bot
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>slack-sdk<span class="w"> </span>discord.py<span class="w"> </span>matrix-nio<span class="w"> </span>symphony-bdk-python<span class="w"> </span>python-telegram-bot<span class="w"> </span>zulip
 </pre></div>
 </div>
 <p>Optional integrations are available with <code class="docutils literal notranslate"><span class="pre">chatom[agent]</span></code> and <code class="docutils literal notranslate"><span class="pre">chatom[mcp]</span></code>.</p>
 </section>
-<section id="one-message-four-backends">
-<h2>One message, four backends<a class="headerlink" href="#one-message-four-backends" title="Link to this heading">¶</a></h2>
+<section id="one-message-every-backend">
+<h2>One message, every backend<a class="headerlink" href="#one-message-every-backend" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">chatom</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessageBuilder</span>
 
 <span class="n">message</span> <span class="o">=</span> <span class="p">(</span>
@@ -280,8 +280,12 @@
 <span class="n">discord_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"discord"</span><span class="p">)</span>
 <span class="n">symphony_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"symphony"</span><span class="p">)</span>
 <span class="n">telegram_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"telegram"</span><span class="p">)</span>
+<span class="n">matrix_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"matrix"</span><span class="p">)</span>
+<span class="n">zulip_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"zulip"</span><span class="p">)</span>
+<span class="n">irc_content</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">render_for</span><span class="p">(</span><span class="s2">"irc"</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Each backend receives its own dialect: mrkdwn for Slack, Markdown for Discord and Zulip, HTML for Symphony and Matrix, Telegram’s HTML subset, and plain text for IRC.</p>
 <p>Message construction stays unchanged. Only rendering and backend configuration know which platform receives it.</p>
 <p>Connected backends share the same lifecycle and operation shape:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">await</span> <span class="n">backend</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
@@ -303,7 +307,7 @@
 <li><p>Model promotion and demotion between common and backend-specific types</p></li>
 <li><p>Identity mapping and message forwarding between platforms</p></li>
 <li><p>Agent, MCP, and CSP integrations built on the same backend contract</p></li>
-<li><p>In-memory Discord, Slack, Symphony, and Telegram backends for tests</p></li>
+<li><p>In-memory backends for all supported platforms</p></li>
 </ul>
 </section>
 <section id="documentation">
@@ -356,7 +360,7 @@
     <a href="#install">Install</a>
   </li>
   <li class="fd-toc-item" data-depth="1">
-    <a href="#one-message-four-backends">One message, four backends</a>
+    <a href="#one-message-every-backend">One message, every backend</a>
   </li>
   <li class="fd-toc-item" data-depth="1">
     <a href="#what-the-frontend-covers">What the frontend covers</a>

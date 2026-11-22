@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../_static/autodoc_pydantic.css" />
-    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
     <link rel="stylesheet" type="text/css" href="../../_static/fonts/fuma-fonts.css?v=c2892c73" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/custom.css?v=88c24c6a" />
     <script src="../../_static/documentation_options.js?v=000c92bf"></script>
@@ -21,7 +21,7 @@
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
-    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
     <script data-searchlite-index="searchlite-index.json" defer="defer" src="../../_static/searchlite.js?v=a5320898"></script>
     <script defer="defer" src="../../_static/fuma.js?v=9c325f6c"></script>
     <script src="../../_static/js/custom.js?v=956e5d78"></script>
@@ -94,7 +94,7 @@
 <ul class="fd-tree">
   <li class="fd-tree-item">
     <a class="fd-link" href="tutorial-unified-frontend.html">
-      <span class="fd-link-text">Tutorial: one message for four backends</span>
+      <span class="fd-link-text">Tutorial: one message for every backend</span>
     </a>
   </li>
   <li class="fd-tree-item">
@@ -235,7 +235,13 @@
 <h1>Test backend-independent code<a class="headerlink" href="#test-backend-independent-code" title="Link to this heading">¶</a></h1>
 <p>Each backend package exports an in-memory mock with the same asynchronous frontend as its live backend.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pytest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.discord</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockDiscordBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.irc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockIRCBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.matrix</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockMatrixBackend</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">chatom.slack</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockSlackBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.symphony</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockSymphonyBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.telegram</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockTelegramBackend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">chatom.zulip</span><span class="w"> </span><span class="kn">import</span> <span class="n">MockZulipBackend</span>
 
 
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
@@ -254,11 +260,19 @@
     <span class="k">assert</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_sent_messages</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="n">sent</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>Equivalent mocks are exported as <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.discord.MockDiscordBackend</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.symphony.MockSymphonyBackend</span></code>, and <code class="xref py py-class docutils literal notranslate"><span class="pre">chatom.telegram.MockTelegramBackend</span></code>.</p>
+<p>Equivalent mocks are exported by every backend package.</p>
 <p>Parameterize a common behavior test to verify frontend portability:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">parametrize</span><span class="p">(</span>
     <span class="s2">"backend_factory"</span><span class="p">,</span>
-    <span class="p">[</span><span class="n">MockSlackBackend</span><span class="p">,</span> <span class="n">MockDiscordBackend</span><span class="p">,</span> <span class="n">MockSymphonyBackend</span><span class="p">,</span> <span class="n">MockTelegramBackend</span><span class="p">],</span>
+    <span class="p">[</span>
+        <span class="n">MockDiscordBackend</span><span class="p">,</span>
+        <span class="n">MockIRCBackend</span><span class="p">,</span>
+        <span class="n">MockMatrixBackend</span><span class="p">,</span>
+        <span class="n">MockSlackBackend</span><span class="p">,</span>
+        <span class="n">MockSymphonyBackend</span><span class="p">,</span>
+        <span class="n">MockTelegramBackend</span><span class="p">,</span>
+        <span class="n">MockZulipBackend</span><span class="p">,</span>
+    <span class="p">],</span>
 <span class="p">)</span>
 <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">asyncio</span>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">test_message_workflow</span><span class="p">(</span><span class="n">backend_factory</span><span class="p">):</span>
