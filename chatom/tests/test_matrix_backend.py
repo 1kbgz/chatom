@@ -880,6 +880,13 @@ def test_message_content_plain_text_skips_html() -> None:
     }
 
 
+def test_message_content_without_markup_is_sent_as_plain_text() -> None:
+    backend = MatrixBackend()
+
+    # HTML would collapse these newlines, and clients render formatted_body when present
+    assert backend._message_content("> !ping\n\nPong! 1 < 2") == {"msgtype": "m.text", "body": "> !ping\n\nPong! 1 < 2"}
+
+
 @pytest.mark.asyncio
 async def test_send_message_posts_plain_room_event() -> None:
     client = FakeMatrixClient()

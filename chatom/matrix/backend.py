@@ -39,6 +39,9 @@ _log = getLogger(__name__)
 # A user link in formatted_body, which is how clients mention someone.
 _MATRIX_TO_USER = re.compile(r'https://matrix\.to/#/(@[^"<]+)')
 
+# An HTML tag or character reference, which marks content as HTML rather than plain text.
+_HTML_MARKUP = re.compile(r"</?[A-Za-z][^>]*>|&(?:#\d+|#x[0-9A-Fa-f]+|[A-Za-z]+);")
+
 
 class MatrixBackend(BackendBase):
     """Unencrypted Matrix client-server backend.
@@ -398,7 +401,8 @@ class MatrixBackend(BackendBase):
             raise NotImplementedError("MatrixBackend MVP does not support end-to-end encrypted rooms")
 
     def _message_content(self, content: str, formatted: bool = True) -> dict:
-        if not formatted:
+        # Content with no tags or entities is plain text; as HTML its newlines would collapse.
+        if not formatted or not _HTML_MARKUP.search(content):
             return {"msgtype": "m.text", "body": content}
         content = self._translate_mentions(content)
         return {
