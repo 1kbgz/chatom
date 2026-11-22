@@ -9,6 +9,7 @@ maxdepth: 1
 Set up a Slack bot <howto-setup-slack>
 Set up a Discord bot <howto-setup-discord>
 Set up an IRC bot <howto-setup-irc>
+Set up a Matrix bot <howto-setup-matrix>
 Set up a Symphony bot <howto-setup-symphony>
 Set up a Telegram bot <howto-setup-telegram>
 Set up a Zulip bot <howto-setup-zulip>
