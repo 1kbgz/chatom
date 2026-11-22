@@ -17,6 +17,7 @@ from csp.impl.wiring import py_push_adapter_def
 
 from ..backend import BackendBase
 from ..base import Interaction
+from .runner import BackendRunner
 
 __all__ = (
     "InteractionReaderPushAdapter",
@@ -64,30 +65,28 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
             raise self._error
 
     def _run(self):
+        # Runs on the backend's shared runner, the same connection message_reader uses
+        runner = BackendRunner.acquire(self._backend)
         try:
-            asyncio.run(self._async_run_with_setup())
+            runner.call(self._async_run_with_setup).result()
         except Exception as e:
             log.exception("Error in interaction reader: %s", e)  # noqa: TRY401
             self._error = e
             self._running_event.clear()
         finally:
             self._queue.put(None)
+            runner.release()
 
-    async def _async_run_with_setup(self):
+    async def _async_run_with_setup(self, backend: BackendBase):
         self._loop = asyncio.get_running_loop()
         self._shutdown_event = asyncio.Event()
         try:
-            await self._async_run()
+            await self._async_run(backend)
         finally:
             self._loop = None
             self._shutdown_event = None
 
-    async def _async_run(self):
-        # Separate backend instance for this thread's loop, same as message_reader
-        backend_class = type(self._backend)
-        thread_backend = backend_class(config=self._backend.config)
-        await thread_backend.connect()
-
+    async def _async_run(self, thread_backend: BackendBase):
         drain_task = asyncio.create_task(self._drain())
         try:
             try:
@@ -122,8 +121,6 @@ class InteractionReaderPushAdapterImpl(PushInputAdapter):
             drain_task.cancel()
             with contextlib.suppress(asyncio.CancelledError):
                 await drain_task
-            with contextlib.suppress(Exception):
-                await thread_backend.disconnect()
 
     async def _consume(self, stream):
         async for event in stream:

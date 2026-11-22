@@ -118,13 +118,13 @@ class MockBackendForCSP:
 
     async def stream_messages(
         self,
-        channel_id: str | None = None,
+        channel: str | None = None,
         skip_own: bool = True,
         skip_history: bool = True,
     ):
         """Stream messages from the backend."""
         for msg in self._messages_to_stream:
-            if channel_id and msg.channel_id != channel_id:
+            if channel and msg.channel_id != channel:
                 continue
             if skip_own and msg.author_id == self._bot_user_id:
                 continue

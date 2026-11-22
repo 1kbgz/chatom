@@ -17,7 +17,8 @@ from csp.impl.pushadapter import PushInputAdapter
 from csp.impl.wiring import py_push_adapter_def
 
 from ..backend import BackendBase
-from ..base import Channel, Message
+from ..base import Channel, Message, Presence
+from .runner import BackendRunner
 
 __all__ = (
     "MessageReaderPushAdapter",
@@ -94,46 +95,39 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
             raise self._error
 
     def _run(self):
-        """Run the message stream in a background thread.
+        """Run the message stream on the backend's shared runner.
 
-        Uses asyncio.run() which properly sets up the task context
-        that aiohttp requires. This is critical because aiohttp's
-        timeout context manager checks asyncio.current_task().
+        The stream runs on the runner's loop, the same connection the writer
+        and presence threads use, and this thread waits for it to finish.
         """
         log.debug("MessageReaderPushAdapter._run() thread function starting")
+        runner = BackendRunner.acquire(self._backend)
         try:
-            asyncio.run(self._async_run_with_setup())
+            runner.call(self._async_run_with_setup).result()
         except Exception as e:
             log.exception(f"Error in message reader: {e}")  # noqa: TRY401
             self._error = e
             self._running_event.clear()
         finally:
             self._message_queue.put(None)
+            runner.release()
         log.debug("MessageReaderPushAdapter._run() thread function finished")
 
-    async def _async_run_with_setup(self):
+    async def _async_run_with_setup(self, backend: BackendBase):
         """Async wrapper that captures the loop for external stop calls."""
         log.debug("_async_run_with_setup starting")
         self._loop = asyncio.get_running_loop()
         self._shutdown_event = asyncio.Event()
         try:
-            await self._async_run()
+            await self._async_run(backend)
         finally:
             self._loop = None
             self._shutdown_event = None
         log.debug("_async_run_with_setup finished")
 
-    async def _async_run(self):
+    async def _async_run(self, thread_backend: BackendBase):
         """Async main loop for reading messages."""
         log.debug("_async_run starting")
-        # Create a new backend instance for this thread to avoid event loop issues
-        # This is necessary because aiohttp sessions are bound to specific event loops
-        backend_class = type(self._backend)
-        log.debug(f"Creating thread-local backend of type {backend_class.__name__}")
-        thread_backend = backend_class(config=self._backend.config)
-        log.debug("Connecting thread-local backend...")
-        await thread_backend.connect()
-        log.debug("Thread-local backend connected")
 
         # Resolve channel names to IDs
         await self._resolve_channels(thread_backend)
@@ -150,7 +144,7 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
                 for channel_id in self._resolved_channel_ids:
                     log.debug(f"Starting to stream messages from channel {channel_id}")
                     stream = thread_backend.stream_messages(
-                        channel_id=channel_id,
+                        channel=channel_id,
                         skip_own=self._skip_own,
                         skip_history=self._skip_history,
                     )
@@ -172,11 +166,6 @@ class MessageReaderPushAdapterImpl(PushInputAdapter):
             try:
                 await queue_task
             except asyncio.CancelledError:
-                pass
-            # Disconnect the thread-local backend
-            try:
-                await thread_backend.disconnect()
-            except Exception:  # noqa: BLE001, S110
                 pass
 
     async def _consume_stream(self, stream, timeout: float = 30.0):
@@ -329,171 +318,126 @@ def message_reader(
     )
 
 
+async def _send_one(backend: BackendBase, msg: Message, on_sent: Callable[[Message, Message], None] | None) -> None:
+    """Send one message, then upload any attachments that carry binary data."""
+    log.debug(f"Sending message to channel_id={msg.channel_id}")
+    # Separate attachments with binary data from URL-only ones
+    url_attachments = []
+    upload_attachments = []
+    for att in msg.attachments:
+        if getattr(att, "has_data", False) and att.data is not None:
+            upload_attachments.append((att, att.data))
+        else:
+            url_attachments.append(att)
+
+    # Send the main message (text + url attachments + embeds)
+    kwargs = {}
+    if url_attachments:
+        kwargs["attachments"] = url_attachments
+    if msg.embeds:
+        kwargs["embeds"] = msg.embeds
+    if msg.thread is not None:
+        kwargs["thread"] = msg.thread
+    if msg.reply_to is not None:
+        kwargs["reply_to"] = msg.reply_to
+    elif msg.reference is not None and msg.reference.message_id:
+        kwargs["reply_to"] = msg.reference.message_id
+    if msg.components is not None and msg.components.rows:
+        from chatom.format import attach_components_for_backend
+
+        kwargs["content"] = msg.content
+        attach_components_for_backend(kwargs, msg.components, backend.get_format())
+        content_to_send = str(kwargs.pop("content"))
+    else:
+        content_to_send = msg.content
+    sent = await backend.send_message(
+        channel=msg.channel_id,
+        content=content_to_send,
+        **kwargs,
+    )
+    if on_sent is not None:
+        on_sent(msg, sent)
+
+    # Upload any attachments with binary data
+    for att, data in upload_attachments:
+        try:
+            uploaded = await backend.upload_file(
+                channel=msg.channel_id,
+                data=data,
+                filename=att.filename or "file",
+                content_type=getattr(att, "content_type", ""),
+            )
+            if on_sent is not None:
+                on_sent(Message(channel=Channel(id=msg.channel_id), attachments=[att]), uploaded)
+        except NotImplementedError:
+            log.warning(f"Backend {type(backend).__name__} does not support file uploads, skipping {att.filename!r}")
+        except Exception:
+            log.exception(f"Failed uploading {att.filename!r}")
+
+    log.debug("Message sent successfully")
+
+
 def _send_messages_thread(msg_queue: Queue, backend: BackendBase, on_sent: Callable[[Message, Message], None] | None = None):
     """Thread function to send messages from queue using the backend.
 
-    Uses asyncio.run() which properly sets up the task context
-    that aiohttp requires. We create a new backend instance in this thread
-    to ensure the aiohttp session is bound to our event loop.
-    ``on_sent`` observes the returned platform message for the text send and
-    each separate binary attachment upload.
+    Sends go through the backend's shared runner, so the writer reuses the
+    reader's connection instead of opening its own. ``on_sent`` observes the
+    returned platform message for the text send and each separate binary
+    attachment upload.
     """
     log.debug("Message writer thread started")
-
-    async def run():
-        # Create a new backend instance for this thread to avoid event loop issues
-        # This is necessary because aiohttp sessions are bound to specific event loops
-        backend_class = type(backend)
-        log.debug(f"Creating thread-local backend of type {backend_class.__name__}")
-        thread_backend = backend_class(config=backend.config)
-        log.debug("Connecting thread-local backend...")
-        await thread_backend.connect()
-        log.debug("Thread-local backend connected")
-
-        loop = asyncio.get_running_loop()
-        try:
-            while True:
-                log.debug("Waiting for message from queue...")
-                msg = await loop.run_in_executor(None, msg_queue.get)
-                msg_queue.task_done()
-
-                if msg is None:
-                    log.debug("Received None, stopping writer thread")
-                    break
-
-                log.debug(f"Sending message to channel_id={msg.channel_id}")
-                try:
-                    # Separate attachments with binary data from URL-only ones
-                    url_attachments = []
-                    upload_attachments = []
-                    for att in msg.attachments:
-                        if getattr(att, "has_data", False) and att.data is not None:
-                            upload_attachments.append(att)
-                        else:
-                            url_attachments.append(att)
-
-                    # Send the main message (text + url attachments + embeds)
-                    kwargs = {}
-                    if url_attachments:
-                        kwargs["attachments"] = url_attachments
-                    if msg.embeds:
-                        kwargs["embeds"] = msg.embeds
-                    if msg.thread is not None:
-                        kwargs["thread"] = msg.thread
-                    if msg.reply_to is not None:
-                        kwargs["reply_to"] = msg.reply_to
-                    elif msg.reference is not None and msg.reference.message_id:
-                        kwargs["reply_to"] = msg.reference.message_id
-                    if msg.components is not None and msg.components.rows:
-                        from chatom.format import attach_components_for_backend
-
-                        kwargs["content"] = msg.content
-                        attach_components_for_backend(kwargs, msg.components, thread_backend.get_format())
-                        content_to_send = str(kwargs.pop("content"))
-                    else:
-                        content_to_send = msg.content
-                    sent = await thread_backend.send_message(
-                        channel=msg.channel_id,
-                        content=content_to_send,
-                        **kwargs,
-                    )
-                    if on_sent is not None:
-                        on_sent(msg, sent)
-
-                    # Upload any attachments with binary data
-                    for att in upload_attachments:
-                        try:
-                            uploaded = await thread_backend.upload_file(
-                                channel=msg.channel_id,
-                                data=att.data,
-                                filename=att.filename or "file",
-                                content_type=getattr(att, "content_type", ""),
-                            )
-                            if on_sent is not None:
-                                on_sent(Message(channel=Channel(id=msg.channel_id), attachments=[att]), uploaded)
-                        except NotImplementedError:
-                            log.warning(f"Backend {type(thread_backend).__name__} does not support file uploads, skipping {att.filename!r}")
-                        except Exception:
-                            log.exception(f"Failed uploading {att.filename!r}")
-
-                    log.debug("Message sent successfully")
-                except Exception:
-                    log.exception("Failed sending message")
-        finally:
-            # Disconnect cleanly
-            log.debug("Disconnecting thread-local backend")
-            try:
-                await thread_backend.disconnect()
-            except Exception:  # noqa: BLE001, S110
-                pass
-
+    runner = BackendRunner.acquire(backend)
     try:
-        asyncio.run(run())
-    except Exception:
-        log.exception("Error in message writer thread")
+        while True:
+            log.debug("Waiting for message from queue...")
+            msg = msg_queue.get()
+            msg_queue.task_done()
+
+            if msg is None:
+                log.debug("Received None, stopping writer thread")
+                break
+
+            try:
+                runner.call(lambda b, m=msg: _send_one(b, m, on_sent)).result()
+            except Exception:
+                log.exception("Failed sending message")
+    finally:
+        runner.release()
     log.debug("Message writer thread finished")
 
 
-def _set_presence_thread(presence_queue: Queue, backend: BackendBase):
-    """Thread function to set presence from queue using the backend.
-
-    Uses asyncio.run() which properly sets up the task context.
-    We create a new backend instance in this thread to ensure
-    the aiohttp session is bound to our event loop.
-    """
-    log.debug("Presence writer thread started")
-
-    async def run():
-        # Create a new backend instance for this thread to avoid event loop issues
-        backend_class = type(backend)
-        log.debug(f"Creating thread-local backend of type {backend_class.__name__}")
-        thread_backend = backend_class(config=backend.config)
-        log.debug("Connecting thread-local backend...")
-        await thread_backend.connect()
-        log.debug("Thread-local backend connected")
-
-        loop = asyncio.get_running_loop()
-        try:
-            while True:
-                log.debug("Waiting for presence from queue...")
-                item = await loop.run_in_executor(None, presence_queue.get)
-                presence_queue.task_done()
-
-                if item is None:
-                    log.debug("Received None, stopping presence thread")
-                    break
-
-                presence, timeout = item
-                log.debug(f"Setting presence to status={getattr(presence, 'status', presence)}")
-                try:
-                    # Handle both Presence objects and status strings
-                    if hasattr(presence, "status"):
-                        await asyncio.wait_for(
-                            thread_backend.set_presence(str(presence.status.value)),
-                            timeout=timeout,
-                        )
-                    else:
-                        await asyncio.wait_for(
-                            thread_backend.set_presence(str(presence)),
-                            timeout=timeout,
-                        )
-                    log.debug("Presence set successfully")
-                except TimeoutError:
-                    log.error("Timeout setting presence")
-                except Exception:
-                    log.exception("Failed setting presence")
-        finally:
-            # Disconnect cleanly
-            log.debug("Disconnecting thread-local backend")
-            try:
-                await thread_backend.disconnect()
-            except Exception:  # noqa: BLE001, S110
-                pass
-
+async def _set_one_presence(backend: BackendBase, presence: Presence | str, timeout: float) -> None:
+    log.debug(f"Setting presence to status={getattr(presence, 'status', presence)}")
+    # Handle both Presence objects and status strings
+    status = str(presence.status.value) if isinstance(presence, Presence) else str(presence)
     try:
-        asyncio.run(run())
-    except Exception:
-        log.exception("Error in presence writer thread")
+        await asyncio.wait_for(backend.set_presence(status), timeout=timeout)
+        log.debug("Presence set successfully")
+    except TimeoutError:
+        log.error("Timeout setting presence")
+
+
+def _set_presence_thread(presence_queue: Queue, backend: BackendBase):
+    """Thread function to set presence from queue using the backend's shared runner."""
+    log.debug("Presence writer thread started")
+    runner = BackendRunner.acquire(backend)
+    try:
+        while True:
+            log.debug("Waiting for presence from queue...")
+            item = presence_queue.get()
+            presence_queue.task_done()
+
+            if item is None:
+                log.debug("Received None, stopping presence thread")
+                break
+
+            presence, timeout = item
+            try:
+                runner.call(lambda b, p=presence, t=timeout: _set_one_presence(b, p, t)).result()
+            except Exception:
+                log.exception("Failed setting presence")
+    finally:
+        runner.release()
     log.debug("Presence writer thread finished")
 
 
