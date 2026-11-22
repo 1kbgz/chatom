@@ -1,6 +1,6 @@
 <p>
-  <img src="https://github.com/1kbgz/chatom/raw/main/docs/img/logo-light.png?raw=true#gh-light-mode-only" alt="chatom" width="150">
-  <img src="https://github.com/1kbgz/chatom/raw/main/docs/img/logo-dark.png?raw=true#gh-dark-mode-only" alt="chatom" width="150">
+  <img class="logo-light" src="https://github.com/1kbgz/chatom/raw/main/docs/img/logo-light.png?raw=true#gh-light-mode-only" alt="chatom" width="150">
+  <img class="logo-dark" src="https://github.com/1kbgz/chatom/raw/main/docs/img/logo-dark.png?raw=true#gh-dark-mode-only" alt="chatom" width="150">
 </p>
 
 # Chatom
