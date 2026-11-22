@@ -289,4 +289,8 @@ async def resolve_channel(backend, identifier: str):
 
     if backend.name in _ID_ADDRESSED:
         return await backend.fetch_channel(id=identifier)
+    # Telegram finds a private group by title only after the bot has seen a
+    # message from it, so a numeric chat id is accepted too.
+    if backend.name == "telegram" and identifier.lstrip("-").isdigit():
+        return await backend.fetch_channel(id=identifier)
     return await backend.fetch_channel(name=identifier)
