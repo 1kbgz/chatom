@@ -347,6 +347,26 @@ class TestSendMessagesThread:
         callback.assert_called_once_with(original, mock_backend.sent_messages[0])
         assert callback.call_args.args[1].id == "msg_0"
 
+    def test_upload_callback_receives_separate_platform_id(self, mock_backend, monkeypatch):
+        from unittest.mock import Mock
+
+        from chatom.base import Attachment
+
+        async def upload_file(self, channel, **kwargs):
+            return Message(id="uploaded", channel=Channel(id=channel))
+
+        monkeypatch.setattr(MockBackendForCSP, "upload_file", upload_file, raising=False)
+        original = Message(channel=Channel(id="C123"), content="file", attachments=[Attachment(filename="file.txt", data=b"text")])
+        queue = Queue()
+        queue.put(original)
+        queue.put(None)
+        callback = Mock()
+        _send_messages_thread(queue, mock_backend, on_sent=callback)
+        assert callback.call_count == 2
+        uploaded_original, sent = callback.call_args.args
+        assert sent.id == "uploaded" and uploaded_original.channel_id == "C123"
+        assert uploaded_original.attachments[0].filename == "file.txt"
+
     def test_legacy_publish_override_preserves_send_callback(self, mock_backend):
         from unittest.mock import Mock
 
