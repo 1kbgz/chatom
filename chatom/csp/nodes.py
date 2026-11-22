@@ -17,7 +17,7 @@ from csp.impl.pushadapter import PushInputAdapter
 from csp.impl.wiring import py_push_adapter_def
 
 from ..backend import BackendBase
-from ..base import Message
+from ..base import Channel, Message
 
 __all__ = (
     "MessageReaderPushAdapter",
@@ -335,6 +335,8 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase, on_sent: Calla
     Uses asyncio.run() which properly sets up the task context
     that aiohttp requires. We create a new backend instance in this thread
     to ensure the aiohttp session is bound to our event loop.
+    ``on_sent`` observes the returned platform message for the text send and
+    each separate binary attachment upload.
     """
     log.debug("Message writer thread started")
 
@@ -401,12 +403,14 @@ def _send_messages_thread(msg_queue: Queue, backend: BackendBase, on_sent: Calla
                     # Upload any attachments with binary data
                     for att in upload_attachments:
                         try:
-                            await thread_backend.upload_file(
+                            uploaded = await thread_backend.upload_file(
                                 channel=msg.channel_id,
                                 data=att.data,
                                 filename=att.filename or "file",
                                 content_type=getattr(att, "content_type", ""),
                             )
+                            if on_sent is not None:
+                                on_sent(Message(channel=Channel(id=msg.channel_id), attachments=[att]), uploaded)
                         except NotImplementedError:
                             log.warning(f"Backend {type(thread_backend).__name__} does not support file uploads, skipping {att.filename!r}")
                         except Exception:

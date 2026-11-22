@@ -14,7 +14,7 @@ from pydantic_ai.tools import ToolDefinition
 from pydantic_ai.toolsets.abstract import AbstractToolset, ToolsetTool
 
 from chatom.backend import AttachmentDownloadLimitError, BackendBase
-from chatom.base import Channel, ChannelType, User
+from chatom.base import Channel, ChannelType, Message, User
 from chatom.base.capabilities import Capability
 
 logger = logging.getLogger(__name__)
@@ -477,6 +477,11 @@ class BackendToolset(AbstractToolset[Any]):
     (``send_message``, ``edit_message``, ``add_reaction``) are omitted
     when *read_only* is ``True``.
 
+    The optional ``on_sent(original, sent)`` callback observes successful text
+    sends and file/image uploads. ``sent`` contains the platform's message ID;
+    ``original`` preserves the requested channel, content, and filename metadata.
+    Callback errors are logged without failing or repeating the successful send.
+
     Example::
 
         from chatom.agent import BackendToolset
@@ -498,6 +503,7 @@ class BackendToolset(AbstractToolset[Any]):
         max_tool_calls: int = 0,
         per_tool_limits: dict[str, int] | None = None,
         image_generator: Callable[[str], Awaitable[bytes]] | None = None,
+        on_sent: Callable[[Message, Message], None] | None = None,
     ) -> None:
         self._backend = backend
         self._read_only = read_only
@@ -505,6 +511,7 @@ class BackendToolset(AbstractToolset[Any]):
         self._policy = access_policy or AccessPolicy()
         self._disabled_tools = disabled_tools or set()
         self._image_generator = image_generator
+        self._on_sent = on_sent
         # Per-run tool call budget. 0 disables the total cap; per-tool limits
         # may still apply. A single BackendToolset instance is expected to back
         # exactly one agent run, so these counters scope naturally to a run.
@@ -520,6 +527,14 @@ class BackendToolset(AbstractToolset[Any]):
     @property
     def id(self) -> str | None:
         return f"chatom-{self._backend.name}" if self._backend.name else "chatom"
+
+    def _notify_sent(self, sent: Message, channel: Channel, content: str = "", filename: str = "") -> None:
+        if self._on_sent is not None:
+            original = Message(channel=channel, content=content, metadata={"filename": filename})
+            try:
+                self._on_sent(original, sent)
+            except Exception:
+                logger.exception("Sent-message observer failed")
 
     def tool_definitions(self) -> dict[str, ToolDefinition]:
         """Return the tools available for this backend and policy."""
@@ -901,10 +916,12 @@ class BackendToolset(AbstractToolset[Any]):
         channel = self._channel(args)
         channel = await self._resolve_channel_full(channel)
         await self._check_channel_access(channel)
-        return await self._backend.send_message(
+        sent = await self._backend.send_message(
             channel=channel,
             content=args["content"],
         )
+        self._notify_sent(sent, channel, args["content"])
+        return sent
 
     async def _call_edit_message(self, args: dict[str, Any]) -> Any:
         channel = self._channel(args)
@@ -1084,6 +1101,7 @@ class BackendToolset(AbstractToolset[Any]):
             )
         except ValueError as exc:
             return {"error": "invalid_file", "message": str(exc)}
+        self._notify_sent(sent, channel, args.get("content", ""), args["filename"])
         return {"ok": True, "message_id": getattr(sent, "id", "") or ""}
 
     async def _call_create_file(self, args: dict[str, Any]) -> Any:
@@ -1110,6 +1128,7 @@ class BackendToolset(AbstractToolset[Any]):
         except (RuntimeError, OSError) as exc:
             logger.warning("File creation/upload failed: %s", type(exc).__name__)
             return {"error": "file_failed", "message": f"File creation or upload failed ({type(exc).__name__})."}
+        self._notify_sent(sent, channel, args["content"], args["filename"])
         return {"ok": True, "message_id": sent.id, "filename": args["filename"], "content_type": media_type, "size": len(data)}
 
     async def _call_read_file(self, args: dict[str, Any]) -> Any:
@@ -1153,4 +1172,5 @@ class BackendToolset(AbstractToolset[Any]):
                 "error": "generation_failed",
                 "message": str(exc) if isinstance(exc, ValueError) else f"Image generation or upload failed ({type(exc).__name__}).",
             }
+        self._notify_sent(sent, channel, args["content"], args["filename"])
         return {"ok": True, "message_id": sent.id, "filename": args["filename"], "content_type": "image/png", "size": len(data)}

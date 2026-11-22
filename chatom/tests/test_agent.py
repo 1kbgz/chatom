@@ -287,6 +287,54 @@ def readonly_backend(mock_backend: _MockBackend) -> _MockBackend:
 class TestBackendToolset:
     """Tests for BackendToolset."""
 
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "tool_name,args",
+        [
+            ("send_message", {"content": "sent text"}),
+            ("upload_file", {"filename": "reaction.gif", "data_base64": "R0lGODlh", "content_type": "image/gif"}),
+            ("create_file", {"filename": "note.txt", "text": "document"}),
+            ("generate_image", {"filename": "image.png", "prompt": "a cat"}),
+        ],
+    )
+    async def test_sent_observer_receives_actual_ids_for_text_and_uploads(self, mock_backend, tool_name, args):
+        from unittest.mock import AsyncMock, Mock
+
+        from chatom.agent.toolset import BackendToolset
+
+        observer = Mock()
+        toolset = BackendToolset(mock_backend, on_sent=observer, image_generator=AsyncMock(return_value=b"\x89PNG\r\n\x1a\nimage"))
+        result = await toolset.call(tool_name, {"channel": {"id": "C1"}, **args})
+        observer.assert_called_once()
+        original, sent = observer.call_args.args
+        assert original.channel_id == "C1" and sent.id
+        assert sent.id == result.get("message_id", result.get("id"))
+
+    @pytest.mark.asyncio
+    async def test_sent_observer_is_not_called_on_upload_failure(self, mock_backend):
+        from unittest.mock import AsyncMock, Mock
+
+        from chatom.agent.toolset import BackendToolset
+
+        observer = Mock()
+        toolset = BackendToolset(mock_backend, on_sent=observer)
+        with pytest.MonkeyPatch.context() as patcher:
+            patcher.setattr(type(mock_backend), "upload_file", AsyncMock(side_effect=ValueError("invalid upload")))
+            result = await toolset.call("upload_file", {"channel": {"id": "C1"}, "filename": "file.txt", "data_base64": "dGV4dA=="})
+        assert result["error"] == "invalid_file"
+        observer.assert_not_called()
+
+    @pytest.mark.asyncio
+    async def test_sent_observer_failure_does_not_repeat_or_fail_send(self, mock_backend):
+        from unittest.mock import Mock
+
+        from chatom.agent.toolset import BackendToolset
+
+        toolset = BackendToolset(mock_backend, on_sent=Mock(side_effect=OSError("storage offline")))
+        result = await toolset.call("send_message", {"channel": {"id": "C1"}, "content": "sent once"})
+        assert result["id"]
+        assert len(mock_backend.sent) == 1
+
     def test_tool_definitions_are_available_without_run_context(self, mock_backend: _MockBackend) -> None:
         from chatom.agent.toolset import BackendToolset
 
