@@ -381,13 +381,13 @@ class DiscordBackend(BackendBase):
         - Channel object (returns as-is or refreshes)
         - name= to search by channel name (requires guild context)
 
-        Note: Discord requires channel ID for direct lookup.
-        Name-based search checks cache only.
+        Note: Discord requires channel ID for direct lookup. A name lookup
+        searches the channels of ``config.guild_id``.
 
         Args:
             identifier: A Channel object or channel ID string.
             id: Channel ID.
-            name: Channel name to search for (cache only).
+            name: Channel name to search for in the configured guild.
 
         Returns:
             The channel if found, None otherwise.
@@ -432,11 +432,8 @@ class DiscordBackend(BackendBase):
             except (discord.NotFound, discord.HTTPException, ValueError):
                 pass
 
-        # Name search - check cache only
         if name:
-            for cached_channel in self.channels.all():
-                if isinstance(cached_channel, DiscordChannel) and cached_channel.name.lower() == name.lower():
-                    return cached_channel
+            return await self.fetch_channel_by_name(name)
 
         return None
 
@@ -601,16 +598,25 @@ class DiscordBackend(BackendBase):
             raise RuntimeError("Not connected to Discord")
 
         # Thread overrides the channel: in Discord a thread IS a channel.
-        thread_id = self._extract_thread_id(kwargs.pop("thread", None))
+        thread_id = self._extract_thread_id(kwargs.pop("thread", None)) or kwargs.pop("thread_id", None)
+        kwargs.pop("thread_id", None)
         target_channel_id = thread_id if thread_id is not None else await self._resolve_channel_id(channel)
 
         # reply_to → discord.MessageReference
         reply_to_id = self._extract_reply_to_id(kwargs.pop("reply_to", None))
+        if thread_id is not None and reply_to_id == thread_id:
+            # The thread's starter message lives in the parent channel, so it
+            # cannot be referenced from inside the thread.
+            reply_to_id = None
 
         try:
-            discord_channel = await self._client.fetch_channel(int(target_channel_id))
+            if thread_id is not None:
+                discord_channel = await self._fetch_or_start_thread(channel, thread_id)
+            else:
+                discord_channel = await self._client.fetch_channel(int(target_channel_id))
             if discord_channel is None:
                 raise RuntimeError(f"Channel {target_channel_id} not found")
+            target_channel_id = str(discord_channel.id)
 
             # Extract common kwargs
             embed = kwargs.get("embed")
@@ -646,6 +652,70 @@ class DiscordBackend(BackendBase):
             )
         except (discord.NotFound, discord.HTTPException, ValueError) as e:
             raise RuntimeError(f"Failed to send message: {e}") from e
+
+    async def _fetch_or_start_thread(self, channel: str | Channel, thread_id: str) -> Any:
+        """Return the thread channel ``thread_id``, starting it if it does not exist yet.
+
+        A thread started from a message has the same ID as that message, so a
+        message ID given as ``thread=`` opens a thread on that message in
+        ``channel``. The thread is named after the message's first line.
+        """
+        try:
+            return await self._client.fetch_channel(int(thread_id))
+        except discord.NotFound:
+            if not channel:
+                raise
+        parent = await self._client.fetch_channel(int(await self._resolve_channel_id(channel)))
+        root = await parent.fetch_message(int(thread_id))
+        name = (root.content or "").strip().split("\n")[0][:100] or "Thread"
+        return await root.create_thread(name=name)
+
+    async def read_thread(
+        self,
+        channel: str | Channel,
+        thread_id: str,
+        limit: int = 100,
+    ) -> AsyncIterator[Message]:
+        """Read messages from a thread, newest first like ``fetch_messages``.
+
+        A Discord thread is a channel whose ID matches the message that
+        started it, so ``thread_id`` may be either.
+        """
+        for message in await self.fetch_messages(thread_id, limit=limit):
+            yield message
+
+    async def create_thread(
+        self,
+        channel: str | Channel,
+        message_id: str,
+        name: str,
+        **kwargs: Any,
+    ) -> Channel:
+        """Create a thread from a message.
+
+        The thread has the same ID as the message it starts from.
+
+        Args:
+            channel: The channel containing the message (ID string or Channel object).
+            message_id: The ID of the message to start the thread from.
+            name: The thread name; Discord allows at most 100 characters.
+            **kwargs: Passed to discord.py's ``Message.create_thread``, such as
+                ``auto_archive_duration`` or ``reason``.
+
+        Returns:
+            The created thread as a Channel.
+        """
+        if self._client is None:
+            raise RuntimeError("Not connected to Discord")
+
+        channel_id = await self._resolve_channel_id(channel)
+        try:
+            parent = await self._client.fetch_channel(int(channel_id))
+            root = await parent.fetch_message(int(message_id))
+            thread = await root.create_thread(name=name[:100], **kwargs)
+        except (discord.NotFound, discord.HTTPException, ValueError) as e:
+            raise RuntimeError(f"Failed to create thread: {e}") from e
+        return _discord_channel_from_api(thread)
 
     async def upload_file(
         self,
