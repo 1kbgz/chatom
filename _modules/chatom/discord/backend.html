@@ -1024,13 +1024,13 @@ window.runMermaid = runMermaid;</script>
 <span class="sd">        - Channel object (returns as-is or refreshes)</span>
 <span class="sd">        - name= to search by channel name (requires guild context)</span>
 
-<span class="sd">        Note: Discord requires channel ID for direct lookup.</span>
-<span class="sd">        Name-based search checks cache only.</span>
+<span class="sd">        Note: Discord requires channel ID for direct lookup. A name lookup</span>
+<span class="sd">        searches the channels of ``config.guild_id``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            identifier: A Channel object or channel ID string.</span>
 <span class="sd">            id: Channel ID.</span>
-<span class="sd">            name: Channel name to search for (cache only).</span>
+<span class="sd">            name: Channel name to search for in the configured guild.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The channel if found, None otherwise.</span>
@@ -1075,11 +1075,8 @@ window.runMermaid = runMermaid;</script>
             <span class="k">except</span> <span class="p">(</span><span class="n">discord</span><span class="o">.</span><span class="n">NotFound</span><span class="p">,</span> <span class="n">discord</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
                 <span class="k">pass</span>
 
-        <span class="c1"># Name search - check cache only</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">cached_channel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cached_channel</span><span class="p">,</span> <span class="n">DiscordChannel</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cached_channel</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-                    <span class="k">return</span> <span class="n">cached_channel</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_channel_by_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="kc">None</span></div>
 
@@ -1253,16 +1250,25 @@ window.runMermaid = runMermaid;</script>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Not connected to Discord"</span><span class="p">)</span>
 
         <span class="c1"># Thread overrides the channel: in Discord a thread IS a channel.</span>
-        <span class="n">thread_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_thread_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">thread_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_thread_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">or</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"thread_id"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">target_channel_id</span> <span class="o">=</span> <span class="n">thread_id</span> <span class="k">if</span> <span class="n">thread_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_channel_id</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
 
         <span class="c1"># reply_to → discord.MessageReference</span>
         <span class="n">reply_to_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extract_reply_to_id</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">"reply_to"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">thread_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">reply_to_id</span> <span class="o">==</span> <span class="n">thread_id</span><span class="p">:</span>
+            <span class="c1"># The thread's starter message lives in the parent channel, so it</span>
+            <span class="c1"># cannot be referenced from inside the thread.</span>
+            <span class="n">reply_to_id</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">discord_channel</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">target_channel_id</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">thread_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">discord_channel</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_or_start_thread</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">discord_channel</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">target_channel_id</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">discord_channel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Channel </span><span class="si">{</span><span class="n">target_channel_id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
+            <span class="n">target_channel_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">discord_channel</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
 
             <span class="c1"># Extract common kwargs</span>
             <span class="n">embed</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"embed"</span><span class="p">)</span>
@@ -1298,6 +1304,76 @@ window.runMermaid = runMermaid;</script>
             <span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">discord</span><span class="o">.</span><span class="n">NotFound</span><span class="p">,</span> <span class="n">discord</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to send message: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
+
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">_fetch_or_start_thread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span><span class="p">,</span> <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Return the thread channel ``thread_id``, starting it if it does not exist yet.</span>
+
+<span class="sd">        A thread started from a message has the same ID as that message, so a</span>
+<span class="sd">        message ID given as ``thread=`` opens a thread on that message in</span>
+<span class="sd">        ``channel``. The thread is named after the message's first line.</span>
+<span class="sd">        """</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">thread_id</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">discord</span><span class="o">.</span><span class="n">NotFound</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">channel</span><span class="p">:</span>
+                <span class="k">raise</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_channel_id</span><span class="p">(</span><span class="n">channel</span><span class="p">)))</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="k">await</span> <span class="n">parent</span><span class="o">.</span><span class="n">fetch_message</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">thread_id</span><span class="p">))</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">content</span> <span class="ow">or</span> <span class="s2">""</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">100</span><span class="p">]</span> <span class="ow">or</span> <span class="s2">"Thread"</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">root</span><span class="o">.</span><span class="n">create_thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DiscordBackend.read_thread">
+<a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.read_thread">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">read_thread</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span><span class="p">,</span>
+        <span class="n">thread_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AsyncIterator</span><span class="p">[</span><span class="n">Message</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">"""Read messages from a thread, newest first like ``fetch_messages``.</span>
+
+<span class="sd">        A Discord thread is a channel whose ID matches the message that</span>
+<span class="sd">        started it, so ``thread_id`` may be either.</span>
+<span class="sd">        """</span>
+        <span class="k">for</span> <span class="n">message</span> <span class="ow">in</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_messages</span><span class="p">(</span><span class="n">thread_id</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">message</span></div>
+
+
+<div class="viewcode-block" id="DiscordBackend.create_thread">
+<a class="viewcode-back" href="../../../docs/src/api-backends.html#chatom.discord.backend.DiscordBackend.create_thread">[docs]</a>
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">create_thread</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Channel</span><span class="p">,</span>
+        <span class="n">message_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Channel</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">"""Create a thread from a message.</span>
+
+<span class="sd">        The thread has the same ID as the message it starts from.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            channel: The channel containing the message (ID string or Channel object).</span>
+<span class="sd">            message_id: The ID of the message to start the thread from.</span>
+<span class="sd">            name: The thread name; Discord allows at most 100 characters.</span>
+<span class="sd">            **kwargs: Passed to discord.py's ``Message.create_thread``, such as</span>
+<span class="sd">                ``auto_archive_duration`` or ``reason``.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The created thread as a Channel.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Not connected to Discord"</span><span class="p">)</span>
+
+        <span class="n">channel_id</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_channel_id</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">fetch_channel</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">channel_id</span><span class="p">))</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="k">await</span> <span class="n">parent</span><span class="o">.</span><span class="n">fetch_message</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">message_id</span><span class="p">))</span>
+            <span class="n">thread</span> <span class="o">=</span> <span class="k">await</span> <span class="n">root</span><span class="o">.</span><span class="n">create_thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">[:</span><span class="mi">100</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">discord</span><span class="o">.</span><span class="n">NotFound</span><span class="p">,</span> <span class="n">discord</span><span class="o">.</span><span class="n">HTTPException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Failed to create thread: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+        <span class="k">return</span> <span class="n">_discord_channel_from_api</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="DiscordBackend.upload_file">
